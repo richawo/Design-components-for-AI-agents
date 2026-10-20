@@ -35,6 +35,7 @@ export async function check({page,mount,assert,capture=async()=>{}}) {
     await sample('thread-latin-handle',page.locator('blockquote span').filter({hasText:'@noor.'}).last(),'ltr');
     await sample('thread-location',page.locator('figcaption'),textDirection);
     await sample('thread-count',page.locator('aside section header h2 > span').first(),'ltr');
+    await sample('thread-header',page.locator('aside section header h2'),'ltr');
     const reply=page.getByRole('combobox',{name:'Reply to thread',exact:true});
     const replyBody=textDirection==='ltr'?'The phone check is complete.':'اكتمل فحص الهاتف.';
     await reply.fill(replyBody);await sample('reply-draft',reply,textDirection);
@@ -46,6 +47,15 @@ export async function check({page,mount,assert,capture=async()=>{}}) {
     await sample('english-reply',english,'ltr');
     await capture('direction-'+key+'-thread',{audit:process.env.DFA_DIRECTION_ORIGINAL!=='1'});
   }
+  await page.setViewportSize({width:1440,height:940});
+  await mount(`createRoot(document.getElementById('root')).render(<div dir="rtl"><Subject.default/></div>);`);
+  await page.locator('[data-demo="reply-m1"]').click();
+  const single=page.locator('aside section header h2');await single.waitFor();
+  assert.match((await single.innerText()).replace(/\s+/g,' '),/1 comment\b/);
+  assert.equal(await single.evaluate(node=>getComputedStyle(node).direction),'ltr');
+  const parts=await single.locator(':scope > span').evaluateAll(nodes=>nodes.map(node=>({text:node.textContent,box:node.getBoundingClientRect().toJSON()})));
+  assert.ok(parts[0].box.right<=parts[1].box.left+1,'The English count precedes its location');
+  await capture('single-comment-heading',{audit:process.env.DFA_DIRECTION_ORIGINAL!=='1'});
   if(process.env.DFA_DRAFT_QA_OUT)fs.writeFileSync(process.env.DFA_DRAFT_QA_OUT+'/direction-outcomes.json',JSON.stringify(outcomes,null,2)+'\n');
   assert.deepEqual(outcomes.filter(outcome=>!outcome.pass),[],'Team reading direction follows each text rather than the surrounding interface');
 }
