@@ -1,5 +1,7 @@
 # Review status
 
+Settings snapshot follow-up (20 October): the block now detaches initial values, notification selections and nested grants from host-owned objects. Save callbacks receive their own payload while the block retains an independent accepted snapshot. Five reproduced failures previously allowed callback or input mutation to overwrite drafts, select notifications or add permissions; the original source and counterexamples remain archived. The corrected ten-mount source review passes seven outcomes in both themes, two accessibility audits and all fourteen inspected captures. The permanent workflow passes fourteen native mounts with all 27 inputs unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Malformed policy diagnostics and the ten-prop contract remain intact; visible copy and layout are unchanged. Full Settings composition, Next integration and media remain open. One block, 59 older probes and 123 films remain. Evidence uses `test-results/handoff-blocks/settings-*`.
+
 202 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 

@@ -1,4 +1,6 @@
-export async function check({ page, mount, assert }) {
+import { check as checkSnapshots } from "../review/block-settings-snapshots.mjs";
+
+async function checkWorkflow({ page, mount, assert }) {
   await mount(
     `window.calls=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.WorkspaceSettings onSave={async change=>{window.calls.push(change);if(!window.attempt++)throw Error('fixture');}}/>);`,
   );
@@ -33,4 +35,17 @@ export async function check({ page, mount, assert }) {
   await page.getByRole("textbox", { name: "Workspace name", exact: true }).fill("No persistence");
   assert.ok(await page.locator('[data-demo="save"]').isDisabled());
   assert.ok(await page.locator('[data-demo="save-preferences"]').isDisabled());
+}
+
+export async function check(context) {
+  for (const theme of ["dark", "light"]) {
+    const themed = {
+      ...context,
+      mount: code => context.mount(code
+        .replaceAll("<Subject.WorkspaceSettings", `<Subject.WorkspaceSettings theme="${theme}" `)
+        .replaceAll("<Subject.default", `<Subject.default theme="${theme}" `)),
+    };
+    await checkWorkflow(themed);
+    await checkSnapshots(themed);
+  }
 }
