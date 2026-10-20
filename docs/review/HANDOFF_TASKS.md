@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Task 1 (20 October): Legal Workspace now has a reviewed 6.0s film showing typed DOC-404 evidence, the completion action and its settled Done stamp and receipt. The recorder now reaches the action inside its scrolling pane. Five fresh source framing captures match the reviewed references exactly; the changing pending frame is separately viewed. Full 820px workspace framing matches the paired opening poster. Maximum source gap is 29ms, changed-source delivery is 62.66ms and moving-frame p95 is 17.81ms, with no stalls and all guards retained. Both source repositories stay unchanged through the take. The complete film also plays in Chromium, with its decoded ending visually reviewed. The earlier rejected native movie remains archived. 120 listed films remain.
+
 - Task 1 targeting (20 October): the actual old recorder misses a completion action clipped by its scrolling panel while the action's rectangle remains inside the page viewport. The shared recorder resolver now scrolls clipping ancestors before measuring the native pointer target, matching live replay behavior. A registered native browser regression covers vertical, horizontal and nested panels, explicit offsets, retired duplicates, document scrolling and continuously moving or missing actions. Blocking scrolling rejects the same completion assertion. The original 2,500ms deadline, two stable frames and 0.5px tolerance remain intact. The original counterexample and both positive/negative captures are preserved. This establishes a targeting defect separately from the earlier native-frame delivery rejections; film counts stay unchanged.
 
 - Task 1 tooling (20 October): encoded rejections with `--report` now retain their candidate movie, actual source inputs, frame timeline and final failure metrics in a unique folder before temporary cleanup. The original CDP path discarded those inputs. A controlled one-KiB size rejection confirms the before/after difference, decodes the retained candidate and proves the previous movie and poster remain byte-identical. Native takes retain their original source movie without inventing JPEG frames. Source, delivery, moving-frame, duration and size guards stay unchanged; this diagnostic does not complete a queued film.
@@ -447,7 +449,7 @@ from changing subsequent block tests. Original failures and diagnostics remain l
 
 - Task 7 (20 October): Legal Workspace now uses compact current-matter chrome, a shared brand/reporting day and useful context counts. Its matter portfolio, obligation evidence and stamped document requests stay in retained panels. Empty and arriving contexts, unique IDs, keyboard navigation, concurrent writes in different matters, hidden failures, exact retry payloads, retained File identity, removed-matter late replies, independent instances, long phone copy and live reduced motion pass 63 source mounts, 82 accessibility audits, six widths and 96 reviewed state/entrance captures. Missing writers keep drafts available without inventing receipt; inbox snapshots protect retries from host mutation. The table keeps its cells outside disclosure buttons, and receipt/revision text remains readable. Invalid or impossible reference dates fall back once to a coherent UTC reporting day. Northline report evidence cites actual DOC-404; Harbour's handover cites accepted DOC-403. The exact metadata replay records the report and settles on its completion stamp. Next workflow, controls, official audit and six measured Next/production states pass with strict registry, root/all-eleven-block types and all 1,066 tests. Public callback and licence boundaries remain unchanged. Its reviewed paired Next poster is current. The film fails unchanged timing guards (source gap 21ms, delivery 439.76ms and moving-frame p95 17.63ms); the previous movie is retained and raw rejection evidence stays local. Seven blocks, 59 older probes and 121 films remain. The rejected raw capture also ends before the expected completion receipt; its full live replay passes separately. The next complete batch release checkpoint remains pending.
 
-## 1. Re-record demo videos (121 components)
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -466,7 +468,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`block-legal-workspace`
 `chart-allocation`
 `block-financial-report`
 `block-commerce-workspace`
