@@ -45,4 +45,18 @@ describe("private editorial visuals", () => {
     const images = await buildBlogImages(root, source);
     expect(images["/blog-images/guide.png"]).toBeUndefined();
   });
+  it("rejects a mislabeled screenshot and preserves correctly named original bytes", async () => {
+    const { root, assets, source } = fixture();
+    delete source.posts[0].data.heroAsset;
+    const screenshot = await sharp({ create: { width: 80, height: 40, channels: 3, background: "white" } }).jpeg().toBuffer();
+    fs.writeFileSync(path.join(assets, "screenshot.png"), screenshot);
+    source.posts[0].content = '![Observed interface](/blog-images/screenshot.png)';
+    await expect(buildBlogImages(root, source)).rejects.toThrow("Image format does not match filename");
+    expect(fs.existsSync(path.join(root, "public/blog-images/screenshot.png"))).toBe(false);
+    fs.writeFileSync(path.join(assets, "screenshot.jpg"), screenshot);
+    source.posts[0].content = '![Observed interface](/blog-images/screenshot.jpg)';
+    const images = await buildBlogImages(root, source);
+    expect(images["/blog-images/screenshot.jpg"]).toEqual({ width: 80, height: 40 });
+    expect(fs.readFileSync(path.join(root, "public/blog-images/screenshot.jpg"))).toEqual(screenshot);
+  });
 });

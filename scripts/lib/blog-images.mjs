@@ -52,6 +52,8 @@ export async function buildBlogImages(root, source) {
     if (!/^[a-z0-9][a-z0-9._-]*\.(?:png|jpg|jpeg|webp|svg)$/.test(name)) throw new Error(`Invalid editorial image filename: ${href}`);
     const file = asset(`assets/${name}`), dimensions = await sharp(file).metadata();
     if (!dimensions.width || !dimensions.height) throw new Error(`Image has no dimensions: ${href}`);
+    const expectedFormat = { ".png": "png", ".jpg": "jpeg", ".jpeg": "jpeg", ".webp": "webp", ".svg": "svg" }[path.extname(name)];
+    if (dimensions.format !== expectedFormat) throw new Error(`Image format does not match filename: ${href} contains ${dimensions.format}`);
     write(path.join(directory, name), fs.readFileSync(file));
     images[href] = { width: dimensions.width, height: dimensions.height };
   }
