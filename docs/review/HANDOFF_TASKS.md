@@ -6,9 +6,9 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
-- Task 4 follow-up (20 October): the four-block checkpoint's full run finished at 63/65 suites, with all 94 metadata replays passing. Its two connection failures came from legacy mobile-accessibility and terminal-scroll defaults using port 3120 instead of the shared fixture server's 3100. Both complete suites now pass without a `PREVIEW_BASE` override after aligning those defaults. All assertions and deadlines remain intact. Both repositories' heads, standing edits and 1,682 public / 1,151 private source-and-media hashes stay unchanged within each run; only the two probe defaults differ between runs. Strict registry, root types and all 1,066 unit tests pass. Original failures and exact source/coverage proofs remain under `test-results/handoff-four-blocks-20261020/`. This covers all 65 suites across runs; the Worker checkpoint remains pending.
+- Task 4 follow-up (20 October): the four-block checkpoint's full run finished at 63/65 suites, with all 94 metadata replays passing. Its two connection failures came from legacy mobile-accessibility and terminal-scroll defaults using port 3120 instead of the shared fixture server's 3100. Both complete suites now pass without a `PREVIEW_BASE` override after aligning those defaults. All assertions and deadlines remain intact. Both repositories' heads, standing edits and 1,682 public / 1,151 private source-and-media hashes stay unchanged within each run; only the two probe defaults differ between runs. Strict registry, root types and all 1,066 unit tests pass. Original failures and exact source/coverage proofs remain under `test-results/handoff-four-blocks-20261020/`. This covers all 65 suites across runs; the passing Worker checkpoint is recorded below.
 
-- Task 8 follow-up (20 October): the fresh fourteen-component audit found one shared Workspace Shell accessibility failure in read-only phone panes. Fill-mode panes now expose an explicit keyboard tab stop and inset focus ring; retired panes leave the tab order immediately. The original audit and old-source counterexample remain archived. The focused 17-mount source review, six accessibility audits, keyboard scrolling and view-switch regression, full Next workspace suite and corrected official audit pass. All twelve settled theme/width captures are byte-identical to the reviewed references; three changing entrance frames and four new keyboard-focus captures are visually reviewed. Strict registry, root/all-eleven-block types and all 1,066 unit tests pass. The complete browser and Worker checkpoint remains pending; component and film queue counts are unchanged.
+- Task 8 follow-up (20 October): the fresh fourteen-component audit found one shared Workspace Shell accessibility failure in read-only phone panes. Fill-mode panes now expose an explicit keyboard tab stop and inset focus ring; retired panes leave the tab order immediately. The original audit and old-source counterexample remain archived. The focused 17-mount source review, six accessibility audits, keyboard scrolling and view-switch regression, full Next workspace suite and corrected official audit pass. All twelve settled theme/width captures are byte-identical to the reviewed references; three changing entrance frames and four new keyboard-focus captures are visually reviewed. Strict registry, root/all-eleven-block types and all 1,066 unit tests pass. The complete browser and Worker results are recorded below; component and film queue counts are unchanged.
 
 - Task 3.1: resolved evidence chain verification and manifest flags. The dedicated browser probe passes, including missing hashes and rejected exports. The hash group’s invalid ARIA label is fixed, and isolated dark/light accessibility audits pass. The Next preview rerun also passes.
 
@@ -660,6 +660,50 @@ Commerce completed its full review with this dependency; ten other blocks remain
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Four composed-block checkpoint: 20 October 2026
+
+Commerce, Fashion, Financial Report and Legal Workspace are reviewed and pushed, together with their
+shared table, chart, document and workspace corrections. Their individual review evidence remains in
+`test-results/handoff-blocks/`. Fashion's reviewed film is current; the other three block films remain
+queued after their preserved timing rejections. Allocation Chart also needs a new film after its full-value
+readout changed. No rejected take replaces a published movie.
+
+This checkpoint covers **all 65 browser suites across runs**, with **94/94 exact metadata replays**.
+The complete run at public `052edd2` / private `7ee48b6` passes **63/65**. Its two connection failures
+are legacy probe defaults using port 3120 while the shared preview server uses 3100. The complete mobile
+accessibility and terminal scrolling suites pass **2/2** without a `PREVIEW_BASE` override after the two
+defaults are aligned in public `05f4d20`. Every original assertion and deadline remains intact. This is
+coverage across runs, not a single 65/65 result. All component sources and metadata remain unchanged
+between runs; only the two probe defaults and their handoff note differ before the Worker check.
+
+Both repositories' heads, standing edits and all **1,682 public / 1,151 private snapshotted source-and-media
+files** stay unchanged within the full browser run, focused rerun and Worker build. These inventories include
+tracked and untracked eligible sources and public preview assets. The exact hash deltas and original failures
+are retained. The 94 metadata files match the broad run's starting hashes; 55 replays have explicit final-text
+expectations, alongside their interaction and state checks.
+
+Fresh audits have passing results for all **fourteen changed components** across the original 13/14 run
+and corrected Workspace Shell rerun. The original read-only phone-pane failure is preserved. The shared fix
+adds an explicit active-pane keyboard stop and visible focus ring, retiring it when the pane leaves view.
+All **140 current audit captures** are visually approved: 100 standalone captures are viewed, 32 block
+captures match reviewed references byte-for-byte and eight changed block captures are separately inspected.
+The original and corrected audit sources differ only by that six-file shared-shell slice.
+
+Strict registry validation, root and all-eleven-block types, and all **1,066 unit tests** pass. The Worker
+dry run at public `05f4d20` / private `7ee48b6` passes every original bundle guard:
+
+| Artifact | Measured bytes | Existing limit |
+| --- | ---: | ---: |
+| Public router | 2,655,633 | 4 MiB |
+| Runtime modules | 57,546,310 | 64 MiB |
+| Gzipped source maps | 4,781,259 | 15,000,000 |
+
+The known optional-package copy diagnostics remain in the log. All 14 runtime files for `hast-util-to-html`,
+three for `hast-util-whitespace` and nineteen for `property-information` are present and byte-identical in
+the prepared server. Local evidence is in `test-results/handoff-four-blocks-20261020/`, including
+`browser-coverage-proof.json`, `audit-visual-review.json`, source deltas and `worker-proof.json`.
+No manual deployment was performed. **Seven block reviews, 59 older probes and 121 films remain**.
 
 ### Final smaller-component batch: 19 October 2026
 
