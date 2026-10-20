@@ -27,7 +27,7 @@ export function looksUntranslated(source        , translated        )          {
 
 /** True when a reply is the English source word for word: what the endpoint returns while it throttles. */
 export function isUntouched(source        , translated        )          {
-  const squash = (value        ) => value.replace(/\s+/g, "");
+  const squash = (value        ) => decodeEntities(value).replace(/\s+/g, "");
   // A short label can legitimately stay English ("Image resizer" in Swedish,
   // "Brand team" in Danish); only a sentence handed back whole is a refusal.
   return words(source).length >= 4 && squash(source) === squash(translated) && looksUntranslated(source, translated);
