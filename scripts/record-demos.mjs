@@ -13,6 +13,7 @@
 //        [--tab-capture] records that owned fixture directly, with source-stall guards
 //        [--page-frames] requests actual page images when tab capture omits a tween
 //        [--extend-stage-edges] extends verified empty stage edges into crop padding
+//        [--report=dir] retains metrics and rejected encoded/source inputs before cleanup
 //
 // With no slugs it records every component that has a demo. Drives the
 // preview with real input (so CSS :hover shows) and draws the same branded
@@ -20,8 +21,8 @@
 // the component has no WebP yet.
 //
 // Exits non-zero if a target is missing, the page throws or logs an error,
-// or the video can't get under --max-kb. Safe to run concurrently: each run
-// works in its own temp dir and replaces <slug>.mp4 atomically.
+// or the video can't get under --max-kb. Record one take at a time on an idle
+// machine. Each run uses its own temp dir and replaces <slug>.mp4 atomically.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -33,6 +34,7 @@ import { mountFixture } from "./lib/component-fixture.mjs";
 import { startTabRecording, stopTabRecording, sourceChangeQuality } from "./lib/tab-recording.mjs";
 import { startPageFrameRecording, stopPageFrameRecording, discardPageFrameRecording } from "./lib/page-frame-recording.mjs";
 import { startChangedSourceScreenshots } from "./lib/source-screenshots.mjs";
+import { preserveRejectedCapture } from "./lib/rejected-capture.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
 
@@ -491,7 +493,22 @@ async function record(browser, slug) {
 
     if (continuousWindows.length && continuousQuality.activeSamples && continuousQuality.p95GapMs > 34 && !args.includes("--allow-dropped-frames")) problems.push(`capture has ${continuousQuality.p95GapMs.toFixed(1)}ms p95 moving-frame gaps; keep the last good clip and retry without competing rendering work`);
     if (continuousWindows.length && continuousQuality.stallsOver100Ms && !args.includes("--allow-dropped-frames")) problems.push(`capture has ${continuousQuality.stallsOver100Ms} moving-frame stalls over 100ms; keep the last good clip and retry`);
-    if (problems.length) return { written: [], problems };
+    if (problems.length) {
+      let evidence;
+      if (reportDir) {
+        try {
+          evidence = preserveRejectedCapture({
+            reportDir: path.resolve(root, reportDir), slug, candidateFile: mp4Tmp,
+            nativeFile: nativeEnd?.file, frames, startTime: t0, endTime: t1, problems,
+            metrics: { quality, continuousQuality, nativeSourceQuality, nativeChangeQuality,
+              sourceEvidence, viewport: { vw, vh, dpr }, framing: frame, size, durationSeconds: dur, crf },
+          });
+        } catch (error) {
+          problems.push(`Could not retain rejected capture evidence: ${error.message}`);
+        }
+      }
+      return { written: [], problems, evidence };
+    }
     fs.mkdirSync(out, { recursive: true });
     const finalMp4 = path.join(out, `${slug}.mp4`);
     fs.copyFileSync(mp4Tmp, `${finalMp4}.${process.pid}.tmp`);
@@ -548,8 +565,9 @@ const browser = await launchChromium(args.includes("--software-rendering") ? {} 
 let failed = 0;
 for (const slug of slugs) {
   try {
-    const { written, problems } = await record(browser, slug);
+    const { written, problems, evidence } = await record(browser, slug);
     console.log(`${problems.length ? "✗" : "✓"} ${slug}\n  ${written.join("\n  ")}`);
+    if (evidence) console.log(`  Rejected capture evidence: ${evidence}`);
     for (const p of problems) console.log(`  ⚠ ${p}`);
     if (problems.length) failed++;
   } catch (e) {
