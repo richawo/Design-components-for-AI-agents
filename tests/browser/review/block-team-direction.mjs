@@ -1,0 +1,51 @@
+import fs from 'node:fs';
+export async function check({page,mount,assert,capture=async()=>{}}) {
+  const outcomes=[];
+  await page.emulateMedia({reducedMotion:'reduce'});
+  for(const [documentDirection,textDirection] of [['rtl','ltr'],['ltr','rtl'],['rtl','rtl']]) {
+    const key=documentDirection+'-'+textDirection;
+    const name=textDirection==='ltr'?'# studio':'# فريق';
+    const description=textDirection==='ltr'?'Design work, decisions and loose ends.':'تحديثات المشروع، وخطوات العمل.';
+    const body=textDirection==='ltr'?'The release is ready for @noor.':'راجعت العمل مع @noor. التحديث جاهز.';
+    const prefix=textDirection==='ltr'?'The release':'راجعت العمل';
+    await page.setViewportSize({width:390,height:940});
+    await mount(`createRoot(document.getElementById('root')).render(<div dir=${JSON.stringify(documentDirection)}><Subject.default channels={[{id:'studio',name:${JSON.stringify(name)},description:${JSON.stringify(description)}}]} initialMessages={{studio:[{id:'m1',authorId:'noor',body:${JSON.stringify(body)},time:'09:42',replyCount:1}]}}/></div>);`);
+    const sample=async(label,locator,expected)=>{
+      const data=await locator.evaluate(node=>({direction:getComputedStyle(node).direction,text:node.textContent,unicodeBidi:getComputedStyle(node).unicodeBidi}));
+      outcomes.push({name:key+'-'+label,pass:data.direction===expected,expected,...data});
+    };
+    const header=page.getByRole('heading',{name,exact:true});
+    await sample('header-title',header,textDirection);
+    await sample('header-description',page.getByText(description,{exact:true}),textDirection);
+    await sample('navigation-label',page.locator('[data-demo="nav-studio"] span').filter({hasText:name}).last(),textDirection);
+    await sample('message-body',page.getByRole('log').locator('p').filter({hasText:prefix}),textDirection);
+    await sample('latin-handle',page.getByRole('log').locator('p span').filter({hasText:'@noor.'}).last(),'ltr');
+    await sample('message-reply-label',page.locator('[data-demo="reply-m1"] > span.whitespace-nowrap'), 'ltr');
+    await sample('composer-placeholder',page.getByText('Write a message. @ mentions a person.',{exact:true}), 'ltr');
+    await sample('composer-title',page.getByRole('heading',{name:'Message '+name,exact:true}),'ltr');
+    await sample('send-shortcut',page.getByText('Command or Control + Enter to send.',{exact:true}),'ltr');
+    const editor=page.locator('[data-composer="studio"] [role="textbox"]');
+    const draft=textDirection==='ltr'?'Ready for @no':'جاهز مع @no';
+    await editor.fill(draft);await page.locator('[data-demo="suggestion-noor"]').waitFor();await editor.press('Enter');
+    await sample('composer-draft',editor,textDirection);
+    await capture('direction-'+key+'-draft');
+    await page.locator('[data-demo="reply-m1"]').click();
+    await page.locator('[data-demo="close-thread"]').waitFor();
+    await sample('thread-quote',page.locator('blockquote'),textDirection);
+    await sample('thread-latin-handle',page.locator('blockquote span').filter({hasText:'@noor.'}).last(),'ltr');
+    await sample('thread-location',page.locator('figcaption'),textDirection);
+    await sample('thread-count',page.locator('aside section header h2 > span').first(),'ltr');
+    const reply=page.getByRole('combobox',{name:'Reply to thread',exact:true});
+    const replyBody=textDirection==='ltr'?'The phone check is complete.':'اكتمل فحص الهاتف.';
+    await reply.fill(replyBody);await sample('reply-draft',reply,textDirection);
+    await reply.press('Enter');
+    const posted=page.getByRole('list',{name:'Comments',exact:true}).getByText(replyBody,{exact:true});await posted.waitFor();
+    await sample('posted-reply',posted,textDirection);
+    await reply.fill('An English update.');await reply.press('Enter');
+    const english=page.getByRole('list',{name:'Comments',exact:true}).getByText('An English update.',{exact:true});await english.waitFor();
+    await sample('english-reply',english,'ltr');
+    await capture('direction-'+key+'-thread',{audit:process.env.DFA_DIRECTION_ORIGINAL!=='1'});
+  }
+  if(process.env.DFA_DRAFT_QA_OUT)fs.writeFileSync(process.env.DFA_DRAFT_QA_OUT+'/direction-outcomes.json',JSON.stringify(outcomes,null,2)+'\n');
+  assert.deepEqual(outcomes.filter(outcome=>!outcome.pass),[],'Team reading direction follows each text rather than the surrounding interface');
+}

@@ -40,3 +40,5 @@ Build a mention field in React + Tailwind CSS v4 with `motion/react`. Dark and m
 - Don’t tint channel tokens with the accent, and don’t give each person their own hue.
 - Don’t let a token split across a line, and don’t require two backspaces to delete one.
 - Don’t anchor the list to the field’s top or bottom. It follows the caret.
+
+The editor, title, placeholder and atomic tokens select their direction from their contents, preserving stored handles and the active caret.

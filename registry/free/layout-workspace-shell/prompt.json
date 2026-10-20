@@ -66,5 +66,6 @@
     "overflow: hidden on the frame (it clips menus).",
     "Unmounting inactive views (drafts are lost)."
   ],
-  "keyboardScroll": "In fill mode, give the current retained pane tabindex 0 and an inset focus outline so read-only views can scroll by keyboard. Retired panes have tabindex -1, inert and aria-hidden."
+  "keyboardScroll": "In fill mode, give the current retained pane tabindex 0 and an inset focus outline so read-only views can scroll by keyboard. Retired panes have tabindex -1, inert and aria-hidden.",
+  "readingDirection": "Header and navigation text select their direction from their contents while the application keeps its navigation layout."
 }

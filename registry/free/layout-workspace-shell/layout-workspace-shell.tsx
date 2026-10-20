@@ -294,7 +294,7 @@ function NavItem({ link, selected, compact, indicatorId, reduce, tabs, onSelect,
           {link.icon}
         </span>
       )}
-      <span className="relative min-w-0 flex-1 truncate font-medium tracking-[-0.01em]">{link.label}</span>
+      <span dir="auto" className="relative min-w-0 flex-1 truncate font-medium tracking-[-0.01em]">{link.label}</span>
       {link.badge !== undefined && link.badge !== "" && <span className={STYLE.badge}>{link.badge}</span>}
     </>
   );
@@ -400,17 +400,18 @@ function WorkspaceHeader({
     <header className={STYLE.header}>
       <div className="min-w-0 max-w-full">
         {eyebrow && (
-          <motion.p {...enter(0)} className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--ws-muted)]">
+          <motion.p {...enter(0)} dir="auto" className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--ws-muted)]">
             {eyebrow}
           </motion.p>
         )}
         {/* Keep animation subscribers mounted when a view changes its heading. */}
-        <motion.h2 {...enter(1)} className={STYLE.title}>
+        <motion.h2 {...enter(1)} dir="auto" className={STYLE.title}>
           {title}
         </motion.h2>
         {subtitle && (
           <motion.p
             {...enter(2)}
+            dir="auto"
             className="mt-1.5 max-w-[78ch] text-sm leading-relaxed text-[var(--ws-muted)] text-pretty"
           >
             {subtitle}

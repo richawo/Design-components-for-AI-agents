@@ -89,5 +89,6 @@
   "behavior": {
     "serialization": "Recursively retain line breaks and blank browser paragraphs from plain-text paste and typing. Serialize nested tokens with stored handles, normalize CRLF and non-breaking spaces, and preserve the caret.",
     "popupPlacement": "Keep complete pointer choices within clipped workspace panes as well as the viewport."
-  }
+  },
+  "readingDirection": "The editor, title, placeholder and atomic tokens select their direction from their contents, preserving stored handles and the active caret."
 }

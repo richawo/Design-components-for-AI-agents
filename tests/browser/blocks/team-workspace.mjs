@@ -1,3 +1,4 @@
+import { check as checkDirection } from "../review/block-team-direction.mjs";
 import { check as checkComposition } from "../review/block-team-composition.mjs";
 import { check as checkLongMention } from "../review/block-team-long-mention.mjs";
 import { check as checkSerialization } from "../review/block-team-serialization.mjs";
@@ -32,5 +33,6 @@ export async function check(context) {
     await checkLongMention(themed);
     await checkSerialization(themed);
     await checkJourney(themed);
+    await checkDirection(themed);
   }
 }

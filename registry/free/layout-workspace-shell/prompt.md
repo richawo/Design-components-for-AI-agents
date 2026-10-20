@@ -71,3 +71,5 @@ Container queries on @container/ws; the shell works in a sidebar column or full 
 Keep the rail min-width at zero so a long brand identity truncates inside the available width instead of expanding the phone grid. Keep the workspace title readable and wrapping in its own header.
 
 In fill mode, the active retained pane is a keyboard tab stop with an inset focus outline. Arrow and Page Down keys can scroll a read-only view. Retired panes keep tabindex -1, inert and aria-hidden immediately, so only the current pane participates in keyboard navigation.
+
+Header and navigation text select their direction from their contents while the application keeps its navigation layout.

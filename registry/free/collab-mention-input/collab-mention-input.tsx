@@ -197,6 +197,7 @@ const CHANNEL_CLASS =
 function makeToken(kind: Kind, id: string, label: string) {
   const el = document.createElement("span");
   el.contentEditable = "false";
+  el.dir = "auto";
   el.dataset.token = kind;
   el.dataset.id = id;
   el.className = kind === "person" ? PERSON_CLASS : CHANNEL_CLASS;
@@ -511,7 +512,7 @@ export function CollabMentionInput({
     >
       <motion.div {...enter(play, 0, reduce)} className="rounded-[14px] border border-[var(--mi-line)] bg-[var(--mi-surface)] shadow-[var(--mi-shadow)]">
         <motion.header {...enter(play, MOTION.step, reduce)} className="px-5 pb-1 pt-5 @md:px-6">
-          <h2 id={`${uid}-title`} className="truncate font-display text-[18px] font-semibold tracking-[-0.03em]">
+          <h2 dir="auto" id={`${uid}-title`} className="truncate font-display text-[18px] font-semibold tracking-[-0.03em]">
             {title}
           </h2>
           <p className="mt-1 truncate font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--mi-faint)]">{workspace}</p>
@@ -523,13 +524,14 @@ export function CollabMentionInput({
           className="relative mx-5 mb-4 rounded-xl border border-[var(--mi-line)] bg-[var(--mi-sunken)] @md:mx-6"
         >
           {empty && (
-            <span aria-hidden="true" className="pointer-events-none absolute left-4 top-3 text-[15px] leading-[1.65] text-[var(--mi-faint)]">
+            <span aria-hidden="true" dir="auto" className="pointer-events-none absolute left-4 top-3 text-[15px] leading-[1.65] text-[var(--mi-faint)]">
               {placeholder}
             </span>
           )}
           <div
             ref={editor}
             data-demo="editor"
+            dir="auto"
             role="textbox"
             aria-multiline="true"
             aria-label={title}
