@@ -218,16 +218,26 @@ function arrive(el: HTMLElement) {
 }
 
 function serialize(root: HTMLElement) {
-  let out = "";
-  root.childNodes.forEach((node) => {
-    if (node.nodeType === Node.TEXT_NODE) out += node.textContent ?? "";
-    else if (node instanceof HTMLElement && node.dataset.token) {
-      const id = node.dataset.id ?? "";
-      out += node.dataset.token === "channel" ? `#${id}` : `@${id}`;
-    } else if (node instanceof HTMLBRElement) out += "\n";
-    else if (node instanceof HTMLElement) out += node.innerText;
-  });
-  return out.replace(/\u00a0/g, " ");
+  const read = (parent: Node): string => {
+    let out = "", previousBlock = false, previousBlank = false, first = true;
+    for (const node of parent.childNodes) {
+      const element = node instanceof HTMLElement ? node : null;
+      const block = !!element && /^(DIV|P|LI|BLOCKQUOTE)$/.test(element.tagName);
+      const blank = block && element.childNodes.length === 1 && element.firstChild instanceof HTMLBRElement;
+      if (!first && (block || previousBlock) && (!out.endsWith("\n") || previousBlank)) out += "\n";
+      if (node.nodeType === Node.TEXT_NODE) out += node.textContent ?? "";
+      else if (element?.dataset.token) {
+        const id = element.dataset.id ?? "";
+        out += element.dataset.token === "channel" ? `#${id}` : `@${id}`;
+      } else if (node instanceof HTMLBRElement) out += "\n";
+      else if (element && !blank) out += read(element);
+      previousBlock = block;
+      previousBlank = blank;
+      first = false;
+    }
+    return out;
+  };
+  return read(root).replace(/\u00a0/g, " ");
 }
 
 function paint(root: HTMLElement, value: string, people: MentionPerson[], channels: MentionChannel[]) {
@@ -373,9 +383,18 @@ export function CollabMentionInput({
     // Drop under the caret. If that would leave the viewport, sit above it instead.
     const rows = matchesFor(kind, found[3], peopleRef.current, channelsRef.current).length || 1;
     const listH = 36 + rows * 44;
-    const below = window.innerHeight - rect.bottom;
-    const above = rect.top - bounds.top;
-    const top = below < listH + 16 && above > listH ? rect.top - bounds.top - listH - 8 : rect.bottom - bounds.top + 8;
+    let clipTop = 8, clipBottom = window.innerHeight - 8;
+    for (let parent = box.parentElement; parent; parent = parent.parentElement) {
+      if (/auto|scroll|hidden|clip/.test(getComputedStyle(parent).overflowY)) {
+        const region = parent.getBoundingClientRect();
+        clipTop = Math.max(clipTop, region.top + parent.clientTop);
+        clipBottom = Math.min(clipBottom, region.top + parent.clientTop + parent.clientHeight);
+      }
+    }
+    const below = clipBottom - rect.bottom - 8, above = rect.top - clipTop - 8;
+    const top = (below >= listH || below >= above
+      ? Math.min(rect.bottom + 8, clipBottom - listH)
+      : Math.max(clipTop, rect.top - listH - 8)) - bounds.top;
     setQuery({ kind, text: found[3], top, left, width });
   };
 
@@ -529,6 +548,7 @@ export function CollabMentionInput({
             onKeyUp={readQuery}
             onKeyDown={onKeyDown}
             onPointerDown={onPointerDown}
+            onScroll={query ? readQuery : undefined}
             onPaste={onPaste}
             onBlur={() => {
               // Wait a tick so a click on a suggestion (which blurs the field) still lands.

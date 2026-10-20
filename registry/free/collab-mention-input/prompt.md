@@ -5,7 +5,7 @@ Build a mention field in React + Tailwind CSS v4 with `motion/react`. Dark and m
 - Header: `font-display` 18px semibold “Friday note” (tracking −0.03em) and a mono 11px uppercase workspace (“LEDGERLINE · WEBSITE”).
 - Writing well, inset by 20px (24px from `@md`): sunken, 12px radius, 1px line. The field is a contenteditable textbox, min-height 9.5rem, 16px horizontal padding, 15px sans (17px serif) with leading 1.65 (1.55 in serif). Body text is muted; tokens are ink.
 - At rest the note already contains two tokens: `@Mara` (accent wash, 5px radius, 1px accent inset) and `#legal` (raised, mono, 1px line). Unknown `@` and `#` stay plain text.
-- The list is absolutely positioned at the caret: 8px below the caret rect, or above it when the list would leave the viewport. Left is clamped inside the well. Width is min(272px, well − 16px). A mono 10px label reads “PEOPLE” or “CHANNELS”. Each row is 44px: a 28px initials avatar (or “#”), the name at 13px medium, and a mono 11px meta line (`@handle`, or “Channel”).
+- The list is absolutely positioned at the caret: 8px below the caret rect, or above it when the list would leave the viewport or a clipping workspace pane. Left is clamped inside the well. Width is min(272px, well − 16px). A mono 10px label reads “PEOPLE” or “CHANNELS”. Each row is 44px: a 28px initials avatar (or “#”), the name at 13px medium, and a mono 11px meta line (`@handle`, or “Channel”).
 - Footer, under a hairline, only when `showHint`: mono 11px. Idle: “Type @ for a person, # for a channel. Backspace removes the whole token.” Open: “↑↓ to choose · Enter to insert · Esc to dismiss.” No match: “No one matches …” / “No channel matches …”.
 
 **Typography**
@@ -25,6 +25,7 @@ Build a mention field in React + Tailwind CSS v4 with `motion/react`. Dark and m
 - `@` or `#` after whitespace (or at the start) opens the list. The query is the handle fragment at the caret. People match a handle prefix or a name that contains the query; channels match a name prefix. Five rows max. Arrow keys move, Enter or Tab inserts, Escape dismisses. A click on a row uses `pointerdown` preventDefault so the field does not blur first.
 - Insert deletes the `@query`, drops an atomic `contenteditable=false` token, then a nbsp, and parks the caret after that space. People store `@handle` and display `@First`. Channels store and display `#name`.
 - Backspace at the start of a text node deletes the previous token as one piece. Enter inserts a line break instead of a new block. Paste is plain text.
+- Serialize nested browser paragraph wrappers recursively. Keep every line break and blank paragraph, normalize CRLF and non-breaking spaces, and store token handles rather than their display names. Reposition an open list when its editor scrolls.
 - A scripted click, and a real click in the empty area under the writing, moves the caret to the end. A real click on a word keeps the browser’s caret.
 - `value` is painted once on mount. Rebuilding the DOM on each keystroke would throw the caret away. `onChange` receives the serialized note.
 

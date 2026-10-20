@@ -13,7 +13,7 @@
     "header": "18px display title and a mono 11px uppercase workspace",
     "well": "sunken, 12px radius, inset 20px (24px from @md). Contenteditable, min-height 9.5rem, muted body, ink tokens",
     "tokens": "person: accent 16% fill, 28% inset, first name. channel: raised, mono, 1px line, #name. Both nowrap, 5px radius",
-    "list": "absolute at the caret, 8px below, or above when it would leave the viewport. Width min(272, well-16), left clamped inside the well. Mono label, then 44px rows: 28px avatar, 13px name, 11px mono meta",
+    "list": "absolute at the caret, 8px below, or above when it would leave the viewport. Width min(272, well-16), left clamped inside the well. Mono label, then 44px rows: 28px avatar, 13px name, 11px mono meta Fit the complete choices above or below the caret within the viewport and clipping workspace ancestors; reposition when the editor scrolls.",
     "footer": "hairline and a mono 11px hint that changes while the list is open"
   },
   "typography": {
@@ -85,5 +85,9 @@
     "tokens that wrap or that take two backspaces to delete",
     "repainting the contenteditable on every keystroke",
     "accent-coloured body text"
-  ]
+  ],
+  "behavior": {
+    "serialization": "Recursively retain line breaks and blank browser paragraphs from plain-text paste and typing. Serialize nested tokens with stored handles, normalize CRLF and non-breaking spaces, and preserve the caret.",
+    "popupPlacement": "Keep complete pointer choices within clipped workspace panes as well as the viewport."
+  }
 }

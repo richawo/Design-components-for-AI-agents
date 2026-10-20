@@ -1,3 +1,5 @@
+import { check as checkLongMention } from "./block-team-long-mention.mjs";
+import { check as checkJourney } from "./block-team-journey.mjs";
 import { check as checkToolbarFocus } from "./block-team-toolbar-focus.mjs";
 import { check as checkMotion } from "./block-team-live-motion.mjs";
 import { check as checkPopovers } from "./block-team-live-popovers.mjs";
@@ -8,4 +10,6 @@ export async function check(context) {
   await checkPopovers(context);
   await checkPlacement(context);
   await checkToolbarFocus(context);
+  await checkLongMention(context);
+  await checkJourney(context);
 }
