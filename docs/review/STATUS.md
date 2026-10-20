@@ -10,22 +10,20 @@ needs re-recording, whether its poster is current, and the state of its browser 
   was written in this review; those are the ones for a separate pass.
 
 Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace and SaaS Dashboard have completed their block reviews.
-The preceding four-block checkpoint covers **all 65 browser suites across runs**: the complete run is **63/65**, followed
-by **2/2 complete port-corrected suites** without an environment override. All **94 exact metadata replays**
-pass. The only changes between browser runs are two legacy preview-port defaults; component sources and
-metadata stay unchanged. Original failures and exact hash proofs remain archived.
+The latest eight-block checkpoint passes **all 66 browser suites in one complete run**, with **94 exact
+standalone metadata replays and ten exact block replays**. Its 67 child invocations include the two existing
+native-empty shards. The production harness, child arguments, assertions and deadlines remain unchanged.
 
-Fresh audits have passing results for all fourteen changed components across the original run and corrected
-Workspace Shell follow-up. All **140 current audit captures** are visually approved, including 32 exact
-reviewed block references and eight separately inspected changed block views. Read-only retained panes now
-have an explicit keyboard stop and visible focus ring. Strict registry, root/all-eleven-block types and all
-**1,066 unit tests** pass.
+Fresh audits pass for all thirteen changed components with zero runtime, accessibility or reduced-motion
+failures. All **130 current audit captures** are approved: 35 byte-identical reviewed references and 95
+newly inspected captures. Strict registry, root/all-eleven-block types and all **1,068 unit tests** pass.
 
-The Worker dry run at public `05f4d20` / private `7ee48b6` passes unchanged limits at **2,655,633 router bytes,
-57,546,310 runtime bytes and 4,781,259 compressed source-map bytes**. Both heads, standing edits and all
-1,682 public / 1,151 private snapshotted source-and-media files stay fixed within each verification phase.
-The three diagnostic packages retain byte-identical runtime files. No manual deployment was performed.
-Evidence is in `test-results/handoff-four-blocks-20261020/`; see the measured checkpoint in `HANDOFF_TASKS.md`.
+The Worker dry run at public `2bbe20e` / private `982838c` passes unchanged limits at **2,655,633 router bytes,
+57,576,181 runtime bytes and 4,784,208 compressed source-map bytes**. Both heads, standing edits and all
+1,727 public / 1,180 private snapshotted source-and-media files stay fixed within each browser, audit and
+Worker phase. The three diagnostic packages retain complete byte-identical runtime files. No manual
+deployment was performed. Evidence is in `test-results/handoff-eight-blocks-20261020/`; see the measured
+checkpoint in `HANDOFF_TASKS.md`. Earlier failures and checkpoints remain archived below and in that document.
 
 All eight final smaller components also have reviewed current films and posters. Fashion, Legal, Meetings, People and SaaS Dashboard have
 reviewed current block films and paired posters. Commerce, Financial Report and Music retain their old films after

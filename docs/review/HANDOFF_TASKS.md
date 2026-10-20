@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Eight-block release checkpoint (20 October): all 66 browser suites pass in one complete run, with 94 exact standalone metadata replays and ten exact block replays. Fresh audits pass for all thirteen changed components; all 130 captures are approved, including 35 byte-identical reviewed references and 95 newly inspected images. Strict registry, root/all-eleven-block types and all 1,068 unit tests pass. The Worker dry run at public `2bbe20e` / private `982838c` retains every guard: router 2,655,633 bytes, runtime 57,576,181 bytes and compressed maps 4,784,208 bytes. Both heads, standing edits and all 1,727 public / 1,180 private source-and-media files stay fixed within every verification phase. All three diagnostic packages retain complete byte-identical runtime files. No manual deployment was performed. Three blocks, 59 older probes and 121 films remain; full evidence is recorded in the checkpoint below.
+
 - Task 7 (20 October): SaaS Metrics Dashboard now shares one valid reporting date and offers only consecutive current/previous daily comparisons. Identical duplicates count once, conflicting days are omitted, removed metrics retire their selection, and KPI/trend percentages agree. Detached export snapshots preserve the host and next report; accepted or rejected receipts stay visible without losing navigation or search. Empty views have written states. Shared chart/KPI phone controls retain 44px targets, first taps read the requested day and tooltips stay inside the plot. Default workspace names fit their wide column. Original failures remain archived. The 53-mount source review passes 54 accessibility audits and all 68 approved captures, including 32 byte-identical reviewed references. Four coarse-pointer mounts pass 24 more audits and 24 reviewed captures. The final Next workflow, both-theme phone workflows, exact CSV/inspection replay, theme control, official audit and six matching Next/source scenes pass with all 1,727 public and 1,180 private source/media files frozen. The unchanged shared chart and table Next regressions pass too. Strict registry, root/all-eleven-block types and all 1,068 unit tests pass. The eight-prop contract and Pro boundary remain intact. Its reviewed 5.5s film and paired settled Next poster retain the complete 820px workspace, inspect 9 October and end with the exported seven-day signup receipt (345 total). Actual browser playback reaches the same decoded ending. Source gap is 18ms, delivery is 16.5ms and moving-frame p95 is 17.27ms, with no stalls and unchanged guards. Three blocks, 59 older probes and 121 films remain. The next complete batch release checkpoint remains pending.
 
 - SaaS reporting follow-up (20 October): Dashboard comparisons now require real consecutive ISO days, count identical duplicates once, omit conflicting days and share one reporting date across metrics. Removed metrics retire their selection. Exports receive detached point and filtered-row snapshots, preserve percentage precision and show accepted or rejected outcomes in the visible footer. Empty Trend and workspace views have written states. The eight original failing outcomes remain archived. The 51-mount source review passes 52 accessibility audits and all 66 reviewed captures. Complete registered source/phone workflows and the exact metadata replay pass, including the inspected 9 October signup value and downloaded seven-day CSV totalling 345. Strict registry, root/all-eleven-block types and all 1,068 unit tests pass. The eight-prop contract and Pro boundary remain intact. Next integration, media and the full block review remain open; counts stay at four blocks, 59 older probes and 121 films.
@@ -699,6 +701,40 @@ Commerce completed its full review with this dependency; ten other blocks remain
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Eight composed-block checkpoint: 20 October 2026
+
+Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace and SaaS Dashboard are
+reviewed and pushed. Their individual source, state, phone, integration and media evidence remains in
+`test-results/handoff-blocks/`. Fashion, Legal, Meetings, People and SaaS Dashboard have reviewed current
+films and paired posters. Commerce, Financial Report and Music retain their published films after guarded
+rejections. Allocation Chart also needs a new film after its full-value readout changed.
+
+At public `2bbe20e` / private `982838c`, **all 66 browser suites pass in one complete run**, including
+**94 exact standalone metadata replays and ten exact block replays**. The 67 child invocations include
+the two existing native-empty shards. Only parent output streaming is adapted so progress is observable;
+the production harness, child arguments, original assertions and deadlines are unchanged.
+
+Fresh audits pass for all **thirteen changed components**, with zero runtime errors, accessibility
+violations or remaining reduced-motion animations. All **130 audit captures** are approved: 35 match
+explicitly reviewed references byte-for-byte, and all 95 fresh captures are visually inspected. Strict
+registry validation, root and all-eleven-block types, and all **1,068 unit tests** pass.
+
+Both heads, standing edits and all **1,727 public / 1,180 private snapshotted source-and-media files**
+stay unchanged through each full browser, audit and Worker phase. The final dry run passes every existing
+bundle guard:
+
+| Artifact | Measured bytes | Existing limit |
+| --- | ---: | ---: |
+| Public router | 2,655,633 | 4 MiB |
+| Runtime modules | 57,576,181 | 64 MiB |
+| Gzipped source maps | 4,784,208 | 15,000,000 |
+
+The optional-package diagnostics remain archived. All fourteen runtime files for `hast-util-to-html`,
+three for `hast-util-whitespace` and nineteen for `property-information` are present and byte-identical.
+Evidence is in `test-results/handoff-eight-blocks-20261020/`: `browser-coverage-proof.json`,
+`batch-metadata-replay-proof.json`, `audit-visual-review.json`, each source delta and `worker-proof.json`.
+No manual deployment was performed. **Three block reviews, 59 older probes and 121 films remain**.
 
 ### Four composed-block checkpoint: 20 October 2026
 
