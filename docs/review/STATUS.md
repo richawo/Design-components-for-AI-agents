@@ -49,6 +49,10 @@ through its optional pauseRequest counter. Both source-fixture suites, twelve tr
 the two-theme Music row check pass with reviewed captures. Its unchanged 1,500ms regression now measures
 from trusted click dispatch, and still rejects the original source. Music has since completed its full block review, as recorded below; its guarded film remains queued.
 
+People's department-selection follow-up now retains the available fallback when a removed department returns.
+Its original failure is archived, and both-theme source regressions, accessibility and full registered People
+workflow pass with strict registry, root/all-eleven-block types and all 1,068 tests. The full People review remains open.
+
 ## Previous workspace/input checkpoint (19 October 2026)
 
 The workspace/input checkpoint covers **all 64 browser suites across runs**: the full run is 63/64,
