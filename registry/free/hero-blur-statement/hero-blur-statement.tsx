@@ -1,9 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
-import { AnimatePresence, motion, useReducedMotion, useSpring, type MotionValue, type Variants } from "motion/react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { AnimatePresence, motion, useAnimationControls, useSpring, type MotionValue, type Variants } from "motion/react";
 
 type Link = { label: string; href: string };
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+const readMotionPreference = () => matchMedia(motionQuery).matches;
+const subscribeMotionPreference = (update: () => void) => {
+  const media = matchMedia(motionQuery);
+  media.addEventListener("change", update);
+  return () => media.removeEventListener("change", update);
+};
+function useLiveReducedMotion() {
+  return useSyncExternalStore(subscribeMotionPreference, readMotionPreference, () => false);
+}
 
 export type RotatingNoun = {
   /** The name that rolls into the sentence. Keep it to one short word. */
@@ -95,8 +106,8 @@ const drawX: Variants = {
 };
 /** Reduced motion: one short fade, no transforms or blur. */
 const fade: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.15 } },
+  hidden: { opacity: 0, y: 0, filter: "none", scaleX: 1 },
+  show: { opacity: 1, y: 0, filter: "none", scaleX: 1, transition: { duration: 0.15, y: { duration: 0 }, filter: { duration: 0 }, scaleX: { duration: 0 } } },
 };
 
 const DEFAULT_NOUNS: RotatingNoun[] = [
@@ -124,7 +135,13 @@ export function HeroBlurStatement({
   grain = 0.07,
   theme = "dark",
 }: HeroBlurStatementProps) {
-  const reduce = !!useReducedMotion();
+  const reduce = useLiveReducedMotion();
+  const entrance = useAnimationControls();
+  useEffect(() => {
+    // Restart the current target with the new transitions, including values
+    // whose target is unchanged but whose old delay must be cancelled.
+    void entrance.start("show");
+  }, [entrance, reduce]);
   const list = nouns.length ? nouns : DEFAULT_NOUNS;
   const [hovering, setHovering] = useState(false);
   const [held, setHeld] = useState(false);
@@ -136,7 +153,7 @@ export function HeroBlurStatement({
   const current = list[Math.min(index, list.length - 1)];
 
   const p = PALETTE[theme];
-  const vars = { "--bs-page": p.page, "--bs-ink": p.ink, "--bs-name": p.name, "--bs-on-ink": p.onInk } as CSSProperties;
+  const vars = { "--bs-page": p.page, "--bs-ink": p.ink, "--bs-name": p.name, "--bs-on-ink": p.onInk, "--bs-tail-ink": `color-mix(in srgb, ${p.ink} ${theme === "light" ? 50 : 38}%, transparent)`, "--bs-muted-ink": `color-mix(in srgb, ${p.ink} ${theme === "light" ? 60 : 55}%, transparent)` } as CSSProperties;
   const v = (variants: Variants) => (reduce ? fade : variants);
 
   return (
@@ -145,7 +162,7 @@ export function HeroBlurStatement({
       aria-label="Introduction"
       style={vars}
       initial="hidden"
-      animate="show"
+      animate={entrance}
       className="@container relative isolate overflow-hidden bg-(--bs-page) text-(--bs-ink)"
     >
       {/* Film grain: static, faint, never on top of the copy's contrast budget. */}
@@ -316,11 +333,11 @@ function useSlotWidth(measureRef: RefObject<HTMLSpanElement | null>, index: numb
 
 function TopRow({ eyebrow, status, v }: { eyebrow: string; status: string; v: (variants: Variants) => Variants }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.18em] text-(--bs-ink)/55">
-      <motion.p variants={v(reveal)} custom={T.top}>
+    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.18em] text-(--bs-muted-ink)">
+      <motion.p data-hero-entry variants={v(reveal)} custom={T.top}>
         {eyebrow}
       </motion.p>
-      <motion.p variants={v(reveal)} custom={T.top + T.topStep} className="flex items-center gap-2.5">
+      <motion.p data-hero-entry variants={v(reveal)} custom={T.top + T.topStep} className="flex items-center gap-2.5">
         <span aria-hidden="true" className="size-1.5 rounded-full bg-(--bs-ink)/70 shadow-[0_0_0_3px_color-mix(in_oklab,var(--bs-ink)_8%,transparent)]" />
         {status}
       </motion.p>
@@ -372,7 +389,7 @@ function Statement({
         <Words words={leadWords} first={0} variants={v} />
         <br />
 
-        <motion.span custom={slotOrder} variants={v} className="relative inline-block whitespace-nowrap align-baseline">
+        <motion.span data-hero-entry custom={slotOrder} variants={v} className="relative inline-block whitespace-nowrap align-baseline">
           <NameSlot name={current.word} width={width} reduce={reduce} />
         </motion.span>
         {/* Narrow containers give the name a line of its own, so nothing re-wraps there either. */}
@@ -387,7 +404,7 @@ function Statement({
                 <span className="@3xl:hidden"> </span>
               </>
             ) : null}
-            <Words words={line} first={tailStarts[li]} variants={v} className="text-(--bs-ink)/[0.38]" />
+            <Words words={line} first={tailStarts[li]} variants={v} className="text-(--bs-tail-ink)" />
           </span>
         ))}
       </span>
@@ -410,7 +427,7 @@ function Words({ words, first, variants, className = "" }: { words: string[]; fi
     <>
       {words.map((w, i) => (
         <span key={i}>
-          <motion.span custom={first + i} variants={variants} className={`inline-block will-change-[filter,transform] ${className}`}>
+          <motion.span data-hero-entry custom={first + i} variants={variants} className={`inline-block will-change-[filter,transform] ${className}`}>
             {w}
           </motion.span>
           {i < words.length - 1 ? " " : null}
@@ -426,18 +443,23 @@ function NameSlot({ name, width, reduce }: { name: string; width: MotionValue<nu
     <motion.span data-demo="name" style={{ width }} className="relative inline-block">
       {/* Invisible copy of the current name gives the box its baseline. */}
       <span className={`invisible ${NAME_FACE}`}>{name}</span>
-      <AnimatePresence initial={false} mode="popLayout">
+      {reduce ? (
+        <motion.span key={name} data-hero-word={name} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className={`absolute left-0 top-0 text-(--bs-name) ${NAME_FACE}`}>
+          {name}
+        </motion.span>
+      ) : <AnimatePresence initial={false} mode="popLayout">
         <motion.span
           key={name}
+          data-hero-word={name}
           initial={reduce ? { opacity: 0 } : { opacity: 0, y: "0.32em", filter: "blur(10px)" }}
-          animate={reduce ? { opacity: 1 } : { opacity: 1, y: "0em", filter: "blur(0px)" }}
+          animate={reduce ? { opacity: 1, y: 0, filter: "none", transition: { duration: 0.15, y: { duration: 0 }, filter: { duration: 0 } } } : { opacity: 1, y: "0em", filter: "blur(0px)" }}
           exit={reduce ? { opacity: 0, transition: { duration: 0.1 } } : { opacity: 0, y: "-0.32em", filter: "blur(10px)", transition: { duration: 0.34, ease: EASE_IN } }}
           transition={{ duration: 0.52, ease: EASE }}
           className={`absolute left-0 top-0 text-(--bs-name) ${NAME_FACE}`}
         >
           {name}
         </motion.span>
-      </AnimatePresence>
+      </AnimatePresence>}
     </motion.span>
   );
 }
@@ -446,30 +468,32 @@ function NameSlot({ name, width, reduce }: { name: string; width: MotionValue<nu
 function Footer({ primary, secondary, control, v }: { primary: Link; secondary: Link; control: ReactNode; v: (variants: Variants) => Variants }) {
   return (
     <div className="relative flex flex-col gap-5 pt-6 @md:pt-8 @4xl:flex-row @4xl:items-center @4xl:justify-between">
-      <motion.span aria-hidden="true" variants={v(drawX)} custom={T.rule} className="absolute inset-x-0 top-0 h-px origin-left bg-(--bs-ink)/10" />
-      <div className="flex gap-2 @md:gap-3 [&>*]:flex-1 @md:[&>*]:flex-none">
+      <motion.span data-hero-entry aria-hidden="true" variants={v(drawX)} custom={T.rule} className="absolute inset-x-0 top-0 h-px origin-left bg-(--bs-ink)/10" />
+      <div className="flex flex-col gap-2 @md:flex-row @md:gap-3 [&>*]:flex-none">
         <motion.a
+          data-hero-entry
           variants={v(reveal)}
           custom={T.footer}
           href={primary.href}
-          className={`group inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-(--bs-ink) px-5 text-[15px] font-medium tracking-[-0.01em] text-(--bs-on-ink) transition-[background-color,scale] duration-150 ease-out hover:bg-(--bs-name) active:scale-[0.97] active:duration-75 @md:px-6 ${FOCUS}`}
+          className={`group inline-flex min-h-12 min-w-0 items-center justify-center gap-2 whitespace-normal rounded-full py-3 text-center bg-(--bs-ink) px-5 text-[15px] font-medium tracking-[-0.01em] text-(--bs-on-ink) transition-[background-color,scale] duration-150 ease-out hover:bg-(--bs-name) active:scale-[0.97] active:duration-75 @md:px-6 ${FOCUS}`}
         >
-          {primary.label}
+          <span className="min-w-0 break-words">{primary.label}</span>
           <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="size-4 transition-transform duration-150 ease-out group-hover:translate-x-0.5">
             <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </motion.a>
         <motion.a
+          data-hero-entry
           variants={v(reveal)}
           custom={T.footer + T.footerStep}
           href={secondary.href}
-          className={`inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-[15px] font-medium tracking-[-0.01em] text-(--bs-ink)/70 ring-1 ring-inset ring-(--bs-ink)/15 transition-[color,background-color,box-shadow,scale] duration-150 ease-out hover:bg-(--bs-ink)/[0.04] hover:text-(--bs-ink) hover:ring-(--bs-ink)/25 active:scale-[0.97] active:duration-75 @md:px-5 ${FOCUS}`}
+          className={`inline-flex min-h-12 min-w-0 items-center justify-center gap-2 whitespace-normal rounded-full py-3 text-center px-4 text-[15px] font-medium tracking-[-0.01em] text-(--bs-ink)/70 ring-1 ring-inset ring-(--bs-ink)/15 transition-[color,background-color,box-shadow,scale] duration-150 ease-out hover:bg-(--bs-ink)/[0.04] hover:text-(--bs-ink) hover:ring-(--bs-ink)/25 active:scale-[0.97] active:duration-75 @md:px-5 ${FOCUS}`}
         >
-          {secondary.label}
+          <span className="min-w-0 break-words">{secondary.label}</span>
         </motion.a>
       </div>
       {control ? (
-        <motion.div variants={v(reveal)} custom={T.footer + T.footerStep * 2} className="self-start @4xl:self-auto">
+        <motion.div data-hero-entry variants={v(reveal)} custom={T.footer + T.footerStep * 2} className="self-start @4xl:self-auto">
           {control}
         </motion.div>
       ) : null}
@@ -503,16 +527,16 @@ function RotationControl({
       type="button"
       onClick={onPress}
       data-demo="rotation"
-      aria-label={reduce ? "Show the next client name" : held ? "Resume rotating client names" : "Pause rotating client names"}
+      aria-label={reduce ? "Show the next word" : held ? "Resume word rotation" : "Pause word rotation"}
       aria-pressed={reduce ? undefined : held}
-      className="group -mx-2 flex min-h-11 items-center gap-3 rounded-full px-2 text-left font-mono text-[11px] uppercase tracking-[0.16em] text-(--bs-ink)/55 transition-colors duration-150 hover:text-(--bs-ink)/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--bs-ink) active:scale-[0.98] @4xl:mx-0"
+      className="group -mx-2 flex min-h-11 items-center gap-3 rounded-full px-2 text-left font-mono text-[11px] uppercase tracking-[0.16em] text-(--bs-muted-ink) transition-colors duration-150 hover:text-(--bs-ink)/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--bs-ink) active:scale-[0.98] @4xl:mx-0"
     >
       <span aria-hidden="true" data-demo="rotation-glyph" className="grid size-6 place-items-center rounded-full ring-1 ring-inset ring-(--bs-ink)/15 transition-[box-shadow] duration-150 group-hover:ring-(--bs-ink)/30">
         <ControlGlyph kind={reduce ? "next" : paused ? "play" : "pause"} />
       </span>
       <span className="shrink-0 whitespace-nowrap tabular-nums text-(--bs-ink)/80">
         {pad(index + 1)}
-        <span className="text-(--bs-ink)/35"> / {pad(total)}</span>
+        <span className="text-(--bs-muted-ink)"> / {pad(total)}</span>
       </span>
       {reduce ? null : (
         <span aria-hidden="true" className="relative h-px w-8 shrink-0 overflow-hidden bg-(--bs-ink)/15 @md:w-10">
@@ -520,7 +544,11 @@ function RotationControl({
         </span>
       )}
       <span className="relative grid min-w-0 [&>*]:col-start-1 [&>*]:row-start-1">
-        <AnimatePresence initial={false} mode="popLayout">
+        {reduce ? (
+          <motion.span key={note} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="truncate">
+            {note}
+          </motion.span>
+        ) : <AnimatePresence initial={false} mode="popLayout">
           <motion.span
             key={note}
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, filter: "blur(3px)" }}
@@ -531,7 +559,7 @@ function RotationControl({
           >
             {note}
           </motion.span>
-        </AnimatePresence>
+        </AnimatePresence>}
       </span>
     </button>
   );

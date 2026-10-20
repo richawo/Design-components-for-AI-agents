@@ -53,10 +53,19 @@ all 1,068 tests. Its decoded existing film shows the unchanged wide layout and s
 full composition remains open. Evidence uses `test-results/handoff-blocks/matrix-*`; the next complete
 checkpoint has 68 browser suites.
 
+Blur Statement Hero now keeps both phone actions within their bounds, restores useful painted-text
+contrast and labels its controls for any rotating word. Live reduced motion cancels old entrance delays,
+clears blur/transforms within two frames and retires outgoing word/note swaps while retaining control
+focus. Original failures remain archived. The complete 31-mount source review passes eighteen
+accessibility audits and all 38 inspected captures across six widths and both themes. Its registered
+source-fixture workflow passes both themes. Strict registry, root/all-eleven-block types and all 1,068
+tests pass after shortening the two dependency descriptions. Evidence uses `test-results/handoff-blocks/hero-*`.
+The changed Hero poster and film remain pending alongside Landing's full integration.
+
 All eight final smaller components also have reviewed current films and posters. Fashion, Legal, Meetings, People and SaaS Dashboard have
 reviewed current block films and paired posters. Commerce, Financial Report and Music retain their old films after
 guarded rejections; rejected raw evidence remains local. Legal's new take reaches its completion receipt after
-the recorder's scrolling-target correction. The remaining inventory is **3 blocks, 59 older probes and 123 films**.
+the recorder's scrolling-target correction. The remaining inventory is **3 blocks, 59 older probes and 124 films**.
 Allocation Chart needs a new film after its full-value readout changed.
 
 The 20 October table follow-up fixes offscreen reduced-motion figures remaining at zero. Initial and live

@@ -33,14 +33,14 @@
       "tracking": "-0.02em"
     },
     "tail": {
-      "color": "white/38"
+      "color": "38% ink in dark; 50% in light"
     },
     "meta": {
       "font": "mono",
       "size": "11px",
       "case": "uppercase",
       "tracking": "0.16-0.18em",
-      "color": "white/50"
+      "color": "55% ink in dark; 60% in light, including the counter total"
     },
     "buttons": "15px medium, tracking -0.01em"
   },
@@ -58,7 +58,7 @@
       "page": "#f4f3ef",
       "ink": "#0c0c0b",
       "name": "#000000",
-      "tail": "ink/38",
+      "tail": "ink/50",
       "falloff": "radial white 60% from top-left"
     },
     "grain": "desaturated feTurbulence at opacity 0.07 on both themes"
@@ -71,10 +71,10 @@
     "clock": "interval 2600ms (first hold +900ms); hairline progress scaleX 0->1 written straight to the element, never React state per frame; pauses on h1 hover (mouse), manual hold, offscreen (IntersectionObserver), hidden tab; frames longer than 250ms are clamped",
     "note": "cross-fade with 6px offset and 3px blur, 320ms",
     "buttons": "hover 150ms; press scale 0.97 in 75ms; arrow nudges 2px",
-    "reducedMotion": "no rotation or blur; every block a 150ms opacity fade; control steps to the next name on press; progress bar not rendered"
+    "reducedMotion": "Follow live preference changes. Stop the old entrance delays and immediately clear transforms/blur; fade for 150ms. Retire outgoing word/note nodes, jump the measured width, stop automatic rotation and retain control focus. The control advances to the next word."
   },
   "responsive": {
-    "phone": "name on its own line; CTAs side by side at equal width; control below",
+    "phone": "Name on its own line; full-width CTAs stacked below @md, inline above it; labels may wrap; control below",
     "tablet": "fixed lines from @3xl; control below CTAs until @4xl",
     "desktop": "three fixed lines; CTAs and control share the bottom row"
   },
@@ -83,7 +83,8 @@
     "rotation pause control is a button with aria-pressed and a descriptive aria-label (WCAG 2.2.2); pressing play steps straight to the next name with a full hold",
     "hover pause is mouse-only; keyboard users use the control",
     "focus-visible: 2px white ring, offset 2-4px",
-    "touch targets at least 44px"
+    "touch targets at least 44px",
+    "Use generic word-rotation labels so verbs, names and other host words are described accurately."
   ],
   "content": {
     "studio": "Ferro & Vale · Product studio, Lisbon",

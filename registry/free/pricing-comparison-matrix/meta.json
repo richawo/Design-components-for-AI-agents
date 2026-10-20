@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "pricing",
-  "description": "A dark plan comparison table with counting prices, grouped feature controls and a raised recommended column. Phone summaries retain the full billing unit and coarse-pointer controls keep 44px targets.",
+  "description": "A plan comparison table with counting prices, grouped feature controls and a raised recommended column. Phone summaries retain the complete billing unit.",
   "tags": [
     "pricing",
     "comparison table",

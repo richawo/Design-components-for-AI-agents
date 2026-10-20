@@ -8,7 +8,7 @@ Build a typographic statement hero in React + Tailwind CSS v4 with `motion/react
 **The sentence**
 - Built from three props: `lead` (“We design products for”), `nouns` (`{ word, note }[]`) and `tail` (“that people\nopen on purpose.”).
 - Fixed lines so nothing re-wraps while the slot springs: a `<br>` after the lead; the slot and the first tail line share a line; `\n` in the tail breaks only at `@3xl`+. Below `@3xl` the name gets a line of its own.
-- Lead words: display (Geist) medium, `clamp(2.9rem, 0.6rem + 7.6cqw, 8.75rem)`, leading 0.96, tracking −0.058em, `#f5f5f4`. Tail words white/38.
+- Lead words: display (Geist) medium, `clamp(2.9rem, 0.6rem + 7.6cqw, 8.75rem)`, leading 0.96, tracking −0.058em, `#f5f5f4`. Tail words use 38% ink in dark and 50% in light.
 - The name: Instrument Serif italic at 1.08em, leading 0.89, tracking −0.02em, full white. Contrast between grotesk and serif is the point.
 
 **The slot**
@@ -18,7 +18,7 @@ Build a typographic statement hero in React + Tailwind CSS v4 with `motion/react
 
 **Rotation clock**
 - One rAF clock drives the name and a 32–40px hairline progress bar beside the counter (scaleX 0→1). Interval 2600ms; the first name holds an extra 900ms during the entrance. Pause while hovering the h1 (mouse only), while held by the control, offscreen (IntersectionObserver) and in hidden tabs; the bar freezes with it.
-- Control (a real `button`, min-h 44px): ring icon (pause ↔ play), `01 / 06` in tabular mono (white/80, total white/30), the progress hairline, and the name’s `note`, which cross-fades with a 6px offset and 3px blur. `aria-pressed` reflects the hold. Pressing play steps straight to the next name and gives it a full hold, so resuming answers at once.
+- Control (a real `button`, min-h 44px): ring icon (pause ↔ play), `01 / 06` in tabular mono (ink/80, total at 55% ink in dark and 60% in light), the progress hairline, and the word's `note`, which cross-fades with a 6px offset and 3px blur. `aria-pressed` reflects the hold. Pressing play steps straight to the next word and gives it a full hold, so resuming answers at once.
 
 **Entrance (one `T` timeline object, seconds)**
 - Top row: eyebrow at 0, status at 0.06, each rising 10px out of an 8px blur (600ms).
@@ -26,10 +26,10 @@ Build a typographic statement hero in React + Tailwind CSS v4 with `motion/react
 - Bottom row: the hairline draws from the left (scaleX, 800ms) at 0.50, then primary 0.58, secondary 0.64 and the rotation control 0.70, each rising out of a blur.
 
 **Buttons**
-- Primary: 48px ink pill, page-coloured 15px medium text, arrow nudges 2px right on hover, bg → the name colour (pure white or black). Secondary: 48px pill with an inset ink/15 ring, text ink/70 → ink, ring → 25%, bg + 4% ink on hover. Both press to 0.97 in 75ms, focus ring 2px white offset 4px. On phones both sit side by side at equal width.
+- Primary: at least 48px ink pill, page-coloured 15px medium text, arrow nudges 2px right on hover, bg → the name colour (pure white or black). Secondary: at least 48px pill with an inset ink/15 ring, text ink/70 → ink, ring → 25%, bg + 4% ink on hover. Both press to 0.97 in 75ms, focus ring 2px white offset 4px. Below `@md`, stack the actions at full width and allow labels to wrap. Above it, place them inline.
 
 **Colour and theme**
-- Tokens in one `PALETTE` object, exposed as CSS variables. Dark: page `#000`, ink `#f5f5f4`, name `#fff`. Light: page `#f4f3ef`, ink `#0c0c0b`, name `#000`. Tail words, hairlines, rings and meta are ink at 38/10/15/55%. No accent colour anywhere.
+- Tokens in one `PALETTE` object, exposed as CSS variables. Dark: page `#000`, ink `#f5f5f4`, name `#fff`. Light: page `#f4f3ef`, ink `#0c0c0b`, name `#000`. Tail words use 38% ink in dark and 50% in light. Small metadata and counter totals use 55% in dark and 60% in light. Hairlines and rings use 10/15% ink. No accent colour anywhere.
 
 **Code**
 - Small parts: `TopRow`, `Statement` (with `Words` and `NameSlot`), `Footer`, `RotationControl`, `ControlGlyph`; hooks `useRotation` (rAF clock, pause, offscreen, returns index + step) and `useSlotWidth` (measurer → spring, ResizeObserver, fonts.ready). Named constants for the first-name hold (900ms) and the frame clamp (250ms).
@@ -38,7 +38,7 @@ Build a typographic statement hero in React + Tailwind CSS v4 with `motion/react
 - Inline SVG `feTurbulence` (fractalNoise, baseFrequency 0.92, 3 octaves, desaturated) as a 180px tiled background at opacity 0.07, plus a 3.5% white radial glow from the top left. Static.
 
 **Reduced motion**
-- No rotation, no blur entrance (150ms opacity only). The control turns into “Show the next client name”: each press cross-fades to the next name. The progress bar is hidden.
+- Follow preference changes while mounted. Cancel existing entrance delays and immediately clear transforms and blur, then finish a 150ms opacity fade. Retire outgoing word/note nodes, jump the measured width and retain the focused control. Automatic rotation stops and the progress bar is hidden. The control becomes “Show the next word”; each press advances with a short fade. Normal controls say “Pause word rotation” and “Resume word rotation”, so the labels also fit verbs supplied by a host.
 
 **Accessibility**
 - The h1 contains an `sr-only` sentence listing every name; the animated copy is `aria-hidden`. The rotation can be paused (WCAG 2.2.2). Focus rings (2px ink) are visible on all three controls.
