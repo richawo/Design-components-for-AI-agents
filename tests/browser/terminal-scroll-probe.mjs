@@ -6,7 +6,7 @@ try {
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(
-      `${process.env.PREVIEW_BASE ?? "http://localhost:3120"}/preview/hero-terminal-agent`,
+      `${process.env.PREVIEW_BASE ?? "http://localhost:3100"}/preview/hero-terminal-agent`,
       { waitUntil: "networkidle" },
     );
     const log = page.getByRole("log", { name: "Example Relay session" });

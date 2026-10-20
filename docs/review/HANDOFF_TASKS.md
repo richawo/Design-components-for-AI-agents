@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Task 4 follow-up (20 October): the four-block checkpoint's full run finished at 63/65 suites, with all 94 metadata replays passing. Its two connection failures came from legacy mobile-accessibility and terminal-scroll defaults using port 3120 instead of the shared fixture server's 3100. Both complete suites now pass without a `PREVIEW_BASE` override after aligning those defaults. All assertions and deadlines remain intact. Both repositories' heads, standing edits and 1,682 public / 1,151 private source-and-media hashes stay unchanged within each run; only the two probe defaults differ between runs. Strict registry, root types and all 1,066 unit tests pass. Original failures and exact source/coverage proofs remain under `test-results/handoff-four-blocks-20261020/`. This covers all 65 suites across runs; the Worker checkpoint remains pending.
+
 - Task 8 follow-up (20 October): the fresh fourteen-component audit found one shared Workspace Shell accessibility failure in read-only phone panes. Fill-mode panes now expose an explicit keyboard tab stop and inset focus ring; retired panes leave the tab order immediately. The original audit and old-source counterexample remain archived. The focused 17-mount source review, six accessibility audits, keyboard scrolling and view-switch regression, full Next workspace suite and corrected official audit pass. All twelve settled theme/width captures are byte-identical to the reviewed references; three changing entrance frames and four new keyboard-focus captures are visually reviewed. Strict registry, root/all-eleven-block types and all 1,066 unit tests pass. The complete browser and Worker checkpoint remains pending; component and film queue counts are unchanged.
 
 - Task 3.1: resolved evidence chain verification and manifest flags. The dedicated browser probe passes, including missing hashes and rejected exports. The hash group’s invalid ARIA label is fixed, and isolated dark/light accessibility audits pass. The Next preview rerun also passes.
@@ -540,10 +542,11 @@ for a focused rerun (suite = legal, saas, finance, HR, fashion or commerce).
 
 ## 4. Finish or rerun browser probes (complete)
 
-All **63 suites pass in one complete run** in the 19 October interface checkpoint, including all
-**82 exact metadata replays** and all 87 native prop cases in two bounded runs. Both repositories keep
-their source hashes, heads and standing edits throughout. Earlier checkpoints and their original
-failures remain archived below.
+All **65 suites have passing results across the 20 October full run and focused follow-ups**, including
+**94 exact metadata replays** and all 87 native prop cases. The complete run is **63/65**; both legacy
+port corrections then pass their complete suites without an environment override. Component sources,
+both heads and standing edits stay fixed within each run. Only those two probe defaults differ between
+runs. Earlier checkpoints and their original failures remain archived below.
 
 - All requested finance, HR, commerce and SaaS reruns pass on the official runner, including callback rejection,
   retry, retained drafts and exact payloads. Column Workbench's deferred focus and Access Requests' stale duration

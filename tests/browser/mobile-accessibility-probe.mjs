@@ -15,7 +15,7 @@ try {
   ]) {
     if (!fs.existsSync(`registry/${tier}/${slug}`)) continue;
     await page.goto(
-      (process.env.PREVIEW_BASE ?? "http://localhost:3120") +
+      (process.env.PREVIEW_BASE ?? "http://localhost:3100") +
         "/preview/" +
         slug,
       { waitUntil: "networkidle" },
