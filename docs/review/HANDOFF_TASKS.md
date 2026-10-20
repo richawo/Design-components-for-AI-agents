@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Fluted Glass and Topographic Contours now have dedicated registered regressions. Glass covers offline image rejection, keyboard Retry, exact loaded dimensions, empty/invalid scenes and usable foreground controls. Contours covers pointer coordinates, exact interpolated values, pointer exit, flat/invalid field replacement and foreground Enter/Space actions. Their original native cases and both registered cases pass with source inputs fixed; component source and current appearance are unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. There are now 54 older probes and 123 films outstanding. Evidence uses the passing background records in `test-results/handoff-older-probes/background-text-trim-first-native/` and `backgrounds-registered/`; the five unrelated failures from that first batch remain preserved.
+
 - Task 8 (21 October): Kanban's motion check now observes the form before dispatching Add column and applies the preference while the click result is still pending. The original native failure is reproduced: the form enters at 476–542ms, but the click returns at 841ms after that entrance has finished. The same 300ms delayed-result control fails the old setup and passes the concurrent observer. Four native theme/width scenes switch during the actual entrance; a control that ignores preference changes still fails the final opacity assertion. The original 1,500ms deadline, two-frame settling, real media preference and retained-focus assertions remain intact. The complete registered data suite now passes all sixteen cases with 53 source/test inputs unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Counts remain 56 older probes and 123 films. Evidence uses `test-results/handoff-eleven-blocks-20261020/kanban-motion-*`, `kanban-concurrent-*` and `test-results/handoff-older-probes/kanban-data-rerun/`.
 
 - Task 5 (21 October): Dependency Board now reports self-dependencies through its existing loop detector, matching the published task contract. Its former silent omission is retained as the failing baseline. The permanent registered regression covers keyboard selection, exact failed/successful retry requests, pending locks, host-confirmed task status, empty plans, missing dependencies, self-loops, two-task cycles, duplicate IDs and finite graph geometry. Sixteen native mounts and the registered case pass across both themes at phone and desktop widths. The alert-count check waits for its documented exit before retaining the zero-count assertion. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass; current phone/desktop captures are inspected. Its film remains in task 1. There are now 56 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/dependency-loop-*`, `dependency-registered/` and the retained `agents-first-native/` and `budget-board-final-native/` failures.
@@ -673,7 +675,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-56 finished components still have no dedicated browser regression probe. For each, read its source and
+54 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -685,7 +687,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`, `devtools-schema-migration`
 `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`, `forms-draft-rescue`
 `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`, `input-unit-converter`
-`selects-tree-picker`, `layout-split-resizer`, `bg-fluted-glass`, `bg-topographic-contours`
+`selects-tree-picker`, `layout-split-resizer`
 `button-shimmer-track`, `cards-prismatic-folder`, `collab-message-list`, `content-interactive-spec`
 `cta-project-brief`, `effect-border-tracer`, `effect-ink-trail`, `features-compare-lenses`
 `features-integration-trace`, `features-shortcut-theatre`, `footer-sitemap-atlas`, `hero-layout-playground`
