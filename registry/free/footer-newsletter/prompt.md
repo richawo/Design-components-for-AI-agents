@@ -50,3 +50,5 @@ Real `<form>` with `noValidate`, a visually hidden label, `type="email"`, `autoc
 **Navigation, input and live preferences**
 
 Follow live motion preferences for validation, loading and figures. Reduced fades reset former blur, position and hairline scale, including content revealed after the preference changed. Coarse-pointer social and legal links retain 44px targets.
+
+Use `dir="auto"` on animated sentences and their associated body or feedback text. English fallback keeps its word order on RTL pages, and Arabic copy keeps its reading order on LTR pages. Navigation and control placement retain the host layout direction.

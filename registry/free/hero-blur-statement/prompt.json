@@ -84,7 +84,8 @@
     "hover pause is mouse-only; keyboard users use the control",
     "focus-visible: 2px white ring, offset 2-4px",
     "touch targets at least 44px",
-    "Use generic word-rotation labels so verbs, names and other host words are described accurately."
+    "Use generic word-rotation labels so verbs, names and other host words are described accurately.",
+    "Animated sentences choose direction from their text with dir=\"auto\", retaining English fallback word order on RTL pages and Arabic reading order on LTR pages. Body copy and feedback follow their own text direction where applicable."
   ],
   "content": {
     "studio": "Ferro & Vale · Product studio, Lisbon",

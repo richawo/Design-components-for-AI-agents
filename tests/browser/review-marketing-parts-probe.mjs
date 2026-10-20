@@ -6,6 +6,7 @@ import { check, checkTouch } from "./review/pricing-comparison-matrix.mjs";
 import { check as checkHero } from "./review/hero-blur-statement.mjs";
 import { check as checkHeader } from "./review/header-hairline.mjs";
 import { checkHeaderLive, checkFeature, checkFooterLive, checkCoarseTargets } from "./review/landing-parts.mjs";
+import { checkDirection } from "./review/marketing-direction.mjs";
 // Frame-bound interruption checks use the native renderer, matching motion QA.
 const browser = await launchChromium({ args: [] });
 async function preserveFailure(page, name, error) {
@@ -37,6 +38,7 @@ try {
     try {
       const mount = (code, options) => mountFixture(page, "hero-blur-statement", "free", code.replaceAll("<Subject.HeroBlurStatement", '<Subject.HeroBlurStatement theme="' + theme + '" '), { frameStyle: "width:100%;max-width:none;margin:0", ...options });
       await checkHero({ page, mount, assert });
+      await checkDirection({ page, mount, assert }, "hero");
       assert.deepEqual(errors, []);
       console.log("PASS hero painted contrast, phone actions, keyboard rotation and live interruption: " + theme);
     } catch (error) { await preserveFailure(page, "hero-" + theme, error); throw error; }
@@ -53,6 +55,7 @@ try {
       try {
         const mount = code => mountFixture(partPage, slug, "free", component === "HeaderHairline" ? code : code.replaceAll("<Subject." + component, '<Subject.' + component + ' theme="' + theme + '" '), { frameStyle: "width:100%;max-width:none;margin:0" });
         await checkPart({ page: partPage, mount, assert });
+        if (component === "FooterNewsletter") await checkDirection({ page: partPage, mount, assert }, "footer");
         assert.deepEqual(errors, []);
         console.log("PASS " + slug + " keyboard, navigation and live preference: " + theme);
       } catch (error) { await preserveFailure(partPage, slug + "-" + theme, error); throw error; }

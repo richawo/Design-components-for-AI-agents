@@ -87,7 +87,8 @@
     "disabled submit while empty",
     "title read once from an sr-only copy; staggered words aria-hidden",
     "outgoing controls become inert and leave accessibility immediately; narrow error copy wraps before Retry can clip",
-    "Follow live motion preferences for validation, loading and figures. Reduced fades reset former blur, position and hairline scale, including content revealed after the preference changed. Coarse-pointer social and legal links retain 44px targets."
+    "Follow live motion preferences for validation, loading and figures. Reduced fades reset former blur, position and hairline scale, including content revealed after the preference changed. Coarse-pointer social and legal links retain 44px targets.",
+    "Animated sentences choose direction from their text with dir=\"auto\", retaining English fallback word order on RTL pages and Arabic reading order on LTR pages. Body copy and feedback follow their own text direction where applicable."
   ],
   "content": {
     "kicker": "The Thursday Letter · Issue 112",

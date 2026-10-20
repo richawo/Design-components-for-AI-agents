@@ -44,6 +44,17 @@ registered source-fixture workflow and all core checks pass. Private correction:
 contract stays intact; full composition, Next integration, poster and film review remain open. Its changed
 hero adds the old Landing film to the queue.
 
+Hero and Footer now choose sentence direction from their content. English fallback retains word
+order on RTL pages; Arabic copy retains RTL order inside LTR layouts. The original Hero's three and
+Footer's nine failing direction outcomes remain archived. Twelve fixed source mounts pass eighteen
+accessibility audits and eighteen inspected captures in both themes. The registered native marketing
+suite passes. Six current Next/source scenes match geometry, while four English scenes remain
+byte-identical to their approved references. French/Arabic phone and desktop flows pass four more
+audits and twelve inspected settled captures. Strict registry, root/all-eleven-block types and all
+1,084 tests pass. No translation keys or callback contracts change. The wider localisation gap remains
+open under the repository fallback policy. Landing's poster and first film attempt remain pending,
+with three blocks, 59 older probes and 124 films remaining.
+
 Landing's complete registered Next workflow now passes both themes. Six Next/source scenes retain
 identical geometry, including four byte-identical image pairs; all twelve are inspected. The final
 integration phase keeps 55 source/runtime/metadata/replay files fixed. Theme controls and the official

@@ -379,6 +379,7 @@ function Statement({
 
   return (
     <h1
+      dir="auto"
       data-demo="statement"
       onPointerEnter={(e) => e.pointerType === "mouse" && onHover(true)}
       onPointerLeave={() => onHover(false)}

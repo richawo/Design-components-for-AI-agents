@@ -45,3 +45,5 @@ Build a typographic statement hero in React + Tailwind CSS v4 with `motion/react
 
 **Don’t**
 - No gradient text, no typewriter caret, no letter-by-letter scramble, no cursor follower. Don’t let the line re-wrap as the name changes, and don’t animate the grain.
+
+Use `dir="auto"` on animated sentences and their associated body or feedback text. English fallback keeps its word order on RTL pages, and Arabic copy keeps its reading order on LTR pages. Navigation and control placement retain the host layout direction.

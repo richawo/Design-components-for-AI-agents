@@ -299,7 +299,7 @@ export function FooterNewsletter({
           <motion.p variants={v} custom={at(captureAt, T.kicker)} className="font-mono text-[11px] uppercase tracking-[0.16em] text-(--fn-ink)/65">
             {kicker}
           </motion.p>
-          <h2 className="mt-5 text-balance font-serif text-[clamp(2.5rem,1.7rem+3.2cqi,3.9rem)] leading-[0.98] tracking-[-0.02em]">
+          <h2 dir="auto" className="mt-5 text-balance font-serif text-[clamp(2.5rem,1.7rem+3.2cqi,3.9rem)] leading-[0.98] tracking-[-0.02em]">
             <span className="sr-only">{title}</span>
             {/* Words stagger in, so the title reads as it arrives. */}
             <span aria-hidden="true">
@@ -313,7 +313,7 @@ export function FooterNewsletter({
               ))}
             </span>
           </h2>
-          <motion.p variants={v} custom={at(captureAt, T.body)} className="mt-5 max-w-[46ch] text-pretty text-[16px] leading-[1.6] text-(--fn-ink)/65">
+          <motion.p dir="auto" variants={v} custom={at(captureAt, T.body)} className="mt-5 max-w-[46ch] text-pretty text-[16px] leading-[1.6] text-(--fn-ink)/65">
             {body}
           </motion.p>
           <motion.div variants={v} custom={at(captureAt, T.field)} className="mt-9 w-full">
@@ -797,7 +797,7 @@ const Line = forwardRef<HTMLParagraphElement, { children: ReactNode; reduce: boo
 function MorphText({ text, reduce }: { text: string; reduce: boolean }) {
   const words = text.split(" ");
   return (
-    <span className="relative block text-left text-[15px] font-medium leading-[1.35] tracking-[-0.01em] text-(--fn-bg)" role="status" aria-label={text}>
+    <span dir="auto" className="relative block text-left text-[15px] font-medium leading-[1.35] tracking-[-0.01em] text-(--fn-bg)" role="status" aria-label={text}>
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span key={text} className="block" aria-hidden="true">
           {words.map((w, i) => (
