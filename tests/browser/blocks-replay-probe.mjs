@@ -134,6 +134,16 @@ try {
         }, true);
       });
     }
+    if (slug === "block-workspace-settings") {
+      await page.evaluate(() => {
+        window.settingsReplay = [];
+        document.addEventListener("click", event => {
+          const target = event.target.closest?.("[data-demo]")?.dataset.demo;
+          if (["nav-notifications", "preference-1", "save-preferences"].includes(target))
+            window.settingsReplay.push(target);
+        }, true);
+      });
+    }
     if (slug === "block-saas-landing") {
       await page.evaluate(() => {
         window.landingReplay = { clicks: [], emails: [], submissions: [] };
@@ -185,6 +195,17 @@ try {
       (await page.locator("#root").innerText()).includes(final),
       slug + " intended end",
     );
+    if (slug === "block-workspace-settings") {
+      assert.deepEqual(await page.evaluate(() => window.settingsReplay), [
+        "nav-notifications", "preference-1", "save-preferences",
+      ], "Settings replay changes and saves a real notification selection");
+      assert.equal(await page.getByRole("tab", { name: "Notifications", exact: true }).getAttribute("aria-selected"), "true");
+      assert.equal(await page.locator('[data-demo="preference-0"]').isChecked(), true);
+      assert.equal(await page.locator('[data-demo="preference-0"]').isDisabled(), true);
+      assert.equal(await page.locator('[data-demo="preference-1"]').isChecked(), false);
+      assert.equal(await page.locator('[data-demo="preference-2"]').isChecked(), false);
+      assert.equal(await page.getByRole("status").filter({ hasText: "Preferences saved." }).isVisible(), true);
+    }
     if (slug === "block-team-workspace") {
       const trace = await page.evaluate(() => window.teamReplay);
       assert.deepEqual(trace.actions, ["reply-m1", "close-thread", "editor", "send-studio"]);

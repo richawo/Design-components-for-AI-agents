@@ -8,13 +8,36 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
   type RefObject,
 } from "react";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
+import { AnimatePresence, animate, motion, useInView } from "motion/react";
 import { Check, ChevronDown, LoaderCircle, RotateCcw } from "lucide-react";
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+const readMotionPreference = () => matchMedia(motionQuery).matches;
+const subscribeMotionPreference = (update: () => void) => {
+  const media = matchMedia(motionQuery);
+  media.addEventListener("change", update);
+  return () => media.removeEventListener("change", update);
+};
+function useLiveReducedMotion() {
+  return useSyncExternalStore(subscribeMotionPreference, readMotionPreference, () => false);
+}
+function useReducedEntries(reduce: boolean, root: { current: HTMLElement | null }) {
+  useLayoutEffect(() => {
+    const host = root.current;
+    if (!reduce || !host) return;
+    // Stop the same Motion values that own each entrance, including queued delays.
+    for (const node of host.querySelectorAll<HTMLElement>("[data-sp-entry]")) {
+      if (!node.closest("[inert], [hidden]"))
+        animate(node, { opacity: 1, y: 0, filter: "none" }, { duration: 0 });
+    }
+  }, [reduce, root]);
+}
 
 /* ------------------------------------------------------------------ */
 /* Types                                                                */
@@ -65,6 +88,7 @@ const PALETTE = {
     surface: "#111113",
     raised: "#18181b",
     field: "#0c0c0e",
+    fieldLine: "#73737c",
     line: "#232327",
     rule: "#1c1c1f",
     ink: "#f4f4f5",
@@ -80,6 +104,7 @@ const PALETTE = {
     surface: "#ffffff",
     raised: "#f6f6f7",
     field: "#fafafa",
+    fieldLine: "#73737c",
     line: "#e4e4e7",
     rule: "#efeff1",
     ink: "#18181b",
@@ -242,8 +267,9 @@ function fallbackValue(row: SettingsRow): SettingValue {
 
 /** Entrance props for a block: rises out of a blur. Reduced motion: a short fade. */
 function enter(play: boolean, delay: number, reduce: boolean) {
-  if (reduce) return { initial: { opacity: 0 }, animate: { opacity: play ? 1 : 0 }, transition: { duration: MOTION.fade } };
+  if (reduce) return { "data-sp-entry": true, initial: false as const, animate: { opacity: play ? 1 : 0, y: 0, filter: "none" }, transition: { duration: 0 } };
   return {
+    "data-sp-entry": true,
     initial: { opacity: 0, y: MOTION.rise, filter: `blur(${MOTION.blur}px)` },
     animate: play ? { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } } : undefined,
     transition: { duration: MOTION.block, ease: EASE_OUT, delay },
@@ -252,7 +278,7 @@ function enter(play: boolean, delay: number, reduce: boolean) {
 
 const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sp-ink)]";
 const fieldCls =
-  "h-10 w-full rounded-lg border border-[var(--sp-line)] bg-[var(--sp-field)] px-3 text-[14px] text-[var(--sp-ink)] outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-[var(--sp-faint)] hover:border-[color-mix(in_srgb,var(--sp-ink)_22%,transparent)] focus:border-[color-mix(in_srgb,var(--sp-ink)_45%,transparent)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--sp-ink)_10%,transparent)]";
+  "h-10 pointer-coarse:h-11 w-full rounded-lg border border-[var(--sp-fieldLine)] bg-[var(--sp-field)] px-3 text-[14px] text-[var(--sp-ink)] outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-[var(--sp-faint)] hover:border-[var(--sp-ink)] focus:border-[var(--sp-ink)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--sp-ink)_10%,transparent)]";
 
 /* ------------------------------------------------------------------ */
 /* Hooks                                                                */
@@ -351,7 +377,7 @@ function useContentHeight() {
 
 /** False until `delay` has passed after `play`: lets a control settle after its row lands. */
 function useSettled(play: boolean, delay: number) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion() ?? false;
   const [settled, setSettled] = useState(false);
   useEffect(() => {
     if (!play || settled) return;
@@ -371,7 +397,7 @@ function useSettled(play: boolean, delay: number) {
 
 /** A switch whose fill and knob only travel once its row has landed. */
 function Toggle({ checked, onChange, labelledBy, describedBy, settleAt, play, demoName }: { checked: boolean; onChange: (v: boolean) => void; labelledBy: string; describedBy?: string; settleAt: number; play: boolean; demoName: string }) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion() ?? false;
   const settled = useSettled(play, settleAt);
   const on = checked && settled;
   const travel = SWITCH.width - SWITCH.knob - SWITCH.pad * 2;
@@ -410,7 +436,7 @@ function Toggle({ checked, onChange, labelledBy, describedBy, settleAt, play, de
 }
 
 function Segmented({ value, options, onChange, labelledBy, layoutId, settleAt, play, demoPrefix }: { value: string; options: SettingOption[]; onChange: (v: string) => void; labelledBy: string; layoutId: string; settleAt: number; play: boolean; demoPrefix: string }) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion() ?? false;
   const settled = useSettled(play, settleAt);
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const index = Math.max(0, options.findIndex((o) => o.value === value));
@@ -429,7 +455,7 @@ function Segmented({ value, options, onChange, labelledBy, layoutId, settleAt, p
       role="radiogroup"
       aria-labelledby={labelledBy}
       onKeyDown={onKey}
-      className="grid w-full auto-cols-fr grid-flow-col rounded-lg border border-[var(--sp-line)] bg-[var(--sp-field)] p-[3px] @lg:inline-grid @lg:w-auto"
+      className="grid w-full auto-cols-fr grid-flow-col rounded-lg border border-[var(--sp-fieldLine)] bg-[var(--sp-field)] p-[3px] @lg:inline-grid @lg:w-auto"
     >
       {options.map((o, i) => {
         const on = i === index;
@@ -445,7 +471,7 @@ function Segmented({ value, options, onChange, labelledBy, layoutId, settleAt, p
             tabIndex={on ? 0 : -1}
             data-demo={`${demoPrefix}-${o.value}`}
             onClick={() => onChange(o.value)}
-            className={`relative h-8 whitespace-nowrap rounded-md px-3.5 text-[13px] font-medium transition-[color,transform] duration-150 active:scale-[0.97] ${focusRing} ${
+            className={`relative h-8 pointer-coarse:h-11 pointer-coarse:min-w-11 whitespace-nowrap rounded-md px-3.5 text-[13px] font-medium transition-[color,transform] duration-150 active:scale-[0.97] ${focusRing} ${
               on && settled ? "text-[var(--sp-surface)]" : on ? "text-[var(--sp-ink)]" : "text-[var(--sp-faint)] hover:text-[var(--sp-ink)]"
             }`}
           >
@@ -484,7 +510,7 @@ function SelectField({ id, value, options, onChange, describedBy }: { id: string
 function TextField({ id, value, onChange, placeholder, prefix, describedBy }: { id: string; value: string; onChange: (v: string) => void; placeholder?: string; prefix?: string; describedBy?: string }) {
   if (!prefix) return <input id={id} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} aria-describedby={describedBy} className={fieldCls} />;
   return (
-    <div className={`${fieldCls} flex items-center gap-0 px-0 focus-within:border-[color-mix(in_srgb,var(--sp-ink)_45%,transparent)] focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--sp-ink)_10%,transparent)]`}>
+    <div className={`${fieldCls} flex items-center gap-0 px-0 focus-within:border-[var(--sp-ink)] focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--sp-ink)_10%,transparent)]`}>
       <span className="select-none pl-3 font-mono text-[12.5px] text-[var(--sp-faint)]">{prefix}</span>
       <input
         id={id}
@@ -529,7 +555,7 @@ function Row({
   children: ReactNode;
 }) {
   const inline = control === "inline";
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion() ?? false;
   const Label = htmlFor ? "label" : "p";
   return (
     <motion.div
@@ -555,7 +581,7 @@ function Row({
 
 /** Every row of one section. Rows stagger in on first view and again after each switch. */
 function Section({ section, values, onSet, play, firstView, uid }: { section: SettingsSection; values: SettingsValues; onSet: (id: string, v: SettingValue) => void; play: boolean; firstView: boolean; uid: string }) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion() ?? false;
   return (
     <motion.div
       role="tabpanel"
@@ -608,7 +634,7 @@ function Section({ section, values, onSet, play, firstView, uid }: { section: Se
 }
 
 function SectionTabs({ sections, value, dirty, onChange, uid }: { sections: SettingsSection[]; value: string; dirty: Set<string>; onChange: (id: string) => void; uid: string }) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion() ?? false;
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const index = Math.max(0, sections.findIndex((s) => s.id === value));
 
@@ -669,11 +695,11 @@ function SectionTabs({ sections, value, dirty, onChange, uid }: { sections: Sett
 
 /** Slides up from the card’s foot while there’s something to save, then says so and leaves. */
 function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number; status: SaveStatus; onSave: () => void; onDiscard: () => void; canSave: boolean }) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion() ?? false;
   const show = count > 0 || status === "saved";
   const message = !canSave ? "unavailable" : status === "saved" && count === 0 ? "saved" : status === "error" ? "error" : "dirty";
   const swap = reduce
-    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    ? { initial: false as const, animate: { opacity: 1, y: 0, filter: "none" }, exit: { opacity: 0 } }
     : { initial: { opacity: 0, y: 6, filter: "blur(3px)" }, animate: { opacity: 1, y: 0, filter: "blur(0px)" }, exit: { opacity: 0, y: -6, filter: "blur(3px)" } };
 
   return (
@@ -682,15 +708,15 @@ function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number;
         <motion.div
           key="bar"
           initial={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-          animate={reduce ? { opacity: 1 } : { height: "auto", opacity: 1 }}
+          animate={{ height: "auto", opacity: 1 }}
           exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0, transition: { duration: 0.22, ease: EASE_IN } }}
-          transition={{ duration: reduce ? MOTION.fade : 0.34, ease: EASE_OUT }}
+          transition={{ duration: reduce ? 0 : 0.34, ease: EASE_OUT }}
           className="overflow-hidden"
         >
-          <div className="flex items-center gap-3 border-t border-[var(--sp-line)] bg-[var(--sp-raised)] py-3 pl-5 pr-3 @lg:pl-6" aria-live="polite">
-            <div className="relative flex h-9 min-w-0 flex-1 items-center overflow-hidden text-[14px]">
+          <div className="flex flex-wrap items-center gap-3 border-t border-[var(--sp-line)] bg-[var(--sp-raised)] py-3 pl-5 pr-3 @lg:pl-6" aria-live="polite">
+            <div data-sp-feedback className="relative flex min-h-9 min-w-0 flex-1 basis-full items-center text-[14px] @md:basis-auto">
               <AnimatePresence mode="popLayout" initial={false}>
-                <motion.p key={message === "dirty" ? `dirty-${count}` : message} {...swap} transition={{ duration: 0.2, ease: EASE_OUT }} className="flex items-center gap-2 truncate">
+                <motion.p data-sp-entry key={message === "dirty" ? `dirty-${count}` : message} {...swap} transition={{ duration: reduce ? 0 : 0.2, ease: EASE_OUT }} className="flex min-w-0 items-center gap-2 leading-relaxed">
                   {message === "saved" && (
                     <>
                       <Check className="size-4 shrink-0 text-[var(--sp-ink)]" strokeWidth={2.5} aria-hidden="true" />
@@ -700,7 +726,7 @@ function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number;
                   {message === "unavailable" && <span className="text-[var(--sp-muted)]">Saving is unavailable.</span>}
                   {message === "error" && <span className="text-[var(--sp-danger)]">Couldn’t save. Check your connection.</span>}
                   {message === "dirty" && (
-                    <span className="truncate text-[var(--sp-muted)]">
+                    <span className="text-[var(--sp-muted)]">
                       <span className="tabular-nums text-[var(--sp-ink)]">{count}</span> unsaved {count === 1 ? "change" : "changes"}
                     </span>
                   )}
@@ -715,7 +741,7 @@ function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number;
                   data-demo="discard"
                   aria-disabled={status === "saving" || undefined}
                   style={status === "saving" ? { opacity: 0.4, cursor: "progress", scale: 1 } : undefined}
-                  className={`h-9 shrink-0 rounded-lg px-3 text-[13px] font-medium text-[var(--sp-muted)] transition-[color,background-color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--sp-ink)_6%,transparent)] hover:text-[var(--sp-ink)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${focusRing}`}
+                  className={`ml-auto h-9 pointer-coarse:h-11 shrink-0 rounded-lg px-3 text-[13px] font-medium text-[var(--sp-muted)] transition-[color,background-color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--sp-ink)_6%,transparent)] hover:text-[var(--sp-ink)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${focusRing}`}
                 >
                   Discard
                 </button>
@@ -727,7 +753,7 @@ function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number;
                   aria-disabled={status === "saving" || undefined}
                   aria-busy={status === "saving"}
                   style={status === "saving" ? { cursor: "progress", scale: 1 } : undefined}
-                  className={`relative inline-flex h-9 min-w-[7.5rem] shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--sp-accent)] px-3.5 text-[13px] font-semibold text-[var(--sp-on-accent)] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97] disabled:cursor-progress ${focusRing}`}
+                  className={`relative inline-flex h-9 pointer-coarse:h-11 min-w-[7.5rem] shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--sp-accent)] px-3.5 text-[13px] font-semibold text-[var(--sp-on-accent)] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97] disabled:cursor-progress ${focusRing}`}
                 >
                   {status === "saving" ? (
                     <>
@@ -771,9 +797,10 @@ export function SettingsPanel({
   theme = "dark",
   className = "",
 }: SettingsPanelProps) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion() ?? false;
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const root = useRef<HTMLElement>(null);
+  useReducedEntries(reduce, root);
   const lastFocus = useRef<HTMLElement | null>(null);
   const lastField = useRef<HTMLElement | null>(null);
   const play = useInView(root, { once: true, amount: 0.2 });

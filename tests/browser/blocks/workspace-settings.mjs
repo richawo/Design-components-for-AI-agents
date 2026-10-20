@@ -1,3 +1,7 @@
+import { check as checkJourney } from "../review/block-settings-journey.mjs";
+import { check as checkMotion } from "../review/block-settings-motion.mjs";
+import { check as checkRetiredPolicy } from "../review/block-settings-retired-policy.mjs";
+import { check as checkLong } from "../review/block-settings-long.mjs";
 import { check as checkSnapshots } from "../review/block-settings-snapshots.mjs";
 
 async function checkWorkflow({ page, mount, assert }) {
@@ -47,5 +51,9 @@ export async function check(context) {
     };
     await checkWorkflow(themed);
     await checkSnapshots(themed);
+    await checkJourney(themed);
+    await checkMotion(themed);
+    await checkRetiredPolicy(themed);
+    await checkLong(themed);
   }
 }

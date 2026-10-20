@@ -82,7 +82,8 @@
     "segmented": "pill lands with opacity + 0.92 scale, then travels by layoutId",
     "sectionSwitch": "rows exit together (6px up, 4px blur, 0.16s); next rows 40ms apart; card height eases over 0.32s",
     "saveBar": "height 0 → auto (0.34s); message cross-fades; saving spinner in the same box; 'Changes saved' lingers 1.8s then collapses",
-    "reducedMotion": "150ms fades, controls instant, no height animation"
+    "reducedMotion": "150ms fades, controls instant, no height animation",
+    "mountedPreference": "Stop owned entry blur and translation immediately when the mounted reduced-motion preference changes. Use clear field boundaries in both themes. On coarse pointers, fields, week choices and Save/Discard actions are at least 44px high. On narrow containers, put complete save feedback above the actions and allow error text to wrap."
   },
   "responsive": {
     "390": "fields and segmented controls full width under their labels; switches stay inline",

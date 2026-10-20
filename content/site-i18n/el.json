@@ -10900,5 +10900,8 @@
   "Post Yaps": "Post Yaps",
   "Channels and direct messages.": "Κανάλια και άμεσα μηνύματα.",
   "No channels yet.": "Δεν υπάρχουν ακόμη κανάλια.",
-  "comment": "σχόλιο"
+  "comment": "σχόλιο",
+  "Workspace settings": "Ρυθμίσεις χώρου εργασίας",
+  "No profile fields are available.": "Δεν υπάρχουν διαθέσιμα πεδία προφίλ.",
+  "Workspace access": "Πρόσβαση στον χώρο εργασίας"
 }

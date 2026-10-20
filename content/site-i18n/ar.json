@@ -1935,5 +1935,8 @@
   "Conversations": "المحادثات",
   "Channels and direct messages.": "القنوات والرسائل المباشرة.",
   "No channels yet.": "لا توجد قنوات بعد.",
-  "comment": "تعليق"
+  "comment": "تعليق",
+  "Workspace settings": "إعدادات مساحة العمل",
+  "No profile fields are available.": "لا تتوفر حقول للملف الشخصي.",
+  "Workspace access": "الوصول إلى مساحة العمل"
 }

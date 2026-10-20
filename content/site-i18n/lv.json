@@ -2008,5 +2008,8 @@
   "Conversations": "Sarunas",
   "Channels and direct messages.": "Kanāli un tiešie ziņojumi.",
   "No channels yet.": "Vēl nav kanālu.",
-  "comment": "komentārs"
+  "comment": "komentārs",
+  "Workspace settings": "Darbvietas iestatījumi",
+  "No profile fields are available.": "Nav pieejamu profila lauku.",
+  "Workspace access": "Piekļuve darbvietai"
 }

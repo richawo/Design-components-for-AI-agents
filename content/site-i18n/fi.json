@@ -23420,5 +23420,7 @@
   "Post Yaps": "Post Yaps",
   "Channels and direct messages.": "Kanavat ja suorat viestit.",
   "No channels yet.": "Ei vielä kanavia.",
-  "comment": "kommentti"
+  "comment": "kommentti",
+  "No profile fields are available.": "Profiilikenttiä ei ole saatavilla.",
+  "Workspace access": "Työtilan käyttöoikeudet"
 }

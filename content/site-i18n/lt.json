@@ -2008,5 +2008,8 @@
   "Conversations": "Pokalbiai",
   "Channels and direct messages.": "Kanalai ir tiesioginiai pranešimai.",
   "No channels yet.": "Kol kas nėra kanalų.",
-  "comment": "komentaras"
+  "comment": "komentaras",
+  "Workspace settings": "Darbo srities nustatymai",
+  "No profile fields are available.": "Nėra prieinamų profilio laukų.",
+  "Workspace access": "Prieiga prie darbo srities"
 }

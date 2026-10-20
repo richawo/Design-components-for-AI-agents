@@ -29,6 +29,7 @@ try {
     const { check } = await import(`./blocks/${slug}.mjs`);
     await check({ page, mount, assert });
     const touchCase = {
+      "workspace-settings": ["WorkspaceSettings", "block-settings-touch"],
       "people-workspace": ["PeopleWorkspace", "block-people-touch"],
       "saas-dashboard": ["SaasDashboard", "block-saas-dashboard-touch"],
       "team-workspace": ["TeamWorkspace", "block-team-touch"],

@@ -1935,5 +1935,8 @@
   "Conversations": "Konversazzjonijiet",
   "Channels and direct messages.": "Kanali u messaġġi diretti.",
   "No channels yet.": "Għadu l-ebda kanali.",
-  "comment": "kumment"
+  "comment": "kumment",
+  "Workspace settings": "Settings tal-ispazju tax-xogħol",
+  "No profile fields are available.": "M’hemmx oqsma tal-profil disponibbli.",
+  "Workspace access": "Aċċess għall-ispazju tax-xogħol"
 }

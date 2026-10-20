@@ -23420,5 +23420,7 @@
   "Post Yaps": "Post Yaps",
   "Channels and direct messages.": "Csatornák és közvetlen üzenetek.",
   "No channels yet.": "Még nincsenek csatornák.",
-  "comment": "megjegyzés"
+  "comment": "megjegyzés",
+  "No profile fields are available.": "Nincsenek elérhető profilmezők.",
+  "Workspace access": "Hozzáférés a munkaterülethez"
 }

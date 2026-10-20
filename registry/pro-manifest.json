@@ -6928,12 +6928,12 @@
     ],
     "demo": {
       "steps": [
-        "wait:350",
+        "wait:650",
         "click:@nav-notifications",
         "click:@preference-1",
-        "wait:400",
+        "wait:650",
         "click:@save-preferences",
-        "wait:1800"
+        "wait:2200"
       ],
       "loop": false
     },

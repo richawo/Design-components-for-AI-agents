@@ -1,0 +1,10 @@
+export async function check({page,mount,assert,capture=async()=>{}}) {
+ for(const width of [320,390]) {
+  await page.setViewportSize({width,height:940});
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.WorkspaceSettings brand="Atlas Research and International Collaboration Workspace" sections={[{id:'identity',label:'Identity and contact details',description:'The identity and contact details used across every research and collaboration workspace.',rows:[{id:'name',kind:'text',label:'Workspace name',hint:'The complete legal and operating name is retained when the field scrolls.'}]}]} initialValues={{name:'Atlas Research and International Collaboration Workspace for Cross-disciplinary Projects'}} notifications={[{id:'essential',label:'Important security and account notices for your workspace',description:'Required account notices remain enabled for every member of the organisation.',required:true},{id:'digest',label:'Weekly research and collaboration summaries',description:'A complete summary of the research activity and cross-disciplinary reviews that need your attention.'}]} roles={[{id:'member',name:'Research and collaboration member',description:'Contributes to shared research projects and reviews'}]} permissions={[{id:'view',name:'View shared research and collaboration records',group:'Workspace',description:'Read the complete collection of project reports and collaboration evidence.'}]} initialGrants={{member:[]}} onSave={async()=>{}}/>);`);
+  const name=page.getByRole('textbox',{name:'Workspace name',exact:true});assert.equal(await name.inputValue(),'Atlas Research and International Collaboration Workspace for Cross-disciplinary Projects');await capture('long-'+width+'-profile',{audit:true});
+  await page.getByRole('tab',{name:'Notifications',exact:true}).click();await capture('long-'+width+'-notifications',{audit:true});
+  await page.getByRole('tab',{name:'Access policy',exact:true}).click();await capture('long-'+width+'-access',{audit:true});
+  assert.ok(await page.evaluate(()=>Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)<=innerWidth+1));
+ }
+}

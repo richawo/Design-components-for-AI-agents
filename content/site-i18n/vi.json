@@ -1935,5 +1935,8 @@
   "Conversations": "Cuộc trò chuyện",
   "Channels and direct messages.": "Các kênh và tin nhắn trực tiếp.",
   "No channels yet.": "Chưa có kênh nào.",
-  "comment": "bình luận"
+  "comment": "bình luận",
+  "Workspace settings": "Cài đặt không gian làm việc",
+  "No profile fields are available.": "Không có trường hồ sơ nào.",
+  "Workspace access": "Quyền truy cập không gian làm việc"
 }

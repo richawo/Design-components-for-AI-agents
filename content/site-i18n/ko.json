@@ -1935,5 +1935,8 @@
   "Conversations": "대화",
   "Channels and direct messages.": "채널 및 다이렉트 메시지.",
   "No channels yet.": "아직 채널이 없습니다.",
-  "comment": "댓글"
+  "comment": "댓글",
+  "Workspace settings": "워크스페이스 설정",
+  "No profile fields are available.": "사용할 수 있는 프로필 필드가 없습니다.",
+  "Workspace access": "워크스페이스 접근"
 }

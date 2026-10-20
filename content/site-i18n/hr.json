@@ -23420,5 +23420,7 @@
   "Post Yaps": "Post Yaps",
   "Channels and direct messages.": "Kanali i izravne poruke.",
   "No channels yet.": "Još nema kanala.",
-  "comment": "komentar"
+  "comment": "komentar",
+  "No profile fields are available.": "Nema dostupnih polja profila.",
+  "Workspace access": "Pristup radnom prostoru"
 }

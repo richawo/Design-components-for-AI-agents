@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+export async function check({page,mount,assert,capture=async()=>{}}) {
+ await page.setViewportSize({width:1440,height:940});
+ await mount(`window.calls=[];function Host(){const[version,setVersion]=useState(0);window.expandSchema=()=>setVersion(1);return <div data-schema-version={version}><Subject.WorkspaceSettings roles={[{id:'member',name:'Member',description:'Workspace member'}]} permissions={[{id:'view',name:'View workspace',group:'Workspace',description:'Read workspace content'},...(version?[{id:'export',name:'Export records',group:'Data',description:'Download workspace content',requires:['view']}]:[])]} initialGrants={{member:[]}} onSave={change=>{window.calls.push(structuredClone(change));return new Promise(resolve=>window.completeOldSave=resolve)}}/></div>}createRoot(document.getElementById('root')).render(<Host/>);`);
+ await page.getByRole('tab',{name:'Access policy',exact:true}).click();await page.locator('[data-demo="permission-member-view"]').check();await page.locator('[data-demo="save-policy"]').click();assert.equal(await page.evaluate(()=>window.calls.length),1);
+ await page.evaluate(()=>window.expandSchema());await page.locator('[data-schema-version="1"]').waitFor();const exportPermission=page.locator('[data-demo="permission-member-export"]');await exportPermission.check();assert.equal(await exportPermission.isChecked(),true);
+ await page.evaluate(()=>window.completeOldSave());await page.waitForTimeout(450);
+ const retained=await exportPermission.isChecked();const errors=await page.getByRole('alert').allTextContents();await capture('retired-policy-save-keeps-new-schema-draft',{audit:true});
+ const result={pass:retained&&!errors.length,exportRetained:retained,errors,calls:await page.evaluate(()=>window.calls)};if(process.env.DFA_DRAFT_QA_OUT)fs.writeFileSync(process.env.DFA_DRAFT_QA_OUT+'/retired-policy-outcome.json',JSON.stringify(result,null,2)+'\n');assert.equal(result.pass,true,'A reply for the retired policy schema cannot reset its replacement draft');
+}

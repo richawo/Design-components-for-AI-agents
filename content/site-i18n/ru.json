@@ -23420,5 +23420,7 @@
   "Post Yaps": "Post Yaps",
   "Channels and direct messages.": "Каналы и прямые сообщения.",
   "No channels yet.": "Каналов пока нет.",
-  "comment": "комментарий"
+  "comment": "комментарий",
+  "No profile fields are available.": "Поля профиля недоступны.",
+  "Workspace access": "Доступ к рабочему пространству"
 }

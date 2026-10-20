@@ -35,3 +35,5 @@ Build a settings card in React + Tailwind CSS v4 with `motion/react` and `lucide
 The production component saves only through a supplied onSave callback. Without one, the save action is unavailable. Command-S and Control-S act only while keyboard focus is within this panel. Guard duplicate pending submissions and preserve the draft on rejection. The offline default export supplies its own local demonstration callback.
 
 Pending Save and Discard remain native focus targets with aria-disabled and synchronous action guards, so a rejected save keeps its focused retry target. When accepted actions or a discarded bar retire, recover genuinely owned focus to the last current editable field, or the selected section tab. An outside primary pointer, external focus or window blur expires ownership; never reclaim the host's focus.
+
+Stop owned entry blur and translation immediately when the mounted reduced-motion preference changes. Use clear field boundaries in both themes. On coarse pointers, fields, week choices and Save/Discard actions are at least 44px high. On narrow containers, put complete save feedback above the actions and allow error text to wrap.
