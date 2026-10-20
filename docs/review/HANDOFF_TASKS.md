@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Outline Fill now has a dedicated registered regression for clamped numeric progress, keyboard essay reading, Back to top and empty/non-finite inputs at 320px. Its native and registered three-mount workflows pass without product changes. The trace retains three failing tests that interrupted PageDown, three passing completed-scroll sequences and a rejected blocked-return control. The permanent case subscribes to native `scrollend` before PageDown and retains the exact return position and disabled-state assertions. Rapid return during an unfinished browser scroll is not changed. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. There are now 50 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/outline-scroll-baseline/`, its passing `trim-outline-path-followup-native/` record and `effects-button-outline-registered/`.
+
 - Task 5 (21 October): Shimmer Track Button now has a dedicated registered regression for Enter/Space activation, exact status/error notifications, failed retry, pending locks, bounded progress and unavailable actions. Controlled reset and unmount abort their requests; retired success/rejection cannot settle a replacement action. Its three native mounts and complete registered case pass without product changes, together with strict registry, root/all-eleven-block types and all 1,099 unit tests. There are now 51 older probes and 123 films outstanding. Evidence uses its passing record in `test-results/handoff-older-probes/background-text-trim-first-native/` and `effects-button-outline-registered/`.
 
 - Task 5 (21 October): Border Tracer and Ink Trail now have dedicated registered regressions. Tracer covers focused activation, a moving light path, preserved host focus/blur events, live reduced motion and disabled behavior. Ink covers real pointer strokes with finite ordered samples, foreground clicks, keyboard seals, clear notifications and disabled/invalid settings. Their native and registered cases pass with component source unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. There are now 52 older probes and 123 films outstanding. Evidence uses the passing effect records in `test-results/handoff-older-probes/background-text-trim-first-native/` and `effects-button-outline-registered/`.
@@ -679,7 +681,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-51 finished components still have no dedicated browser regression probe. For each, read its source and
+50 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -700,7 +702,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 `media-transcript-player`, `media-trim-timeline`, `navigation-context-rail`, `navigation-lens-dock`
 `navigation-stacked-tabs`, `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`
 `pricing-usage-calculator`, `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`
-`text-outline-fill`, `text-path-typesetter`
+`text-path-typesetter`
 
 ## 6. Finish parked rebuilds (complete)
 
