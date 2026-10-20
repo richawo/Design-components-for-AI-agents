@@ -100,7 +100,8 @@
   "content": {
     "brand": "Fieldnote, a research notes app",
     "sections": "Notifications (Mentions, Replies, Weekly digest, Product news, Delivery), Appearance (Theme, Density, Week starts on, Calm mode), Profile (Display name, Username with prefix, Time zone)",
-    "saveOwnership": "The host persists onSave. Missing callbacks disable saving. Pending Save/Discard use aria-disabled and synchronous guards while retaining native focus. Rejection retains the focused retry target. Accepted or discarded action retirement recovers owned focus to the last current field or selected tab. Primary outside pointer, external focus and window blur expire ownership. Keyboard save is scoped to the focused panel; rejected drafts remain editable."
+    "saveOwnership": "The host persists onSave. Missing callbacks disable saving. Pending Save/Discard use aria-disabled and synchronous guards while retaining native focus. Rejection retains the focused retry target. Accepted or discarded action retirement recovers owned focus to the last current field or selected tab. Primary outside pointer, external focus and window blur expire ownership. Keyboard save is scoped to the focused panel; rejected drafts remain editable.",
+    "textDirection": "Select natural text direction for complete headings, labels, descriptions, feedback and entered values. Keep the page layout direction and all saved callback data intact."
   },
   "avoid": [
     "lime or brand colour on focus rings and nav",

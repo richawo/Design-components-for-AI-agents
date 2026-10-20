@@ -402,7 +402,7 @@ function Toggle({ checked, onChange, labelledBy, describedBy, settleAt, play, de
   const on = checked && settled;
   const travel = SWITCH.width - SWITCH.knob - SWITCH.pad * 2;
   return (
-    <button
+    <button dir="auto"
       type="button"
       role="switch"
       aria-checked={checked}
@@ -460,7 +460,7 @@ function Segmented({ value, options, onChange, labelledBy, layoutId, settleAt, p
       {options.map((o, i) => {
         const on = i === index;
         return (
-          <button
+          <button dir="auto"
             key={o.value}
             ref={(el) => {
               refs.current[i] = el;
@@ -495,7 +495,7 @@ function Segmented({ value, options, onChange, labelledBy, layoutId, settleAt, p
 function SelectField({ id, value, options, onChange, describedBy }: { id: string; value: string; options: SettingOption[]; onChange: (v: string) => void; describedBy?: string }) {
   return (
     <div className="relative">
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} aria-describedby={describedBy} className={`${fieldCls} cursor-pointer appearance-none pr-9`}>
+      <select dir="auto" id={id} value={value} onChange={(e) => onChange(e.target.value)} aria-describedby={describedBy} className={`${fieldCls} cursor-pointer appearance-none pr-9`}>
         {options.map((o) => (
           <option key={o.value} value={o.value}>
             {o.label}
@@ -508,11 +508,11 @@ function SelectField({ id, value, options, onChange, describedBy }: { id: string
 }
 
 function TextField({ id, value, onChange, placeholder, prefix, describedBy }: { id: string; value: string; onChange: (v: string) => void; placeholder?: string; prefix?: string; describedBy?: string }) {
-  if (!prefix) return <input id={id} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} aria-describedby={describedBy} className={fieldCls} />;
+  if (!prefix) return <input dir="auto" id={id} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} aria-describedby={describedBy} className={fieldCls} />;
   return (
     <div className={`${fieldCls} flex items-center gap-0 px-0 focus-within:border-[var(--sp-ink)] focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--sp-ink)_10%,transparent)]`}>
-      <span className="select-none pl-3 font-mono text-[12.5px] text-[var(--sp-faint)]">{prefix}</span>
-      <input
+      <span dir="auto" className="select-none pl-3 font-mono text-[12.5px] text-[var(--sp-faint)]">{prefix}</span>
+      <input dir="auto"
         id={id}
         value={value}
         placeholder={placeholder}
@@ -565,11 +565,11 @@ function Row({
       }`}
     >
       <div className="min-w-0">
-        <Label id={labelId} {...(htmlFor ? { htmlFor } : {})} className="block text-[14px] font-medium text-[var(--sp-ink)]">
+        <Label dir="auto" id={labelId} {...(htmlFor ? { htmlFor } : {})} className="block text-[14px] font-medium text-[var(--sp-ink)]">
           {label}
         </Label>
         {hint && (
-          <p id={hintId} className="mt-0.5 text-[13px] leading-snug text-[var(--sp-faint)]">
+          <p dir="auto" id={hintId} className="mt-0.5 text-[13px] leading-snug text-[var(--sp-faint)]">
             {hint}
           </p>
         )}
@@ -652,7 +652,7 @@ function SectionTabs({ sections, value, dirty, onChange, uid }: { sections: Sett
       {sections.map((s, i) => {
         const on = i === index;
         return (
-          <button
+          <button dir="auto"
             key={s.id}
             ref={(el) => {
               refs.current[i] = el;
@@ -716,7 +716,7 @@ function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number;
           <div className="flex flex-wrap items-center gap-3 border-t border-[var(--sp-line)] bg-[var(--sp-raised)] py-3 pl-5 pr-3 @lg:pl-6" aria-live="polite">
             <div data-sp-feedback className="relative flex min-h-9 min-w-0 flex-1 basis-full items-center text-[14px] @md:basis-auto">
               <AnimatePresence mode="popLayout" initial={false}>
-                <motion.p data-sp-entry key={message === "dirty" ? `dirty-${count}` : message} {...swap} transition={{ duration: reduce ? 0 : 0.2, ease: EASE_OUT }} className="flex min-w-0 items-center gap-2 leading-relaxed">
+                <motion.p dir="auto" data-sp-entry key={message === "dirty" ? `dirty-${count}` : message} {...swap} transition={{ duration: reduce ? 0 : 0.2, ease: EASE_OUT }} className="flex min-w-0 items-center gap-2 leading-relaxed">
                   {message === "saved" && (
                     <>
                       <Check className="size-4 shrink-0 text-[var(--sp-ink)]" strokeWidth={2.5} aria-hidden="true" />
@@ -735,7 +735,7 @@ function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number;
             </div>
             {count > 0 && (
               <>
-                <button
+                <button dir="auto"
                   type="button"
                   onClick={() => { if (status !== "saving") onDiscard(); }}
                   data-demo="discard"
@@ -745,7 +745,7 @@ function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number;
                 >
                   Discard
                 </button>
-                <button
+                <button dir="auto"
                   type="button"
                   onClick={onSave}
                   data-demo="save"
@@ -879,10 +879,10 @@ export function SettingsPanel({
     >
       <motion.div {...enter(play, 0, reduce)} className="overflow-hidden rounded-[16px] border border-[var(--sp-line)] bg-[var(--sp-surface)] shadow-[var(--sp-shadow)]">
         <header className="border-b border-[var(--sp-line)] px-5 pt-6 @lg:px-6 @lg:pt-7">
-          <motion.h2 id={`${uid}-title`} {...enter(play, MOTION.step, reduce)} className="font-display text-[clamp(1.5rem,1.1rem+2cqi,2rem)] font-semibold leading-none tracking-[-0.035em]">
+          <motion.h2 dir="auto" id={`${uid}-title`} {...enter(play, MOTION.step, reduce)} className="font-display text-[clamp(1.5rem,1.1rem+2cqi,2rem)] font-semibold leading-none tracking-[-0.035em]">
             {title}
           </motion.h2>
-          <motion.p {...enter(play, MOTION.step * 2, reduce)} className="mt-2 max-w-[56ch] text-pretty text-[14px] leading-relaxed text-[var(--sp-muted)]">
+          <motion.p dir="auto" {...enter(play, MOTION.step * 2, reduce)} className="mt-2 max-w-[56ch] text-pretty text-[14px] leading-relaxed text-[var(--sp-muted)]">
             {description}
           </motion.p>
           <motion.div {...enter(play, MOTION.step * 3, reduce)} className="mt-5">
@@ -901,7 +901,7 @@ export function SettingsPanel({
             {section.description && (
               <div className="relative overflow-hidden px-5 pt-4 @lg:px-6">
                 <AnimatePresence mode="wait">
-                  <motion.p
+                  <motion.p dir="auto"
                     key={section.id}
                     {...enter(play, switched ? 0 : MOTION.step * 3, reduce)}
                     exit={{ opacity: 0, transition: { duration: MOTION.exit } }}

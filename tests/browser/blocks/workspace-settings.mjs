@@ -1,3 +1,4 @@
+import { check as checkDirection } from "../review/block-settings-direction.mjs";
 import { check as checkJourney } from "../review/block-settings-journey.mjs";
 import { check as checkMotion } from "../review/block-settings-motion.mjs";
 import { check as checkRetiredPolicy } from "../review/block-settings-retired-policy.mjs";
@@ -55,5 +56,6 @@ export async function check(context) {
     await checkMotion(themed);
     await checkRetiredPolicy(themed);
     await checkLong(themed);
+    await checkDirection(themed);
   }
 }

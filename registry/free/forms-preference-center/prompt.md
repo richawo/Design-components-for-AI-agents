@@ -29,3 +29,5 @@ The form enters with opacity and an 8px rise over 320ms. Use the embedded checkb
 Provide stable option IDs. Use defaultValue for local drafts, or value with onChange for host control. onChange receives a copied array; onSave is awaited and serialized. Keep server persistence and record versioning in the host. Key the component by account when changing its owner; retired UI feedback does not cancel the host operation.
 
 Use the source dark/light palettes, the embedded control kit, 44px interaction areas and 320/390/768/1024/1440/1920px container layouts.
+
+Select natural text direction for complete headings, labels, descriptions, feedback and entered values. Keep the page layout direction and all saved callback data intact.

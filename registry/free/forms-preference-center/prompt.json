@@ -110,7 +110,8 @@
         "default": "\"dark\"",
         "description": "Surface and ink palette; the demo stage follows the chosen theme."
       }
-    ]
+    ],
+    "textDirection": "Select natural text direction for complete headings, labels, descriptions, feedback and entered values. Keep the page layout direction and all saved callback data intact."
   },
   "avoid": [
     "Remote images, fake network success or hidden external dependencies.",

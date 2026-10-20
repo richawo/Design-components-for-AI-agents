@@ -223,30 +223,30 @@ export function PreferenceCenter({
     >
       <style>{CSS}</style>
       <Bell size={24} strokeWidth={1.3} aria-hidden="true" />
-      <h2 id={id} className="mt-5 font-serif text-3xl tracking-[-.03em]">
+      <h2 dir="auto" id={id} className="mt-5 font-serif text-3xl tracking-[-.03em]">
         {title}
       </h2>
-      <p className={`mt-2 text-sm ${muted}`}>{description}</p>
+      <p dir="auto" className={`mt-2 text-sm ${muted}`}>{description}</p>
       <div className="mt-6 divide-y divide-[var(--line)] border-y border-[var(--line)]">
         {options.map((option, i) => (
-          <label
+          <label dir="auto"
             key={option.id}
             className={`flex min-h-20 items-center gap-5 py-5 ${pending || option.required || readOnly ? "cursor-default" : "cursor-pointer"}`}
           >
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-medium">{option.label}</span>
-              <span className={`mt-1 block text-sm leading-relaxed ${muted}`}>
+              <span dir="auto" className="block text-sm font-medium">{option.label}</span>
+              <span dir="auto" className={`mt-1 block text-sm leading-relaxed ${muted}`}>
                 {option.description}
               </span>
               {option.required && (
-                <span className={`mt-2 block font-mono text-[12px] ${muted}`}>
+                <span dir="auto" className={`mt-2 block font-mono text-[12px] ${muted}`}>
                   Always on
                 </span>
               )}
             </span>
             <span className="relative grid h-11 w-11 shrink-0 place-items-center">
               <span className="pc-ctl-check">
-                <input
+                <input dir="auto"
                   type="checkbox"
                   data-demo={`preference-${i}`}
                   checked={selected.includes(option.id)}
@@ -271,15 +271,15 @@ export function PreferenceCenter({
         ))}
       </div>
       {!options.length && (
-        <p className={`py-6 text-sm ${muted}`}>No preferences available.</p>
+        <p dir="auto" className={`py-6 text-sm ${muted}`}>No preferences available.</p>
       )}
       <div className="pc-save-row mt-5">
         <div className={`pc-feedback ${muted}`}>
-          <p aria-hidden="true" className="pc-sizing">Preferences saved.</p>
-          <p aria-hidden="true" className="pc-sizing">{errorMessage}</p>
-          <p role="status">{notice}</p>
+          <p dir="auto" aria-hidden="true" className="pc-sizing">Preferences saved.</p>
+          <p dir="auto" aria-hidden="true" className="pc-sizing">{errorMessage}</p>
+          <p dir="auto" role="status">{notice}</p>
         </div>
-        <button
+        <button dir="auto"
           type="button"
           data-demo="save-preferences"
           disabled={!onSave || !options.length}

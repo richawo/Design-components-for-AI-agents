@@ -37,3 +37,5 @@ The production component saves only through a supplied onSave callback. Without 
 Pending Save and Discard remain native focus targets with aria-disabled and synchronous action guards, so a rejected save keeps its focused retry target. When accepted actions or a discarded bar retire, recover genuinely owned focus to the last current editable field, or the selected section tab. An outside primary pointer, external focus or window blur expires ownership; never reclaim the host's focus.
 
 Stop owned entry blur and translation immediately when the mounted reduced-motion preference changes. Use clear field boundaries in both themes. On coarse pointers, fields, week choices and Save/Discard actions are at least 44px high. On narrow containers, put complete save feedback above the actions and allow error text to wrap.
+
+Select natural text direction for complete headings, labels, descriptions, feedback and entered values. Keep the page layout direction and all saved callback data intact.
