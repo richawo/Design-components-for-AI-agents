@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Task 7 (20 October): Workspace Settings completes the eleventh and final block review. Compact retained views, detached save snapshots, exact retries, pending edits, hidden failures, replacement-policy ownership, empty/arriving data, independent instances and long phone content pass. Coarse actions retain 44px targets, field boundaries measure 4.16:1 dark and 4.50:1 light, and complete feedback wraps above narrow-screen actions. Live motion preferences and natural English/Arabic text direction pass the 55-mount composition review and focused nineteen-mount direction follow-up. The permanent workflow passes 48 mouse/keyboard and six touch mounts. All 71 current integration captures are approved: 49 match accepted references and 22 are newly inspected. The actual Next replay, shared Settings regression, normal headings, six matching source/Next scenes, French/Arabic phone and desktop saves, theme control and all four official audits pass with 81 inputs unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Three display keys are covered in all 29 non-English editions; the wider 183,999-unit localisation backlog retains English fallback. The ten-prop contract and Pro boundary remain intact. Its reviewed 4.9s, 92 KB first film and paired settled Next poster retain the complete 820px workspace, clear the weekly digest and end with Preferences saved. Actual playback and an independent decoder agree. Maximum source gap is 14ms, changed-source delivery is 32.00ms and moving-frame p95 is 17.42ms, with no stalls and all guards intact. All 88 capture inputs remain fixed. The current queue is 59 older probes and 124 films, including the changed Settings Panel; fresh complete release checks remain pending. Evidence uses `test-results/handoff-blocks/settings-*`.
+
 - Settings reading-direction follow-up (20 October): headings, labels, descriptions, fields and complete save feedback now select direction from their own text while retaining the page layout. Permission receipts and role-edit sentences keep their complete reading order. The Arabic preview exposed reversed English fallback punctuation; its original source fails all 25 focused checks. The corrected nineteen-mount source review passes all 25 checks in each theme, fourteen accessibility audits and all 28 approved captures. Twelve English defaults and the settled entrance are byte-identical to reviewed references; fifteen new direction and entry captures are inspected. The permanent native workflow passes 48 mouse/keyboard and six touch mounts with all 78 inputs unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Display keys, saved data and the ten-prop API are unchanged. The earlier actual Next run passes functionally but remains a visual rejection; fresh settled French/Arabic verification and media are pending. Counts stay at one block, 59 older probes and 124 films. Evidence uses `test-results/handoff-blocks/settings-direction-*`.
 
 - Settings composition source (20 October): compact view-specific headings, one workspace identity and a focused notification surface replace the repeated introduction and footer. Empty profiles have a written state and accept arriving fields. Detached snapshots, retained drafts, exact retries, edits during pending saves, hidden failures, independent instances and long phone content pass. Permission-schema changes retire old save acknowledgements instead of erasing a replacement draft. Profile and Access entries stop immediately on mounted reduced-motion changes. Coarse Profile fields, week choices and Save/Discard actions retain 44px targets; field boundaries measure 4.16:1 dark and 4.50:1 light. Narrow save feedback and errors remain complete above the actions. The final 55-mount source review passes 62 accessibility audits and all 94 approved captures, including forty exact reviewed references; six coarse mounts pass eighteen more audits and eighteen inspected captures. The permanent native workflow passes 44 mouse/keyboard and six touch mounts with all 76 inputs unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Three display keys are covered in all 29 non-English editions with 67 scoped additions; the whole-site audit retains a wider 183,999-unit backlog, zero invalid protected terms and English fallback. The ten-prop contract and Pro boundary remain intact. Settings Next integration, poster and film remain open. Settings Panel’s changed field treatment also needs a new film, bringing the current queue to one block, 59 older probes and 124 films. Evidence uses `test-results/handoff-blocks/settings-*`.
@@ -540,8 +542,8 @@ applies; no translation-completeness or deployment pass is claimed. Evidence is 
 
 ## 1. Re-record demo videos (124 components)
 
-Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
-version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
+The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
+version. Settings Panel also needs a paired poster for its new field treatment. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
 
 ```sh
 node scripts/record-demos.mjs <slug> --isolated-source --base=http://localhost:3100 --sheet=test-results/demo-sheets
@@ -698,7 +700,7 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (1 block)
+## 7. Continue the review (complete)
 
 Same process as the 202 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
@@ -744,12 +746,9 @@ reference; the reviewed dark capture differs only in eight pixels around its Pai
 registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
 Commerce completed its full review with this dependency; ten other blocks remain open.
 
-- **Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace, SaaS Dashboard, SaaS Landing and Team Workspace** are reviewed. Keep these blocks compatible with their rebuilt parts.
+- **Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace, SaaS Dashboard, SaaS Landing, Team Workspace and Workspace Settings** are reviewed. Keep these blocks compatible with their rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: one of the eleven published `block-*` components remains. Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace, SaaS Dashboard, SaaS Landing and Team Workspace are reviewed. Many parts changed their look and some their props;
-  re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
-
-`block-workspace-settings`.
+- **Blocks**, after their parts: all eleven published `block-*` components are reviewed with their rebuilt dependencies. Their source, workflow, integration and media evidence remains in the progress notes and `STATUS.md`. The earlier count of 12 was stale: both repositories and all published block metadata contain these eleven, with every declared dependency available.
 
 ## 8. Final release checks
 
