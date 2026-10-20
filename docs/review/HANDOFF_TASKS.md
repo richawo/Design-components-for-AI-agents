@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Dependency Board now reports self-dependencies through its existing loop detector, matching the published task contract. Its former silent omission is retained as the failing baseline. The permanent registered regression covers keyboard selection, exact failed/successful retry requests, pending locks, host-confirmed task status, empty plans, missing dependencies, self-loops, two-task cycles, duplicate IDs and finite graph geometry. Sixteen native mounts and the registered case pass across both themes at phone and desktop widths. The alert-count check waits for its documented exit before retaining the zero-count assertion. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass; current phone/desktop captures are inspected. Its film remains in task 1. There are now 56 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/dependency-loop-*`, `dependency-registered/` and the retained `agents-first-native/` and `budget-board-final-native/` failures.
+
 - Task 5 (21 October): Budget Guard now focuses mounted Raise/Stop controls and restores the matching opener after the outgoing panel retires. Outside focus choices, including subsequently removed controls, cancel that recovery. The same keyboard/pointer replay changes 24 reproduced failures to zero across both themes at phone and desktop widths. Its permanent registered regression also covers exact failed/successful decision snapshots, retained cap drafts, pending locks, empty budgets and invalid rows. Sixteen native mounts and the registered static-renderer case pass, together with strict registry, root/all-eleven-block types and all 1,099 unit tests. Its current default appearance is inspected; its film remains in task 1. There are now 57 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/budget-focus-*`, `budget-board-final-native/budget-classification.json` and `budget-registered/`.
 
 - Task 5 (21 October): Run Replay now discards the return value of its event notification. A host callback such as `events.push(event)` previously supplied a number as React effect cleanup and crashed the next playhead change. The original failure is retained. Its permanent registered regression covers exact time/event callbacks, keyboard transport and speed focus, controlled read-only time, normalized event order, invalid records and empty controls. Sixteen native mounts pass across both themes at phone and desktop widths, with no runtime errors or changed inputs. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. The callback-only change preserves the current default appearance; its film remains in task 1. There are now 58 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/replay-return-*`, `replay-registered/` and `test-results/handoff-eleven-blocks-20261020/agents-run-replay-core*`.
@@ -669,7 +671,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-57 finished components still have no dedicated browser regression probe. For each, read its source and
+56 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -677,7 +679,6 @@ as the model for style and depth. Mobile components render through React Native 
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 
-`agents-dependency-board`
 `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`, `devtools-icon-workbench`
 `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`, `devtools-schema-migration`
 `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`, `forms-draft-rescue`
