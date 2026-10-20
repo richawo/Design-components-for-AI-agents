@@ -6551,7 +6551,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "A complete analytics page connecting KPI periods, an inspectable trend and searchable workspace records. Composed from four reusable components with real CSV export.",
+    "description": "An analytics workspace connecting complete daily KPI comparisons, an inspectable trend and searchable workspace records, with exact-period CSV export.",
     "tags": [
       "block",
       "dashboard",
@@ -6584,7 +6584,7 @@
       {
         "name": "metrics",
         "type": "DashboardMetric[]",
-        "description": "Unique metric keys with finite daily points; sum for counts and revenue, or average for percentages. Complete seven-day comparisons need 14 points per metric."
+        "description": "Unique nonblank metric keys with finite values on real ISO dates. Identical daily duplicates count once; conflicting days are omitted. Comparisons require consecutive current and previous days for every metric, ending on their shared reporting date. Counts and revenue sum; percentages average by default."
       },
       {
         "name": "records",
@@ -6611,7 +6611,7 @@
       {
         "name": "onExport",
         "type": "(report: DashboardExport) => void | Promise<void>",
-        "description": "Host export receives the selected metric, complete period, point records and filtered workspace rows. Without a callback, the button downloads a CSV of the metric points."
+        "description": "Receives detached copies of the selected metric points and filtered workspace rows for the complete reporting period. Pending requests cannot duplicate. Success and failure stay visible in the footer without changing the current view, search or selection. Without a callback, downloads a metric CSV."
       }
     ],
     "added": "2026-10-12",
@@ -6629,7 +6629,11 @@
         "click:@card-signups",
         "wait:500",
         "click:@range-7d",
-        "wait:1500"
+        "wait:650",
+        "hover:@plot:0.56,0.5",
+        "wait:650",
+        "click:@export",
+        "wait:1100"
       ],
       "loop": false
     },

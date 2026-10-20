@@ -133,11 +133,42 @@ try {
         }, true);
       });
     }
+    let dashboardDownload;
+    if (slug === "block-saas-dashboard") {
+      dashboardDownload = page.waitForEvent('download');
+      await page.evaluate(() => {
+        window.dashboardReplay = { clicks: [], dailyReads: [] };
+        document.addEventListener('click', event => {
+          const name = event.target.closest?.('[data-demo]')?.dataset.demo;
+          if (['card-signups','range-7d','export'].includes(name)) window.dashboardReplay.clicks.push(name);
+        }, true);
+        new MutationObserver(() => {
+          const text = document.querySelector('[data-demo="plot"] [aria-live="polite"]')?.textContent?.trim();
+          if (text && window.dashboardReplay.dailyReads.at(-1) !== text) window.dashboardReplay.dailyReads.push(text);
+        }).observe(document.getElementById('root'), {subtree:true,childList:true,characterData:true});
+      });
+    }
     await page.evaluate((steps) => window.play(steps), meta.demo.steps);
     assert.ok(
       (await page.locator("#root").innerText()).includes(final),
       slug + " intended end",
     );
+    if (slug === "block-saas-dashboard") {
+      const trace = await page.evaluate(() => window.dashboardReplay);
+      assert.deepEqual(trace.clicks, ['card-signups','range-7d','export']);
+      assert.ok(trace.dailyReads.some(text => /9 Oct: 48, previous 58/.test(text)), 'Replay inspects the actual daily signup comparison');
+      const download = await dashboardDownload;
+      assert.equal(await download.failure(), null);
+      assert.equal(download.suggestedFilename(), 'signups-7d.csv');
+      const lines = fs.readFileSync(await download.path(), 'utf8').split('\r\n');
+      assert.equal(lines[0], 'date,value');
+      assert.equal(lines.length, 8);
+      const points = lines.slice(1).map(line => { const match = /^"([^"]+)","(\d+)"$/.exec(line); assert.ok(match); return [match[1],Number(match[2])]; });
+      assert.deepEqual(points.map(point => point[0]), Array.from({length:7},(_,i)=>`2026-10-${String(i+6).padStart(2,'0')}`));
+      assert.equal(points.reduce((sum,point)=>sum+point[1],0),345);
+      assert.equal(await page.getByRole('radio',{name:'7D',exact:true}).getAttribute('aria-checked'),'true');
+      assert.equal(await page.getByRole('status').filter({hasText:'Exported trial signups for 7d.'}).isVisible(),true);
+    }
     if (slug === "block-people-workspace") {
       const trace = await page.evaluate(() => window.peopleReplay);
       assert.deepEqual(trace.actions, ["nav-onboarding", "task-access", "completion-note", "completion-confirm", "record"]);

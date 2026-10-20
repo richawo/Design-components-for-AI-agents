@@ -28,7 +28,11 @@ try {
     };
     const { check } = await import(`./blocks/${slug}.mjs`);
     await check({ page, mount, assert });
-    if (slug === "people-workspace") {
+    const touchCase = {
+      "people-workspace": ["PeopleWorkspace", "block-people-touch"],
+      "saas-dashboard": ["SaasDashboard", "block-saas-dashboard-touch"],
+    }[slug];
+    if (touchCase) {
       const touchPage = await browser.newPage({
         viewport: { width: 390, height: 940 },
         reducedMotion: "reduce",
@@ -37,11 +41,11 @@ try {
       });
       touchPage.on("pageerror", error => errors.push(error.message));
       try {
-        const { check: checkTouch } = await import("./review/block-people-touch.mjs");
+        const { check: checkTouch } = await import(`./review/${touchCase[1]}.mjs`);
         for (const theme of ["dark", "light"]) {
           const mountTouch = async code => {
             await mountFixture(touchPage, full, "pro", code
-              .replaceAll("<Subject.PeopleWorkspace", `<Subject.PeopleWorkspace theme="${theme}" `)
+              .replaceAll("<Subject." + touchCase[0], `<Subject.${touchCase[0]} theme="${theme}" `)
               .replaceAll("<Subject.default", `<Subject.default theme="${theme}" `));
             await touchPage.locator("#root").evaluate(node => {
               node.style.maxWidth = "none";
