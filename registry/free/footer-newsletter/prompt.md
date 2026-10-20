@@ -26,18 +26,20 @@ Title: Instrument Serif, `clamp(2.5rem, 1.7rem + 3.2cqi, 3.9rem)`, leading 0.98,
 - Typing: the button wakes; hover lightens/darkens one step and nudges the arrow 2px; press scales 0.97.
 - Typo hint: common domain typos (gmial.com, gamil.com, hotmial.com, outlok.com, …) show "Did you mean sam@gmail.com?" as a button that fixes the field. It never blocks.
 - Invalid: specific, kind reasons ("That’s missing an @.", "Almost: add the domain after the @.", "Email addresses can’t contain spaces.") in the error colour; the shell shakes x `[0, −7, 6, −4, 2, 0]` over 420ms. Editing clears it.
-- Loading: the shell (`layout`, 500ms `cubic-bezier(.65,0,.35,1)`) shrinks to a 56px ink circle while the field blurs out (4px, 180ms); a spinner fades in at 320ms once the pill is round. The message reads "Adding sam@pressroom.co…". Hold at least 700ms so it never flickers.
-- Success: the circle grows into an auto-width ink pill: a 40px badge in the background colour pops in (spring 500/32) and its check draws (`pathLength`, 380ms); "You’re on the list. First issue Thursday." arrives word by word (opacity, 5px rise, 4px blur → 0; 360ms, 35ms stagger from 280ms; the spaces sit outside the inline-block words). Below, "Sent to … · Use a different email".
+- Loading: the shell (`layout`, 500ms `cubic-bezier(.65,0,.35,1)`) shrinks to a 56px ink circle while the field blurs out (4px, 180ms); a spinner fades in at 320ms once the pill is round. The message reads "Submitting sam@pressroom.co…". Hold at least 700ms so it never flickers.
+- Success: the circle grows into an auto-width ink pill: a 40px badge in the background colour pops in (spring 500/32) and its check draws (`pathLength`, 380ms); "You’re on the list. First issue Thursday." arrives word by word (opacity, 5px rise, 4px blur → 0; 360ms, 35ms stagger from 280ms; the spaces sit outside the inline-block words). Below, "Address: … · Use a different email".
 - Already subscribed: same morph, "You’re already on the list. See you Thursday." Triggered when `onSubscribe` resolves `"already-subscribed"` or by the `alreadySubscribed` prop.
-- Error: when `onSubscribe` rejects, the pill returns to the field colour with an error ring: dot, "Couldn’t reach our mail server.", and an ink Retry pill (its icon turns −90° on hover) that resends the same address. Below: "Nothing was saved. Edit the address".
+- Error: when `onSubscribe` rejects, the pill returns to the field colour with an error ring: dot, "Couldn’t reach our mail server.", and an ink Retry pill (its icon turns −90° on hover) that resends the same address. Below: "Your address is kept here. Edit the address".
 - Message line swaps cross-fade with 6px offset and 3px blur (300ms in, 160ms out).
 - Reduced motion: every block fades in 150ms, the count is set instantly; no shake, blur or offsets; instant layout.
 
 **Code**
+Requests lock synchronously, including Retry. Outgoing controls become inert immediately. A changed optional `contextKey` retires old replies and feedback without clearing the email draft; feedback retains the context that produced it. Narrow error copy wraps so the complete Retry target remains reachable. Callback acceptance confirms the request, without claiming an email was delivered.
+
 Tokens (palette, timeline `T`, easing) in one place; `useReveal` (scroll reveal with the shared clock), `useCountUp` (motion value) and `useSleep` (timeouts cleared on unmount) hooks; `Capture`, `BottomRow`, `Note`, `MorphText`, `CheckBadge` sub-components. No per-frame React state.
 
 **Accessibility**
-Real `<form>` with `noValidate`, a visually hidden label, `type="email"`, `autocomplete="email"`, `aria-invalid` and `aria-describedby` pointing at the message line, which is `aria-live="polite"`. The title is read once from an sr-only copy (the staggered words are `aria-hidden`). Focus moves to Retry on error and to the message line on success; "Use a different email" clears the field and refocuses it once it is back. 2px ink focus outline on every control, keyboard only; 44px targets.
+Real `<form>` with `noValidate`, a visually hidden label, `type="email"`, `autocomplete="email"`, `aria-invalid` and `aria-describedby` pointing at the message line, which is `aria-live="polite"`. The title is read once from an sr-only copy (the staggered words are `aria-hidden`). Focus moves to Retry on error and to the message line on success only while the form still owns the user’s attention; "Use a different email" clears the field and refocuses it once it is back. 2px ink focus outline on every control, keyboard only; 44px targets.
 
 **Don't**
 - No modal, no confetti, no toast for success; the field itself is the feedback.

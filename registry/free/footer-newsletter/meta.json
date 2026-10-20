@@ -35,6 +35,11 @@
       "description": "Start in the already-subscribed state, e.g. for a signed-in reader."
     },
     {
+      "name": "contextKey",
+      "type": "string",
+      "description": "Changing the request context retires pending replies and result feedback while preserving the email draft. Optional for single-context newsletters."
+    },
+    {
       "name": "kicker",
       "type": "string",
       "default": "\"The Thursday Letter · Issue 112\"",

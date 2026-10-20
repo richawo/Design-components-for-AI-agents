@@ -81,11 +81,12 @@
     "real form with visually hidden label, type=email, autocomplete=email",
     "aria-invalid and aria-describedby to the message line",
     "message line is aria-live=polite",
-    "focus moves to Retry on error and to the message line on success",
+    "focus moves to Retry or the result only while the form owns attention; newer outside focus is preserved",
     "Use a different email clears and refocuses the field",
     "2px ink focus outline, keyboard only",
     "disabled submit while empty",
-    "title read once from an sr-only copy; staggered words aria-hidden"
+    "title read once from an sr-only copy; staggered words aria-hidden",
+    "outgoing controls become inert and leave accessibility immediately; narrow error copy wraps before Retry can clip"
   ],
   "content": {
     "kicker": "The Thursday Letter · Issue 112",
@@ -98,7 +99,8 @@
     "legal": "© 2026 Pressroom Labs ApS. Written in Copenhagen.",
     "onSubscribe": "(email) => Promise<'subscribed' | 'already-subscribed' | void>; reject for the error state",
     "readers": 4812,
-    "theme": "'dark' (default) | 'light'"
+    "theme": "'dark' (default) | 'light'",
+    "contextKey": "Optional string: retire pending replies and feedback on change while retaining the address draft."
   },
   "avoid": [
     "modals, confetti or toasts for success",
@@ -110,5 +112,6 @@
     "accent colours, glow or tinted washes",
     "an entrance that animates the whole footer as one block",
     "per-frame React state for the count"
-  ]
+  ],
+  "requestOwnership": "Synchronous request tickets prevent duplicate Retry writes. A context change or authoritative subscribed flag retires old replies; original feedback contexts cannot appear in a replacement form. Callback acceptance does not prove email delivery."
 }

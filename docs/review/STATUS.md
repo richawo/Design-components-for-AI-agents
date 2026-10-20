@@ -25,10 +25,20 @@ Worker phase. The three diagnostic packages retain complete byte-identical runti
 deployment was performed. Evidence is in `test-results/handoff-eight-blocks-20261020/`; see the measured
 checkpoint in `HANDOFF_TASKS.md`. Earlier failures and checkpoints remain archived below and in that document.
 
+Newsletter Footer's request dependency follow-up now serializes Retry, preserves outside focus and retires
+old replies and feedback with an optional contextKey while retaining the email draft. Authoritative subscribed
+flags retire old failures; unavailable Retry actions stay disabled. Request acceptance no longer claims email
+delivery, success messages have valid status semantics, and narrow error copy keeps the full 44px Retry target
+reachable. Six original failures remain archived. The final 41-mount source review passes 38 accessibility
+audits and all 52 approved captures, including 46 exact reviewed references. Its new registered source-fixture
+regression passes both themes with strict registry, root/all-eleven-block types and all 1,068 tests. The revised
+request copy needs a new film. Landing's request/offer draft passes 22 source mounts, thirty audits and thirty
+reviewed captures; its full block review remains open. The next complete checkpoint has 67 browser suites.
+
 All eight final smaller components also have reviewed current films and posters. Fashion, Legal, Meetings, People and SaaS Dashboard have
 reviewed current block films and paired posters. Commerce, Financial Report and Music retain their old films after
 guarded rejections; rejected raw evidence remains local. Legal's new take reaches its completion receipt after
-the recorder's scrolling-target correction. The remaining inventory is **3 blocks, 59 older probes and 121 films**.
+the recorder's scrolling-target correction. The remaining inventory is **3 blocks, 59 older probes and 122 films**.
 Allocation Chart needs a new film after its full-value readout changed.
 
 The 20 October table follow-up fixes offscreen reduced-motion figures remaining at zero. Initial and live

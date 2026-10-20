@@ -1,9 +1,13 @@
 "use client";
 
 import {
+  createContext,
+  forwardRef,
+  useContext,
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -17,9 +21,11 @@ import {
   motion,
   useAnimate,
   useInView,
+  useIsPresent,
   useMotionValue,
   useReducedMotion,
   useTransform,
+  type HTMLMotionProps,
   type MotionValue,
   type Variants,
 } from "motion/react";
@@ -37,6 +43,8 @@ export type FooterNewsletterProps = {
   onSubscribe?: (email: string) => Promise<SubscribeResult | void>;
   /** Start in the already-subscribed state, e.g. for a signed-in reader. */
   alreadySubscribed?: boolean;
+  /** Changing the request context retires pending replies and feedback while keeping the email draft. */
+  contextKey?: string;
   successText?: string;
   alreadyText?: string;
   errorText?: string;
@@ -229,6 +237,7 @@ export function FooterNewsletter({
   buttonLabel = "Subscribe",
   onSubscribe,
   alreadySubscribed = false,
+  contextKey,
   successText = "You’re on the list. First issue Thursday.",
   alreadyText = "You’re already on the list. See you Thursday.",
   errorText = "Couldn’t reach our mail server.",
@@ -305,6 +314,7 @@ export function FooterNewsletter({
               buttonLabel={buttonLabel}
               onSubscribe={onSubscribe}
               alreadySubscribed={alreadySubscribed}
+              contextKey={contextKey}
               successText={successText}
               alreadyText={alreadyText}
               errorText={errorText}
@@ -327,7 +337,7 @@ export function FooterNewsletter({
 
 type CaptureProps = Pick<
   FooterNewsletterProps,
-  "placeholder" | "buttonLabel" | "onSubscribe" | "alreadySubscribed" | "successText" | "alreadyText" | "errorText"
+  "placeholder" | "buttonLabel" | "onSubscribe" | "alreadySubscribed" | "contextKey" | "successText" | "alreadyText" | "errorText"
 > & {
   palette: (typeof PALETTE)[keyof typeof PALETTE];
   reduce: boolean;
@@ -343,6 +353,7 @@ function Capture({
   buttonLabel,
   onSubscribe,
   alreadySubscribed = false,
+  contextKey,
   successText = "",
   alreadyText = "",
   errorText = "",
@@ -353,9 +364,15 @@ function Capture({
   const id = useId();
   const sleep = useSleep();
   const [phase, setPhase] = useState<Phase>(alreadySubscribed ? "already" : "idle");
+  const [phaseContext, setPhaseContext] = useState(contextKey);
   const [value, setValue] = useState("");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+  const request = useRef<object | null>(null);
+  const live = useRef(true);
+  const ownsFocus = useRef(false);
+  const focusResult = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const retryRef = useRef<HTMLButtonElement>(null);
   const msgRef = useRef<HTMLDivElement>(null);
@@ -363,16 +380,49 @@ function Capture({
   const refocus = useRef(false);
   const [scope, animateShell] = useAnimate<HTMLDivElement>();
 
-  useEffect(() => {
-    if (alreadySubscribed) setPhase("already");
-  }, [alreadySubscribed]);
+  useLayoutEffect(() => {
+    live.current = true;
+    return () => { live.current = false; request.current = null; };
+  }, []);
 
-  // Move focus to the control that replaces the one that just disappeared.
+  useLayoutEffect(() => {
+    request.current = null;
+    focusResult.current = false;
+    refocus.current = false;
+    setPhaseContext(contextKey);
+    setPhase(alreadySubscribed ? "already" : "idle");
+    setMessage("");
+    setSubmitted("");
+  }, [contextKey, alreadySubscribed]);
+
   useEffect(() => {
-    if (phase === "error") retryRef.current?.focus({ preventScroll: true });
-    // On success the field is gone: park focus on the (announced) message line, without a ring.
-    if (phase === "success" || phase === "already") msgRef.current?.focus({ preventScroll: true });
-    if (phase === "idle" && refocus.current) {
+    const retireFocus = () => {
+      ownsFocus.current = false;
+      focusResult.current = false;
+      refocus.current = false;
+    };
+    const outside = (event: Event) => {
+      if (event instanceof PointerEvent && event.button !== 0) return;
+      if (event.target instanceof Node && !formRef.current?.contains(event.target)) retireFocus();
+    };
+    document.addEventListener("pointerdown", outside, true);
+    document.addEventListener("focusin", outside, true);
+    window.addEventListener("blur", retireFocus);
+    return () => {
+      document.removeEventListener("pointerdown", outside, true);
+      document.removeEventListener("focusin", outside, true);
+      window.removeEventListener("blur", retireFocus);
+    };
+  }, []);
+
+  // Hand focus to the replacement only while this form still owns the user's attention.
+  useEffect(() => {
+    if (focusResult.current && ownsFocus.current) {
+      if (phase === "error") retryRef.current?.focus({ preventScroll: true });
+      if (phase === "success" || phase === "already") msgRef.current?.focus({ preventScroll: true });
+    }
+    focusResult.current = false;
+    if (phase === "idle" && refocus.current && ownsFocus.current) {
       refocus.current = false;
       inputRef.current?.focus();
     }
@@ -381,25 +431,32 @@ function Capture({
   const fix = phase === "idle" || phase === "invalid" ? suggestion(value) : null;
 
   const send = async (email: string) => {
-    if (!onSubscribe) return;
+    if (!onSubscribe || request.current) return;
+    const ticket = {};
+    request.current = ticket;
+    focusResult.current = false;
     setSubmitted(email);
     setPhase("loading");
     setMessage("");
     const started = performance.now();
     const hold = () => sleep(Math.max(0, MIN_LOADING_MS - (performance.now() - started)));
+    let result: Phase;
     try {
       const res = await onSubscribe(email);
-      await hold();
-      setPhase(res === "already-subscribed" ? "already" : "success");
+      result = res === "already-subscribed" ? "already" : "success";
     } catch {
-      await hold();
-      setPhase("error");
+      result = "error";
     }
+    await hold();
+    if (!live.current || request.current !== ticket) return;
+    request.current = null;
+    focusResult.current = ownsFocus.current;
+    setPhase(result);
   };
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    if (phase === "loading") return;
+    if (phase === "loading" || request.current) return;
     const why = problem(value);
     if (!why) return void send(value.trim());
     setPhase("invalid");
@@ -409,6 +466,7 @@ function Capture({
   };
 
   const backToField = (next: string) => {
+    if (request.current) return;
     refocus.current = true;
     setValue(next);
     setMessage("");
@@ -430,7 +488,7 @@ function Capture({
   const swapIn = reduce ? { opacity: 0 } : { opacity: 0, filter: "blur(4px)" };
 
   return (
-    <form noValidate onSubmit={submit} className="flex w-full flex-col items-center" aria-describedby={`${id}-msg`}>
+    <form ref={formRef} noValidate onSubmit={submit} onPointerDownCapture={() => { ownsFocus.current = true; }} onFocusCapture={() => { ownsFocus.current = true; }} className="flex w-full flex-col items-center" aria-busy={phase === "loading"} aria-describedby={`${id}-msg`}>
       <div ref={scope} className="flex w-full justify-center">
         <motion.div
           layout
@@ -442,9 +500,11 @@ function Capture({
             formPhase ? "w-full max-w-[460px]" : phase === "loading" ? "w-14" : "w-auto max-w-full"
           } ${phase === "idle" ? "focus-within:shadow-[inset_0_0_0_1px_rgb(var(--fn-ink-rgb)/0.34),0_0_0_4px_rgb(var(--fn-ink-rgb)/0.08)]!" : ""}`}
         >
+          <CaptureContext.Provider value={contextKey}>
           <AnimatePresence mode="popLayout" initial={false}>
             {formPhase ? (
-              <motion.div
+              <CaptureState
+                contextKey={phaseContext}
                 key="form"
                 layout="position"
                 className="flex h-full w-full items-center gap-2 py-1.5 pl-5 pr-1.5"
@@ -488,9 +548,10 @@ function Capture({
                     <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </button>
-              </motion.div>
+              </CaptureState>
             ) : phase === "loading" ? (
-              <motion.div
+              <CaptureState
+                contextKey={phaseContext}
                 key="loading"
                 layout
                 className="absolute inset-0 flex items-center justify-center"
@@ -500,32 +561,35 @@ function Capture({
                 exit={{ opacity: 0, transition: { duration: 0.12 } }}
               >
                 <Spinner reduce={reduce} />
-              </motion.div>
+              </CaptureState>
             ) : phase === "error" ? (
-              <motion.div
+              <CaptureState
+                contextKey={phaseContext}
                 key="error"
                 layout="position"
-                className="flex h-full items-center gap-3 whitespace-nowrap py-1.5 pl-5 pr-1.5"
+                className="flex h-full min-w-0 max-w-full items-center gap-3 py-1.5 pl-5 pr-1.5"
                 initial={swapIn}
                 animate={{ opacity: 1, filter: "blur(0px)", transition: { delay: reduce ? 0 : 0.2, duration: 0.3, ease: EASE } }}
                 exit={{ opacity: 0, transition: { duration: 0.14 } }}
               >
                 <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-(--fn-rose)" />
-                <span className="truncate text-[14.5px] text-(--fn-ink)/80">{errorText}</span>
+                <span className="min-w-0 flex-1 break-words text-[14.5px] text-(--fn-ink)/80">{errorText}</span>
                 <button
                   ref={retryRef}
                   type="button"
                   onClick={() => send(submitted)}
-                  className={`group/retry gap-1.5 px-4 hover:bg-(--fn-solid-hover) active:scale-[0.97] ${SOLID_BUTTON}`}
+                  disabled={!onSubscribe}
+                  className={`group/retry gap-1.5 px-4 enabled:hover:bg-(--fn-solid-hover) enabled:active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${SOLID_BUTTON}`}
                 >
                   <svg viewBox="0 0 16 16" fill="none" className="size-3.5 transition-transform duration-300 group-hover/retry:-rotate-90" aria-hidden="true">
                     <path d="M13 8a5 5 0 1 1-1.6-3.7M13 2.8v2.6h-2.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   Retry
                 </button>
-              </motion.div>
+              </CaptureState>
             ) : (
-              <motion.div
+              <CaptureState
+                contextKey={phaseContext}
                 key="done"
                 layout="position"
                 className="flex min-h-14 items-center gap-3 py-2 pl-2 pr-6"
@@ -535,9 +599,10 @@ function Capture({
               >
                 <CheckBadge reduce={reduce} />
                 <MorphText text={phase === "already" ? alreadyText : successText} reduce={reduce} />
-              </motion.div>
+              </CaptureState>
             )}
           </AnimatePresence>
+          </CaptureContext.Provider>
         </motion.div>
       </div>
 
@@ -566,18 +631,18 @@ function Capture({
             </Line>
           ) : phase === "loading" ? (
             <Line key="loading" reduce={reduce} className="pt-1 text-(--fn-ink)/65">
-              Adding {submitted}…
+              Submitting {submitted}…
             </Line>
           ) : phase === "error" ? (
             <Line key="error" reduce={reduce} className="text-(--fn-ink)/60">
-              Nothing was saved.{" "}
+              Your address is kept here.{" "}
               <button type="button" onClick={() => backToField(submitted)} className={TEXT_BUTTON}>
                 Edit the address
               </button>
             </Line>
           ) : phase === "success" || phase === "already" ? (
             <Line key="done" reduce={reduce} className="text-(--fn-ink)/60" delay={0.35}>
-              {submitted ? <span className="hidden @md:inline">Sent to {submitted}. </span> : null}
+              {submitted ? <span className="hidden @md:inline">Address: {submitted}. </span> : null}
               <button type="button" onClick={() => backToField("")} className={TEXT_BUTTON}>
                 Use a different email
               </button>
@@ -692,9 +757,22 @@ function BottomRow({
   );
 }
 
-function Line({ children, reduce, className = "", delay = 0 }: { children: ReactNode; reduce: boolean; className?: string; delay?: number }) {
+const CaptureContext = createContext<string | undefined>(undefined);
+
+const CaptureState = forwardRef<HTMLDivElement, HTMLMotionProps<"div"> & { contextKey?: string }>(function CaptureState({ contextKey, ...props }, ref) {
+  const present = useIsPresent();
+  const currentContext = useContext(CaptureContext);
+  const retired = currentContext !== contextKey;
+  return <motion.div {...props} ref={ref} style={{ ...props.style, ...(retired ? { display: "none" } : {}) }} inert={!present || undefined} aria-hidden={!present || undefined} />;
+});
+
+const Line = forwardRef<HTMLParagraphElement, { children: ReactNode; reduce: boolean; className?: string; delay?: number }>(function Line({ children, reduce, className = "", delay = 0 }, ref) {
+  const present = useIsPresent();
   return (
     <motion.p
+      ref={ref}
+      inert={!present || undefined}
+      aria-hidden={!present || undefined}
       className={`text-pretty ${className}`}
       initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, filter: "blur(3px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.3, ease: EASE, delay: reduce ? 0 : delay } }}
@@ -703,13 +781,13 @@ function Line({ children, reduce, className = "", delay = 0 }: { children: React
       {children}
     </motion.p>
   );
-}
+});
 
 /** Words arrive one after another, each sharpening out of a small blur. */
 function MorphText({ text, reduce }: { text: string; reduce: boolean }) {
   const words = text.split(" ");
   return (
-    <span className="relative block text-left text-[15px] font-medium leading-[1.35] tracking-[-0.01em] text-(--fn-bg)" aria-label={text}>
+    <span className="relative block text-left text-[15px] font-medium leading-[1.35] tracking-[-0.01em] text-(--fn-bg)" role="status" aria-label={text}>
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span key={text} className="block" aria-hidden="true">
           {words.map((w, i) => (
