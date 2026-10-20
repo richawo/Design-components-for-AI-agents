@@ -26711,7 +26711,7 @@
         "name": "hires",
         "type": "NewHire[]",
         "default": "Noor Ali (day 4) and Theo Okafor (starts in 7 days)",
-        "description": "{ id, name, role, team, start, buddy, tasks, phases?, today? }. Tasks: { id, label, phase, owner, required, complete, instructions, requires }. phases: [{ name, day }] in order (day 1 is the start date); today: the hire's journey day, which places the Today marker."
+        "description": "New-hire records with stable, unique hire and task IDs. Current completion flags provide the baseline; local edits last until authoritative flags change or the record retires. Arriving records retain completed work, and returning IDs start with their current data."
       },
       {
         "name": "title",

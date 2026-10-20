@@ -59,6 +59,12 @@ them blocks writes immediately. Both-theme state audits and the complete People/
 regressions pass. Shared parts expose optional actionsDisabled with unchanged defaults. The full People
 review remains open, with no inventory change.
 
+People's onboarding data follow-up now honors arriving and authoritative completion flags, retires old
+responses and keeps new colleague drafts independent. Returning and opaque IDs remain isolated.
+Normal-motion content arriving in a hidden pane paints correctly. The 31-mount combined review passes
+thirty accessibility audits and all 44 reviewed captures; 24 settled references are byte-identical.
+Complete People/onboarding source-fixture regressions and all core checks pass. The full People review remains open.
+
 ## Previous workspace/input checkpoint (19 October 2026)
 
 The workspace/input checkpoint covers **all 64 browser suites across runs**: the full run is 63/64,

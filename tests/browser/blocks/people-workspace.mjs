@@ -1,8 +1,12 @@
+import { check as checkFlags } from "../review/block-people-authoritative-flags.mjs";
+import { check as checkArrivals } from "../review/block-people-arrivals.mjs";
 import { check as checkWriters } from "../review/block-people-writers.mjs";
 import { check as checkSelection } from "../review/block-people-selection.mjs";
 export async function check({ page, mount, assert }) {
   await checkSelection({ page, mount, assert });
   await checkWriters({ page, mount, assert });
+  await checkArrivals({ page, mount, assert });
+  await checkFlags({ page, mount, assert });
   await mount(
     `window.calls=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.PeopleWorkspace onComplete={async payload=>{window.calls.push(payload);if(!window.attempt++)throw Error('fixture');}}/>);`,
   );

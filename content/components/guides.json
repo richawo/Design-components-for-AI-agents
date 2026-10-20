@@ -2564,7 +2564,8 @@
       "Pass `hires` with `tasks`, ordered `phases` with due days and `today` to place the Today marker.",
       "`onComplete` receives { hireId, taskId, note } from a tick or the drawer; reject it to reopen the task with a retry message.",
       "Provide `onReopen` to enable Undo and unticking; use `selectMode=\"native\"` for the platform hire picker.",
-      "Use actionsDisabled when record browsing and draft notes must remain available while completion/decision and reopening actions are blocked. Omit it to retain existing local interactions."
+      "Use actionsDisabled when record browsing and draft notes must remain available while completion/decision and reopening actions are blocked. Omit it to retain existing local interactions.",
+      "Honor arriving and authoritative completion flags. Retired tasks discard pending replies and old notes; stable records retain local edits. Keep the complete hire/task identity separate, and scope drawers and success notices to their current owner."
     ],
     "related": [
       "onboarding-setup-checklist",
