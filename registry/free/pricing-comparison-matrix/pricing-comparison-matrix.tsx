@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type KeyboardEvent } from "react";
 import {
   AnimatePresence,
   LayoutGroup,
@@ -8,11 +8,21 @@ import {
   motion,
   useInView,
   useMotionValue,
-  useReducedMotion,
   useTransform,
   useVelocity,
   type Variants,
 } from "motion/react";
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+const readMotionPreference = () => matchMedia(motionQuery).matches;
+const subscribeMotionPreference = (update: () => void) => {
+  const media = matchMedia(motionQuery);
+  media.addEventListener("change", update);
+  return () => media.removeEventListener("change", update);
+};
+function useLiveReducedMotion() {
+  return useSyncExternalStore(subscribeMotionPreference, readMotionPreference, () => false);
+}
 
 /** true = included, false = not included, string = a value ("50M", "99.9%"). */
 export type MatrixValue = boolean | string;
@@ -147,8 +157,8 @@ const drawPath: Variants = {
   }),
 };
 const fade: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.15 } },
+  hidden: { opacity: 0, y: 0, filter: "none", scaleX: 1, pathLength: 1 },
+  show: { opacity: 1, y: 0, filter: "none", scaleX: 1, pathLength: 1, transition: { duration: 0.15, y: { duration: 0 }, filter: { duration: 0 }, scaleX: { duration: 0 }, pathLength: { duration: 0 } } },
   exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
@@ -242,7 +252,7 @@ export function PricingComparisonMatrix({
   theme = "dark",
 }: PricingComparisonMatrixProps) {
   const uid = useId();
-  const reduce = !!useReducedMotion();
+  const reduce = useLiveReducedMotion();
   const rootRef = useRef<HTMLElement>(null);
   const inView = useInView(rootRef, { once: true, amount: 0.1 });
   const revealedAt = useRevealTime(inView);
@@ -290,7 +300,7 @@ export function PricingComparisonMatrix({
       aria-labelledby={`${uid}-title`}
       style={vars}
       initial="hidden"
-      animate={inView ? "show" : "hidden"}
+      animate={reduce || inView ? "show" : "hidden"}
       className="@container relative overflow-x-clip bg-(--cm-page) text-(--cm-ink)"
     >
       <div className="mx-auto max-w-6xl px-4 py-16 @xl:px-8 @xl:py-20 @5xl:px-10 @5xl:py-24">
@@ -430,12 +440,12 @@ function CountedPrice({ price, active, reduce, delay, className }: { price: stri
   const filter = useTransform(velocity, (s) => (reduce ? "none" : `blur(${Math.min(2.5, Math.abs(s) / 30).toFixed(2)}px)`));
 
   useEffect(() => {
-    if (!active) return;
     if (reduce) {
       value.jump(target);
       entered.current = true;
       return;
     }
+    if (!active) return;
     const controls = entered.current
       ? animate(value, target, { duration: 0.45, ease: EASE })
       : animate(value, target, { delay, duration: T.count, ease: EASE, onComplete: () => (entered.current = true) });
@@ -529,16 +539,17 @@ function PlanCta({ plan, primary, compact }: { plan: MatrixPlan; primary: boolea
   return (
     <a
       href={plan.cta.href}
-      className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 group/cta inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.97] ${FOCUS} ${
-        compact ? "h-11 shrink-0 px-5 text-[14px]" : "h-10 w-full px-3 text-[13px] @5xl:text-[14px]"
+      data-demo={`plan-${plan.id}`}
+      className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 group/cta inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-normal rounded-full font-semibold transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.97] ${FOCUS} ${
+        compact ? "min-h-11 justify-self-end px-5 py-2 text-[14px]" : "min-h-10 w-full px-3 py-2 text-[13px] @5xl:text-[14px]"
       } ${
         primary
           ? "bg-(--cm-ink) text-(--cm-on-ink) hover:bg-(--cm-ink)/88"
           : "bg-(--cm-ink)/[0.04] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--cm-ink)_14%,transparent)] hover:bg-(--cm-ink)/[0.08]"
       }`}
     >
-      {plan.cta.label}
-      <svg viewBox="0 0 16 16" className="size-3.5 transition-transform duration-150 group-hover/cta:translate-x-0.5" fill="none" aria-hidden="true">
+      <span className="min-w-0 break-words">{plan.cta.label}</span>
+      <svg viewBox="0 0 16 16" className="size-3.5 shrink-0 transition-transform duration-150 group-hover/cta:translate-x-0.5" fill="none" aria-hidden="true">
         <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </a>
@@ -617,7 +628,7 @@ function MobilePlanBar({
           })}
         </div>
       </LayoutGroup>
-      <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1" aria-live="polite">
+      <div className="mt-4 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1" aria-live="polite">
           <p className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-(--cm-ink)/65">
             {plan.name}
             {selected === recIndex ? (
@@ -674,7 +685,7 @@ function GroupBody({
 }) {
   const ref = useRef<HTMLTableSectionElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.15 });
-  const ready = inView && revealedAt !== null;
+  const ready = reduce || (inView && revealedAt !== null);
   // Where this group starts: its slot in the first-view timeline, or now if that slot has passed.
   const base = useMemo(() => (ready && revealedAt !== null ? remaining(revealedAt, T.rows + index * T.groupStep) : 0), [ready, revealedAt, index]);
 

@@ -47,3 +47,6 @@ Secondary text uses at least 65% ink opacity on these surfaces; quiet typography
 - Keep the complete phone price unit visible instead of truncating its billing period.
 - Disable Expand all / Collapse all when there are no feature rows.
 - On coarse pointers, plan links, global controls and feature hints retain at least 44px in both dimensions.
+
+- Long plan actions wrap inside the available column, keep the price clear and retain their arrow. Use `data-demo="plan-{id}"` for exact demo actions.
+- Follow reduced-motion changes while mounted. Reset prior blur, position, scale and mark drawing immediately, then fade. Prices and offscreen rows settle independently of intersection observers.

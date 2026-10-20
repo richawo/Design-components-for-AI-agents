@@ -53,6 +53,16 @@ all 1,068 tests. Its decoded existing film shows the unchanged wide layout and s
 full composition remains open. Evidence uses `test-results/handoff-blocks/matrix-*`; the next complete
 checkpoint has 68 browser suites.
 
+Comparison Matrix's additional long-action and live-preference repair passes 33 fine-pointer and four
+coarse-pointer mounts, 36 accessibility audits and fifty approved captures. Long phone actions wrap clear
+of the complete price; reduced prices and offscreen rows settle without waiting for intersection. The
+original overlap, zero/hidden values and blurred live phone price remain archived. Twenty-three fine
+captures match inspected references; fifteen changed fine frames and all twelve touch frames are newly
+inspected. Six wide defaults stay byte-identical and retain the current film. The complete registered
+native marketing suite passes all eighteen checks, with strict registry, root/all-eleven-block types
+and all 1,083 unit tests passing. No translation keys change. Evidence uses
+`test-results/handoff-blocks/matrix-offers-*`. Full Landing integration and media remain open.
+
 Blur Statement Hero now keeps both phone actions within their bounds, restores useful painted-text
 contrast and labels its controls for any rotating word. Live reduced motion cancels old entrance delays,
 clears blur/transforms within two frames and retires outgoing word/note swaps while retaining control

@@ -13,7 +13,7 @@
     "header": "eyebrow, headline (max 18ch), body; mobile controls under it",
     "desktop": "@3xl+: real table, first column 28% (30% @5xl), 4 plan columns, sticky thead, recommended band continuous from head to foot with rounded top/bottom",
     "groups": "tbody per group: a row-spanning toggle row, then feature rows",
-    "mobile": "<@3xl: sticky tablist; full-width name/recommendation, price beside CTA, complete unit below; only the selected plan's feature column is visible",
+    "mobile": "<@3xl: sticky tablist; full-width name/recommendation, price beside CTA, complete unit below; only the selected plan's feature column is visible; long action labels wrap within the remaining column without covering the price",
     "stickyInset": "Both sticky headers inherit --cm-sticky-top, defaulting to 0px, so a composed page can clear its navigation."
   },
   "typography": {
@@ -59,7 +59,7 @@
     "expand": "rows replay the stagger; collapse fades in 120ms",
     "mobileSwitch": "layoutId thumb spring 500/40; values swap with 4px rise + 3px blur, 250ms",
     "tooltip": "rise 4px from blur 2px, 200ms; exit 120ms",
-    "reducedMotion": "one 150ms fade, prices set instantly, no transforms or blur"
+    "reducedMotion": "Follow mounted preference changes with a 150ms fade and immediate reset of blur, position, scale and drawn marks. Set prices instantly even offscreen, independently of intersection observers."
   },
   "responsive": {
     "<@3xl": "sticky plan switcher; two visible columns per row; no horizontal scroll",
@@ -76,7 +76,8 @@
     "reduced motion: fades only",
     "Secondary text uses at least 65% ink opacity on these surfaces; quiet typography must remain readable in both themes.",
     "Coarse-pointer plan links, global group controls and feature hints retain 44px targets.",
-    "Disable the global expand/collapse action when there are no feature rows."
+    "Disable the global expand/collapse action when there are no feature rows.",
+    "Long action labels wrap with a shrinking text span and a retained arrow; plan links expose data-demo=\"plan-{id}\" for exact replay."
   ],
   "content": {
     "product": "Hatch",
