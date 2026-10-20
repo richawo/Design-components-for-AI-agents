@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Task 7 (20 October): Meetings Workspace now composes a full-width agenda, a retained host-owned room and independent notes with compact view names. Phone Join actions name the selected meeting, the call stage uses the accepted title, and notes retain their original meeting ID, including arriving opaque IDs. Empty notes and normalized day/meeting identities stay consistent. Pending join, leave and media actions await their host promises; rejected and retired requests preserve the current session, drafts and newer outside focus. Its 51-mount source review, forty accessibility audits and sixty reviewed state/entrance captures pass. Four fresh coarse-pointer mounts, twelve accessibility audits and twelve reviewed phone captures cover the shared 44px controls and narrow header correction. All nine Next block workflows, nine exact metadata replays, theme control, official audit and twelve measured Next/source framing captures pass with unchanged source hashes. Strict registry, root/all-eleven-block types and all 1,068 tests pass. The optional timezone prop labels host-supplied times; existing callback and Pro boundaries remain intact. Its reviewed 3.7s film and paired opening poster keep the complete 840px workspace at 1400x940, ending with Mara spotlighted and the hand raised. Source gap is 25ms, delivery 34.95ms and moving-frame p95 19.18ms, with no stalls and unchanged guards. Six blocks, 59 older probes and 120 listed films remain. The next complete batch release checkpoint remains pending.
+
 - Task 4 table follow-up (20 October): the combined block run exposed reduced-motion cost figures remaining at zero until their table's intersection observer fired. An independent offscreen counterexample reproduces it with £1,234.00. Figures now settle before paint independently of that observer, and the table follows live preference changes while explicitly clearing its rise and blur. The registered table suite and complete Financial Report workflow pass through Next with the original exact-value assertions and deadlines. Nineteen source mounts, six accessibility audits and twenty approved captures pass; twelve settled defaults are byte-identical to their approved references. Strict registry, root/all-eleven-block types and all 1,068 unit tests pass. The original integration failure and rejected blurred intermediate candidate are preserved. The Meetings integration run continues; queue counts are unchanged.
 
 - Meetings touch dependency (20 October): Call Stage's Grid, Speaker and Captions actions now retain 44px width on coarse pointers. A narrow stage gives its title and participant count a separate row so the larger controls cannot squeeze ordinary labels. Native taps, all enabled targets and heading geometry pass at 320/390px in both themes. All four fresh captures are reviewed, the full 58-layout/media suite and four painted contrast/accessibility states pass, and root/all-eleven-block types remain clean. Original undersized targets and the first cramped-heading captures are preserved. This dependency fix leaves the full Meetings review open.
@@ -613,7 +615,7 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (7 blocks)
+## 7. Continue the review (6 blocks)
 
 Same process as the 202 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
@@ -659,12 +661,12 @@ reference; the reviewed dark capture differs only in eight pixels around its Pai
 registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
 Commerce completed its full review with this dependency; ten other blocks remain open.
 
-- **Commerce, Fashion, Financial Report and Legal Workspace** are reviewed. Keep these blocks compatible with their rebuilt parts.
+- **Commerce, Fashion, Financial Report, Legal and Meetings Workspace** are reviewed. Keep these blocks compatible with their rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: seven of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report and Legal Workspace are reviewed. Many parts changed their look and some their props;
+- **Blocks**, after their parts: six of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report, Legal and Meetings Workspace are reviewed. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
 
-`block-meetings-workspace`, `block-music-workspace`,
+`block-music-workspace`,
 `block-people-workspace`, `block-saas-dashboard`, `block-saas-landing`,
 `block-team-workspace`, `block-workspace-settings`.
 

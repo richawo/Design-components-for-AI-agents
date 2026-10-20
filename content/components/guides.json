@@ -3673,13 +3673,14 @@
     ]
   },
   "block-meetings-workspace": {
-    "updated": "2026-10-12",
-    "useWhen": "Composing a working meeting application with linked agenda context, persistent room controls and independently retained notes.",
+    "updated": "2026-10-20",
+    "useWhen": "Composing a meeting application with a selected agenda context, a retained host session and independently retained notes.",
     "avoidWhen": "Treating an interface block as a conferencing transport or declaring a room joined before the host acknowledges it.",
     "integration": [
-      "Supply agenda days, participant streams and join/leave callbacks. Keep selected meeting separate from the joined session.",
-      "Media callbacks resolve after host state changes succeed; failures preserve the previous control state.",
-      "Notes remain scoped by meeting ID. Hosts own storage, permissions and transport; the offline room uses fictional, camera-off participants."
+      "Supply stable agenda identities, participant streams and join/leave callbacks together. The timezone prop labels host-supplied dates and clock times.",
+      "Join and media writes belong to their original meeting. Accepted session signals stay alive until successful leave, agenda removal or unmount; honor cancellation and ignore retired replies.",
+      "Selected notes can differ from the joined room. Local edits are scoped by their original meeting ID; hosts own durable storage.",
+      "Await host promises through visible busy controls, retain accepted state and drafts on failure, and preserve newer outside focus."
     ],
     "related": [
       "collab-call-stage",

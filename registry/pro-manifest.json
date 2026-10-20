@@ -6232,7 +6232,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "collaboration",
-    "description": "A complete meeting workspace linking an agenda, a retained call stage and meeting-scoped notes. Persistent controls stay reachable across views.",
+    "description": "An agenda, retained meeting room and notes for each meeting, with persistent media controls that wait for host callbacks.",
     "tags": [
       "team",
       "workspace",
@@ -6246,7 +6246,7 @@
     ],
     "theme": "dark",
     "previewHeight": 940,
-    "usage": "import { MeetingsWorkspace } from \"@/components/design-for-ai/block-meetings-workspace\";\n\n<MeetingsWorkspace days={days} participants={participants} onJoin={joinRoom} onLeave={leaveRoom} onNotesChange={saveNotes} />",
+    "usage": "import { MeetingsWorkspace } from \"@/components/design-for-ai/block-meetings-workspace\";\n\n<MeetingsWorkspace\n  brand=\"Roundtable\"\n  timezone=\"London time\"\n  days={days}\n  participants={participants}\n  currentUserId={currentUserId}\n  onJoin={(meetingId, signal) => rooms.join(meetingId, { signal })}\n  onLeave={(meetingId, signal) => rooms.leave(meetingId, { signal })}\n  onMicrophoneChange={(meetingId, muted, signal) => rooms.setMicrophone(meetingId, muted, { signal })}\n  onCameraChange={(meetingId, on, signal) => rooms.setCamera(meetingId, on, { signal })}\n  onHandChange={(meetingId, raised, signal) => rooms.setHand(meetingId, raised, { signal })}\n  onNotesChange={(meetingId, text) => notes.updateDraft(meetingId, text)}\n/>",
     "props": [
       {
         "name": "brand",
@@ -6255,9 +6255,15 @@
         "description": "Workspace identity."
       },
       {
+        "name": "timezone",
+        "type": "string",
+        "default": "\"London time\"",
+        "description": "Display label for the agenda. The host supplies the dates and clock labels; this does not convert their time zone."
+      },
+      {
         "name": "days",
         "type": "AgendaDay[]",
-        "description": "Host-owned agenda days and unique meeting records."
+        "description": "Host-owned agenda days with nonempty, unique day and meeting IDs. Blank or repeated IDs are omitted consistently from the agenda and notes. The first occurrence of a meeting ID wins across days."
       },
       {
         "name": "participants",
@@ -6303,7 +6309,7 @@
       {
         "name": "onNotesChange",
         "type": "(meetingId: string, text: string) => void",
-        "description": "Observe actual edits, scoped to the selected meeting."
+        "description": "Observe local text edits for the selected meeting ID. Drafts remain independent from the joined room. Persist through the host; this synchronous notification does not announce durable storage."
       },
       {
         "name": "theme",

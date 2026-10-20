@@ -11,6 +11,7 @@ const specs = [
   ["block-legal-workspace", "Completion evidence recorded for Deliver the quarterly service report."],
   ["block-commerce-workspace", "RET-ORD-1042 · Return request recorded"],
   ["block-saas-landing", "Your Solo workspace."],
+  ["block-meetings-workspace", "Studio review"],
 ];
 const requested = new Set(process.argv.slice(2));
 for (const slug of requested) assert.ok(specs.some(([name]) => name === slug), `Unknown block replay: ${slug}`);
@@ -94,11 +95,29 @@ try {
         }, true);
       });
     }
+    if (slug === "block-meetings-workspace") {
+      await page.evaluate(() => {
+        window.meetingsReplay = [];
+        document.addEventListener("click", event => {
+          const name = event.target.closest?.("[data-demo]")?.dataset.demo;
+          if (["join-meeting", "spotlight-mara", "call-hand"].includes(name)) window.meetingsReplay.push(name);
+        }, true);
+      });
+    }
     await page.evaluate((steps) => window.play(steps), meta.demo.steps);
     assert.ok(
       (await page.locator("#root").innerText()).includes(final),
       slug + " intended end",
     );
+    if (slug === "block-meetings-workspace") {
+      assert.deepEqual(await page.evaluate(() => window.meetingsReplay), ["join-meeting", "spotlight-mara", "call-hand"]);
+      const pane = page.getByRole("tabpanel", { name: "Meeting room", exact: true });
+      assert.equal(await page.getByRole("tab", { name: "Meeting room", exact: true }).getAttribute("aria-selected"), "true");
+      assert.equal(await pane.getByRole("heading", { name: "Studio review", exact: true }).isVisible(), true);
+      assert.equal(await pane.getByRole("button", { name: "Speaker view", exact: true }).getAttribute("aria-pressed"), "true");
+      assert.equal(await pane.getByRole("button", { name: "Remove spotlight from Mara Vale", exact: true }).getAttribute("aria-pressed"), "true");
+      assert.equal(await page.getByRole("button", { name: "Lower hand", exact: true }).getAttribute("aria-pressed"), "true");
+    }
     if (slug === "block-legal-workspace") {
       assert.deepEqual(await page.evaluate(() => window.legalReplay), ["nav-obligations", "evidence", "record"]);
       const pane = page.getByRole("tabpanel", { name: "Obligations", exact: true });
