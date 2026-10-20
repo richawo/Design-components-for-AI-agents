@@ -9,7 +9,7 @@ const DISPLAY_INPUTS = {
   "text-optical-weight": { TextOpticalWeight: ["text"] },
   "hero-kinetic-type": { LetterStack: ["lines"] },
   "hero-prism": { Headline: ["text", "muted"] },
-  "hero-blur-statement": { Statement: ["line"] },
+  "hero-blur-statement": { Statement: ["lead", "tail"] },
   "hero-marquee-screens": { HeroMarqueeScreens: ["headline"] },
   "cta-horizon": { Headline: ["text", "muted"] },
   "hero-signal-workbench": { HeroSignalWorkbench: ["heading"] },

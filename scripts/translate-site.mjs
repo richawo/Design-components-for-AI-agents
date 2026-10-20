@@ -12,7 +12,7 @@ const root = process.cwd();
 const args = process.argv.slice(2);
 const argument = (name) => args.includes(name) ? args[args.indexOf(name) + 1] : undefined;
 const locales = LOCALES.filter((locale) => locale.code !== "en" && (!argument("--locales") || argument("--locales").split(",").includes(locale.code)));
-const { keys, ui } = siteCorpus(root);
+const { keys, ui, server } = siteCorpus(root);
 const ordered = [...new Set([...ui, ...keys])];
 const read = (file) => fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {};
 const save = (file, value) => { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(`${file}.tmp`, JSON.stringify(value, null, 2) + "\n"); fs.renameSync(`${file}.tmp`, file); };
@@ -117,6 +117,6 @@ async function translatePhase(texts, phase) {
 }
 // Finish the navigation, pages and catalogue in every edition before moving
 // through the larger component/demo corpus. Quotas must not starve later UI.
-await translatePhase(ui, "site");
+await translatePhase([...new Set([...ui, ...server])], "site");
 if (!args.includes("--ui-only")) await translatePhase(keys, "component");
 if (invalid.length) { console.error(`${invalid.length} translations need review; all other progress is saved.`); process.exitCode = 1; }

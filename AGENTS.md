@@ -30,7 +30,7 @@ Read `docs/SITE_PERFORMANCE.md` and `docs/DEPLOY.md` before changing these paths
 ## Site localisation
 
 - Human pages and live previews share the 30 language editions in `lib/blog/locales.mjs`. Keep locale state explicit in routes and React context.
-- After changing visible site copy, component metadata or demo content, run `npm run site:translate`, then `npm run site:audit` and rebuild the registry. Translation progress is saved in `content/site-i18n/`; reviewed terminology belongs in `content/site-i18n-overrides.json`. Publishing checks coverage before uploading.
+- After changing visible site copy, component metadata or demo content, run `npm run site:translate`, then `npm run site:audit` and rebuild the registry. Translation progress is saved in `content/site-i18n/`; reviewed terminology belongs in `content/site-i18n-overrides.json`. Report any coverage gaps. Missing copy uses the English fallback so provider outages do not block other verified deployments.
 - Preserve standalone downloadable code, commands, identifiers, editable values and callback contracts. Translate display copy before letter effects or canvas rendering when needed.
 - Load only the selected preview's language asset. Keep the full translation corpus out of browser navigation payloads and Worker runtime modules.
 

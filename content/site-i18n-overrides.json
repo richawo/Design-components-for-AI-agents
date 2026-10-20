@@ -5,6 +5,9 @@
     "Node, Python, Go, Ruby, Swift",
     "Juno Park · juno.park@fernhill.io"
   ],
+  "_preserveInPreviews": {
+    "hero-blur-statement": ["Tessel", "Kiln", "Meridian", "Parcel", "Northwind", "Strata"]
+  },
   "fr": {
     "Docs": "Documentation",
     "Native": "Natif",

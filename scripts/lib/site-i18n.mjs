@@ -130,7 +130,8 @@ export function buildSiteI18n(root) {
     // Only the selected language and component are read at request time.
     const assets = {};
     for (const [slug, keys] of Object.entries(corpus.previews)) {
-      const json = JSON.stringify(Object.fromEntries(keys.filter((key) => strings[key]).map((key) => [key, strings[key]])));
+      const preserve = new Set(overrides._preserveInPreviews?.[slug] ?? []);
+      const json = JSON.stringify(Object.fromEntries(keys.filter((key) => strings[key] || preserve.has(key)).map((key) => [key, preserve.has(key) ? key : strings[key]])));
       const hash = createHash("sha256").update(json).digest("hex").slice(0, 16);
       const asset = `/locale-previews/${locale.code}/${slug}.${hash}.json`;
       retained.add(asset);

@@ -108,6 +108,17 @@ try {
   await page.goto(`${base}/fr/preview/cta-horizon`, { waitUntil: "domcontentloaded" });
   await page.locator('[data-preview-ready="true"]').waitFor();
   assert.equal((await page.locator("h2").innerText()).replace(/\s+/g, " ").trim(), frenchCopy["Ship the version you’d be proud to demo."], "A word-based headline translates its sentence before splitting");
+  await page.goto(`${base}/fr/preview/hero-blur-statement`, { waitUntil: "domcontentloaded" });
+  await page.locator('[data-preview-ready="true"]').waitFor();
+  const statement = (await page.locator('[data-demo="statement"] > span[aria-hidden="true"]').filter({ visible: true }).innerText()).replace(/\s+/g, " ");
+  assert(statement.includes(frenchCopy["We design products for"]));
+  assert(statement.includes(frenchCopy["open on purpose."]));
+  assert.equal(await page.locator('[data-hero-word="Tessel"]').innerText(), "Tessel", "The rolling brand keeps its official name");
+  for (const brand of ["Kiln", "Meridian", "Parcel"]) {
+    await page.locator('[data-demo="rotation"]').click();
+    assert.equal(await page.locator(`[data-hero-word="${brand}"]`).innerText(), brand, "A brand name must keep its spelling while rotating");
+  }
+  await page.screenshot({ path: `${output}/french-hero.png` });
   await page.goto(`${base}/fr/preview/diagram-rag-pipeline`, { waitUntil: "domcontentloaded" });
   await page.locator('[data-preview-ready="true"]').waitFor();
   await page.getByText(frenchCopy["Yes. Cancel within 30 days of your renewal and the whole year comes back to your card."], { exact: false }).first().waitFor();
