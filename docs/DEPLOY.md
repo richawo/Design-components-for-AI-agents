@@ -31,7 +31,9 @@ make public cache hits initialize the whole application again. The final upload
 uses `--no-bundle`; dry runs use the same preparation and checks. The command
 rejects a public entry of 4 MiB or more, runtime modules totalling 64 MiB or more,
 and gzipped source maps totalling 15 MB or more. Runtime accounting includes
-attached text, SQL and Wasm modules, including nested modules.
+attached text, SQL and Wasm modules, including nested modules. The prepared server
+omits the router cache manifest only when the files are identical and the lazy
+server does not reference it. Referenced or different modules remain included.
 
 After `npm run deploy:dry-run`, exercise that exact package with
 `npx wrangler dev .open-next/deploy/worker.js --no-bundle --port 4189`.

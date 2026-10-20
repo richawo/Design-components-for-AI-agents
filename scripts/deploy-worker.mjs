@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { gzipSync } from "node:zlib";
 import { compactGeneratedSourceMap } from "./lib/source-map-budget.mjs";
+import { copyPreparedServerAssets } from "./lib/prepared-server-assets.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const directory = path.join(root, ".open-next", "deploy");
@@ -43,9 +44,14 @@ fs.mkdirSync(lazyDirectory, { recursive: true });
 const lazyServer = path.join(lazyDirectory, "lazy-server.mjs");
 fs.writeFileSync(lazyServer, fs.readFileSync(path.join(serverDirectory, serverEntry), "utf8")
   .replace(/sourceMappingURL=[^\s]+/, "sourceMappingURL=lazy-server.mjs.map"));
-for (const name of fs.readdirSync(serverDirectory).filter(name => ![serverEntry, `${serverEntry}.map`, "README.md"].includes(name))) {
-  fs.cpSync(path.join(serverDirectory, name), path.join(lazyDirectory, name), { recursive: true });
-}
+const copied = copyPreparedServerAssets({
+  preparedDirectory: serverDirectory,
+  destination: lazyDirectory,
+  serverEntry,
+  serverSource: fs.readFileSync(lazyServer, "utf8"),
+  sharedManifest: path.join(root, ".open-next", "cloudflare", "cache-assets-manifest.sql"),
+});
+if (copied.omittedManifest) console.log("Prepared server: omitted unused identical router cache manifest");
 const workerEntry = path.join(root, ".open-next", "worker.js");
 const worker = fs.readFileSync(workerEntry, "utf8");
 const serverImport = 'import("./server-functions/default/handler.mjs")';
