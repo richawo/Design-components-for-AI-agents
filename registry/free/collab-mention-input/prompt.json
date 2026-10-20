@@ -26,8 +26,30 @@
   },
   "color": {
     "approach": "greyscale; one accent on person tokens, the active person avatar and the text selection. Channels stay neutral",
-    "dark": { "surface": "#111113", "raised": "#17171a", "sunken": "#0c0c0e", "line": "#232327", "rule": "#1b1b1e", "avatar": "#1f1f23", "ink": "#f4f4f5", "muted": "#a1a1aa", "faint": "#8a8a93", "stage": "#0a0a0b (demo only)" },
-    "light": { "surface": "#ffffff", "raised": "#f6f6f7", "sunken": "#fafafa", "line": "#e4e4e7", "rule": "#efeff1", "avatar": "#f0f0f2", "ink": "#18181b", "muted": "#52525b", "faint": "#71717a", "stage": "#e9e9ec (demo only)" },
+    "dark": {
+      "surface": "#111113",
+      "raised": "#17171a",
+      "sunken": "#0c0c0e",
+      "line": "#232327",
+      "rule": "#1b1b1e",
+      "avatar": "#1f1f23",
+      "ink": "#f4f4f5",
+      "muted": "#a1a1aa",
+      "faint": "#8a8a93",
+      "stage": "#0a0a0b (demo only)"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "raised": "#f6f6f7",
+      "sunken": "#fafafa",
+      "line": "#e4e4e7",
+      "rule": "#efeff1",
+      "avatar": "#f0f0f2",
+      "ink": "#18181b",
+      "muted": "#52525b",
+      "faint": "#71717a",
+      "stage": "#e9e9ec (demo only)"
+    },
     "accent": "#f5a524 by default. Person fill 16%, inset 28%, active ring 55%, selection 35%"
   },
   "motion": {
@@ -35,7 +57,7 @@
     "order": "card, header, well, hint: 12px rise, 8px blur, 0.5s, 60ms apart",
     "list": "6px offset and 4px blur over 0.2s; exit 120ms ease-in; highlight on spring 500/40; row press 0.98",
     "token": "inserted tokens rise 2px out of a 4px blur in 280ms. The initial paint does not",
-    "reducedMotion": "150ms fades only"
+    "reducedMotion": "150ms fades only. Follow mounted changes; cancel current entrance and native token animations, settle suggestions, and preserve the editor and caret."
   },
   "responsive": {
     "320": "the well stays inset, the list clamps to the well width, rows stay 44px and names truncate",

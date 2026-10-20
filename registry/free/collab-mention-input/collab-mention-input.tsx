@@ -1,16 +1,45 @@
 "use client";
 
 import {
-  useEffect,
+  useEffect, useLayoutEffect,
   useId,
   useRef,
-  useState,
+  useState, useSyncExternalStore,
   type ClipboardEvent as ReactClipboardEvent,
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
+import { AnimatePresence, animate, motion, useInView } from "motion/react";
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+const readMotionPreference = () => matchMedia(motionQuery).matches;
+const subscribeMotionPreference = (update: () => void) => {
+  const media = matchMedia(motionQuery);
+  media.addEventListener("change", update);
+  return () => media.removeEventListener("change", update);
+};
+function useLiveReducedMotion() {
+  return useSyncExternalStore(subscribeMotionPreference, readMotionPreference, () => false);
+}
+const reducedTransform = () => "none";
+
+function useReducedEntries(reduce: boolean, root: { current: HTMLElement | null }) {
+  useLayoutEffect(() => {
+    const host = root.current;
+    if (!reduce || !host) return;
+    // Imperative Motion updates share the element's values and stop prior tweens.
+    // Changed props alone can leave an in-flight entrance targeting the same final value.
+    for (const node of [host, ...host.querySelectorAll<HTMLElement>("[data-mi-entry]")]) {
+      if (node.matches("[data-mi-entry]") && !node.closest("[inert], [hidden]")) {
+        animate(node, { opacity: 1, y: 0, filter: "none" }, { duration: 0 });
+      }
+    }
+    for (const token of host.querySelectorAll<HTMLElement>("[data-token]")) {
+      for (const animation of token.getAnimations()) animation.cancel();
+    }
+  }, [reduce, root]);
+}
 
 /* ------------------------------------------------------------------ */
 /* Types                                                                */
@@ -143,8 +172,15 @@ const initials = (name: string) =>
 const firstName = (name: string) => name.split(" ")[0] ?? name;
 
 function enter(play: boolean, delay: number, reduce: boolean) {
-  if (reduce) return { initial: { opacity: 0 }, animate: { opacity: play ? 1 : 0 }, transition: { duration: MOTION.fade } };
+  if (reduce) return {
+    "data-mi-entry": true,
+    transformTemplate: reducedTransform,
+    initial: { opacity: 0, y: 0, filter: "none" },
+    animate: { opacity: 1, y: 0, filter: "none" },
+    transition: { duration: MOTION.fade, y: { duration: 0 }, filter: { duration: 0 } },
+  };
   return {
+    "data-mi-entry": true,
     initial: { opacity: 0, y: MOTION.rise, filter: `blur(${MOTION.blur}px)` },
     animate: play ? { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } } : undefined,
     transition: { duration: MOTION.block, ease: EASE_OUT, delay },
@@ -260,9 +296,10 @@ export function CollabMentionInput({
   theme = "dark",
   className = "",
 }: CollabMentionInputProps) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion();
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const root = useRef<HTMLElement>(null);
+  useReducedEntries(reduce, root);
   const host = useRef<HTMLDivElement>(null);
   const editor = useRef<HTMLDivElement>(null);
   const play = useInView(root, { once: true, amount: 0.2 });
@@ -499,13 +536,14 @@ export function CollabMentionInput({
             }}
             className={`min-h-[9.5rem] whitespace-pre-wrap px-4 py-3 text-[var(--mi-muted)] caret-[var(--mi-ink)] outline-none selection:bg-[color-mix(in_srgb,var(--mi-accent)_35%,transparent)] ${voice === "serif" ? "font-serif text-[17px] leading-[1.55]" : "text-[15px] leading-[1.65]"} ${FOCUS_RING}`}
           />
-          <AnimatePresence>
+          <AnimatePresence key={reduce ? "reduced" : "full"}>
             {query && (
               <motion.div
-                initial={reduce ? { opacity: 0 } : { opacity: 0, y: -6, filter: "blur(4px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transformTemplate={reduce ? reducedTransform : undefined}
+                initial={reduce ? false : { opacity: 0, y: -6, filter: "blur(4px)" }}
+                animate={{ opacity: 1, y: 0, filter: reduce ? "none" : "blur(0px)" }}
                 exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4, transition: { duration: 0.12, ease: EASE_IN } }}
-                transition={{ duration: 0.2, ease: EASE_OUT }}
+                transition={{ duration: reduce ? 0 : 0.2, ease: EASE_OUT }}
                 style={{ top: query.top, left: query.left, width: query.width }}
                 className="absolute z-30 rounded-xl border border-[var(--mi-line)] bg-[var(--mi-raised)] p-1 shadow-[var(--mi-pop)]"
               >

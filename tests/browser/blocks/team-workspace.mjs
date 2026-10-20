@@ -1,3 +1,6 @@
+import { check as checkMotion } from "../review/block-team-live-motion.mjs";
+import { check as checkPopovers } from "../review/block-team-live-popovers.mjs";
+import { check as checkPlacement } from "../review/block-team-picker-placement.mjs";
 import { check as checkMessages } from "../review/block-team-messages.mjs";
 import { check as checkState } from "../review/block-team-state.mjs";
 import { check as checkIdentities } from "../review/block-team-identities.mjs";
@@ -16,5 +19,8 @@ export async function check(context) {
     await checkFocus(themed);
     await checkFocusCommit(themed);
     await checkErrors(themed);
+    await checkMotion(themed);
+    await checkPopovers(themed);
+    await checkPlacement(themed);
   }
 }

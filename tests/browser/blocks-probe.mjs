@@ -31,6 +31,7 @@ try {
     const touchCase = {
       "people-workspace": ["PeopleWorkspace", "block-people-touch"],
       "saas-dashboard": ["SaasDashboard", "block-saas-dashboard-touch"],
+      "team-workspace": ["TeamWorkspace", "block-team-touch"],
     }[slug];
     if (touchCase) {
       const touchPage = await browser.newPage({

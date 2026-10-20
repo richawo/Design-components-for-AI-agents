@@ -19,7 +19,7 @@ Build a mention field in React + Tailwind CSS v4 with `motion/react`. Dark and m
 - Once at 20% in view: card, header, well and hint rise 12px out of an 8px blur (0.5s, 60ms apart).
 - The list arrives 6px down from a 4px blur (0.2s) and leaves in 120ms. The active row’s highlight slides with `layoutId` on spring 500/40. Rows press to 0.98.
 - A token inserted from the list fades in through a 4px blur and a 2px rise (280ms). Tokens painted from the initial value do not.
-- Reduced motion: 150ms fades, no blur, no token rise, highlight does not travel.
+- Reduced motion: 150ms fades, no blur, no token rise, highlight does not travel. Read preference changes while mounted. Enabling reduction cancels current entrance and native token animation, settles the suggestion list and keeps the same editor and caret.
 
 **Behaviour**
 - `@` or `#` after whitespace (or at the start) opens the list. The query is the handle fragment at the caret. People match a handle prefix or a name that contains the query; channels match a name prefix. Five rows max. Arrow keys move, Enter or Tab inserts, Escape dismisses. A click on a row uses `pointerdown` preventDefault so the field does not blur first.
