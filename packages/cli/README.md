@@ -17,7 +17,7 @@ No dependencies, Node 18+.
 | `search <query>` | Components matching a query. `--category`, `--tier free\|pro`, `--platform web\|mobile`, `--json` |
 | `list` | Every component, grouped by category |
 | `info <slug>` | Description, install command and props |
-| `add <slug…>` | Writes `components/design-for-ai/<slug>.tsx` (or `src/components/…`, or `--dir`), then installs missing npm dependencies with your package manager. `--force` overwrites, `--no-install` only prints the command |
+| `add <slug…>` | Writes `components/design-for-ai/<slug>.tsx` (or `src/components/…`, or `--dir`), then installs missing npm dependencies with your package manager. `--force` overwrites, `--no-install` still writes the component files and prints the missing-dependency command without installing packages |
 | `prompt <slug>` | Prints the design brief (`--json` for the JSON prompt). Pipe it to your agent |
 | `login <key>` / `logout` | Save or forget a Pro licence key (`~/.config/design-for-ai/config.json`, mode 600) |
 | `mcp` | How to connect Claude Code, Cursor, Windsurf and others to the remote MCP server |
