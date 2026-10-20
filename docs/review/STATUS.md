@@ -65,6 +65,8 @@ Normal-motion content arriving in a hidden pane paints correctly. The 31-mount c
 thirty accessibility audits and all 44 reviewed captures; 24 settled references are byte-identical.
 Complete People/onboarding source-fixture regressions and all core checks pass. The full People review remains open.
 
+People header and receipt follow-up (20 October): long colleague names and department metadata now stay inside onboarding headers in single, custom and native picker modes. Ordinary wide names retain one line and their original reviewed pixels. Retiring completion receipts and Undo actions become inert and hidden from accessibility immediately. Both original failures remain archived. The 31-mount combined source review passes eighteen accessibility audits and all 32 reviewed captures. The complete canonical onboarding source regression, strict registry, root/all-eleven-block types and all 1,068 unit tests pass. Nonvisual demo targets now identify the completion note and confirmation. The full People block review remains open; counts stay at five blocks, 59 older probes and 121 films.
+
 ## Previous workspace/input checkpoint (19 October 2026)
 
 The workspace/input checkpoint covers **all 64 browser suites across runs**: the full run is 63/64,

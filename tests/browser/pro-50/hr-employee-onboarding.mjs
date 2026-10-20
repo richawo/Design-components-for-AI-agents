@@ -1,4 +1,7 @@
-export async function check({ page, mount, assert, choose }) {
+import { check as checkReceiptRetirement } from "../review/onboarding-receipt-retirement.mjs";
+import { check as checkLongMetadata } from "../review/onboarding-long-metadata.mjs";
+export async function check(context) {
+  const { page, mount, assert, choose } = context;
   await mount(`window.steps=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.EmployeeOnboarding onComplete={async p=>{window.steps.push(p);if(window.fail)throw Error('offline')}} onReopen={p=>{window.reopened=p}}/>);`);
   const text = () => page.locator("section").first().innerText();
   // Figures tween through motion values, so wait for them to settle.
@@ -36,4 +39,6 @@ export async function check({ page, mount, assert, choose }) {
   await choose(page.locator('[data-demo="hire"]'), "theo");
   await until(/1 \/ 6/);
   assert.match(await text(), /Starts in 7 days/);
+  await checkLongMetadata(context);
+  await checkReceiptRetirement(context);
 }
