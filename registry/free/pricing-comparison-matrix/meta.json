@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "pricing",
-  "description": "A dark plan comparison table: headers stagger in with counting prices, rows rise group by group as checks draw, and a lit column marks the pick. Mobile plan switcher.",
+  "description": "A dark plan comparison table with counting prices, grouped feature controls and a raised recommended column. Phone summaries retain the full billing unit and coarse-pointer controls keep 44px targets.",
   "tags": [
     "pricing",
     "comparison table",

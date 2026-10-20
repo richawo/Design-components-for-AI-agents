@@ -44,6 +44,15 @@ registered source-fixture workflow and all core checks pass. Private correction:
 contract stays intact; full composition, Next integration, poster and film review remain open. Its changed
 hero adds the old Landing film to the queue.
 
+Comparison Matrix's Landing dependency now preserves full phone billing units, inherits the page's sticky
+navigation inset, disables empty group actions and retains 44px coarse-pointer controls. Original failures
+remain archived. The final 23 fine-pointer and four coarse-pointer mounts pass 26 accessibility audits and
+all forty reviewed captures; eight wide defaults are byte-identical to their original references. Registered
+source checks pass in both themes and pointer modes, with strict registry, root/all-eleven-block types and
+all 1,068 tests. Its decoded existing film shows the unchanged wide layout and stays published. Landing's
+full composition remains open. Evidence uses `test-results/handoff-blocks/matrix-*`; the next complete
+checkpoint has 68 browser suites.
+
 All eight final smaller components also have reviewed current films and posters. Fashion, Legal, Meetings, People and SaaS Dashboard have
 reviewed current block films and paired posters. Commerce, Financial Report and Music retain their old films after
 guarded rejections; rejected raw evidence remains local. Legal's new take reaches its completion receipt after

@@ -23,7 +23,7 @@ Build a full plan-comparison table in React + Tailwind CSS v4 with `motion/react
 - Reduced motion: one 150ms fade for everything, prices set instantly, nothing moves or blurs.
 
 **Mobile** (below `@3xl`)
-- A sticky segmented plan switcher (`role="tablist"`, ink thumb on a `layoutId` spring 500/40, the recommended plan marked with an accent dot), then the selected plan's name, price and CTA. The price tweens to each newly selected plan.
+- A sticky segmented plan switcher (`role="tablist"`, ink thumb on a `layoutId` spring 500/40, the recommended plan marked with an accent dot), then a full-width name/recommendation row, price and CTA row, and a complete unit line. The price tweens to each newly selected plan.
 - Every group lists feature name against the selected plan's value. Switching plans swaps the values with a 4px rise and a 3px blur, and the swapped-in checks draw again. No horizontal scroll.
 
 **Footnote**
@@ -41,3 +41,9 @@ Build a full plan-comparison table in React + Tailwind CSS v4 with `motion/react
 - Buttons and links press to 0.97 (0.99 for full-width group rows) in 150ms; hover is a single step; arrows nudge 2px; focus rings appear instantly.
 
 Secondary text uses at least 65% ink opacity on these surfaces; quiet typography must remain readable in both themes.
+
+**Composition and input targets**
+- Inherit `--cm-sticky-top` from a containing page when its navigation also sticks; both the table header and phone switcher use that inset, defaulting to 0px.
+- Keep the complete phone price unit visible instead of truncating its billing period.
+- Disable Expand all / Collapse all when there are no feature rows.
+- On coarse pointers, plan links, global controls and feature hints retain at least 44px in both dimensions.

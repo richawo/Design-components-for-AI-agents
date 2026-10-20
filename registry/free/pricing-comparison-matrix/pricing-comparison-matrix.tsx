@@ -275,8 +275,9 @@ export function PricingComparisonMatrix({
       <button
         type="button"
         data-demo={demo}
+        disabled={featureCount === 0}
         onClick={() => setOpen(groups.map(() => !allOpen))}
-        className={`-mx-2 rounded-md px-2 py-1.5 font-semibold uppercase text-(--cm-ink)/80 underline decoration-(--cm-ink)/25 underline-offset-4 transition-[color,text-decoration-color,transform] duration-150 hover:text-(--cm-ink) hover:decoration-(--cm-ink) active:scale-[0.97] ${FOCUS}`}
+        className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 -mx-2 rounded-md px-2 py-1.5 font-semibold uppercase text-(--cm-ink)/80 underline decoration-(--cm-ink)/25 underline-offset-4 transition-[color,text-decoration-color,transform] duration-150 enabled:hover:text-(--cm-ink) enabled:hover:decoration-(--cm-ink) enabled:active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 ${FOCUS}`}
       >
         {allOpen ? "Collapse all" : "Expand all"}
       </button>
@@ -329,7 +330,7 @@ export function PricingComparisonMatrix({
         <table className="mt-4 w-full table-auto border-separate border-spacing-0 text-left @3xl:mt-14 @3xl:table-fixed">
           <caption className="sr-only">Plan comparison: features by plan</caption>
 
-          <thead className="hidden @3xl:sticky @3xl:top-0 @3xl:z-20 @3xl:table-header-group">
+          <thead className="hidden @3xl:sticky @3xl:top-[var(--cm-sticky-top,0px)] @3xl:z-20 @3xl:table-header-group">
             <tr>
               <th scope="col" className="w-[28%] border-b border-(--cm-ink)/[0.08] bg-(--cm-page) pb-5 pr-6 align-bottom @5xl:w-[30%]">
                 <motion.div variants={v(reveal)} custom={T.plans}>
@@ -528,7 +529,7 @@ function PlanCta({ plan, primary, compact }: { plan: MatrixPlan; primary: boolea
   return (
     <a
       href={plan.cta.href}
-      className={`group/cta inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.97] ${FOCUS} ${
+      className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 group/cta inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.97] ${FOCUS} ${
         compact ? "h-11 shrink-0 px-5 text-[14px]" : "h-10 w-full px-3 text-[13px] @5xl:text-[14px]"
       } ${
         primary
@@ -582,7 +583,7 @@ function MobilePlanBar({
     <motion.div
       variants={v(reveal)}
       custom={T.plans}
-      className="sticky top-0 z-30 -mx-4 mt-10 border-b border-(--cm-ink)/[0.08] bg-(--cm-page)/95 px-4 pb-4 pt-3 backdrop-blur-sm @3xl:hidden"
+      className="sticky top-[var(--cm-sticky-top,0px)] z-30 -mx-4 mt-10 border-b border-(--cm-ink)/[0.08] bg-(--cm-page)/95 px-4 pb-4 pt-3 backdrop-blur-sm @3xl:hidden"
     >
       <LayoutGroup id={`${uid}-tabs`}>
         <div
@@ -616,18 +617,17 @@ function MobilePlanBar({
           })}
         </div>
       </LayoutGroup>
-      <div className="mt-4 flex items-center justify-between gap-4" aria-live="polite">
-        <div className="min-w-0">
-          <p className="flex items-center gap-2 text-[13px] text-(--cm-ink)/65">
+      <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1" aria-live="polite">
+          <p className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-(--cm-ink)/65">
             {plan.name}
             {selected === recIndex ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-(--cm-ink)/[0.06] px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-(--cm-ink)/80">
+              <span className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-(--cm-ink)/[0.06] px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-(--cm-ink)/80">
                 <span className="size-1.5 rounded-full bg-(--cm-accent)" aria-hidden="true" />
                 {recommendedLabel}
               </span>
             ) : null}
           </p>
-          <p className="mt-0.5 flex items-baseline gap-1.5">
+          <p className="min-w-0">
             <CountedPrice
               price={plan.price}
               active
@@ -635,10 +635,9 @@ function MobilePlanBar({
               delay={T.plans + T.price}
               className="font-display text-[28px] font-semibold leading-none tracking-[-0.03em]"
             />
-            <span className="truncate text-[12px] text-(--cm-ink)/65">{plan.unit}</span>
           </p>
-        </div>
         <PlanCta plan={plan} primary={selected === recIndex} compact />
+        <span className="col-span-2 min-w-0 break-words text-[12px] leading-relaxed text-(--cm-ink)/65">{plan.unit}</span>
       </div>
     </motion.div>
   );
@@ -860,7 +859,7 @@ function FeatureName({ feature }: { feature: MatrixFeature }) {
         onBlur={() => setOpen(false)}
         onClick={() => setOpen(true)}
         onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
-        className={`-my-1 rounded py-1 text-left text-(--cm-ink) underline decoration-(--cm-ink)/35 decoration-dotted decoration-[1.5px] underline-offset-[5px] transition-[text-decoration-color,transform] duration-150 hover:decoration-(--cm-ink) active:scale-[0.97] ${FOCUS}`}
+        className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 -my-1 rounded py-1 text-left text-(--cm-ink) underline decoration-(--cm-ink)/35 decoration-dotted decoration-[1.5px] underline-offset-[5px] transition-[text-decoration-color,transform] duration-150 hover:decoration-(--cm-ink) active:scale-[0.97] ${FOCUS}`}
       >
         {feature.name}
       </button>

@@ -13,7 +13,8 @@
     "header": "eyebrow, headline (max 18ch), body; mobile controls under it",
     "desktop": "@3xl+: real table, first column 28% (30% @5xl), 4 plan columns, sticky thead, recommended band continuous from head to foot with rounded top/bottom",
     "groups": "tbody per group: a row-spanning toggle row, then feature rows",
-    "mobile": "<@3xl: sticky tablist + selected plan card; each row shows only the selected plan's column"
+    "mobile": "<@3xl: sticky tablist; full-width name/recommendation, price beside CTA, complete unit below; only the selected plan's feature column is visible",
+    "stickyInset": "Both sticky headers inherit --cm-sticky-top, defaulting to 0px, so a composed page can clear its navigation."
   },
   "typography": {
     "headline": {
@@ -73,7 +74,9 @@
     "sr-only Included / Not included; counted prices keep the real price as sr-only text",
     "2px ink focus-visible rings, instant",
     "reduced motion: fades only",
-    "Secondary text uses at least 65% ink opacity on these surfaces; quiet typography must remain readable in both themes."
+    "Secondary text uses at least 65% ink opacity on these surfaces; quiet typography must remain readable in both themes.",
+    "Coarse-pointer plan links, global group controls and feature hints retain 44px targets.",
+    "Disable the global expand/collapse action when there are no feature rows."
   ],
   "content": {
     "product": "Hatch",
