@@ -11,10 +11,13 @@ export async function check({ page, mount, assert }) {
   assert.equal(download.suggestedFilename(), "signups-7d.csv");
   await page.getByRole("tab",{name:"Workspaces",exact:true}).click();
   await page.getByRole("searchbox").fill("Harbour");
+  const expectedRows = 1 + Number(await page.getByRole("columnheader").count() > 0);
   await page.waitForFunction(
-    () => [...document.querySelectorAll('[role="row"],table tr')].filter(row=>row.getClientRects().length&&!row.closest('[inert]')).length === 2,
+    count => [...document.querySelectorAll('[role="row"],table tr')].filter(row=>row.getClientRects().length&&!row.closest('[inert]')).length === count,
+    expectedRows,
   );
-  assert.equal(await page.getByRole("row").count(), 2);
+  assert.equal(await page.getByRole("row").count(), expectedRows);
+  assert.equal(await page.getByRole("row").filter({ hasText: "Harbour Works" }).count(), 1);
   await page.getByRole("searchbox").fill("No match");
   assert.ok(
     await page.getByText("No workspace matches this search.").isVisible(),
