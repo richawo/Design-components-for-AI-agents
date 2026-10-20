@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Sie können eine kostenlose native Datei auch direkt herunterladen:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Für mobile Pro-Komponenten fügen Sie {{0}} hinzu. Bei einem direkten Download werden keine Abhängigkeiten installiert. Informationen zu den Quell-, Paket- und Geräteprüfungen finden Sie im <a href=\"/blog/react-native-components-for-ai-agents\">Native Component Guide</a>.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Jede Komponentenseite verfügt über eine Code-Registerkarte. Kopieren Sie die Datei und befolgen Sie die aufgeführten Abhängigkeiten, Designanforderungen und Anwendungsbeispiele. Überprüfen Sie alle referenzierten Geschwisterkomponenten, wenn Sie einen zusammengesetzten Block kopieren. Verbinden Sie die Rückrufe und echten Dienste, die Ihre Anwendung benötigt, und überprüfen Sie das Ergebnis dann in Ihrem eigenen Projekt.",
-  "No {{0}} orders": "Keine {{0}} Bestellungen"
+  "No {{0}} orders": "Keine {{0}} Bestellungen",
+  "Up to five client records for one person.": "Bis zu fünf Kundendatensätze für eine Person.",
+  "Unlimited client records for three people.": "Unbegrenzte Kundendatensätze für drei Personen.",
+  "Twelve people with reviewed team handoffs.": "Unterstützt zwölf Personen und beinhaltet einen Überprüfungsschritt für Teamübergaben.",
+  "Client, project and agreed scope": "Kunde, Projekt und vereinbarter Umfang",
+  "A final check before sharing": "Ein letzter Check vor dem Teilen",
+  "Payment history beside the invoice": "Zahlungshistorie neben der Rechnung",
+  "Set aside a share for reserves and the next project.": "Legen Sie einen Anteil für Rücklagen und das nächste Projekt zurück.",
+  "Operating reserve and project fund": "Betriebsreserve und Projektfonds",
+  "Example plan prices for this preview.": "Beispielplanpreise für diese Vorschau."
 }

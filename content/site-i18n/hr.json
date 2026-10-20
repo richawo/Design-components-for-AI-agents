@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Također možete izravno preuzeti besplatnu izvornu datoteku:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Za Pro mobilne komponente dodajte {{0}}. Izravno preuzimanje ne instalira ovisnosti. Pogledajte <a href=\"/blog/react-native-components-for-ai-agents\">vodič za izvorne komponente</a> za provjere izvora, paketa i uređaja.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Svaka komponentna stranica ima karticu Kod. Kopirajte datoteku i slijedite njezine navedene ovisnosti, zahtjeve teme i primjer korištenja. Prilikom kopiranja sastavljenog bloka provjerite sve navedene srodne komponente. Povežite povratne pozive i stvarne usluge koje vaša aplikacija treba, a zatim pregledajte rezultat u vlastitom projektu.",
-  "No {{0}} orders": "Nema {{0}} naloga"
+  "No {{0}} orders": "Nema {{0}} naloga",
+  "Up to five client records for one person.": "Do pet zapisa o klijentima za jednu osobu.",
+  "Unlimited client records for three people.": "Neograničen broj klijenata za tri osobe.",
+  "Twelve people with reviewed team handoffs.": "Podržava dvanaest osoba i uključuje korak pregleda za timske primopredaje.",
+  "Client, project and agreed scope": "Klijent, projekt i dogovoreni opseg",
+  "A final check before sharing": "Posljednja provjera prije dijeljenja",
+  "Payment history beside the invoice": "Povijest plaćanja pored fakture",
+  "Set aside a share for reserves and the next project.": "Odvojite dio za rezerve i sljedeći projekt.",
+  "Operating reserve and project fund": "Operativna pričuva i projektni fond",
+  "Example plan prices for this preview.": "Primjeri cijena paketa za ovaj pregled."
 }

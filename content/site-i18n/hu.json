@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Ingyenes natív fájlt közvetlenül is letölthet:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Pro mobil komponensekhez adja hozzá a {{0}} elemet. A közvetlen letöltés nem telepít függőségeket. Tekintse meg a <a href=\"/blog/react-native-components-for-ai-agents\">natív összetevők útmutatóját</a> a forrás-, csomag- és eszközellenőrzésért.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Minden összetevő oldalnak van egy Kód füle. Másolja ki a fájlt, és kövesse a felsorolt ​​függőségeit, a témakövetelményeket és a használati példát. Összetett blokk másolásakor ellenőrizze a hivatkozott testvérkomponenseket. Kapcsolja össze a visszahívásokat és a valós szolgáltatásokat, amelyekre az alkalmazásnak szüksége van, majd tekintse át az eredményt saját projektjében.",
-  "No {{0}} orders": "Nincs {{0}} rendelés"
+  "No {{0}} orders": "Nincs {{0}} rendelés",
+  "Up to five client records for one person.": "Egy személyre legfeljebb öt ügyfélrekord.",
+  "Unlimited client records for three people.": "Korlátlan számú ügyfélrekord három személyre.",
+  "Twelve people with reviewed team handoffs.": "Tizenkét embert támogat, és tartalmaz egy felülvizsgálati lépést a csapat átadásokhoz.",
+  "Client, project and agreed scope": "Ügyfél, projekt és megállapodás szerinti terjedelem",
+  "A final check before sharing": "Utolsó ellenőrzés a megosztás előtt",
+  "Payment history beside the invoice": "Fizetési előzmények a számla mellett",
+  "Set aside a share for reserves and the next project.": "Tegyen félre egy részt a tartalékokra és a következő projektre.",
+  "Operating reserve and project fund": "Működési tartalék és projektalap",
+  "Example plan prices for this preview.": "Példacsomag árak ehhez az előnézethez."
 }

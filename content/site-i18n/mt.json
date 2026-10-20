@@ -1918,5 +1918,15 @@
   "You can also download a free native file directly:": "Tista' wkoll tniżżel fajl indiġenu b'xejn direttament:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Għal komponenti mobbli Pro, żid {{0}}. Tniżżil dirett ma jinstallax dipendenzi. Ara l-<a href=\"/blog/react-native-components-for-ai-agents\">gwida tal-komponenti nattivi</a> għall-kontrolli tas-sors, tal-pakkett u tal-apparat.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Kull paġna komponent għandha tab Kodiċi. Ikkopja l-fajl u segwi d-dipendenzi elenkati tiegħu, ir-rekwiżiti tat-tema u l-eżempju tal-użu. Iċċekkja kwalunkwe komponenti aħwa referenzjati meta tikkopja blokka komposta. Qabbad is-callbacks u s-servizzi reali li teħtieġ l-applikazzjoni tiegħek, imbagħad irrevedi r-riżultat fil-proġett tiegħek stess.",
-  "No {{0}} orders": "Ebda {{0}} ordnijiet"
+  "No {{0}} orders": "Ebda {{0}} ordnijiet",
+  "Up to five client records for one person.": "Sa ħames rekords tal-klijenti għal persuna waħda.",
+  "Unlimited client records for three people.": "Rekords tal-klijenti bla limitu għal tliet persuni.",
+  "Twelve people with reviewed team handoffs.": "Jappoġġja tnax-il persuna u jinkludi pass ta' reviżjoni għat-trasferimenti tat-tim.",
+  "Client, project and agreed scope": "Klijent, proġett u ambitu miftiehem",
+  "A final check before sharing": "Kontroll finali qabel il-qsim",
+  "Payment history beside the invoice": "Storja tal-ħlas ħdejn il-fattura",
+  "Set aside a share for reserves and the next project.": "Imwarrab sehem għar-riservi u l-proġett li jmiss.",
+  "Operating reserve and project fund": "Riżerva operattiva u fond tal-proġett",
+  "Example plan prices for this preview.": "Eżempju tal-prezzijiet tal-pjan għal din il-preview.",
+  "Request": "Talba"
 }

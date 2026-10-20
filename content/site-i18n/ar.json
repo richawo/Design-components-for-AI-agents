@@ -1918,5 +1918,15 @@
   "You can also download a free native file directly:": "يمكنك أيضًا تنزيل ملف أصلي مجاني مباشرةً:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "بالنسبة لمكونات الهاتف المحمول الاحترافية، أضف {{0}}. التنزيل المباشر لا يقوم بتثبيت التبعيات. راجع <a href=\"/blog/react-native-components-for-ai-agents\">دليل المكونات الأصلية</a> للتحقق من المصدر والحزمة والجهاز.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "تحتوي كل صفحة مكونة على علامة تبويب Code. انسخ الملف واتبع تبعياته المدرجة ومتطلبات السمة ومثال الاستخدام. تحقق من أي مكونات شقيقة تمت الإشارة إليها عند نسخ كتلة مؤلفة. قم بتوصيل عمليات الاسترجاعات والخدمات الحقيقية التي يحتاجها تطبيقك، ثم قم بمراجعة النتيجة في مشروعك الخاص.",
-  "No {{0}} orders": "لا توجد طلبات بالحالة {{0}}"
+  "No {{0}} orders": "لا توجد طلبات بالحالة {{0}}",
+  "Up to five client records for one person.": "ما يصل إلى خمسة سجلات عملاء لشخص واحد.",
+  "Unlimited client records for three people.": "سجلات عملاء غير محدودة لثلاثة أشخاص.",
+  "Twelve people with reviewed team handoffs.": "يدعم اثني عشر شخصًا ويتضمن خطوة مراجعة لعمليات تسليم الفريق.",
+  "Client, project and agreed scope": "العميل والمشروع والنطاق المتفق عليه",
+  "A final check before sharing": "فحص نهائي قبل المشاركة",
+  "Payment history beside the invoice": "تاريخ الدفع بجانب الفاتورة",
+  "Set aside a share for reserves and the next project.": "تخصيص حصة للاحتياطيات والمشروع القادم.",
+  "Operating reserve and project fund": "الاحتياطي التشغيلي وصندوق المشاريع",
+  "Example plan prices for this preview.": "مثال لأسعار الخطة لهذه المعاينة.",
+  "Request": "طلب"
 }

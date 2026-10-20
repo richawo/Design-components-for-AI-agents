@@ -1991,5 +1991,15 @@
   "You can also download a free native file directly:": "Taip pat galite tiesiogiai atsisiųsti nemokamą vietinį failą:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Prie „Pro“ mobiliųjų komponentų pridėkite {{0}}. Tiesioginis atsisiuntimas neįdiegia priklausomybių. Žr. <a href=\"/blog/react-native-components-for-ai-agents\">savųjų komponentų vadovą</a>, kuriame pateikiama šaltinio, paketo ir įrenginio patikra.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Kiekvienas komponento puslapis turi skirtuką Kodas. Nukopijuokite failą ir vadovaukitės jo išvardytomis priklausomybėmis, temos reikalavimais ir naudojimo pavyzdžiu. Kopijuodami sudarytą bloką patikrinkite visus nurodytus brolių ir seserų komponentus. Sujunkite atgalinius skambučius ir tikras paslaugas, kurių reikia jūsų programai, tada peržiūrėkite rezultatą savo projekte.",
-  "No {{0}} orders": "Nėra {{0}} užsakymų"
+  "No {{0}} orders": "Nėra {{0}} užsakymų",
+  "Up to five client records for one person.": "Iki penkių klientų įrašų vienam asmeniui.",
+  "Unlimited client records for three people.": "Neribotas klientų įrašų skaičius trims žmonėms.",
+  "Twelve people with reviewed team handoffs.": "Palaiko dvylika žmonių ir apima komandos perdavimo peržiūros veiksmą.",
+  "Client, project and agreed scope": "Klientas, projektas ir sutarta apimtis",
+  "A final check before sharing": "Paskutinis patikrinimas prieš dalinantis",
+  "Payment history beside the invoice": "Mokėjimų istorija šalia sąskaitos faktūros",
+  "Set aside a share for reserves and the next project.": "Atidėkite dalį rezervams ir kitam projektui.",
+  "Operating reserve and project fund": "Veiklos rezervas ir projektų fondas",
+  "Example plan prices for this preview.": "Šios peržiūros plano kainų pavyzdžiai.",
+  "Request": "Prašymas"
 }

@@ -1918,5 +1918,15 @@
   "You can also download a free native file directly:": "무료 기본 파일을 직접 다운로드할 수도 있습니다.",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Pro 모바일 구성 요소의 경우 {{0}}를 추가합니다. 직접 다운로드는 종속성을 설치하지 않습니다. 소스, 패키지 및 장치 확인은 <a href=\"/blog/react-native-components-for-ai-agents\">네이티브 구성 요소 가이드</a>를 참조하세요.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "모든 구성 요소 페이지에는 코드 탭이 있습니다. 파일을 복사하고 나열된 종속성, 테마 요구 사항 및 사용 예를 따르세요. 구성된 블록을 복사할 때 참조된 형제 구성요소를 확인하십시오. 애플리케이션에 필요한 콜백과 실제 서비스를 연결한 다음 자신의 프로젝트에서 결과를 검토하세요.",
-  "No {{0}} orders": "{{0}} 주문 없음"
+  "No {{0}} orders": "{{0}} 주문 없음",
+  "Up to five client records for one person.": "한 사람당 최대 5개의 고객 기록.",
+  "Unlimited client records for three people.": "3인용 무제한 고객 기록.",
+  "Twelve people with reviewed team handoffs.": "12명을 지원하며 팀 핸드오프를 위한 검토 단계가 포함되어 있습니다.",
+  "Client, project and agreed scope": "고객, 프로젝트 및 합의된 범위",
+  "A final check before sharing": "공유 전 최종 확인",
+  "Payment history beside the invoice": "청구서 옆의 지불 내역",
+  "Set aside a share for reserves and the next project.": "예비비와 다음 프로젝트를 위한 지분을 따로 확보해 두세요.",
+  "Operating reserve and project fund": "운영준비금 및 프로젝트 자금",
+  "Example plan prices for this preview.": "이 미리 보기의 요금제 가격 예시입니다.",
+  "Request": "요구"
 }

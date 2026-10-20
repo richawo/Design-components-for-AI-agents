@@ -2510,5 +2510,15 @@
   "You can also download a free native file directly:": "Samuti saate tasuta omafaili otse alla laadida:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Pro mobiilikomponentide jaoks lisage {{0}}. Otsene allalaadimine ei installi sõltuvusi. Allika, paketi ja seadme kontrollimiseks vaadake <a href=\"/blog/react-native-components-for-ai-agents\">põhikomponentide juhendit</a>.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Igal komponendi lehel on vahekaart Kood. Kopeerige fail ja järgige selle loetletud sõltuvusi, teemanõudeid ja kasutusnäidet. Koostatud ploki kopeerimisel kontrollige kõiki viidatud õdede komponente. Ühendage tagasihelistamised ja tegelikud teenused, mida teie rakendus vajab, seejärel vaadake tulemus üle oma projektis.",
-  "No {{0}} orders": "{{0}} tellimusi pole"
+  "No {{0}} orders": "{{0}} tellimusi pole",
+  "Up to five client records for one person.": "Ühe inimese kohta kuni viis kliendikirjet.",
+  "Unlimited client records for three people.": "Piiramatu arv kliendikirjeid kolmele inimesele.",
+  "Twelve people with reviewed team handoffs.": "Toetab kahtteist inimest ja sisaldab meeskonna üleandmise ülevaatamist.",
+  "Client, project and agreed scope": "Klient, projekt ja kokkulepitud ulatus",
+  "A final check before sharing": "Viimane kontroll enne jagamist",
+  "Payment history beside the invoice": "Makseajalugu arve kõrval",
+  "Set aside a share for reserves and the next project.": "Eraldage osa reservide ja järgmise projekti jaoks.",
+  "Operating reserve and project fund": "Tegevusreserv ja projektifond",
+  "Example plan prices for this preview.": "Selle eelvaate plaanihinna näidishinnad.",
+  "Request": "Taotlus"
 }

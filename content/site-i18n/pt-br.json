@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Você também pode baixar um arquivo nativo gratuito diretamente:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Para componentes móveis Pro, adicione {{0}}. Um download direto não instala dependências. Consulte o <a href=\"/blog/react-native-components-for-ai-agents\">guia de componentes nativos</a> para verificações de origem, pacote e dispositivo.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Cada página de componente possui uma guia Código. Copie o arquivo e siga suas dependências listadas, requisitos de tema e exemplo de uso. Verifique quaisquer componentes irmãos referenciados ao copiar um bloco composto. Conecte os retornos de chamada e os serviços reais que seu aplicativo precisa e analise o resultado em seu próprio projeto.",
-  "No {{0}} orders": "Nenhum pedido {{0}}"
+  "No {{0}} orders": "Nenhum pedido {{0}}",
+  "Up to five client records for one person.": "Até cinco registros de clientes para uma pessoa.",
+  "Unlimited client records for three people.": "Registros de clientes ilimitados para três pessoas.",
+  "Twelve people with reviewed team handoffs.": "Suporta doze pessoas e inclui uma etapa de revisão para transferências de equipe.",
+  "Client, project and agreed scope": "Cliente, projeto e escopo acordado",
+  "A final check before sharing": "Uma verificação final antes de compartilhar",
+  "Payment history beside the invoice": "Histórico de pagamentos ao lado da fatura",
+  "Set aside a share for reserves and the next project.": "Reserve uma parte para reservas e para o próximo projeto.",
+  "Operating reserve and project fund": "Reserva operacional e fundo do projeto",
+  "Example plan prices for this preview.": "Exemplo de preços de planos para esta visualização."
 }

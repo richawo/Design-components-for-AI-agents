@@ -1918,5 +1918,15 @@
   "You can also download a free native file directly:": "Bạn cũng có thể tải xuống tệp gốc miễn phí trực tiếp:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Đối với các thành phần dành cho thiết bị di động Pro, hãy thêm {{0}}. Tải xuống trực tiếp không cài đặt phụ thuộc. Xem <a href=\"/blog/react-native-components-for-ai-agents\">hướng dẫn thành phần gốc</a> để biết cách kiểm tra nguồn, gói và thiết bị.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Mỗi trang thành phần đều có tab Mã. Sao chép tệp và làm theo các phụ thuộc được liệt kê, yêu cầu chủ đề và ví dụ sử dụng. Kiểm tra mọi thành phần anh chị em được tham chiếu khi sao chép một khối tổng hợp. Kết nối các lệnh gọi lại và các dịch vụ thực mà ứng dụng của bạn cần, sau đó xem lại kết quả trong dự án của riêng bạn.",
-  "No {{0}} orders": "Không có đơn đặt hàng {{0}}"
+  "No {{0}} orders": "Không có đơn đặt hàng {{0}}",
+  "Up to five client records for one person.": "Tối đa năm hồ sơ khách hàng cho một người.",
+  "Unlimited client records for three people.": "Hồ sơ khách hàng không giới hạn cho ba người.",
+  "Twelve people with reviewed team handoffs.": "Hỗ trợ 12 người và bao gồm bước xem xét chuyển giao nhóm.",
+  "Client, project and agreed scope": "Khách hàng, dự án và phạm vi đã thỏa thuận",
+  "A final check before sharing": "Kiểm tra lần cuối trước khi chia sẻ",
+  "Payment history beside the invoice": "Lịch sử thanh toán bên cạnh hóa đơn",
+  "Set aside a share for reserves and the next project.": "Dành một phần để dự trữ và dự án tiếp theo.",
+  "Operating reserve and project fund": "Quỹ dự phòng hoạt động và quỹ dự án",
+  "Example plan prices for this preview.": "Ví dụ về giá gói cho bản xem trước này.",
+  "Request": "Lời yêu cầu"
 }

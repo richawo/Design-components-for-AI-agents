@@ -44,6 +44,18 @@ registered source-fixture workflow and all core checks pass. Private correction:
 contract stays intact; full composition, Next integration, poster and film review remain open. Its changed
 hero adds the old Landing film to the queue.
 
+Landing's composition source now reads the current motion preference for navigation, clears the real
+56px header with its sticky comparison and uses consistent sample prices, plan features and pound
+amounts. Product-facing workflow copy and a shorter Request label keep the page and phone form clear.
+Both-theme desktop/phone journeys, independent pages, request retries and retired replies pass 59
+source mounts plus fourteen naturally scroll-settled layout checks, 62 accessibility audits and all 76
+approved primary captures, with twelve inspected detail crops. Strict registry, root/all-eleven-block
+types and all 1,083 unit tests pass. Private source: `fe8325d`. Its ten added display keys are covered
+in all 29 non-English editions with 270 scoped translations. The current whole-site audit still reports
+184,138 missing units elsewhere and zero invalid protected terms; English fallback remains available.
+Next integration, the fuller demo replay and media remain open. Counts stay at three blocks, 59 older
+probes and 124 films. Evidence uses `test-results/handoff-blocks/saas-landing-*`.
+
 Comparison Matrix's Landing dependency now preserves full phone billing units, inherits the page's sticky
 navigation inset, disables empty group actions and retains 44px coarse-pointer controls. Original failures
 remain archived. The final 23 fine-pointer and four coarse-pointer mounts pass 26 accessibility audits and

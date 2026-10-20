@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "無料のネイティブ ファイルを直接ダウンロードすることもできます。",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Pro モバイル コンポーネントの場合は、{{0}} を追加します。直接ダウンロードすると、依存関係はインストールされません。ソース、パッケージ、デバイスのチェックについては、<a href=\"/blog/react-native-components-for-ai-agents\">ネイティブ コンポーネント ガイド</a>を参照してください。",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "すべてのコンポーネント ページには [コード] タブがあります。ファイルをコピーし、リストされている依存関係、テーマの要件、および使用例に従います。合成ブロックをコピーするときに、参照されている兄弟コンポーネントを確認してください。アプリケーションに必要なコールバックと実際のサービスを接続し、独自のプロジェクトで結果を確認します。",
-  "No {{0}} orders": "{{0}} の注文はありません"
+  "No {{0}} orders": "{{0}} の注文はありません",
+  "Up to five client records for one person.": "1人あたりの顧客記録は5件まで。",
+  "Unlimited client records for three people.": "3人分の顧客記録は無制限。",
+  "Twelve people with reviewed team handoffs.": "12 人をサポートし、チーム引き継ぎのレビュー手順が含まれます。",
+  "Client, project and agreed scope": "クライアント、プロジェクト、合意された範囲",
+  "A final check before sharing": "共有前の最終確認",
+  "Payment history beside the invoice": "請求書の横にある支払い履歴",
+  "Set aside a share for reserves and the next project.": "予備と次のプロジェクトのために分け前を取っておきます。",
+  "Operating reserve and project fund": "運営準備金と事業資金",
+  "Example plan prices for this preview.": "このプレビューのプラン価格の例。"
 }

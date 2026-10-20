@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Voit myös ladata ilmaisen alkuperäistiedoston suoraan:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Lisää Pro-mobiilikomponenteille {{0}}. Suora lataus ei asenna riippuvuuksia. Katso lähde-, paketti- ja laitetarkistukset <a href=\"/blog/react-native-components-for-ai-agents\">natiivikomponenttien oppaasta</a>.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Jokaisella komponenttisivulla on Koodi-välilehti. Kopioi tiedosto ja seuraa sen lueteltuja riippuvuuksia, teemavaatimuksia ja käyttöesimerkkiä. Tarkista kaikki viitatut sisaruskomponentit, kun kopioit koostettua lohkoa. Yhdistä sovelluksesi tarvitsemat takaisinkutsut ja todelliset palvelut ja tarkista sitten tulos omassa projektissasi.",
-  "No {{0}} orders": "Ei {{0}} tilauksia"
+  "No {{0}} orders": "Ei {{0}} tilauksia",
+  "Up to five client records for one person.": "Jopa viisi asiakastietuetta yhdelle henkilölle.",
+  "Unlimited client records for three people.": "Rajoittamaton asiakasrekisteri kolmelle henkilölle.",
+  "Twelve people with reviewed team handoffs.": "Tukee kahtatoista henkilöä ja sisältää tarkistusvaiheen tiimin vaihtoja varten.",
+  "Client, project and agreed scope": "Asiakas, projekti ja sovittu laajuus",
+  "A final check before sharing": "Viimeinen tarkistus ennen jakamista",
+  "Payment history beside the invoice": "Maksuhistoria laskun vieressä",
+  "Set aside a share for reserves and the next project.": "Varaa osuus varauksiin ja seuraavaan projektiin.",
+  "Operating reserve and project fund": "Toimintarahasto ja hankerahasto",
+  "Example plan prices for this preview.": "Tämän esikatselun mallihinnat."
 }

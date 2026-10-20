@@ -1991,5 +1991,15 @@
   "You can also download a free native file directly:": "Varat arī tieši lejupielādēt bezmaksas vietējo failu:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Pro mobilajiem komponentiem pievienojiet {{0}}. Tiešā lejupielāde neinstalē atkarības. Skatiet <a href=\"/blog/react-native-components-for-ai-agents\">vietējo komponentu rokasgrāmatu</a>, lai uzzinātu par avota, pakotnes un ierīces pārbaudi.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Katrai komponentu lapai ir cilne Kods. Kopējiet failu un izpildiet tajā norādītās atkarības, motīvu prasības un lietošanas piemēru. Kopējot salikto bloku, pārbaudiet visus norādītos brāļu un māsu komponentus. Savienojiet atzvanīšanu un reālos pakalpojumus, kas nepieciešami jūsu lietojumprogrammai, pēc tam pārskatiet rezultātu savā projektā.",
-  "No {{0}} orders": "Nav {{0}} pasūtījumu"
+  "No {{0}} orders": "Nav {{0}} pasūtījumu",
+  "Up to five client records for one person.": "Līdz pieciem klientu ierakstiem vienai personai.",
+  "Unlimited client records for three people.": "Neierobežots klientu ieraksts trīs personām.",
+  "Twelve people with reviewed team handoffs.": "Atbalsta divpadsmit cilvēkus un ietver pārskatīšanas darbību komandu nodošana.",
+  "Client, project and agreed scope": "Klients, projekts un saskaņotais apjoms",
+  "A final check before sharing": "Pēdējā pārbaude pirms kopīgošanas",
+  "Payment history beside the invoice": "Maksājumu vēsture blakus rēķinam",
+  "Set aside a share for reserves and the next project.": "Atliciniet daļu rezervēm un nākamajam projektam.",
+  "Operating reserve and project fund": "Darbības rezerve un projektu fonds",
+  "Example plan prices for this preview.": "Plāna cenu paraugi šim priekšskatījumam.",
+  "Request": "Pieprasīt"
 }

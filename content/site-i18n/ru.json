@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Вы также можете скачать бесплатный собственный файл напрямую:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Для мобильных компонентов Pro добавьте {{0}}. Прямая загрузка не устанавливает зависимости. См. <a href=\"/blog/react-native-components-for-ai-agents\">руководство по собственным компонентам</a> для проверки источника, пакета и устройства.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "На каждой странице компонента есть вкладка «Код». Скопируйте файл и следуйте его перечисленным зависимостям, требованиям темы и примеру использования. Проверьте все ссылочные одноуровневые компоненты при копировании составного блока. Подключите обратные вызовы и реальные сервисы, необходимые вашему приложению, а затем просмотрите результат в своем собственном проекте.",
-  "No {{0}} orders": "Нет {{0}} заказов"
+  "No {{0}} orders": "Нет {{0}} заказов",
+  "Up to five client records for one person.": "До пяти клиентских записей на одного человека.",
+  "Unlimited client records for three people.": "Неограниченное количество клиентов для трех человек.",
+  "Twelve people with reviewed team handoffs.": "Поддерживает двенадцать человек и включает этап проверки передачи команды.",
+  "Client, project and agreed scope": "Клиент, проект и согласованный объем",
+  "A final check before sharing": "Последняя проверка перед публикацией",
+  "Payment history beside the invoice": "История платежей рядом со счетом",
+  "Set aside a share for reserves and the next project.": "Отложите долю на резервы и следующий проект.",
+  "Operating reserve and project fund": "Операционный резерв и проектный фонд",
+  "Example plan prices for this preview.": "Примеры тарифных планов для этой предварительной версии."
 }

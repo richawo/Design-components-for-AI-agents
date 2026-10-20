@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Du kan også downloade en gratis indbygget fil direkte:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "For Pro-mobilkomponenter skal du tilføje {{0}}. En direkte download installerer ikke afhængigheder. Se den <a href=\"/blog/react-native-components-for-ai-agents\">native komponentguide</a> for kontrol af kilde, pakke og enhed.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Hver komponentside har en kode-fane. Kopier filen og følg dens angivne afhængigheder, temakrav og brugseksempel. Kontroller eventuelle refererede søskendekomponenter, når du kopierer en sammensat blok. Forbind de tilbagekald og reelle tjenester, din applikation har brug for, og gennemgå derefter resultatet i dit eget projekt.",
-  "No {{0}} orders": "Ingen {{0}} ordrer"
+  "No {{0}} orders": "Ingen {{0}} ordrer",
+  "Up to five client records for one person.": "Op til fem kunderegistreringer for én person.",
+  "Unlimited client records for three people.": "Ubegrænset kunderegistrering for tre personer.",
+  "Twelve people with reviewed team handoffs.": "Understøtter tolv personer og inkluderer et gennemgangstrin for holdoverdragelser.",
+  "Client, project and agreed scope": "Bygherre, projekt og aftalt omfang",
+  "A final check before sharing": "Et sidste tjek inden deling",
+  "Payment history beside the invoice": "Betalingshistorik ved siden af fakturaen",
+  "Set aside a share for reserves and the next project.": "Afsæt en andel til reserver og næste projekt.",
+  "Operating reserve and project fund": "Driftsreserve og projektfond",
+  "Example plan prices for this preview.": "Eksempel på abonnementspriser for denne forhåndsvisning."
 }

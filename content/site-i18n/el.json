@@ -10884,5 +10884,15 @@
   "You can also download a free native file directly:": "Μπορείτε επίσης να κατεβάσετε ένα δωρεάν εγγενές αρχείο απευθείας:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Για Pro mobile στοιχεία, προσθέστε {{0}}. Η άμεση λήψη δεν εγκαθιστά εξαρτήσεις. Ανατρέξτε στον <a href=\"/blog/react-native-components-for-ai-agents\">εγγενή οδηγό στοιχείων</a> για τους ελέγχους πηγής, συσκευασίας και συσκευής.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Κάθε σελίδα στοιχείου έχει μια καρτέλα Κώδικας. Αντιγράψτε το αρχείο και ακολουθήστε τις αναγραφόμενες εξαρτήσεις, τις απαιτήσεις θέματος και το παράδειγμα χρήσης. Ελέγξτε τυχόν αναφερόμενα αδερφικά στοιχεία κατά την αντιγραφή ενός σύνθετου μπλοκ. Συνδέστε τις επανακλήσεις και τις πραγματικές υπηρεσίες που χρειάζεται η εφαρμογή σας και, στη συνέχεια, ελέγξτε το αποτέλεσμα στο δικό σας έργο.",
-  "No {{0}} orders": "Δεν υπάρχουν παραγγελίες {{0}}"
+  "No {{0}} orders": "Δεν υπάρχουν παραγγελίες {{0}}",
+  "Up to five client records for one person.": "Έως πέντε εγγραφές πελατών για ένα άτομο.",
+  "Unlimited client records for three people.": "Απεριόριστες εγγραφές πελατών για τρία άτομα.",
+  "Twelve people with reviewed team handoffs.": "Υποστηρίζει δώδεκα άτομα και περιλαμβάνει ένα βήμα αναθεώρησης για ομαδικές μεταβιβάσεις.",
+  "Client, project and agreed scope": "Πελάτης, έργο και συμφωνημένο πεδίο εφαρμογής",
+  "A final check before sharing": "Ένας τελικός έλεγχος πριν από την κοινή χρήση",
+  "Payment history beside the invoice": "Ιστορικό πληρωμών δίπλα στο τιμολόγιο",
+  "Set aside a share for reserves and the next project.": "Αφιερώστε ένα μερίδιο για τα αποθεματικά και το επόμενο έργο.",
+  "Operating reserve and project fund": "Λειτουργικό αποθεματικό και ταμείο έργου",
+  "Example plan prices for this preview.": "Παραδείγματα τιμών σχεδίου για αυτήν την προεπισκόπηση.",
+  "Request": "Αίτημα"
 }

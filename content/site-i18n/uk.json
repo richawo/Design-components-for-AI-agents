@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Ви також можете завантажити безкоштовний рідний файл безпосередньо:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Для мобільних компонентів Pro додайте {{0}}. Пряме завантаження не встановлює залежності. Дивіться <a href=\"/blog/react-native-components-for-ai-agents\">посібник із вбудованих компонентів</a> для перевірки джерела, пакета та пристрою.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Кожна сторінка компонента має вкладку Код. Скопіюйте файл і дотримуйтесь його залежностей, вимог до теми та прикладу використання. Під час копіювання складеного блоку перевіряйте будь-які посилання на однорідні компоненти. Підключіть зворотні виклики та реальні сервіси, які потрібні вашій програмі, а потім перегляньте результат у власному проекті.",
-  "No {{0}} orders": "Немає {{0}} замовлень"
+  "No {{0}} orders": "Немає {{0}} замовлень",
+  "Up to five client records for one person.": "До п'яти записів клієнтів на одну особу.",
+  "Unlimited client records for three people.": "Необмежений запис клієнтів для трьох осіб.",
+  "Twelve people with reviewed team handoffs.": "Підтримує дванадцять осіб і включає етап перегляду для передачі команд.",
+  "Client, project and agreed scope": "Клієнт, проект і узгоджений обсяг",
+  "A final check before sharing": "Остання перевірка перед тим, як поділитися",
+  "Payment history beside the invoice": "Історія платежів поруч із рахунком-фактурою",
+  "Set aside a share for reserves and the next project.": "Відкладіть частку для резервів і наступного проекту.",
+  "Operating reserve and project fund": "Оперативний резерв і проектний фонд",
+  "Example plan prices for this preview.": "Приклад тарифного плану для цього попереднього перегляду."
 }

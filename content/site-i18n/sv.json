@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Du kan också ladda ner en gratis inbyggd fil direkt:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "För Pro-mobilkomponenter, lägg till {{0}}. En direkt nedladdning installerar inte beroenden. Se <a href=\"/blog/react-native-components-for-ai-agents\">guiden för inbyggda komponenter</a> för kontroller av källa, paket och enhet.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Varje komponentsida har en kodflik. Kopiera filen och följ dess angivna beroenden, temakrav och användningsexempel. Kontrollera eventuella syskonkomponenter som refereras till när du kopierar ett sammansatt block. Koppla samman de återuppringningar och verkliga tjänster som din applikation behöver och granska sedan resultatet i ditt eget projekt.",
-  "No {{0}} orders": "Inga {{0}} beställningar"
+  "No {{0}} orders": "Inga {{0}} beställningar",
+  "Up to five client records for one person.": "Upp till fem kundposter för en person.",
+  "Unlimited client records for three people.": "Obegränsad kundpost för tre personer.",
+  "Twelve people with reviewed team handoffs.": "Stöder tolv personer och inkluderar ett granskningssteg för lagöverlämningar.",
+  "Client, project and agreed scope": "Beställare, projekt och överenskommen omfattning",
+  "A final check before sharing": "En sista kontroll innan delning",
+  "Payment history beside the invoice": "Betalningshistorik bredvid fakturan",
+  "Set aside a share for reserves and the next project.": "Avsätt en andel till reserver och nästa projekt.",
+  "Operating reserve and project fund": "Driftsreserv och projektfond",
+  "Example plan prices for this preview.": "Exempel på planpriser för denna förhandsvisning."
 }

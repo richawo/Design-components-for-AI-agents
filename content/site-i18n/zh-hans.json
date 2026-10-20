@@ -1918,5 +1918,15 @@
   "You can also download a free native file directly:": "您也可以直接下载免费的原生文件：",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "对于 Pro 移动组件，添加 {{0}}。直接下载不会安装依赖项。请参阅<a href=\"/blog/react-native-components-for-ai-agents\">本机组件指南</a>了解源、包和设备检查。",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "每个组件页面都有一个“代码”选项卡。复制该文件并遵循其列出的依赖项、主题要求和使用示例。复制组合块时检查任何引用的同级组件。连接您的应用程序所需的回调和实际服务，然后在您自己的项目中查看结果。",
-  "No {{0}} orders": "没有 {{0}} 订单"
+  "No {{0}} orders": "没有 {{0}} 订单",
+  "Up to five client records for one person.": "一人最多可有 5 条客户记录。",
+  "Unlimited client records for three people.": "三人无限客户记录。",
+  "Twelve people with reviewed team handoffs.": "支持 12 人，并包括团队交接的审核步骤。",
+  "Client, project and agreed scope": "客户、项目及约定范围",
+  "A final check before sharing": "分享前的最后检查",
+  "Payment history beside the invoice": "发票旁边的付款历史记录",
+  "Set aside a share for reserves and the next project.": "留出一部分用于储备和下一个项目。",
+  "Operating reserve and project fund": "运营储备金和项目基金",
+  "Example plan prices for this preview.": "此预览版的计划价格示例。",
+  "Request": "要求"
 }

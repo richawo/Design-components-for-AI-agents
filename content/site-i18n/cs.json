@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Můžete si také stáhnout zdarma nativní soubor přímo:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Pro mobilní komponenty Pro přidejte {{0}}. Přímé stažení neinstaluje závislosti. Podívejte se na <a href=\"/blog/react-native-components-for-ai-agents\">průvodce nativními komponentami</a> pro kontrolu zdroje, balíčku a zařízení.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Každá stránka součásti má záložku Kód. Zkopírujte soubor a postupujte podle jeho uvedených závislostí, požadavků na motiv a příkladu použití. Při kopírování složeného bloku zkontrolujte všechny odkazované sourozenecké komponenty. Propojte zpětná volání a skutečné služby, které vaše aplikace potřebuje, a poté zkontrolujte výsledek ve svém vlastním projektu.",
-  "No {{0}} orders": "Žádné {{0}} objednávky"
+  "No {{0}} orders": "Žádné {{0}} objednávky",
+  "Up to five client records for one person.": "Až pět záznamů klientů pro jednu osobu.",
+  "Unlimited client records for three people.": "Neomezené záznamy klientů pro tři osoby.",
+  "Twelve people with reviewed team handoffs.": "Podporuje dvanáct lidí a zahrnuje krok kontroly pro týmové předání.",
+  "Client, project and agreed scope": "Klient, projekt a dohodnutý rozsah",
+  "A final check before sharing": "Poslední kontrola před sdílením",
+  "Payment history beside the invoice": "Historie plateb vedle faktury",
+  "Set aside a share for reserves and the next project.": "Vyčleňte si podíl na rezervy a další projekt.",
+  "Operating reserve and project fund": "Provozní rezerva a projektový fond",
+  "Example plan prices for this preview.": "Příklad cen plánu pro tento náhled."
 }

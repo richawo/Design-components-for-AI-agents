@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "Môžete si tiež stiahnuť bezplatný natívny súbor priamo:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Pre mobilné komponenty Pro pridajte {{0}}. Priame stiahnutie neinštaluje závislosti. Kontroly zdroja, balíka a zariadenia nájdete v <a href=\"/blog/react-native-components-for-ai-agents\">príručke natívnych komponentov</a>.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Každá stránka komponentu má kartu Kód. Skopírujte súbor a postupujte podľa jeho uvedených závislostí, požiadaviek na tému a príkladu použitia. Pri kopírovaní zloženého bloku skontrolujte všetky odkazované súrodenecké komponenty. Prepojte spätné volania a skutočné služby, ktoré vaša aplikácia potrebuje, a potom skontrolujte výsledok vo svojom vlastnom projekte.",
-  "No {{0}} orders": "Žiadne {{0}} objednávky"
+  "No {{0}} orders": "Žiadne {{0}} objednávky",
+  "Up to five client records for one person.": "Až päť záznamov klientov pre jednu osobu.",
+  "Unlimited client records for three people.": "Neobmedzené záznamy klientov pre troch ľudí.",
+  "Twelve people with reviewed team handoffs.": "Podporuje dvanásť ľudí a zahŕňa krok kontroly odovzdania tímu.",
+  "Client, project and agreed scope": "Klient, projekt a dohodnutý rozsah",
+  "A final check before sharing": "Posledná kontrola pred zdieľaním",
+  "Payment history beside the invoice": "História platieb vedľa faktúry",
+  "Set aside a share for reserves and the next project.": "Vyčleňte si podiel na rezervy a ďalší projekt.",
+  "Operating reserve and project fund": "Prevádzková rezerva a projektový fond",
+  "Example plan prices for this preview.": "Príklad cien plánu pre túto ukážku."
 }

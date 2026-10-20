@@ -23405,5 +23405,14 @@
   "You can also download a free native file directly:": "De asemenea, puteți descărca direct un fișier nativ gratuit:",
   "For Pro mobile components, add {{0}}. A direct download does not install dependencies. See the <a href=\"/blog/react-native-components-for-ai-agents\">native component guide</a> for the source, package and device checks.": "Pentru componentele mobile Pro, adăugați {{0}}. O descărcare directă nu instalează dependențe. Consultați <a href=\"/blog/react-native-components-for-ai-agents\">ghidul componentelor native</a> pentru verificările sursei, pachetului și dispozitivului.",
   "Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.": "Fiecare pagină componentă are o filă Cod. Copiați fișierul și urmați dependențele enumerate, cerințele temei și exemplul de utilizare. Verificați orice componente frate la care se face referire când copiați un bloc compus. Conectați apelurile înapoi și serviciile reale de care are nevoie aplicația dvs., apoi examinați rezultatul în propriul proiect.",
-  "No {{0}} orders": "Nicio {{0}} comenzi"
+  "No {{0}} orders": "Nicio {{0}} comenzi",
+  "Up to five client records for one person.": "Până la cinci înregistrări de clienți pentru o persoană.",
+  "Unlimited client records for three people.": "Înregistrări nelimitate ale clienților pentru trei persoane.",
+  "Twelve people with reviewed team handoffs.": "Sprijină douăsprezece persoane și include un pas de revizuire pentru transferul echipei.",
+  "Client, project and agreed scope": "Client, proiect și domeniul de aplicare convenit",
+  "A final check before sharing": "O ultimă verificare înainte de partajare",
+  "Payment history beside the invoice": "Istoricul plăților lângă factură",
+  "Set aside a share for reserves and the next project.": "Pune deoparte o cotă pentru rezerve și următorul proiect.",
+  "Operating reserve and project fund": "Rezervă de exploatare și fond de proiect",
+  "Example plan prices for this preview.": "Exemplu de prețuri de plan pentru această previzualizare."
 }
