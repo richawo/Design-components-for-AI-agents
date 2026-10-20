@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Task 7 (20 October): Music Listening Workspace now uses compact view names, the actual featured release and track, a shared vinyl-study brand and accurate release counts. Queue indicators share valid local IDs; blank initial IDs are omitted, and returning tracks cannot reclaim a retired current selection. Missing audio has an explicit unavailable state. Real playback survives navigation and queue edits; row Pause, paused next/previous, keyboard likes, album search, empty/arriving data, long phone metadata and independent instances pass. Its 39-mount source review, forty accessibility audits and all 54 reviewed captures pass, including 32 byte-identical references. Four coarse-pointer mounts, twelve accessibility audits and twelve reviewed captures retain 44px controls in all phone views. The Next workflow, exact four-action metadata replay, complete audio suite, theme control, official audit and ten matching source/Next framing captures pass with frozen sources. Strict registry, root/all-eleven-block types and all 1,068 tests pass. Callback contracts and Pro boundaries remain intact. Its reviewed settled Next poster is current. The 4.75s film reaches the paused three-track queue but fails the unchanged delivery guard at 152.02ms. Source gap is 22ms and moving-frame p95 is 22.31ms, with no source or moving-frame stalls over 100ms. The old movie remains published; the rejected candidate, actual frames and timing evidence remain local. Five blocks, 59 older probes and 121 films remain. The next complete batch release checkpoint remains pending.
+
 - Music dependency follow-up (20 October): Track List now follows live reduced-motion changes, cancels interrupted entrances and retires filtered rows immediately. The original Music capture retained four invisible rows and empty space after five seconds; the strengthened regression still rejects it at its unchanged 1,500ms deadline. The 19-mount component review, eight accessibility audits and all 22 reviewed captures pass. The final typed source also passes both-theme filtering, keyboard and real pointer reordering, six fresh accessibility states, two exact Music regression captures, the complete registered audio suite, strict registry, root/all-eleven-block types and all 1,068 unit tests. Music's broader source draft passes 39 mounts and forty accessibility audits; all 54 captures are reviewed, including 32 byte-identical references. The full Music review still awaits Next integration and its film. Counts remain six blocks, 59 older probes and 120 films.
 
 - Music pause follow-up (20 October): track-row Pause now reaches the real audio element through Audio Transport's optional `pauseRequest` counter. The native clock keeps its position, ordinary source changes stay paused and pause wins over a simultaneous play request. Two transport mounts cover both layouts/themes with twelve accessibility audits and twelve reviewed captures; Music's two-theme row check and both reviewed captures pass too. The complete registered audio and Music source-fixture suites, strict registry, root/all-eleven-block types and all 1,068 unit tests pass. The Music regression now samples at the trusted native click, preserving its 1,500ms deadline and guard against natural ending. A controlled 1,847ms actionability wait rejects the former pre-click measurement while the actual pause follows dispatch by 4ms; the original Music source still fails the corrected deadline. Original failures and the unsuccessful moving-target diagnostic remain archived. All three reproduced Music bugs are fixed; its full block review and counts remain open.
@@ -487,6 +489,7 @@ Slugs:
 `chart-allocation`
 `block-financial-report`
 `block-commerce-workspace`
+`block-music-workspace`
 `date-booking-slots`
 `onboarding-setup-checklist`
 `devtools-request-waterfall`
@@ -621,7 +624,7 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (6 blocks)
+## 7. Continue the review (5 blocks)
 
 Same process as the 202 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
@@ -667,12 +670,11 @@ reference; the reviewed dark capture differs only in eight pixels around its Pai
 registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
 Commerce completed its full review with this dependency; ten other blocks remain open.
 
-- **Commerce, Fashion, Financial Report, Legal and Meetings Workspace** are reviewed. Keep these blocks compatible with their rebuilt parts.
+- **Commerce, Fashion, Financial Report, Legal, Meetings and Music Workspace** are reviewed. Keep these blocks compatible with their rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: six of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report, Legal and Meetings Workspace are reviewed. Many parts changed their look and some their props;
+- **Blocks**, after their parts: five of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report, Legal, Meetings and Music Workspace are reviewed. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
 
-`block-music-workspace`,
 `block-people-workspace`, `block-saas-dashboard`, `block-saas-landing`,
 `block-team-workspace`, `block-workspace-settings`.
 

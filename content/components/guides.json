@@ -3614,18 +3614,19 @@
     "updated": "2026-10-17"
   },
   "block-music-workspace": {
-    "updated": "2026-10-12",
-    "useWhen": "Composing a full listening application with discovery, a searchable collection, a shared queue and persistent playback.",
-    "avoidWhen": "Copying a streaming service brand or publishing an audio catalogue without rights to its media and artwork.",
+    "updated": "2026-10-20",
+    "useWhen": "Composing discovery, searchable releases, a session queue and a retained native media transport.",
+    "avoidWhen": "Inventing playback from timers, treating a local queue notification as server persistence, or supplying commercial recordings without the required rights.",
     "integration": [
-      "Supply MusicTrack records with licensed src URLs. Selection and playback remain distinct and actual media events govern playing state.",
-      "Persist queue and liked-state changes through host observers. Retained views keep the collection, search and player position intact.",
-      "The offline demo uses fictional releases and original 12-second audio; it begins muted. Production integrations own licensed assets."
+      "Supply stable, nonempty track IDs and licensed source URLs. Blank or duplicate identities are omitted; blank release names are not counted. Missing audio stays explicit while collection actions remain available.",
+      "Supply initialQueue with the initially available tracks. It initializes local order once; queue callbacks receive detached snapshots and the host owns durable persistence.",
+      "Track-row play/pause routes to the same AudioTransport element used by the footer. Navigation and queue edits retain its real clock; plain next/previous preserves pause.",
+      "Removed current identities retire to the available fallback once and cannot reclaim selection merely by returning. Local liked state belongs to each original ID and does not mutate host records."
     ],
     "related": [
       "media-audio-transport",
       "media-track-list",
-      "layout-workspace-shell"
+      "input-search-scoped"
     ]
   },
   "collab-message-list": {

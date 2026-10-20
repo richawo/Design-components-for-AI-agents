@@ -6364,7 +6364,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A complete listening workspace with discovery, searchable releases, a persistent audio transport and a linked queue. Four reusable components share real session state.",
+    "description": "A listening workspace with a featured release, searchable collection, retained native audio transport and a queue that shares playback and membership state.",
     "tags": [
       "block",
       "music",
@@ -6387,27 +6387,27 @@
         "name": "brand",
         "type": "string",
         "default": "\"Side A\"",
-        "description": "Music workspace identity."
+        "description": "Music workspace identity, shared with the original vinyl study."
       },
       {
         "name": "tracks",
         "type": "MusicTrack[]",
-        "description": "Unique track records with licensed media URLs, titles, artist, album and duration."
+        "description": "Host-owned track records with nonempty unique IDs and licensed media URLs. The first valid identity wins; blank and repeated IDs are omitted. Blank album names do not invent releases. Tracks without a source remain browsable with an explicit unavailable-audio message."
       },
       {
         "name": "initialQueue",
         "type": "string[]",
-        "description": "Unique track IDs in playback order."
+        "description": "First-mount playback order from valid, nonempty, unique IDs available in tracks. Later prop changes do not replace the local queue; hosts should supply the intended initial data together."
       },
       {
         "name": "onQueueChange",
         "type": "(ids: string[]) => void",
-        "description": "Observe the session queue for host-owned persistence."
+        "description": "Observe local queue edits through a detached ID array. The host owns durable persistence; this synchronous notification does not announce that a server saved the queue."
       },
       {
         "name": "onLikeChange",
         "type": "(id: string, liked: boolean) => void",
-        "description": "Observe changes to liked tracks."
+        "description": "Observe local liked-state edits for the original track ID; host records are not mutated."
       },
       {
         "name": "mutedPreview",
@@ -6430,7 +6430,9 @@
         "click:@queue-blue",
         "wait:300",
         "click:@nav-queue",
-        "wait:900"
+        "wait:400",
+        "click:@track-lanterns",
+        "wait:600"
       ]
     },
     "controls": [

@@ -12,6 +12,7 @@ const specs = [
   ["block-commerce-workspace", "RET-ORD-1042 · Return request recorded"],
   ["block-saas-landing", "Your Solo workspace."],
   ["block-meetings-workspace", "Studio review"],
+  ["block-music-workspace", "Paper Lanterns"],
 ];
 const requested = new Set(process.argv.slice(2));
 for (const slug of requested) assert.ok(specs.some(([name]) => name === slug), `Unknown block replay: ${slug}`);
@@ -104,11 +105,34 @@ try {
         }, true);
       });
     }
+    if (slug === "block-music-workspace") {
+      await page.evaluate(() => {
+        window.musicReplay = [];
+        document.addEventListener("click", event => {
+          const name = event.target.closest?.("[data-demo]")?.dataset.demo;
+          if (!["music-listen", "queue-blue", "nav-queue", "track-lanterns"].includes(name)) return;
+          const audio = document.querySelector("audio");
+          window.musicReplay.push({ name, paused: audio?.paused, time: audio?.currentTime, duration: audio?.duration });
+        }, true);
+      });
+    }
     await page.evaluate((steps) => window.play(steps), meta.demo.steps);
     assert.ok(
       (await page.locator("#root").innerText()).includes(final),
       slug + " intended end",
     );
+    if (slug === "block-music-workspace") {
+      const trace = await page.evaluate(() => window.musicReplay);
+      assert.deepEqual(trace.map(step => step.name), ["music-listen", "queue-blue", "nav-queue", "track-lanterns"]);
+      assert.equal(trace.at(-1).paused, false, "The final row action pauses actual playing audio");
+      assert.ok(trace.at(-1).time < trace.at(-1).duration - 2, "Pause is exercised before natural ending");
+      const pane = page.getByRole("tabpanel", { name: "Up next", exact: true });
+      assert.equal(await page.getByRole("tab", { name: "Up next", exact: true }).getAttribute("aria-selected"), "true");
+      assert.equal(await pane.getByRole("button", { name: "Play Paper Lanterns by Mara Vale", exact: true }).isVisible(), true);
+      assert.equal(await pane.getByRole("button", { name: "Remove Before the city wakes", exact: true }).isVisible(), true);
+      assert.equal(await pane.locator('ol[aria-label="Up next"] > li').count(), 3);
+      assert.equal(await page.locator("audio").evaluate(audio => audio.paused && !audio.ended), true);
+    }
     if (slug === "block-meetings-workspace") {
       assert.deepEqual(await page.evaluate(() => window.meetingsReplay), ["join-meeting", "spotlight-mara", "call-hand"]);
       const pane = page.getByRole("tabpanel", { name: "Meeting room", exact: true });
