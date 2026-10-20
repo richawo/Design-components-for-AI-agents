@@ -88,15 +88,33 @@ Sign in to your [account page](/account) with the email address you bought with 
 
 ## React Native components
 
-Mobile components are one file each and use only React Native core APIs: no Expo modules, no Reanimated, no SVG library. Copy the file into your app:
+Mobile components ship as React Native source files. Their requirements vary: some use core APIs alone; others declare `expo-blur`, `expo-linear-gradient` or `react-native-svg`. Read the selected component's dependency list before adding it. A web preview does not verify your iOS or Android build.
+
+In an existing Expo project, the Design for AI CLI writes the native file and uses `npx expo install` for missing packages:
+
+```bash
+npx https://design.yaps.ai/cli.tgz add mobile-tab-bar
+```
+
+To inspect the change before installing packages, add `--no-install`. The file is still written; the CLI prints the dependency command separately. Its default destination is `components/design-for-ai/native/mobile-tab-bar.tsx`, or the equivalent under `src/` when that directory exists.
+
+For manual installation, copy the source and install the packages listed on its page. For example, Glass Tab Bar currently requires:
+
+```bash
+npx expo install expo-blur expo-linear-gradient react-native-svg
+```
+
+An existing bare React Native app must configure Expo modules before using Expo packages. Follow the setup for your React Native version, rebuild the native application and check the selected component on your target devices. In a project without `expo` in `package.json`, the CLI uses the detected package manager and prints an Expo-module setup reminder; it does not configure the native project for you.
+
+You can also download a free native file directly:
 
 ```bash
 curl --create-dirs -o components/design-for-ai/native/mobile-tab-bar.tsx \
   "https://design.yaps.ai/api/registry/mobile-tab-bar?format=raw"
 ```
 
-For Pro mobile components, add `-H "Authorization: Bearer $DESIGN_FOR_AI_LICENSE"`.
+For Pro mobile components, add `-H "Authorization: Bearer $DESIGN_FOR_AI_LICENSE"`. A direct download does not install dependencies. See the [native component guide](/blog/react-native-components-for-ai-agents) for the source, package and device checks.
 
 ## By hand
 
-Every component page has a Code tab. Copy the file, install the dependencies listed at the top of the page (usually just `motion`), and you're done. There are no shared utilities, providers or wrappers to set up.
+Every component page has a Code tab. Copy the file and follow its listed dependencies, theme requirements and usage example. Check any referenced sibling components when copying a composed block. Connect the callbacks and real services your application needs, then review the result in your own project.
