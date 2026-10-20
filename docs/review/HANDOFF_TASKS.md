@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Task 1 (20 October): Settings Panel has a reviewed 5.7s, 131 KB first refresh film and paired settled Next poster for its stronger fields. The exact replay enables Product news, selects Compact density and saves both values once; browser playback and an independent decoder reach the same Changes saved ending. All states fit measured 832×800 framing with the complete 680px panel visible. Maximum source gap is 43ms, changed-source delivery is 37.52ms and moving-frame p95 is 18.53ms, with no stalls, unchanged guards and all 88 capture inputs fixed. The earlier original assets remain archived. All eleven blocks are complete; 59 older probes and 123 films remain. The complete 68-suite release checkpoint is next. Evidence uses `test-results/handoff-blocks/settings-panel-*`.
+
 - Task 7 (20 October): Workspace Settings completes the eleventh and final block review. Compact retained views, detached save snapshots, exact retries, pending edits, hidden failures, replacement-policy ownership, empty/arriving data, independent instances and long phone content pass. Coarse actions retain 44px targets, field boundaries measure 4.16:1 dark and 4.50:1 light, and complete feedback wraps above narrow-screen actions. Live motion preferences and natural English/Arabic text direction pass the 55-mount composition review and focused nineteen-mount direction follow-up. The permanent workflow passes 48 mouse/keyboard and six touch mounts. All 71 current integration captures are approved: 49 match accepted references and 22 are newly inspected. The actual Next replay, shared Settings regression, normal headings, six matching source/Next scenes, French/Arabic phone and desktop saves, theme control and all four official audits pass with 81 inputs unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Three display keys are covered in all 29 non-English editions; the wider 183,999-unit localisation backlog retains English fallback. The ten-prop contract and Pro boundary remain intact. Its reviewed 4.9s, 92 KB first film and paired settled Next poster retain the complete 820px workspace, clear the weekly digest and end with Preferences saved. Actual playback and an independent decoder agree. Maximum source gap is 14ms, changed-source delivery is 32.00ms and moving-frame p95 is 17.42ms, with no stalls and all guards intact. All 88 capture inputs remain fixed. The current queue is 59 older probes and 124 films, including the changed Settings Panel; fresh complete release checks remain pending. Evidence uses `test-results/handoff-blocks/settings-*`.
 
 - Settings reading-direction follow-up (20 October): headings, labels, descriptions, fields and complete save feedback now select direction from their own text while retaining the page layout. Permission receipts and role-edit sentences keep their complete reading order. The Arabic preview exposed reversed English fallback punctuation; its original source fails all 25 focused checks. The corrected nineteen-mount source review passes all 25 checks in each theme, fourteen accessibility audits and all 28 approved captures. Twelve English defaults and the settled entrance are byte-identical to reviewed references; fifteen new direction and entry captures are inspected. The permanent native workflow passes 48 mouse/keyboard and six touch mounts with all 78 inputs unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Display keys, saved data and the ten-prop API are unchanged. The earlier actual Next run passes functionally but remains a visual rejection; fresh settled French/Arabic verification and media are pending. Counts stay at one block, 59 older probes and 124 films. Evidence uses `test-results/handoff-blocks/settings-direction-*`.
@@ -540,10 +542,10 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (124 components)
+## 1. Re-record demo videos (123 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
-version. Settings Panel also needs a paired poster for its new field treatment. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
+version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
 
 ```sh
 node scripts/record-demos.mjs <slug> --isolated-source --base=http://localhost:3100 --sheet=test-results/demo-sheets
@@ -559,7 +561,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`settings-panel`
 `hero-blur-statement`
 `footer-newsletter`
 `chart-allocation`
