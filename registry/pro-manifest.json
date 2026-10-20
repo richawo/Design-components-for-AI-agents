@@ -6714,9 +6714,16 @@
     ],
     "demo": {
       "steps": [
-        "wait:450",
-        "click:@cta",
-        "wait:4000"
+        "hover:@statement",
+        "wait:650",
+        "hover:@plan-studio",
+        "wait:400",
+        "click:@plan-studio",
+        "wait:200",
+        "click:@email",
+        "type:hello@studio.test",
+        "click:@submit",
+        "wait:1200"
       ],
       "loop": false
     },

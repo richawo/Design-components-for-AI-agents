@@ -10,7 +10,7 @@ const specs = [
   ["block-people-workspace", "Step recorded"],
   ["block-legal-workspace", "Completion evidence recorded for Deliver the quarterly service report."],
   ["block-commerce-workspace", "RET-ORD-1042 · Return request recorded"],
-  ["block-saas-landing", "Your Solo workspace."],
+  ["block-saas-landing", "Your Studio workspace request is received."],
   ["block-meetings-workspace", "Studio review"],
   ["block-music-workspace", "Paper Lanterns"],
 ];
@@ -133,6 +133,21 @@ try {
         }, true);
       });
     }
+    if (slug === "block-saas-landing") {
+      await page.evaluate(() => {
+        window.landingReplay = { clicks: [], emails: [], submissions: [] };
+        document.addEventListener("click", event => {
+          const target = event.target.closest?.("[data-demo]")?.dataset.demo;
+          if (["plan-studio", "email", "submit"].includes(target)) window.landingReplay.clicks.push(target);
+        }, true);
+        document.addEventListener("input", event => {
+          if (event.target.dataset?.demo === "email") window.landingReplay.emails.push(event.target.value);
+        });
+        document.addEventListener("submit", event => {
+          window.landingReplay.submissions.push({ email: event.target.querySelector("input")?.value, title: event.target.closest("footer")?.querySelector("h2")?.textContent });
+        }, true);
+      });
+    }
     let dashboardDownload;
     if (slug === "block-saas-dashboard") {
       dashboardDownload = page.waitForEvent('download');
@@ -153,6 +168,15 @@ try {
       (await page.locator("#root").innerText()).includes(final),
       slug + " intended end",
     );
+    if (slug === "block-saas-landing") {
+      const trace = await page.evaluate(() => window.landingReplay);
+      assert.deepEqual(trace.clicks, ["plan-studio", "email", "submit"]);
+      assert.equal(trace.emails.at(-1), "hello@studio.test");
+      assert.equal(trace.submissions.length, 1);
+      assert.equal(trace.submissions[0].email, "hello@studio.test");
+      assert.match(trace.submissions[0].title, /Your Studio workspace\./);
+      assert.equal(await page.getByRole("button", { name: "Use a different email", exact: true }).isVisible(), true);
+    }
     if (slug === "block-saas-dashboard") {
       const trace = await page.evaluate(() => window.dashboardReplay);
       assert.deepEqual(trace.clicks, ['card-signups','range-7d','export']);

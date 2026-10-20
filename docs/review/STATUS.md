@@ -44,6 +44,16 @@ registered source-fixture workflow and all core checks pass. Private correction:
 contract stays intact; full composition, Next integration, poster and film review remain open. Its changed
 hero adds the old Landing film to the queue.
 
+Landing's complete registered Next workflow now passes both themes. Six Next/source scenes retain
+identical geometry, including four byte-identical image pairs; all twelve are inspected. The final
+integration phase keeps 55 source/runtime/metadata/replay files fixed. Theme controls and the official
+audit pass. Its exact 7.47s demo replay retains the Hero opening, chooses Studio, types the expected
+email and reaches one accepted request. Private metadata: `650c26c`. Strict registry, root/all-eleven-block
+types and all 1,084 current tests pass. The temporary parallel blog-coverage failure is resolved upstream.
+Four localized phone/desktop request flows and accessibility audits pass; visual review leaves an open
+English-fallback word-order repair in the shared Hero/Footer on RTL pages. That repair and Landing's
+poster/film remain open, so counts stay at three blocks, 59 older probes and 124 films.
+
 Landing's composition source now reads the current motion preference for navigation, clears the real
 56px header with its sticky comparison and uses consistent sample prices, plan features and pound
 amounts. Product-facing workflow copy and a shorter Request label keep the page and phone form clear.
