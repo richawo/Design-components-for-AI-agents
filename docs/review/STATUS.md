@@ -41,6 +41,12 @@ settled defaults match their approved references byte-for-byte. Strict registry,
 and all 1,068 unit tests pass. The original combined-run failure and rejected intermediate blur remain archived.
 Meetings has since completed its integration and media review, as recorded below.
 
+Music's ownership follow-up protects its live queue from callback mutation and reads liked state from own
+properties for opaque track IDs. Both original failures are preserved. Four native mounts, four accessibility
+audits, all four reviewed captures and the registered source-fixture workflow pass with strict registry,
+root/all-eleven-block types and all 1,068 unit tests. The reproduced row-Pause wiring defect and full Music
+review remain open; the remaining counts above are unchanged.
+
 ## Previous workspace/input checkpoint (19 October 2026)
 
 The workspace/input checkpoint covers **all 64 browser suites across runs**: the full run is 63/64,
