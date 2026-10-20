@@ -42,7 +42,11 @@ describe.skipIf(!allPosts().length)("published multilingual blog SEO", () => {
         expect(entries.some((entry) => entry.path === topic.path)).toBe(false);
       }
       expect(entries.some((entry) => /\.md$|rss\.xml$|\/md\/|\/account/.test(entry.path))).toBe(false);
-      if (language.code !== "en") expect(entries.every((entry) => entry.path.startsWith(`/${language.code}/blog`))).toBe(true);
+      if (language.code !== "en") {
+        expect(entries.every((entry) => entry.path === `/${language.code}` || entry.path.startsWith(`/${language.code}/`))).toBe(true);
+        expect(entries.some((entry) => entry.path === `/${language.code}/components`)).toBe(true);
+        expect(entries.some((entry) => entry.path === `/${language.code}/docs`)).toBe(true);
+      }
     }
   });
   it("keeps translated hub and category search previews concise", () => {

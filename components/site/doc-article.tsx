@@ -1,3 +1,4 @@
+import { serverI18n } from "@/lib/i18n/server";
 import { SiteLink as Link } from "@/components/site/site-link";
 import { ProseContent } from "./prose-content";
 import { Toc } from "./toc";
@@ -20,10 +21,12 @@ function PageLink({ href, title, direction }: { href: string; title: string; dir
   );
 }
 
-export function DocArticle({ meta, html, headings, prev, next }: { meta: DocMeta; html: string; headings: Heading[]; prev?: DocMeta; next?: DocMeta }) {
+export async function DocArticle({ locale = "en", meta, html, headings, prev, next }: { locale?: string; meta: DocMeta; html: string; headings: Heading[]; prev?: DocMeta; next?: DocMeta }) {
+  const { localize } = await serverI18n(locale);
+
   const href = (d: DocMeta) => (d.slug === "introduction" ? "/docs" : `/docs/${d.slug}`);
   return (
-    <div className="grid gap-12 xl:grid-cols-9">
+    localize(<div className="grid gap-12 xl:grid-cols-9">
       <article className="min-w-0 xl:col-span-7">
         <p className="site-in font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3 [--i:1]">{meta.section}</p>
         <h1 tabIndex={-1} className="site-in mt-3 text-[clamp(2.4rem,1.6rem+3vw,4rem)] font-semibold leading-[0.95] tracking-[-0.05em] [--i:2]">
@@ -42,6 +45,6 @@ export function DocArticle({ meta, html, headings, prev, next }: { meta: DocMeta
           <Toc headings={headings} />
         </div>
       </aside>
-    </div>
+    </div>)
   );
 }

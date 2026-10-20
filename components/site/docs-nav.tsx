@@ -1,24 +1,28 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 import { motion } from "motion/react";
 import { SiteLink as Link } from "@/components/site/site-link";
 import { usePathname } from "next/navigation";
+import { unlocalizePath } from "@/lib/i18n/routing";
 
 /** `scope` keeps each rendered copy's active pill to itself (the layout renders one for mobile, one for desktop). */
 export function DocsNav({ groups, scope }: { groups: { section: string; docs: { slug: string; title: string }[] }[]; scope: string }) {
+  const { localize } = useSiteI18n();
+
   const reduce = useReducedMotion();
   const pathname = usePathname();
   return (
-    <nav aria-label="Docs" className="space-y-7">
+    localize(<nav aria-label="Docs" className="space-y-7">
       {groups.map((g) => (
         <div key={g.section}>
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3">{g.section}</p>
           <ul className="mt-3 space-y-0.5">
             {g.docs.map((d) => {
               const href = d.slug === "introduction" ? "/docs" : `/docs/${d.slug}`;
-              const active = pathname === href;
+              const active = unlocalizePath(pathname) === href;
               return (
                 <li key={d.slug}>
                   <Link
@@ -41,6 +45,6 @@ export function DocsNav({ groups, scope }: { groups: { section: string; docs: { 
           </ul>
         </div>
       ))}
-    </nav>
+    </nav>)
   );
 }

@@ -7,6 +7,9 @@ import { gzipSync } from "node:zlib";
 import { compactGeneratedSourceMap } from "./lib/source-map-budget.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+// Local dry runs can inspect an in-progress language edition. Publishing must
+// never silently replace missing site or demo translations with English.
+if (!process.argv.includes("--dry-run")) execFileSync(process.execPath, [path.join(root, "scripts/audit-site-i18n.mjs")], { cwd: root, stdio: "inherit" });
 const directory = path.join(root, ".open-next", "deploy");
 const archive = path.join(root, ".open-next", "source-maps-full");
 const wrangler = path.join(root, "node_modules", ".bin", "wrangler");

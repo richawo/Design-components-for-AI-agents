@@ -1,3 +1,6 @@
+import { SiteI18n } from "@/components/site/site-i18n";
+import { siteAlternates } from "@/lib/i18n/metadata";
+import { serverI18n, siteCopy } from "@/lib/i18n/server";
 import type { Metadata } from "next";
 import { CountUp } from "@/components/site/count-up";
 import { DitherGlow } from "@/components/site/dither-glow";
@@ -13,14 +16,17 @@ export const metadata: Metadata = {
   title: "Pricing: free and open source, or Pro once and for good",
   description:
     "Design for AI is free and MIT licensed. Pro adds showpiece components, Pro prompts and the private registry: yearly or one payment for life, for one person or a team of 10.",
-  alternates: { canonical: "/pricing" },
+  alternates: { canonical: "/pricing", languages: siteAlternates("/pricing") },
 };
 
-export default function PricingPage() {
+export default async function PricingPage({ params }: { params: Promise<{ locale?: string }> }) {
+
+  const { locale = "en" } = await params;
+  const { localize } = await serverI18n(locale);
   const s = stats();
   const prices = Object.fromEntries(PLANS.map((p) => [p.id, p.price]));
   return (
-    <div className="relative isolate mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
+    localize(<SiteI18n inherit locale={locale} dictionary={await siteCopy(locale, "pricing")}><div className="relative isolate mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
       <div aria-hidden="true" className="absolute inset-x-0 -top-16 -z-10 h-[36rem]">
         <DitherGlow className="[mask-image:linear-gradient(180deg,#000_40%,transparent)]" />
       </div>
@@ -65,9 +71,9 @@ export default function PricingPage() {
           <h2 className="mt-4 text-[clamp(1.75rem,1.2rem+2vw,2.5rem)] font-semibold leading-[1.05] tracking-[-0.045em]">Questions, answered.</h2>
         </div>
         <div className="lg:col-span-8">
-          <Faq items={PRICING_FAQ} />
+          <Faq locale={locale} items={PRICING_FAQ} />
         </div>
       </section>
-    </div>
+    </div></SiteI18n>)
   );
 }

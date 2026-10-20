@@ -1,3 +1,6 @@
+import { SiteI18n } from "@/components/site/site-i18n";
+import { siteAlternates } from "@/lib/i18n/metadata";
+import { serverI18n, siteCopy } from "@/lib/i18n/server";
 import { SiteLink as Link } from "@/components/site/site-link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -16,7 +19,7 @@ export function generateStaticParams() {
 
 const isCategory = (c: string): c is Category => c in CATEGORIES;
 
-export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ category: string; locale?: string }> }): Promise<Metadata> {
   const { category } = await params;
   if (!isCategory(category)) return {};
   const c = CATEGORIES[category];
@@ -25,19 +28,21 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   return {
     title: `${n} ${c.label.toLowerCase()} components for ${stack}, with AI prompts`,
     description: `${c.blurb} ${n} ${c.noun} components for ${stack}, each with code, a prompt and a JSON prompt for AI agents.`,
-    alternates: { canonical: `/categories/${category}` },
+    alternates: { canonical: `/categories/${category}`, languages: siteAlternates(`/categories/${category}`) },
   };
 }
 
-export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
-  const { category } = await params;
+export default async function CategoryPage({ params }: { params: Promise<{ category: string; locale?: string }> }) {
+
+  const { category, locale = "en" } = await params;
+  const { localize } = await serverI18n(locale);
   if (!isCategory(category)) notFound();
   const c = CATEGORIES[category];
   const items = componentsIn(category);
   if (!items.length) notFound();
   const others = categoriesWithCounts().filter((x) => x.key !== category);
   return (
-    <div className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
+    localize(<SiteI18n inherit locale={locale} dictionary={await siteCopy(locale, "cards", items.map(item => item.name))}><div className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -96,6 +101,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
           ))}
         </ul>
       </section>
-    </div>
+    </div></SiteI18n>)
   );
 }

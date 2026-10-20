@@ -1,3 +1,6 @@
+import { SiteI18n } from "@/components/site/site-i18n";
+import { siteAlternates } from "@/lib/i18n/metadata";
+import { serverI18n, siteCopy } from "@/lib/i18n/server";
 import { SiteLink as Link } from "@/components/site/site-link";
 import type { Metadata } from "next";
 import { ComponentCard } from "@/components/site/component-card";
@@ -15,16 +18,20 @@ export const metadata: Metadata = {
     "Build complete product pages from Design for AI components. Browse dashboards, collaboration and media apps, reports, settings and landing pages with source and AI briefs.",
   alternates: {
     canonical: "/blocks",
+    languages: siteAlternates("/blocks"),
     types: { "text/markdown": "/blocks.md" },
   },
 };
-export default function BlocksPage() {
+export default async function BlocksPage({ params }: { params: Promise<{ locale?: string }> }) {
+
+  const { locale = "en" } = await params;
+  const { localize } = await serverI18n(locale);
   const blocks = allBlocks();
   const groups = (Object.entries(BLOCK_LABELS) as [BlockType, string][]).filter(([key]) =>
     blocks.some((block) => block.blockType === key),
   );
   return (
-    <div className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
+    localize(<SiteI18n inherit locale={locale} dictionary={await siteCopy(locale, "cards", blocks.map(block => block.name))}><div className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -107,6 +114,6 @@ export default function BlocksPage() {
           </section>
         ))}
       </div>
-    </div>
+    </div></SiteI18n>)
   );
 }

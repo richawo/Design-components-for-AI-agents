@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useEffect, useRef, useState } from "react";
 import { copyText } from "@/lib/clipboard";
@@ -19,6 +20,8 @@ export function CopyButton({
   className?: string;
   variant?: "dark" | "light" | "accent";
 }) {
+  const { localize } = useSiteI18n();
+
   const [status, setStatus] = useState<"idle" | "copying" | "copied" | "error">("idle");
   const copied = status === "copied";
   const pending = useRef(false);
@@ -34,7 +37,7 @@ export function CopyButton({
     accent: "site-btn-accent",
   }[variant];
   return (
-    <>
+    localize(<>
     <button
       type="button"
       onClick={async () => {
@@ -78,6 +81,6 @@ export function CopyButton({
     <span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
       {status === "error" ? "Copy failed. Try again, or select the text and copy it manually." : copied ? copiedLabel : ""}
     </span>
-    </>
+    </>)
   );
 }

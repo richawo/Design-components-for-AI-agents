@@ -9,9 +9,8 @@
 @source "../registry/free/chart-portfolio";
 @source "../registry/free/date-booking-slots";
 
-/* Code retains its reading direction inside Arabic articles. */
-html[dir="rtl"] .site-prose pre,
-html[dir="rtl"] .site-prose code {
+/* Code retains its reading direction across language editions. */
+html[dir="rtl"] :is(pre, code, kbd) {
   direction: ltr;
   unicode-bidi: isolate;
   text-align: left;

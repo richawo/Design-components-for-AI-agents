@@ -8,6 +8,8 @@ import {
 } from "@/lib/registry";
 import { absoluteUrl, site } from "@/lib/site";
 import { LOCALES, localeByCode } from "./locales.mjs";
+import { localizePath } from "@/lib/i18n/routing";
+import { siteAlternates } from "@/lib/i18n/metadata";
 import {
   blogConfig,
   blogLocales,
@@ -37,17 +39,12 @@ export type SitemapEntry = {
   languages?: Record<string, string>;
 };
 export function sitemapLocales() {
-  return [
-    "en",
-    ...blogLocales()
-      .filter((l) => l.code !== "en")
-      .map((l) => l.code),
-  ];
+  return LOCALES.map((locale) => locale.code);
 }
 
 export function sitemapEntries(locale = "en"): SitemapEntry[] {
   const entries: SitemapEntry[] = [];
-  if (locale === "en") {
+  {
     const components = allComponents(),
       lastmod = components
         .map((c) => c.added)
@@ -77,6 +74,7 @@ export function sitemapEntries(locale = "en"): SitemapEntry[] {
         path: d.slug === "introduction" ? "/docs" : `/docs/${d.slug}`,
       })),
     );
+    for (const entry of entries) { entry.languages = siteAlternates(entry.path); entry.path = localizePath(entry.path, locale); }
   }
   const posts = allPosts(locale),
     config = blogConfig(locale);

@@ -1,3 +1,4 @@
+import { siteAlternates } from "@/lib/i18n/metadata";
 import { SiteLink as Link } from "@/components/site/site-link";
 import type { Metadata } from "next";
 import { cataloguePath, BLOCK_LABELS } from "@/lib/catalogue-path";
@@ -19,6 +20,10 @@ import { fileNameFor, installText } from "@/lib/install";
 import { getComponent, readSource, thumbnailFor, toCard } from "@/lib/registry";
 import { CATEGORIES } from "@/lib/registry-types";
 import { absoluteUrl, site } from "@/lib/site";
+import { siteCopy, siteDictionary } from "@/lib/i18n/server";
+import { entryCopy } from "@/lib/i18n/server";
+import { treeLocalizer } from "@/lib/i18n/tree";
+import { SiteI18n } from "./site-i18n";
 
 function seoTitle(e: NonNullable<ReturnType<typeof getComponent>>) {
   if (e.kind === "block")
@@ -42,6 +47,7 @@ export function componentMetadata(e: RegistryEntry): Metadata {
     ],
     alternates: {
       canonical: cataloguePath(e),
+      languages: siteAlternates(cataloguePath(e)),
       types: { "text/markdown": `${cataloguePath(e)}.md` },
     },
     openGraph: {
@@ -53,7 +59,10 @@ export function componentMetadata(e: RegistryEntry): Metadata {
   };
 }
 
-export async function ComponentDetail({ entry: e }: { entry: RegistryEntry }) {
+export async function ComponentDetail({ locale = "en", entry: e }: { entry: RegistryEntry; locale?: string }) {
+  const selectedCopy = await entryCopy(locale, e.slug);
+  const { localize, t } = treeLocalizer(locale, { ...await siteDictionary(locale), ...selectedCopy });
+
   const slug = e.slug;
   const block = e.kind === "block";
   const group = block ? "Blocks" : "Components";
@@ -69,7 +78,8 @@ export async function ComponentDetail({ entry: e }: { entry: RegistryEntry }) {
   const prompt =
     e.tier === "free" ? ((await readSource(slug))?.prompt ?? null) : null;
 
-  const guide = componentGuide(slug);
+  const originalGuide = componentGuide(slug);
+  const guide = { ...originalGuide, useWhen: t(originalGuide.useWhen), avoidWhen: t(originalGuide.avoidWhen), integration: originalGuide.integration.map(t) };
   const related = guide.related
     .map(getComponent)
     .filter((c): c is NonNullable<typeof c> => !!c);
@@ -85,7 +95,7 @@ export async function ComponentDetail({ entry: e }: { entry: RegistryEntry }) {
     ["source", "Source and briefs"],
     ["ai-reference", "Notes for AI"],
     ...(related.length ? [["related", "Related"]] : []),
-  ].map(([id, text]) => ({ id, text, level: 2 as const }));
+  ].map(([id, text]) => ({ id, text: t(text), level: 2 as const }));
   const cat =
     block && e.blockType
       ? { label: BLOCK_LABELS[e.blockType] }
@@ -93,7 +103,7 @@ export async function ComponentDetail({ entry: e }: { entry: RegistryEntry }) {
   const thumb = thumbnailFor(slug);
 
   return (
-    <div className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
+    localize(<SiteI18n locale={locale} inherit dictionary={{ ...await siteCopy(locale, "detail", [e.name, ...related.map(entry => entry.name), ...(e.components ?? []).flatMap(slug => { const entry = getComponent(slug); return entry ? [entry.name] : []; })]), ...Object.fromEntries((e.controls ?? []).flatMap((control) => [control.label, control.group, ...(control.options ?? []).map((option) => typeof option === "object" ? option.label : typeof option === "string" ? option : undefined)]).filter((key): key is string => !!key).map((key) => [key, selectedCopy[key] ?? key])) }}><div className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
       <JsonLd
         data={[
           {
@@ -213,7 +223,7 @@ export async function ComponentDetail({ entry: e }: { entry: RegistryEntry }) {
             ["Category", cat.label],
             [
               "Added",
-              new Date(e.added).toLocaleDateString("en-GB", {
+              new Date(e.added).toLocaleDateString(locale === "en" ? "en-GB" : locale, {
                 day: "numeric",
                 month: "short",
                 year: "numeric",
@@ -404,15 +414,15 @@ export async function ComponentDetail({ entry: e }: { entry: RegistryEntry }) {
                       className="border-b border-site-line last:border-0"
                     >
                       <th
-                        scope="row"
+                        scope="row" translate="no"
                         className="px-4 py-4 font-mono text-[13px] font-normal text-site-fg"
                       >
                         {p.name}
                       </th>
-                      <td className="px-4 py-4 font-mono text-xs text-site-fg-2">
+                      <td translate="no" className="px-4 py-4 font-mono text-xs text-site-fg-2">
                         {p.type}
                       </td>
-                      <td className="px-4 py-4 font-mono text-xs text-site-fg-3">
+                      <td translate="no" className="px-4 py-4 font-mono text-xs text-site-fg-3">
                         {p.default ?? "None"}
                       </td>
                       <td className="min-w-[240px] px-4 py-4 leading-relaxed text-site-fg-2">
@@ -528,7 +538,7 @@ export async function ComponentDetail({ entry: e }: { entry: RegistryEntry }) {
           </div>
         </aside>
       </div>
-    </div>
+    </div></SiteI18n>)
   );
 }
 

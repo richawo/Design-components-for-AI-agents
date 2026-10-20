@@ -1,7 +1,8 @@
+import { siteAlternates } from "@/lib/i18n/metadata";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { DocArticle } from "@/components/site/doc-article";
-import { allDocs, getDoc } from "@/lib/content";
+import { allDocs, localizedDocs, getDoc } from "@/lib/content";
 
 export const dynamicParams = false;
 
@@ -15,14 +16,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const d = allDocs().find((x) => x.slug === slug);
   if (!d) return {};
-  return { title: d.title, description: d.description, alternates: { canonical: `/docs/${slug}` } };
+  return { title: d.title, description: d.description, alternates: { canonical: `/docs/${slug}`, languages: siteAlternates(`/docs/${slug}`) } };
 }
 
-export default async function DocPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const doc = await getDoc(slug);
+export default async function DocPage({ params }: { params: Promise<{ slug: string; locale?: string }> }) {
+  const { slug, locale = "en" } = await params;
+  const doc = await getDoc(slug, locale);
   if (!doc) notFound();
-  const docs = allDocs();
+  const docs = await localizedDocs(locale);
   const i = docs.findIndex((d) => d.slug === slug);
-  return <DocArticle meta={doc.meta} html={doc.html} headings={doc.headings} prev={docs[i - 1]} next={docs[i + 1]} />;
+  return <DocArticle locale={locale} meta={doc.meta} html={doc.html} headings={doc.headings} prev={docs[i - 1]} next={docs[i + 1]} />;
 }

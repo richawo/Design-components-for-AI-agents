@@ -12,7 +12,7 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale?: string }>;
 }) {
   const entry = getComponent((await params).slug);
   return entry?.kind === "block" ? componentMetadata(entry) : {};
@@ -20,9 +20,10 @@ export async function generateMetadata({
 export default async function BlockPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale?: string }>;
 }) {
-  const entry = getComponent((await params).slug);
+  const { slug, locale = "en" } = await params;
+  const entry = getComponent(slug);
   if (entry?.kind !== "block") notFound();
-  return <ComponentDetail entry={entry} />;
+  return <ComponentDetail entry={entry} locale={locale} />;
 }

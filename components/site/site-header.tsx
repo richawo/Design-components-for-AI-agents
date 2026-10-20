@@ -8,6 +8,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./logo";
 import { site } from "@/lib/site";
+import { LanguageSwitcher } from "./language-switcher";
+import { unlocalizePath, localizePath } from "@/lib/i18n/routing";
 
 const NAV = [
   { href: "/components", label: "Components" },
@@ -21,7 +23,7 @@ const isActive = (pathname: string, href: string) => pathname === href || pathna
 
 export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy?: Record<string, string> }) {
   const t = (text: string) => copy[text] ?? text;
-  const nav = NAV.map((item) => ({ href: item.href === "/blog" && locale !== "en" ? `/${locale}/blog` : item.href, label: t(item.label) }));
+  const nav = NAV.map((item) => ({ href: localizePath(item.href, locale), label: t(item.label) }));
   const reduce = useReducedMotion();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -50,6 +52,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
     menu.current?.querySelector<HTMLAnchorElement>("a[href]")?.focus({ preventScroll: true });
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        if (scope.current?.querySelector('[data-language-switcher] button[aria-expanded="true"]')) return;
         event.preventDefault();
         event.stopPropagation();
         setOpen(false);
@@ -64,7 +67,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
         (event.shiftKey ? last : first).focus();
       }
     };
-    const desktop = window.matchMedia("(min-width: 64rem)");
+    const desktop = window.matchMedia("(min-width: 80rem)");
     const onResize = () => {
       if (!desktop.matches) return;
       setOpen(false);
@@ -85,13 +88,13 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
   return (
     <div ref={scope} className="sticky top-0 z-50" role={open ? "dialog" : undefined} aria-modal={open ? true : undefined} aria-label={open ? t("Main navigation") : undefined}>
       <header
-        className={`relative border-b transition-[background-color,border-color] duration-300 ${scrolled || open ? "border-white/[0.07] bg-site-bg/75 backdrop-blur-xl backdrop-saturate-150" : "border-transparent bg-transparent"}`}
+        className={`relative z-50 border-b transition-[background-color,border-color] duration-300 ${scrolled || open ? "border-white/[0.07] bg-site-bg/75 backdrop-blur-xl backdrop-saturate-150" : "border-transparent bg-transparent"}`}
       >
         {/* Finite limits let the header interpolate between the reading width and the catalogue width. */}
-        <div className={`site-header-content mx-auto flex h-16 w-full items-center justify-between gap-6 px-5 transition-[max-width] duration-500 ease-site motion-reduce:transition-none sm:px-8 ${pathname === "/components" ? "max-w-full" : "max-w-[80rem]"}`}>
+        <div className={`site-header-content mx-auto flex h-16 w-full items-center justify-between gap-3 px-5 transition-[max-width] duration-500 ease-site motion-reduce:transition-none sm:px-8 ${unlocalizePath(pathname) === "/components" ? "max-w-full" : "max-w-[80rem]"}`}>
           <div className="flex items-center gap-10">
             <Logo />
-            <nav aria-label={t("Main")} className="hidden items-center gap-1 lg:flex" onMouseLeave={() => setHovered(null)}>
+            <nav aria-label={t("Main")} className="hidden items-center gap-1 xl:flex" onMouseLeave={() => setHovered(null)}>
               {nav.map((item) => {
                 const active = isActive(pathname, item.href);
                 return (
@@ -131,7 +134,8 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
             </nav>
           </div>
           <div className="ml-auto flex items-center gap-2">
-          <div className="hidden items-center gap-2 lg:flex">
+          <LanguageSwitcher />
+          <div className="hidden items-center gap-2 xl:flex">
             <a
               href={site.github}
               className="site-btn site-btn-ghost h-9 px-3 text-[14px] font-normal"
@@ -152,7 +156,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
           <button
             ref={trigger}
             type="button"
-            className="relative flex size-11 items-center justify-center rounded-full border border-white/10 transition duration-150 active:scale-95 motion-reduce:!scale-100 active:bg-white/[0.06] lg:hidden"
+            className="relative flex size-11 items-center justify-center rounded-full border border-white/10 transition duration-150 active:scale-95 motion-reduce:!scale-100 active:bg-white/[0.06] xl:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? t("Close menu") : t("Open menu")}
@@ -170,7 +174,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
       <div
         ref={menu}
         id="mobile-nav"
-        className={`fixed inset-x-0 bottom-0 top-16 z-[45] flex flex-col bg-site-bg px-5 pb-8 pt-4 transition-[opacity,visibility] duration-300 lg:hidden ${open ? "visible opacity-100" : "invisible opacity-0"}`}
+        className={`fixed inset-x-0 bottom-0 top-16 z-[45] flex flex-col bg-site-bg px-5 pb-8 pt-4 transition-[opacity,visibility] duration-300 xl:hidden ${open ? "visible opacity-100" : "invisible opacity-0"}`}
       >
         <nav aria-label={t("Mobile")} className="flex flex-col">
           {nav.map((item, i) => (

@@ -52,7 +52,7 @@ export function SiteFooter({ locale = "en", copy = {} }: { locale?: string; copy
                 <ul className="mt-4 space-y-2.5">
                   {col.links.map((l) => (
                     <li key={l.href}>
-                      <Link href={l.href === "/blog" && locale !== "en" ? `/${locale}/blog` : l.href} className="rounded-sm text-[14px] text-site-fg-2 transition-colors duration-150 hover:text-site-fg">
+                      <Link href={l.href} className="rounded-sm text-[14px] text-site-fg-2 transition-colors duration-150 hover:text-site-fg">
                         {t(l.label)}
                       </Link>
                     </li>

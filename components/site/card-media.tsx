@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useEffect, useRef, useState } from "react";
 import { registerCard, videoAllowed } from "./card-playback";
@@ -39,6 +40,8 @@ export function CardMedia({
   priority: boolean;
   compact?: boolean;
 }) {
+  const { localize } = useSiteI18n();
+
   const posterRef = useRef<HTMLImageElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
   const [src, setSrc] = useState(false);
@@ -110,6 +113,13 @@ export function CardMedia({
       // decoder. A fresh registration starts only after the scheduler selects it.
       want.current = false;
       v.pause();
+      if (!v.isConnected) {
+        // Pausing a detached video keeps its download alive. Release it so
+        // the individual page's preview can use the connection immediately.
+        v.querySelectorAll("source").forEach((source) => source.removeAttribute("src"));
+        v.removeAttribute("src");
+        v.load();
+      }
       handle.release();
       card.removeEventListener("pointerenter", enter);
       card.removeEventListener("pointerleave", leave);
@@ -128,7 +138,7 @@ export function CardMedia({
   }, [src, video?.mp4, video?.webm]);
 
   return (
-    <>
+    localize(<>
       {thumb ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -167,6 +177,6 @@ export function CardMedia({
           {src && video.webm && <source src={video.webm} type="video/webm" />}
         </video>
       )}
-    </>
+    </>)
   );
 }

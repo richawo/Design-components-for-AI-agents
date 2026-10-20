@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
@@ -37,6 +38,9 @@ const BrowserCard = memo(ComponentCard);
 const DISCOVERY_CATEGORIES = ["hero", "features", "ai", "three-d"] as const;
 
 export function ComponentBrowser({ cards, categories, introduction }: { cards: CardData[]; categories: Cat[]; introduction: ReactNode }) {
+  const { localize, href, t } = useSiteI18n();
+  const categoryLabels = useMemo(() => new Map(categories.map((category) => [category.key, t(category.label)])), [categories, t]);
+
   const [q, setQ] = useState("");
   const [tier, setTier] = useState<"all" | "free" | "pro">("all");
   const [filtersReady, setFiltersReady] = useState(false);
@@ -89,9 +93,9 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
     // Invalid categories become the unfiltered catalogue without a server
     // redirect. Keep explicit search/tier filters and the current history entry.
     const categoryHref = galleryHref(window.location.search, next);
-    const href = catalogueOrderHref(categoryHref.split("?")[1] ?? "", nextOrder);
-    if (`${window.location.pathname}${window.location.search}` !== href)
-      window.history.replaceState(null, "", `${href}${window.location.hash}`);
+    const target = href(catalogueOrderHref(categoryHref.split("?")[1] ?? "", nextOrder));
+    if (`${window.location.pathname}${window.location.search}` !== target)
+      window.history.replaceState(null, "", `${target}${window.location.hash}`);
     handledQuery.current = new URLSearchParams(window.location.search).toString();
     restoredFilters.current = true;
     setFiltersReady(true);
@@ -103,8 +107,8 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
     try {
       sessionStorage.setItem(FILTER_KEY, JSON.stringify({ q, tier }));
     } catch {}
-    const href = filterHref(window.location.search, q, tier);
-    if (`${window.location.pathname}${window.location.search}` !== href) window.history.replaceState(null, "", `${href}${window.location.hash}`);
+    const target = href(filterHref(window.location.search, q, tier));
+    if (`${window.location.pathname}${window.location.search}` !== target) window.history.replaceState(null, "", `${target}${window.location.hash}`);
     handledQuery.current = new URLSearchParams(window.location.search).toString();
   }, [q, tier, filtersReady]);
 
@@ -159,17 +163,17 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
     setOrderState("featured");
     const search = new URLSearchParams(window.location.search);
     search.delete("sort");
-    const href = galleryHref(search.toString(), key);
-    if (`${window.location.pathname}${window.location.search}` === href) return;
+    const target = href(galleryHref(search.toString(), key));
+    if (`${window.location.pathname}${window.location.search}` === target) return;
     // The full catalogue is already here; changing a filter needs no server render.
     // Next copies its own history metadata when given null and tracks the URL.
-    window.history.replaceState(null, "", `${href}${window.location.hash}`);
+    window.history.replaceState(null, "", `${target}${window.location.hash}`);
   };
 
   const browseNew = () => {
     focusResults.current = true;
     setOrderState("new");
-    window.history.replaceState(null, "", `${catalogueOrderHref(window.location.search, "new")}${window.location.hash}`);
+    window.history.replaceState(null, "", `${href(catalogueOrderHref(window.location.search, "new"))}${window.location.hash}`);
   };
 
   // "/" jumps to search from anywhere on the page, as on most libraries.
@@ -191,10 +195,10 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
       if (tier !== "all" && c.tier !== tier) return false;
       if (cat !== "all" && c.category !== cat) return false;
       if (!needle) return true;
-      return [c.name, c.description, c.category, ...c.tags].join(" ").toLowerCase().includes(needle);
+      return [c.name, t(c.name), c.description, t(c.description), c.category, categoryLabels.get(c.category), ...c.tags].join(" ").toLowerCase().includes(needle);
     });
     return order === "new" ? newestFirst(matches) : matches;
-  }, [cards, q, tier, cat, order]);
+  }, [cards, q, tier, cat, order, t, categoryLabels]);
 
   const showDiscovery = cat === "all" && tier === "all" && !q.trim() && order === "featured";
   const featured = useMemo(() => cards.slice(0, 8), [cards]);
@@ -218,7 +222,7 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
   }, [filterKey]);
   useEffect(() => {
     if (!focusNext.current) return;
-    const next = gridRef.current?.querySelector<HTMLAnchorElement>(`a[href="/components/${focusNext.current}"]`);
+    const next = gridRef.current?.querySelector<HTMLAnchorElement>(`a[href="${href(`/components/${focusNext.current}`)}"]`);
     if (next) { focusNext.current = null; next.focus(); }
   }, [shown.length]);
   const loadMore = useCallback(() => {
@@ -240,7 +244,7 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
   }, [hasMore, loadMore, shown.length]);
 
   return (
-    <div data-gallery-ready={filtersReady} className="relative grid gap-5 lg:grid-cols-[224px_minmax(0,1fr)] lg:gap-x-8 lg:gap-y-6">
+    localize(<div data-gallery-ready={filtersReady} className="relative grid gap-5 lg:grid-cols-[224px_minmax(0,1fr)] lg:gap-x-8 lg:gap-y-6">
       <p data-gallery-loading role="status" className="absolute inset-x-0 top-0 hidden py-4 text-sm text-site-fg-2">Loading your selection…</p>
       {/* Only the URL observer needs the request's search params. Keeping it
           in its own boundary preserves the server-rendered gallery. */}
@@ -367,7 +371,7 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
         )}
         </section>
       </div>
-    </div>
+    </div>)
   );
 }
 
@@ -383,9 +387,11 @@ function GalleryLocationSync({ onSearchChange }: { onSearchChange: (query: strin
 
 /** The card's own wrapper, so entrance transforms never fight the layout animation around it. */
 function CardSlot({ entrance, children }: { entrance?: ReturnType<typeof cardEntrance>; children: React.ReactNode }) {
+  const { localize } = useSiteI18n();
+
   return (
-    <div className={`flex w-full ${entrance?.className ?? ""}`} style={entrance?.style}>
+    localize(<div className={`flex w-full ${entrance?.className ?? ""}`} style={entrance?.style}>
       {children}
-    </div>
+    </div>)
   );
 }

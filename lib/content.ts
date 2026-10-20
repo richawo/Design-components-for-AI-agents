@@ -8,6 +8,9 @@ import { highlight } from "./highlight";
 import { BLOG_DATA, blogFiles, blogConfig, blogPath } from "./blog/runtime";
 import { imageDimensions } from "./blog/image-markup";
 import { visibleHowToSteps } from "./blog/how-to";
+import { serverI18n, siteDoc } from "./i18n/server";
+import { localizePath } from "./i18n/routing";
+import { mapMarkdown } from "./i18n/markdown.mjs";
 
 /**
  * Markdown content for the blog and docs. Mirrors the yaps.ai blog setup:
@@ -56,17 +59,19 @@ const slugify = (s: string) =>
     .replace(/-+/g, "-");
 
 const stripTags = (s: string) => s.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
+const localizedHtmlLinks = (html: string, locale: string) => locale === "en" ? html : html.replace(/(<a\b[^>]*\bhref=["'])([^"']+)(["'])/gi, (_, before, href, after) => before + localizedBlogLink(href, locale) + after);
 
-async function render(markdown: string, locale = "en") {
+async function render(markdown: string, locale = "en", sourceHeadingIds?: string[]) {
   const headings: Heading[] = [];
   const used = new Map<string, number>();
   const codeBlocks: { lang: string; text: string }[] = [];
   const marked = new Marked({ gfm: true });
+  let headingIndex = 0;
   marked.use({
     renderer: {
       heading(this: { parser: { parseInline: (t: Tokens.Generic[]) => string } }, { tokens, depth }: Tokens.Heading) {
         const html = this.parser.parseInline(tokens);
-        const base = slugify(html) || "section";
+        const base = sourceHeadingIds?.[headingIndex++] || slugify(html) || "section";
         const n = (used.get(base) ?? 0) + 1;
         used.set(base, n);
         const id = n === 1 ? base : `${base}-${n}`;
@@ -86,6 +91,9 @@ async function render(markdown: string, locale = "en") {
     },
   });
   let html = await marked.parse(markdown);
+  // Translated Markdown also contains preserved inline HTML links. Route
+  // those through the same locale handling as Markdown link tokens.
+  html = localizedHtmlLinks(html, locale);
   html = imageDimensions(html, BLOG_DATA.blogImages);
   const langs = new Set(["tsx", "ts", "json", "bash", "markdown", "css", "html"]);
   for (let i = 0; i < codeBlocks.length; i++) {
@@ -194,7 +202,7 @@ export function relatedPosts(slug: string, n = 3, locale = "en") {
 export function localizedBlogLink(href: string, locale = "en") {
   if (locale === "en") return href;
   const path = href.replace(/^https:\/\/design\.yaps\.ai/, "");
-  if (!/^\/blog(?:\/|$|[?#])/.test(path)) return href;
+  if (!/^\/blog(?:\/|$|[?#])/.test(path)) return path.startsWith("/") && !path.startsWith("//") ? localizePath(path, locale) : href;
   const match = /^\/blog\/([^/?#]+)(.*)$/.exec(path);
   if (match && !["category", "page", "rss.xml"].includes(match[1])) {
     const post = allPosts(locale).find((p) => p.sourceSlug === match[1] || p.slug === match[1]);
@@ -214,10 +222,24 @@ export function allDocs(): DocMeta[] {
     .sort((a, b) => a.order - b.order);
 }
 
-export async function getDoc(slug: string) {
-  const meta = allDocs().find((d) => d.slug === slug);
+export async function localizedDocs(locale = "en"): Promise<DocMeta[]> {
+  const { t } = await serverI18n(locale);
+  return allDocs().map((doc) => ({ ...doc, title: t(doc.title), description: t(doc.description), section: t(doc.section) }));
+}
+
+export async function getDoc(slug: string, locale = "en") {
+  const meta = (await localizedDocs(locale)).find((d) => d.slug === slug);
   if (!meta) return null;
   const { content } = matter(readFile("docs", `${slug}.md`) ?? "");
-  const { html, headings } = await render(content);
-  return { meta, html, headings, markdown: content };
+  const translated = (await siteDoc(locale, slug)) ?? content;
+  const markdown = locale === "en" ? translated : mapMarkdown(translated, (html: string) => localizedHtmlLinks(html, locale));
+  // Keep deep links valid when switching languages, while translating the
+  // visible heading and table of contents.
+  const parser = new Marked({ gfm: true });
+  const sourceHeadingIds: string[] = [];
+  parser.walkTokens(parser.lexer(content), (token) => {
+    if (token.type === "heading") sourceHeadingIds.push(slugify(parser.parseInline(token.text) as string));
+  });
+  const { html, headings } = await render(markdown, locale, sourceHeadingIds);
+  return { meta, html, headings, markdown };
 }

@@ -1,3 +1,8 @@
 # Next fingerprints this entire tree with content hashes or a unique build ID.
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Preview language files include their content hash and contain public demo copy.
+/locale-previews/*
+  Cache-Control: public, max-age=31536000, immutable
+  X-Robots-Tag: noindex

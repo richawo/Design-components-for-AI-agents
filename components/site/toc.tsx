@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
@@ -7,6 +8,8 @@ import { useEffect, useState } from "react";
 import type { Heading } from "@/lib/content";
 
 export function Toc({ headings, label = "On this page" }: { headings: Heading[]; label?: string }) {
+  const { localize } = useSiteI18n();
+
   const reduce = useReducedMotion();
   const [active, setActive] = useState<string | null>(headings[0]?.id ?? null);
   // The active heading is the last one that has scrolled past the header.
@@ -40,9 +43,9 @@ export function Toc({ headings, label = "On this page" }: { headings: Heading[];
       window.removeEventListener("resize", onScroll);
     };
   }, [headings]);
-  if (!headings.length) return null;
+  if (!headings.length) return localize(null);
   return (
-    <nav aria-label={label}>
+    localize(<nav aria-label={label}>
       <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3">{label}</p>
       <ol className="mt-4 space-y-1 border-l border-white/[0.08]">
         {headings.map((h) => (
@@ -65,6 +68,6 @@ export function Toc({ headings, label = "On this page" }: { headings: Heading[];
           </li>
         ))}
       </ol>
-    </nav>
+    </nav>)
   );
 }

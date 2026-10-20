@@ -1,8 +1,22 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { localeByCode } from "@/lib/blog/locales.mjs";
+import { SITE_ROUTES, preferredLocale, localizePath } from "@/lib/i18n/routing";
 
 export function proxy(request: NextRequest) {
   const parts = request.nextUrl.pathname.split("/").filter(Boolean);
+  const preference = preferredLocale(request.headers.get("cookie"));
+  if (preference !== "en" && (request.nextUrl.pathname === "/account" || (request.nextUrl.pathname === "/pricing" && request.nextUrl.searchParams.has("cancelled")))) {
+    const url = request.nextUrl.clone();
+    url.pathname = localizePath(url.pathname, preference);
+    const response = NextResponse.redirect(url, 307);
+    response.headers.set("Cache-Control", "private, no-store");
+    response.headers.set("Vary", "Cookie");
+    return response;
+  }
+  if (parts[0] === "en" && (!parts[1] || SITE_ROUTES.includes(parts[1]))) {
+    const url = request.nextUrl.clone(); url.pathname = "/" + parts.slice(1).join("/");
+    return NextResponse.redirect(url, 308);
+  }
   let locale = "en";
   if (localeByCode(parts[0]) && parts[1] === "blog") {
     locale = parts.shift()!;
@@ -23,4 +37,4 @@ export function proxy(request: NextRequest) {
   response.headers.set("Vary", "Accept");
   return response;
 }
-export const config = { matcher: ["/blog/:path*", "/:locale/blog/:path*"] };
+export const config = { matcher: ["/blog/:path*", "/:locale/blog/:path*", "/en/:path*", "/account", "/pricing"] };

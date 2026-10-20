@@ -1,3 +1,6 @@
+import { SiteI18n } from "@/components/site/site-i18n";
+import { siteAlternates } from "@/lib/i18n/metadata";
+import { serverI18n, siteCopy } from "@/lib/i18n/server";
 import type { Metadata } from "next";
 import { ComponentBrowser } from "@/components/site/component-browser";
 import { CountUp } from "@/components/site/count-up";
@@ -14,12 +17,15 @@ export const metadata: Metadata = {
   title: "All components: React, Tailwind and React Native, with AI prompts",
   description:
     "Browse every Design for AI component: heroes, pricing, AI chat, dashboards and React Native screens. Each ships with code, a prompt and a JSON prompt for your agent.",
-  alternates: { canonical: "/components" },
+  alternates: { canonical: "/components", languages: siteAlternates("/components") },
 };
 
 // Every visitor gets the same catalogue. Query filters are restored locally
 // before the browser paints a navigation, so this route can be prerendered.
-export default function ComponentsPage() {
+export default async function ComponentsPage({ params }: { params: Promise<{ locale?: string }> }) {
+
+  const { locale = "en" } = await params;
+  const { localize } = await serverI18n(locale);
   const s = stats();
   const all = individualComponents();
   const cards = all.map(toCard);
@@ -29,7 +35,7 @@ export default function ComponentsPage() {
     count,
   }));
   return (
-    <div className="relative px-5 pb-28 pt-7 sm:px-8 lg:pt-8">
+    localize(<SiteI18n inherit locale={locale} dictionary={await siteCopy(locale, "catalogue", cards.flatMap(card => [card.name, card.description]))}><div className="relative px-5 pb-28 pt-7 sm:px-8 lg:pt-8">
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -65,6 +71,6 @@ export default function ComponentsPage() {
           </div>
         }
       />
-    </div>
+    </div></SiteI18n>)
   );
 }

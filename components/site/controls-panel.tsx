@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
@@ -38,6 +39,8 @@ export type ControlsPanelProps = {
  * the copied snippet and prompt.
  */
 export function ControlsPanel(p: ControlsPanelProps) {
+  const { localize } = useSiteI18n();
+
   const uid = useId();
   const container = useRef<HTMLElement>(null);
   const [near, setNear] = useState(false);
@@ -66,7 +69,7 @@ export function ControlsPanel(p: ControlsPanelProps) {
   const groups = groupControls(p.controls);
 
   return (
-    <section ref={container} aria-labelledby={`${uid}-h`} className="border-t border-white/[0.06] px-3 pb-4 pt-3.5 sm:px-4 sm:pb-5">
+    localize(<section ref={container} aria-labelledby={`${uid}-h`} className="border-t border-white/[0.06] px-3 pb-4 pt-3.5 sm:px-4 sm:pb-5">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2.5">
         <div className="flex items-center gap-2.5">
           <h2 id={`${uid}-h`} className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">
@@ -128,16 +131,18 @@ export function ControlsPanel(p: ControlsPanelProps) {
           </div>
         ))}
       </div>
-    </section>
+    </section>)
   );
 }
 
 /** Natural label sizing reserves each action through loading, copy and retry. */
 function ControlActionSlot({ label, shortLabel, children }: { label: string; shortLabel: string; children: ReactNode }) {
-  return <div className="grid items-center">
+  const { localize } = useSiteI18n();
+
+  return localize(<div className="grid items-center">
     <span aria-hidden="true" className="site-btn invisible col-start-1 row-start-1 h-11 gap-1.5 px-3.5 text-xs font-semibold"><span className="size-3.5" /><span className="hidden sm:inline">{label}</span><span className="sm:hidden">{shortLabel}</span></span>
     <div className="col-start-1 row-start-1 [&>.site-btn]:w-full">{children}</div>
-  </div>;
+  </div>);
 }
 
 function groupControls(controls: ComponentControl[]): [string | null, ComponentControl[]][] {
@@ -159,31 +164,33 @@ function Control({
   onAction: (c: ComponentControl, v: ControlValue | null) => void;
   uid: string;
 }) {
+  const { localize } = useSiteI18n();
+
   const id = `${uid}-${c.prop.replace(/[^a-zA-Z0-9]/g, "")}-${c.kind}`;
   switch (c.kind) {
     case "slider":
-      return <Slider id={id} c={c} value={Number(value ?? c.default)} onChange={(v) => onChange(c, v)} />;
+      return localize(<Slider id={id} c={c} value={Number(value ?? c.default)} onChange={(v) => onChange(c, v)} />);
     case "toggle":
       return (
-        <div className={ROW}>
+        localize(<div className={ROW}>
           <span id={`${id}-l`} className={LABEL}>
             {c.label}
           </span>
           <Switch labelledBy={`${id}-l`} on={value === true} onChange={(v) => onChange(c, v)} />
-        </div>
+        </div>)
       );
     case "segmented":
       return (
-        <Wide options={(c.options ?? []).map(optionOf)}>
+        localize(<Wide options={(c.options ?? []).map(optionOf)}>
           <span id={`${id}-l`} className={LABEL}>
             {c.label}
           </span>
           <Segmented id={id} labelledBy={`${id}-l`} options={(c.options ?? []).map(optionOf)} value={value} onChange={(v) => onChange(c, v)} />
-        </Wide>
+        </Wide>)
       );
     case "select":
       return (
-        <label className={`${ROW} relative cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-site-accent`}>
+        localize(<label className={`${ROW} relative cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-site-accent`}>
           <span className={LABEL}>{c.label}</span>
           <span className="flex min-w-0 items-center gap-1.5 text-[13px] text-site-fg">
             <span className="truncate">{(c.options ?? []).map(optionOf).find((o) => o.value === value)?.label ?? String(value)}</span>
@@ -207,13 +214,13 @@ function Control({
               </option>
             ))}
           </select>
-        </label>
+        </label>)
       );
     case "color":
-      return <ColorControl id={id} c={c} value={String(value ?? c.default)} onChange={(v) => onChange(c, v)} />;
+      return localize(<ColorControl id={id} c={c} value={String(value ?? c.default)} onChange={(v) => onChange(c, v)} />);
     case "text":
       return (
-        <label className={`${ROW} cursor-text has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-site-accent`}>
+        localize(<label className={`${ROW} cursor-text has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-site-accent`}>
           <span className={`${LABEL} shrink-0`}>{c.label}</span>
           <input
             type="text"
@@ -222,21 +229,21 @@ function Control({
             spellCheck={false}
             className="h-9 min-w-0 flex-1 bg-transparent text-right text-[13px] text-site-fg outline-none placeholder:text-site-fg-3"
           />
-        </label>
+        </label>)
       );
     case "action": {
       if (isReplay(c))
         return (
-          <div className={ROW}>
+          localize(<div className={ROW}>
             <span className={LABEL}>{c.label}</span>
             <ActionButton pressed={false} onClick={() => onAction(c, null)}>
               Replay
             </ActionButton>
-          </div>
+          </div>)
         );
       const opts = c.options ? c.options.map(optionOf) : [{ value: c.value as ControlValue, label: c.label }];
       return (
-        <Wide options={opts}>
+        localize(<Wide options={opts}>
           <span className={LABEL}>{c.label}</span>
           <div className="flex flex-wrap justify-end gap-1">
             {opts.map((o) => (
@@ -245,7 +252,7 @@ function Control({
               </ActionButton>
             ))}
           </div>
-        </Wide>
+        </Wide>)
       );
     }
   }
@@ -256,18 +263,22 @@ function Control({
  * column; longer ones span two on wide grids. Either way it wraps when narrow.
  */
 function Wide({ children, options }: { children: ReactNode; options: { label: string }[] }) {
+  const { localize } = useSiteI18n();
+
   const wide = options.length > 3 || options.reduce((n, o) => n + o.label.length, 0) > 18;
-  return <div className={`${SURFACE} flex min-h-10 flex-wrap items-center justify-between gap-x-3 gap-y-1.5 py-1 pl-3.5 pr-1 [@media(hover:hover)]:hover:ring-white/[0.12] ${wide ? "sm:col-span-2" : ""}`}>{children}</div>;
+  return localize(<div className={`${SURFACE} flex min-h-10 flex-wrap items-center justify-between gap-x-3 gap-y-1.5 py-1 pl-3.5 pr-1 [@media(hover:hover)]:hover:ring-white/[0.12] ${wide ? "sm:col-span-2" : ""}`}>{children}</div>);
 }
 
 function Slider({ id, c, value, onChange }: { id: string; c: ComponentControl; value: number; onChange: (v: number) => void }) {
+  const { localize, locale } = useSiteI18n();
+
   const min = c.min ?? 0;
   const max = c.max ?? 100;
   const pct = ((value - min) / (max - min)) * 100;
   const decimals = String(c.step ?? 1).split(".")[1]?.length ?? 0;
-  const shown = `${value.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${c.unit ? ` ${c.unit}` : ""}`;
+  const shown = `${value.toLocaleString(locale === "en" ? "en-US" : locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${c.unit ? ` ${c.unit}` : ""}`;
   return (
-    <div className={`${SURFACE} group relative h-10 overflow-hidden has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-site-accent [@media(hover:hover)]:hover:ring-white/[0.12]`}>
+    localize(<div className={`${SURFACE} group relative h-10 overflow-hidden has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-site-accent [@media(hover:hover)]:hover:ring-white/[0.12]`}>
       {/* The fill is the value. Its leading edge only shows while the slider is in use, so it never cuts through the label at rest. */}
       <span aria-hidden="true" className="absolute inset-y-0 left-0 bg-white/[0.07] transition-[width] duration-100 ease-site motion-reduce:transition-none" style={{ width: `${pct}%` }}>
         <span className="absolute inset-y-0 right-0 w-px bg-white/50 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100" />
@@ -288,14 +299,16 @@ function Slider({ id, c, value, onChange }: { id: string; c: ComponentControl; v
         onChange={(e) => onChange(Number(e.target.value))}
         className="absolute inset-0 size-full cursor-ew-resize appearance-none opacity-0 focus:outline-none"
       />
-    </div>
+    </div>)
   );
 }
 
 function Switch({ on, onChange, labelledBy }: { on: boolean; onChange: (v: boolean) => void; labelledBy: string }) {
+  const { localize } = useSiteI18n();
+
   const reduce = useReducedMotion();
   return (
-    <button
+    localize(<button
       type="button"
       role="switch"
       aria-checked={on}
@@ -310,15 +323,17 @@ function Switch({ on, onChange, labelledBy }: { on: boolean; onChange: (v: boole
         initial={false}
         transition={reduce ? { duration: 0 } : SPRING_UI}
       />
-    </button>
+    </button>)
   );
 }
 
 function Segmented({ id, labelledBy, options, value, onChange }: { id: string; labelledBy: string; options: { value: ControlValue; label: string }[]; value: ControlValue | undefined; onChange: (v: ControlValue) => void }) {
+  const { localize } = useSiteI18n();
+
   const reduce = useReducedMotion();
   const i = Math.max(0, options.findIndex((o) => o.value === value));
   return (
-    <div
+    localize(<div
       role="radiogroup"
       aria-labelledby={labelledBy}
       onKeyDown={(e) => {
@@ -348,17 +363,19 @@ function Segmented({ id, labelledBy, options, value, onChange }: { id: string; l
           </button>
         );
       })}
-    </div>
+    </div>)
   );
 }
 
 function ColorControl({ id, c, value, onChange }: { id: string; c: ComponentControl; value: string; onChange: (v: string) => void }) {
+  const { localize } = useSiteI18n();
+
   const reduce = useReducedMotion();
   const swatches = (c.options ?? []).map(optionOf).map((o) => String(o.value).toLowerCase());
   const all = swatches.includes(String(c.default).toLowerCase()) ? swatches : [String(c.default).toLowerCase(), ...swatches];
   const custom = !all.includes(value.toLowerCase());
   return (
-    <div className={`${ROW} pr-2`}>
+    localize(<div className={`${ROW} pr-2`}>
       <span id={`${id}-l`} className={LABEL}>
         {c.label}
       </span>
@@ -392,13 +409,15 @@ function ColorControl({ id, c, value, onChange }: { id: string; c: ComponentCont
           <input type="color" value={value} aria-label={`${c.label}: custom colour`} onChange={(e) => onChange(e.target.value)} className="absolute inset-0 size-full cursor-pointer opacity-0" />
         </label>
       </div>
-    </div>
+    </div>)
   );
 }
 
 function ActionButton({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: ReactNode }) {
+  const { localize } = useSiteI18n();
+
   return (
-    <button
+    localize(<button
       type="button"
       aria-pressed={pressed}
       onClick={onClick}
@@ -407,6 +426,6 @@ function ActionButton({ pressed, onClick, children }: { pressed: boolean; onClic
       }`}
     >
       {children}
-    </button>
+    </button>)
   );
 }

@@ -1,10 +1,14 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
+
 import { useEffect, useId, useRef, useState } from "react";
 import { DEFAULT_ACCENT, parseAccent } from "@/lib/accent";
 import { setAccent, useAccent } from "@/lib/accent-client";
 
 const SWATCHES = ["#ff7a45", "#e85d8c", "#a78bfa", "#60a5fa", "#4ade80", "#facc15"];
 export function AccentPicker({ defaultColor = DEFAULT_ACCENT }: { defaultColor?: string }) {
+  const { localize } = useSiteI18n();
+
   const accent = useAccent();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(accent ?? defaultColor);
@@ -23,7 +27,7 @@ export function AccentPicker({ defaultColor = DEFAULT_ACCENT }: { defaultColor?:
     return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", key); };
   }, [open]);
   const invalid = parseAccent(draft) === null;
-  return <div data-accent-picker ref={box} className="relative" onBlur={event => { if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) setOpen(false); }}>
+  return localize(<div data-accent-picker ref={box} className="relative" onBlur={event => { if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) setOpen(false); }}>
     <button ref={trigger} type="button" aria-label="Component accent" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)} className="site-btn site-btn-ghost h-11 gap-2 px-2.5 text-xs" title="Accent across live component previews">
       <span aria-hidden="true" className="size-3.5 rounded-full ring-1 ring-inset ring-white/30" style={{ background: accent ?? defaultColor }} />
       Accent
@@ -46,5 +50,5 @@ export function AccentPicker({ defaultColor = DEFAULT_ACCENT }: { defaultColor?:
       <button type="button" onClick={() => setAccent(null)} disabled={accent === null} className="site-btn site-btn-secondary mt-4 h-10 w-full text-xs">Use template defaults</button>
       <p className="mt-3 text-[11px] leading-relaxed text-site-fg-3">Saved in this browser. Individual component colours can override it.</p>
     </div>}
-  </div>;
+  </div>);
 }

@@ -26,6 +26,8 @@
     "blog:translate": "node scripts/translate-blog.mjs",
     "blog:audit": "node scripts/blog-audit.mjs",
     "blog:index": "node scripts/ping-indexnow.mjs",
+    "site:translate": "node scripts/translate-site.mjs",
+    "site:audit": "node scripts/audit-site-i18n.mjs",
     "audit:components": "node scripts/audit-components.mjs",
     "test:components": "node scripts/test-components.mjs",
     "test:component-data": "node scripts/test-component-data.mjs"

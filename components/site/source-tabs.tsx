@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
@@ -37,6 +38,8 @@ export function SourceTabs({
   installText: string;
   installHtml: string;
 }) {
+  const { localize } = useSiteI18n();
+
   const reduce = useReducedMotion();
   const uid = useId();
   const container = useRef<HTMLDivElement>(null);
@@ -78,7 +81,7 @@ export function SourceTabs({
     : "";
 
   return (
-    <div ref={container} className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+    localize(<div ref={container} className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
       <MeasuredHeight>
       <div className="flex flex-col gap-3 border-b border-white/[0.06] px-3 pt-2 sm:flex-row sm:items-center sm:justify-between sm:px-4">
         <div role="tablist" aria-label="Component source" aria-orientation="horizontal" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">
@@ -168,23 +171,27 @@ export function SourceTabs({
         </p>
       )}
       </MeasuredHeight>
-    </div>
+    </div>)
   );
 }
 
 function SourceActionSlot({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div className="grid items-center">
+  const { localize } = useSiteI18n();
+
+  return localize(<div className="grid items-center">
     <span aria-hidden="true" className="site-btn invisible col-start-1 row-start-1 h-8 gap-1.5 px-3.5 text-xs font-semibold pointer-coarse:min-h-11"><span className="size-3.5" />{label}</span>
     <div className="col-start-1 row-start-1 [&>.site-btn]:w-full">{children}</div>
-  </div>;
+  </div>);
 }
 
 const Scroll = memo(function Scroll({ html }: { html: string }) {
+  const { localize } = useSiteI18n();
+
   return (
-    <div
+    localize(<div
       className="max-h-[560px] overflow-auto px-4 pb-6 pt-3 font-mono text-[13px] leading-[1.7] sm:px-5 [&_pre]:!bg-transparent [&_pre]:outline-none"
       dangerouslySetInnerHTML={{ __html: html }}
-    />
+    />)
   );
 });
 
@@ -201,8 +208,10 @@ const FAKE = [
 ];
 
 function Locked({ name, tab }: { name: string; tab: Tab }) {
+  const { localize } = useSiteI18n();
+
   return (
-    <div className="relative h-[420px] overflow-hidden">
+    localize(<div className="relative h-[420px] overflow-hidden">
       <pre aria-hidden="true" className="select-none px-5 pt-3 font-mono text-[13px] leading-[1.7] text-site-fg-2 blur-[5px]">
         {FAKE.join("\n")}
         {"\n"}
@@ -232,6 +241,6 @@ function Locked({ name, tab }: { name: string; tab: Tab }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>)
   );
 }

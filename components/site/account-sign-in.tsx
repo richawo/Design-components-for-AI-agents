@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowRight, Check, Mail } from "lucide-react";
@@ -11,6 +12,8 @@ import { MeasuredHeight } from "./measured-height";
  * cells make progress legible. Verification never waits for decorative animation.
  */
 export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => Promise<void>; onBusyChange: (busy: boolean) => void }) {
+  const { localize } = useSiteI18n();
+
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [code, setCode] = useState("");
@@ -105,7 +108,7 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
   }
 
   return (
-    <form ref={form} onSubmit={submit} className="site-surface site-in min-w-0 rounded-[24px] p-6 sm:p-8" aria-label="Sign in to your account">
+    localize(<form ref={form} onSubmit={submit} className="site-surface site-in min-w-0 rounded-[24px] p-6 sm:p-8" aria-label="Sign in to your account">
       <div className="flex items-center justify-between gap-4">
         <span className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04]" aria-hidden="true">{verified ? <Check className="size-5 text-site-ok" /> : <Mail className="size-5" />}</span>
         <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">{sent ? "02 / Verify" : "01 / Your email"}</p>
@@ -155,6 +158,6 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
       </div>}
       {sent && <p className="mt-3 text-[13px] leading-relaxed text-site-fg-3">Codes expire after 15 minutes. Only your newest code will work.</p>}
       </MeasuredHeight>
-    </form>
+    </form>)
   );
 }

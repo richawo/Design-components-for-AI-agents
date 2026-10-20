@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
@@ -39,6 +40,8 @@ export function CategorySidebar({
   active: string;
   onSelect: (key: string) => void;
 }) {
+  const { localize, t } = useSiteI18n();
+
   const groups = useMemo(() => groupCategories(categories), [categories]);
   const [collapsed, setCollapsed] = useState<string[]>([]);
   const [filter, setFilter] = useState("");
@@ -170,9 +173,9 @@ export function CategorySidebar({
   const visible = useMemo(() => {
     if (!needle) return groups;
     return groups
-      .map((g) => (g.label.toLowerCase().includes(needle) ? g : { ...g, items: g.items.filter((c) => c.label.toLowerCase().includes(needle)) }))
+      .map((g) => (`${g.label} ${t(g.label)}`.toLowerCase().includes(needle) ? g : { ...g, items: g.items.filter((c) => `${c.label} ${t(c.label)}`.toLowerCase().includes(needle)) }))
       .filter((g) => g.items.length);
-  }, [groups, needle]);
+  }, [groups, needle, t]);
 
   const groupOpen = useCallback((label: string) => Boolean(needle) || !collapsed.includes(label), [needle, collapsed]);
 
@@ -285,7 +288,7 @@ export function CategorySidebar({
   const matchCount = visible.reduce((sum, g) => sum + g.items.length, 0);
 
   return (
-    <aside
+    localize(<aside
       ref={asideRef}
       aria-label="Categories"
       className="site-in relative min-w-0 [--i:3] lg:sticky lg:top-24 lg:col-start-1 lg:row-start-1 lg:row-span-2 lg:flex lg:max-h-[calc(100dvh-8rem)] lg:flex-col lg:self-start lg:border-r lg:border-white/[0.08] lg:pr-5"
@@ -371,7 +374,7 @@ export function CategorySidebar({
           </div>
         </ScrollArea>
       </div>
-    </aside>
+    </aside>)
   );
 }
 
@@ -392,9 +395,11 @@ function FilterInput({
   onSubmit: () => void;
   onArrowDown: () => void;
 }) {
+  const { localize } = useSiteI18n();
+
   const input = useRef<HTMLInputElement>(null);
   return (
-    <label className="group/filter relative mb-3 block shrink-0">
+    localize(<label className="group/filter relative mb-3 block shrink-0">
       <span className="sr-only">Filter categories</span>
       <svg viewBox="0 0 20 20" className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-site-fg-3 transition-colors group-focus-within/filter:text-site-fg-2" fill="none" aria-hidden="true">
         <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.6" />
@@ -435,12 +440,14 @@ function FilterInput({
           </svg>
         </button>
       )}
-    </label>
+    </label>)
   );
 }
 
 /** Scrolls on its own, fading whichever edge has more list behind it. */
 function ScrollArea({ children, scrollRef, onScroll }: { children: React.ReactNode; scrollRef: React.RefObject<HTMLDivElement | null>; onScroll: () => void }) {
+  const { localize } = useSiteI18n();
+
   const [edges, setEdges] = useState({ top: false, bottom: false });
 
   const measure = useCallback(() => {
@@ -464,7 +471,7 @@ function ScrollArea({ children, scrollRef, onScroll }: { children: React.ReactNo
   const fade = "1.5rem";
   const mask = `linear-gradient(180deg, ${edges.top ? "transparent" : "#000"} 0, #000 ${fade}, #000 calc(100% - ${fade}), ${edges.bottom ? "transparent" : "#000"} 100%)`;
   return (
-    <motion.div
+    localize(<motion.div
       ref={scrollRef}
       layoutScroll
       onScroll={() => {
@@ -475,7 +482,7 @@ function ScrollArea({ children, scrollRef, onScroll }: { children: React.ReactNo
       className="min-h-0 flex-1 scroll-py-6 overflow-y-auto overscroll-contain [scrollbar-color:rgba(255,255,255,0.12)_transparent] [scrollbar-width:thin]"
     >
       <div className="pb-1">{children}</div>
-    </motion.div>
+    </motion.div>)
   );
 }
 
@@ -498,10 +505,12 @@ function Group({
   onToggle: () => void;
   children: React.ReactNode;
 }) {
+  const { localize } = useSiteI18n();
+
   const reduce = useReducedMotion();
   const id = useId();
   return (
-    <div className="mt-3">
+    localize(<div className="mt-3">
       <button
         type="button"
         data-row={groupRowId(label)}
@@ -536,20 +545,22 @@ function Group({
           </motion.ul>
         )}
       </AnimatePresence>
-    </div>
+    </div>)
   );
 }
 
 function Chevron({ open }: { open: boolean }) {
+  const { localize } = useSiteI18n();
+
   return (
-    <svg
+    localize(<svg
       viewBox="0 0 12 12"
       className={`size-3 shrink-0 text-site-fg-3 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "rotate-180" : ""}`}
       fill="none"
       aria-hidden="true"
     >
       <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    </svg>)
   );
 }
 
@@ -568,9 +579,11 @@ function CatItem({
   label: string;
   count: number;
 }) {
+  const { localize } = useSiteI18n();
+
   const reduce = useReducedMotion();
   return (
-    <li className="shrink-0">
+    localize(<li className="shrink-0">
       <button
         type="button"
         data-row={rowId}
@@ -590,6 +603,6 @@ function CatItem({
         <span className="relative min-w-0 truncate transition-transform duration-150 group-active:scale-[0.97] motion-reduce:!scale-100">{label}</span>
         <span className={`relative font-mono text-[11px] tabular-nums transition-colors ${active ? "text-site-fg-2" : "text-site-fg-3"}`}>{count}</span>
       </button>
-    </li>
+    </li>)
   );
 }

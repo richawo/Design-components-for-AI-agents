@@ -1,8 +1,10 @@
+import { serverI18n } from "@/lib/i18n/server";
+
 export type QA = { q: string; a: string };
 
-export function Faq({ items }: { items: QA[] }) {
+export async function Faq({ items, locale = "en" }: { items: QA[]; locale?: string }) {
   return (
-    <div className="site-disclosure divide-y divide-white/[0.07] border-y border-white/[0.07]">
+    (await serverI18n(locale)).localize(<div className="site-disclosure divide-y divide-white/[0.07] border-y border-white/[0.07]">
       {items.map((it, i) => (
         <details key={it.q} className="site-reveal group" open={i === 0}>
           <summary className="group/s flex cursor-pointer list-none items-center justify-between gap-6 rounded-md py-5 text-[16px] font-medium tracking-[-0.015em] text-site-fg-2 transition-colors hover:text-site-fg group-open:text-site-fg [&::-webkit-details-marker]:hidden">
@@ -15,7 +17,7 @@ export function Faq({ items }: { items: QA[] }) {
           <p className="max-w-[68ch] pb-6 text-[15px] leading-relaxed text-site-fg-2">{it.a}</p>
         </details>
       ))}
-    </div>
+    </div>)
   );
 }
 

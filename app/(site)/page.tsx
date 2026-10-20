@@ -1,3 +1,7 @@
+import { SiteI18n } from "@/components/site/site-i18n";
+import { siteAlternates } from "@/lib/i18n/metadata";
+import { formatLocale } from "@/lib/i18n/routing";
+import { serverI18n, siteCopy } from "@/lib/i18n/server";
 import { SiteLink as Link } from "@/components/site/site-link";
 import type { Metadata } from "next";
 import { ComponentCard } from "@/components/site/component-card";
@@ -15,9 +19,8 @@ import { showcaseCollections } from "@/lib/showcase-collections.mjs";
 export const metadata: Metadata = {
   title: { absolute: "Design for AI: design components for AI agents" },
   description: site.description,
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", languages: siteAlternates("/") },
 };
-
 
 function cardsFor(slugs: string[]) {
   return slugs.flatMap((slug) => {
@@ -28,7 +31,10 @@ function cardsFor(slugs: string[]) {
   });
 }
 
-export default function HomePage() {
+export default async function HomePage({ params }: { params: Promise<{ locale?: string }> }) {
+
+  const { locale = "en" } = await params;
+  const { localize } = await serverI18n(locale);
   const s = stats();
   const lifetime = PLANS.find((plan) => plan.id === "pro-lifetime")!;
   const collections = showcaseCollections.map((collection) => ({ ...collection, cards: cardsFor(collection.slugs) }));
@@ -36,7 +42,7 @@ export default function HomePage() {
   const install = `npx shadcn@latest add ${site.url}/r/chart-portfolio.json`;
   const mcp = `claude mcp add --transport http design-for-ai ${site.url}/mcp`;
 
-  return <>
+  return localize(<SiteI18n inherit locale={locale} dictionary={await siteCopy(locale, "home", [...collections.flatMap(group => group.cards.map(card => card.name)), ...blocks.map(card => card.name)])}><>
     <JsonLd data={[
       { "@context": "https://schema.org", "@type": "WebSite", name: site.name, url: site.url, description: site.description, potentialAction: { "@type": "SearchAction", target: `${absoluteUrl("/components")}?q={query}`, "query-input": "required name=query" } },
       { "@context": "https://schema.org", "@type": "Organization", name: site.name, url: site.url, logo: absoluteUrl("/icon.svg"), sameAs: [site.github] },
@@ -72,8 +78,8 @@ export default function HomePage() {
         </div>
         <div className="mx-auto max-w-[64rem]">
           <div className="min-w-0">
-            <div className="flex min-h-[360px] items-center rounded-[22px] bg-[#0a0a0b] p-3 sm:p-6 [&_section]:w-full"><ChartPortfolio height={220} /></div>
-            <PreviewCaption name="Portfolio Chart" hint="Scrub the line or change the period." href="/components/chart-portfolio" />
+            <div className="flex min-h-[360px] items-center rounded-[22px] bg-[#0a0a0b] p-3 sm:p-6 [&_section]:w-full"><ChartPortfolio height={220} locale={formatLocale(locale === "en" ? "en-US" : locale)} /></div>
+            <PreviewCaption locale={locale} name="Portfolio Chart" hint="Scrub the line or change the period." href="/components/chart-portfolio" />
           </div>
         </div>
         <div className="mt-6 flex min-w-0 flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-site-bg p-3 sm:p-4">
@@ -102,10 +108,10 @@ export default function HomePage() {
       <div className="flex flex-wrap gap-3"><Link href="/pricing" className="site-btn site-btn-primary min-h-12 px-6 text-sm">Get Pro · ${lifetime.price} once</Link><Link href="/components?tier=free" className="site-btn site-btn-secondary min-h-12 px-6 text-sm">Explore free components</Link></div>
     </section>
 
-    <section className="mx-auto grid max-w-[80rem] gap-7 px-5 pb-20 sm:px-8 lg:grid-cols-[1fr_2fr] lg:gap-16"><h2 className="text-2xl font-semibold tracking-[-0.035em]">Questions, answered.</h2><Faq items={HOME_FAQ} /></section>
-  </>;
+    <section className="mx-auto grid max-w-[80rem] gap-7 px-5 pb-20 sm:px-8 lg:grid-cols-[1fr_2fr] lg:gap-16"><h2 className="text-2xl font-semibold tracking-[-0.035em]">Questions, answered.</h2><Faq locale={locale} items={HOME_FAQ} /></section>
+  </></SiteI18n>);
 }
 
-function PreviewCaption({ name, hint, href }: { name: string; hint: string; href: string }) {
-  return <div className="flex items-start justify-between gap-3 px-1 py-4"><div className="min-w-0"><h3 className="text-[15px] font-medium text-site-fg">{name}</h3><p className="mt-1 text-[13px] leading-relaxed text-site-fg-3">{hint}</p></div><Link href={href} aria-label={`Explore ${name}`} className="flex size-11 shrink-0 items-center justify-center rounded-full border border-white/10 text-site-fg-2 hover:border-white/25 hover:text-site-fg"><span aria-hidden="true">↗</span></Link></div>;
+async function PreviewCaption({ name, hint, href, locale }: { name: string; hint: string; href: string; locale: string }) {
+  return (await serverI18n(locale)).localize(<div className="flex items-start justify-between gap-3 px-1 py-4"><div className="min-w-0"><h3 className="text-[15px] font-medium text-site-fg">{name}</h3><p className="mt-1 text-[13px] leading-relaxed text-site-fg-3">{hint}</p></div><Link href={href} aria-label={`Explore ${name}`} className="flex size-11 shrink-0 items-center justify-center rounded-full border border-white/10 text-site-fg-2 hover:border-white/25 hover:text-site-fg"><span aria-hidden="true">↗</span></Link></div>);
 }

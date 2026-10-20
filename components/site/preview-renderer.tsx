@@ -1,10 +1,12 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { useAccent } from "@/lib/accent-client";
 import { accentInk, parseAccent } from "@/lib/accent";
 import type { PreviewAccent } from "@/lib/preview-accent";
-import { previews } from "@/registry/__generated__/previews";
+import { loadPreview } from "@/lib/preview-loader";
+import { formatLocale } from "@/lib/i18n/routing";
 import { DemoAborted, DemoPlayer, whenSmooth, type CursorHandle } from "@/lib/demo/player";
 import { PREVIEW_CHANNEL, parseToPreview, type Body, type FromPreview } from "@/lib/demo/protocol";
 import { parseSteps } from "@/lib/demo/schema.mjs";
@@ -28,7 +30,9 @@ type AnyComponent = ComponentType<Record<string, ControlValue>>;
  * demo's own, and the parent can play, stop or replay the demo script. Opened
  * on its own (screenshots, a new tab) nothing autoplays.
  */
-export function PreviewRenderer({ slug, platform, theme, demo, accentConfig }: { accentConfig: PreviewAccent; slug: string; platform: "web" | "mobile"; theme: "light" | "dark"; demo?: DemoScript }) {
+export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, initialLocale }: { accentConfig: PreviewAccent; slug: string; platform: "web" | "mobile"; theme: "light" | "dark"; demo?: DemoScript; initialLocale?: string }) {
+  const { localize, locale } = useSiteI18n();
+
   const accent = useAccent();
   const [Comp, setComp] = useState<AnyComponent | null>(null);
   const [overrides, setOverrides] = useState<Record<string, ControlValue>>({});
@@ -39,7 +43,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig }: {
 
   useEffect(() => {
     let live = true;
-    previews[slug]?.().then((m) => live && setComp(() => m.default as AnyComponent));
+    loadPreview(slug)?.then((m) => live && setComp(() => m.default as AnyComponent));
     return () => {
       live = false;
     };
@@ -145,24 +149,24 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig }: {
     `[style*="${token}"]{${token}:${effectiveAccent}!important;${token === "--accent" ? `--on:${accentInk(effectiveAccent)}!important;` : ""}}` +
     `[class~="bg-(${token})"],[class~="bg-[var(${token})]"]{color:${accentInk(effectiveAccent)}!important;}`
   ).join("\n") : "";
-  const node = <>{accentCss && <style data-preview-accent>{accentCss}</style>}{Comp ? <Comp key={mount} {...accentProps} {...overrides} /> : null}</>;
+  const node = <>{accentCss && <style data-preview-accent>{accentCss}</style>}{Comp ? <Comp key={mount} locale={initialLocale ?? formatLocale(locale === "en" ? "en-US" : locale)} {...accentProps} {...overrides} /> : null}</>;
 
   if (platform === "mobile") {
     return (
-      <div data-preview-slug={slug} data-preview-ready={!!Comp} className="flex min-h-dvh items-center justify-center bg-black p-0 sm:p-8">
+      localize(<div data-preview-slug={slug} data-preview-ready={!!Comp} className="flex min-h-dvh items-center justify-center bg-black p-0 sm:p-8">
         <div className="relative h-dvh w-full overflow-hidden bg-white sm:h-[844px] sm:w-[390px] sm:rounded-[54px] sm:shadow-[0_0_0_10px_#1a1a1c,0_0_0_11px_#2e2e33,0_40px_120px_-20px_rgba(0,0,0,0.9)]">
           <div className="flex h-full w-full flex-col">{node}</div>
           <div className="pointer-events-none absolute left-1/2 top-[11px] hidden h-[34px] w-[122px] -translate-x-1/2 rounded-full bg-black sm:block" />
         </div>
         {steps && <DemoCursor ref={cursor} />}
-      </div>
+      </div>)
     );
   }
 
   return (
-    <div data-preview-slug={slug} data-preview-ready={!!Comp} className={theme === "dark" ? "min-h-dvh bg-black" : "min-h-dvh bg-white"}>
+    localize(<div data-preview-slug={slug} data-preview-ready={!!Comp} className={theme === "dark" ? "min-h-dvh bg-black" : "min-h-dvh bg-white"}>
       {node}
       {steps && <DemoCursor ref={cursor} />}
-    </div>
+    </div>)
   );
 }

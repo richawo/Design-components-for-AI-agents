@@ -1,0 +1,53 @@
+{
+  "_preserve": [
+    "Memmo Alfama, Travessa das Merceeiras",
+    "Autumn Supper Club: Smoke & Orchard",
+    "Node, Python, Go, Ruby, Swift",
+    "Juno Park · juno.park@fernhill.io"
+  ],
+  "fr": {
+    "Docs": "Documentation",
+    "Native": "Natif",
+    "Blog": "Blog",
+    "licence.": "licence.",
+    "What kinds of components are there?": "Quels types de composants sont disponibles ?",
+    "Good design.": "Du beau design.",
+    "Ready to build.": "Prêt à l’emploi.",
+    "Try the details.": "Découvrez les détails.",
+    "Scrub the line or change the period.": "Parcourez la courbe ou changez de période.",
+    "Get Pro": "Passer à Pro",
+    "Loading preview": "Chargement de l’aperçu",
+    "Underline Tabs": "Onglets soulignés",
+    "Signal found": "Signal détecté",
+    "at 1420 MHz.": "à 1420 MHz.",
+    "Signal found at 1420 MHz.": "Signal détecté à 1420 MHz."
+  },
+  "it": {
+    "A monochrome, dark-first React Native inbox: rows rise from blur, swipe actions fill at their thresholds, a full swipe archives with glass undo, and new mail lands.": "Una casella di posta React Native monocromatica, scura per impostazione predefinita: le righe emergono dalla sfocatura, le azioni di scorrimento si riempiono alle rispettive soglie, uno scorrimento completo archivia con un comando Annulla dall’effetto vetro e i nuovi messaggi arrivano."
+  },
+  "sv": {
+    "Kestrel Bank partner portal": "Partnerportal för Kestrel Bank",
+    "Retrieval-augmented generation pipeline": "Pipeline för generering med informationssökning (RAG)",
+    "Warm the dough rather than the room. Aim for 24 to 26 °C by heating the water: multiply your target by three and subtract the flour and room temperatures.[3][6] Cold flour counts too, so keep the bag somewhere warm.[7] A richer feed at 1:2:2 keeps the starter on time.[4]": "Värm degen i stället för rummet. Sikta på 24 till 26 °C genom att värma vattnet: multiplicera måltemperaturen med tre och dra ifrån mjölets och rummets temperaturer.[3][6] Kallt mjöl påverkar också, så förvara påsen varmt.[7] En rikligare matning i förhållandet 1:2:2 håller surdegen i fas.[4]"
+  },
+  "da": {
+    "Kestrel Bank partner portal": "Partnerportal til Kestrel Bank",
+    "Retrieval-augmented generation pipeline": "Pipeline til generering med informationssøgning (RAG)",
+    "Warm the dough rather than the room. Aim for 24 to 26 °C by heating the water: multiply your target by three and subtract the flour and room temperatures.[3][6] Cold flour counts too, so keep the bag somewhere warm.[7] A richer feed at 1:2:2 keeps the starter on time.[4]": "Varm dejen frem for rummet. Sigt efter 24 til 26 °C ved at varme vandet: gang måltemperaturen med tre, og træk melets og rummets temperaturer fra.[3][6] Koldt mel tæller også med, så opbevar posen et varmt sted.[7] En rigeligere fodring i forholdet 1:2:2 holder surdejen på rette tid.[4]"
+  },
+  "de": {
+    "Underline Tabs": "Tabs mit Unterstreichung"
+  },
+  "cs": {
+    "Deep work: onboarding flow": "Soustředěná práce: průběh úvodního nastavení"
+  },
+  "sk": {
+    "Deep work: onboarding flow": "Sústredená práca: priebeh úvodného nastavenia"
+  },
+  "hu": {
+    "Dependency downgrade: @northwind/search 3.2 → 3.0": "Függőség visszaállítása korábbi verzióra: @northwind/search 3.2 → 3.0",
+    "Remove discarded changes in `onDiscard`. Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (run `npx install-expo-modules` once in bare apps) and verify on devices with real connectivity changes.": "Töröld az elvetett módosításokat az `onDiscard` visszahívásban. Telepítsd az `expo-blur`, az `expo-linear-gradient` és a `react-native-svg` csomagokat (natív projekteknél egyszer futtasd az `npx install-expo-modules` parancsot), majd valódi eszközökön ellenőrizd a működést tényleges hálózati kapcsolatváltozások mellett.",
+    "Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps). The mark's flight measures on-screen positions, so test inside your navigation container on devices.": "Telepítsd az `expo-blur`, az `expo-linear-gradient` és a `react-native-svg` csomagokat (natív projekteknél egyszer futtasd az `npx install-expo-modules` parancsot). A jelvény repülési animációja a képernyőn mért pozíciókra épül, ezért teszteld valódi eszközökön, a saját navigációs konténeredben.",
+    "Pass the growing JSON as `text` on every chunk with `status` (streaming, done, stopped, error). Partial JSON is expected: each value opens at its first character and closes at its last.": "Minden új adatrésznél add át a bővülő JSON-t a `text` propban, az állapotot pedig a `status` propban (streaming, done, stopped, error). A részleges JSON támogatott: minden érték az első karakterénél nyílik meg, és az utolsónál zárul le."
+  }
+}

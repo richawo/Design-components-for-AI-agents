@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
@@ -11,6 +12,7 @@ import { parseAccent } from "@/lib/accent";
 import { previewAccent } from "@/lib/preview-accent";
 import { AccentPicker } from "./accent-picker";
 import { ControlsPanel } from "./controls-panel";
+import { previewControls } from "@/lib/i18n/preview";
 
 const VIEWPORTS = [
   { key: "desktop", label: "Desktop", width: "100%", icon: "M2 3h12v8H2zM6 14h4" },
@@ -29,7 +31,7 @@ export function PreviewFrame({
   theme,
   tier = "free",
   hasDemo = false,
-  controls = [],
+  controls: suppliedControls = [],
   usage = "",
   props = [],
   prompt = null,
@@ -48,6 +50,9 @@ export function PreviewFrame({
   /** The free design prompt, for "Copy configured prompt". Pro passes null and fetches it with a licence. */
   prompt?: string | null;
 }) {
+  const { localize, href, locale } = useSiteI18n();
+  const controls = useMemo(() => previewControls(suppliedControls, locale), [suppliedControls, locale]);
+
   const reduce = useReducedMotion();
   const [vp, setVp] = useState<(typeof VIEWPORTS)[number]["key"]>("desktop");
   const [key, setKey] = useState(0);
@@ -251,7 +256,7 @@ export function PreviewFrame({
   }, []);
 
   return (
-    <div className="rounded-[20px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_40px_100px_-40px_rgba(0,0,0,0.9)]">
+    localize(<div className="rounded-[20px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_40px_100px_-40px_rgba(0,0,0,0.9)]">
       <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-3 py-2 sm:px-4">
         <div className="flex min-w-0 items-center gap-2.5">
           <span className="relative flex size-2" aria-hidden="true">
@@ -365,7 +370,7 @@ export function PreviewFrame({
         <iframe
           key={key}
           ref={ref}
-          src={`/preview/${slug}`}
+          src={href(`/preview/${slug}`)}
           title={`${name} live preview`}
           allow="microphone; clipboard-write"
           onLoad={onFrameLoad}
@@ -392,6 +397,6 @@ export function PreviewFrame({
           prompt={prompt}
         />
       )}
-    </div>
+    </div>)
   );
 }

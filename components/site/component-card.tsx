@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import { CATEGORIES } from "@/lib/registry-types";
 import type { CardData } from "@/lib/registry";
 import { CardMedia } from "./card-media";
+import { SiteText } from "./site-i18n";
 
 /** Cards that can be on screen at first paint. They arrive with the page; the rest reveal on scroll. */
 export const FIRST_VIEW_CARDS = 6;
@@ -18,7 +19,7 @@ const CHIP = "inline-flex h-5 items-center rounded-full px-2 font-mono text-[10p
 
 /** Small mono label. The accent marks Pro, and only Pro. */
 export function Chip({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <span className={`${CHIP} bg-white/[0.04] text-site-fg-2 ring-white/[0.08] ${className}`}>{children}</span>;
+  return <span className={`${CHIP} bg-white/[0.04] text-site-fg-2 ring-white/[0.08] ${className}`}><SiteText>{children}</SiteText></span>;
 }
 
 export function TierBadge({ tier, className = "" }: { tier: "free" | "pro"; className?: string }) {

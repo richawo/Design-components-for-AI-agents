@@ -4,6 +4,9 @@ const config: NextConfig = {
   // Mobile components are written in React Native. On the web we render
   // them through react-native-web so every preview is the real code.
   turbopack: {
+    rules: {
+      "*.tsx": { condition: { path: /(?:^|[/\\])registry[/\\]/ }, loaders: ["./scripts/localize-preview-loader.cjs"] },
+    },
     resolveAlias: {
       "react-native": "react-native-web",
       // react-native-svg's web build looks up bundled assets; previews have none.
@@ -26,6 +29,7 @@ const config: NextConfig = {
   },
   // Match native preview resolution when the supported webpack compiler is used.
   webpack(config) {
+    config.module.rules.push({ test: /registry[/\\].*\.tsx$/, use: [{ loader: `${process.cwd()}/scripts/localize-preview-loader.cjs` }] });
     config.resolve.alias = {
       ...config.resolve.alias,
       "react-native$": "react-native-web",
@@ -60,6 +64,9 @@ const config: NextConfig = {
           source: "/:locale/blog/:path*.md",
           destination: "/md/blog/:locale/:path*",
         },
+        { source: "/:locale/index.md", destination: "/md/localized/:locale/index" },
+        { source: "/:locale/:section(components|blocks|categories|docs)/:slug.md", destination: "/md/localized/:locale/:section/:slug" },
+        { source: "/:locale/:page(components|blocks|pricing|docs|account).md", destination: "/md/localized/:locale/:page" },
         { source: "/docs/:page.md", destination: "/md/page/docs/:page" },
         {
           source: "/categories/:page.md",

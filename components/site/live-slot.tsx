@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useEffect, useState, type ComponentType } from "react";
 import { useAccent } from "@/lib/accent-client";
@@ -19,6 +20,8 @@ export function LiveSlot({
   props?: Record<string, unknown>;
   fallback?: React.ReactNode;
 }) {
+  const { localize } = useSiteI18n();
+
   const accent = useAccent();
   const [Comp, setComp] = useState<ComponentType<Record<string, unknown>> | null>(null);
   useEffect(() => {
@@ -33,6 +36,6 @@ export function LiveSlot({
       live = false;
     };
   }, [slug, exportName]);
-  if (!previews[slug]) return <>{fallback}</>;
-  return Comp ? <Comp {...(accent ? { accent } : {})} {...props} /> : null;
+  if (!previews[slug]) return localize(<>{fallback}</>);
+  return localize(Comp ? <Comp {...(accent ? { accent } : {})} {...props} /> : null);
 }

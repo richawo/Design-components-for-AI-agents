@@ -33,6 +33,7 @@ import { loadBlogSource, bundleBlog } from "./lib/blog-source.mjs";
 import { auditBlog } from "./lib/blog-audit.mjs";
 import { buildBlogImages } from "./lib/blog-images.mjs";
 import { buildCardImages } from "./lib/card-images.mjs";
+import { buildSiteI18n } from "./lib/site-i18n.mjs";
 import { conveyorVideoManifest } from "./lib/conveyor-videos.mjs";
 import { showcaseCollections } from "../lib/showcase-collections.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
@@ -426,6 +427,7 @@ if (editorial.posts.length) {
   console.log(`blog: ${editorial.posts.length} articles in ${Object.keys(editorialBundle.localizedBlog).length + 1} complete languages`);
 }
 const siteContent = { ...editorialBundle, blogImages, docs: mdFiles("docs") };
+buildSiteI18n(root);
 // The readable bundle supports audits; request-time code imports only its pack.
 writeJson(path.join(outDir, "content.json"), siteContent);
 writeJson(path.join(outDir, "content-packed.json"), packContent(siteContent));

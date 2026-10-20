@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
@@ -31,6 +32,8 @@ export function ComponentInstall({
   platform: "web" | "mobile";
   kind?: "component" | "block";
 }) {
+  const { localize } = useSiteI18n();
+
   const [access, setAccess] = useState<
     "checking" | "active" | "locked" | "error"
   >("checking");
@@ -51,7 +54,7 @@ export function ComponentInstall({
     };
   }, [slug, tier, attempt]);
   return (
-    <div>
+    localize(<div>
       {tier === "pro" && (
         <AccessPanel access={access}>
           <AnimatePresence mode="wait" initial={false}>
@@ -148,7 +151,7 @@ export function ComponentInstall({
           </span>
         )}
       </div>
-    </div>
+    </div>)
   );
 }
 
@@ -159,6 +162,8 @@ function AccessPanel({
   access: string;
   children: ReactNode;
 }) {
+  const { localize } = useSiteI18n();
+
   const reduce = useReducedMotion();
   const inner = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | "auto">("auto");
@@ -170,7 +175,7 @@ function AccessPanel({
     return () => observer.disconnect();
   }, []);
   return (
-    <motion.div
+    localize(<motion.div
       data-pro-access={access}
       initial={false}
       animate={{ height }}
@@ -180,14 +185,16 @@ function AccessPanel({
       <div ref={inner} className="p-5 sm:p-6">
         {children}
       </div>
-    </motion.div>
+    </motion.div>)
   );
 }
 function AccessScene({ children }: { children: ReactNode }) {
+  const { localize } = useSiteI18n();
+
   const present = useIsPresent(),
     reduce = useReducedMotion();
   return (
-    <motion.div
+    localize(<motion.div
       inert={!present}
       aria-hidden={!present || undefined}
       initial={{ opacity: 0, y: reduce ? 0 : 4 }}
@@ -197,6 +204,6 @@ function AccessScene({ children }: { children: ReactNode }) {
       className="motion-reduce:!transform-none"
     >
       {children}
-    </motion.div>
+    </motion.div>)
   );
 }

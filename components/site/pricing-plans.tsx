@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
@@ -19,6 +20,8 @@ const FEATURE_LAG = 3;
 const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
 export function PricingPlans({ counts, prices }: { counts: Counts; prices: Record<string, number> }) {
+  const { localize, href } = useSiteI18n();
+
   const [cadence, setCadence] = useState<"lifetime" | "yearly">("lifetime");
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +32,7 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
     try {
       const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan }) });
       const json = (await res.json()) as { url?: string; signInUrl?: string; error?: string };
-      if (res.status === 401 && json.signInUrl) window.location.href = json.signInUrl;
+      if (res.status === 401 && json.signInUrl) window.location.href = href(json.signInUrl);
       else if (json.url) window.location.href = json.url;
       else setError(json.error ?? "Checkout is unavailable right now.");
     } catch {
@@ -45,7 +48,7 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
   const features = planFeatures(counts, cadence);
 
   return (
-    <div>
+    localize(<div>
       <div className="site-in flex justify-center" style={step(TOGGLE_STEP)}>
         <SegmentedControl
           label="Billing"
@@ -119,7 +122,7 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
           {error}
         </p>
       )}
-    </div>
+    </div>)
   );
 }
 
@@ -142,9 +145,11 @@ function Card({
   cta: React.ReactNode;
   featured?: boolean;
 }) {
+  const { localize } = useSiteI18n();
+
   const reduce = useReducedMotion();
   return (
-    <div
+    localize(<div
       className={`site-surface site-in relative flex flex-col rounded-[24px] p-7 sm:p-8 ${featured ? "site-beam" : ""}`}
       style={step(CARD_STEP + order)}
     >
@@ -187,10 +192,12 @@ function Card({
         ))}
       </ul>
       <div className="mt-8">{cta}</div>
-    </div>
+    </div>)
   );
 }
 
 function Spinner() {
-  return <span aria-hidden="true" className="size-3.5 animate-spin rounded-full border-[1.5px] border-current border-r-transparent opacity-70" />;
+  const { localize } = useSiteI18n();
+
+  return localize(<span aria-hidden="true" className="size-3.5 animate-spin rounded-full border-[1.5px] border-current border-r-transparent opacity-70" />);
 }

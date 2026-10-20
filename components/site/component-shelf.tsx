@@ -1,4 +1,5 @@
 "use client";
+import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
@@ -16,6 +17,8 @@ export function ComponentShelf({ title, cards, onBrowse, priority = false, entra
   priority?: boolean;
   entranceStep?: number;
 }) {
+  const { localize } = useSiteI18n();
+
   const id = useId();
   const shelf = useRef<HTMLElement>(null);
   const track = useRef<HTMLUListElement>(null);
@@ -67,7 +70,7 @@ export function ComponentShelf({ title, cards, onBrowse, priority = false, entra
   };
 
   return (
-    <section ref={shelf} aria-labelledby={`${id}-title`} data-shelf-entrance={entrance} className="component-shelf" style={{ "--shelf-delay": `${entrance === "shown" ? Math.max(0, entranceStep - 4) * 60 : entranceStep * 60 + 40}ms` } as CSSProperties}>
+    localize(<section ref={shelf} aria-labelledby={`${id}-title`} data-shelf-entrance={entrance} className="component-shelf" style={{ "--shelf-delay": `${entrance === "shown" ? Math.max(0, entranceStep - 4) * 60 : entranceStep * 60 + 40}ms` } as CSSProperties}>
       <div className="component-shelf-heading mb-3 flex items-center justify-between gap-3">
         <h2 id={`${id}-title`} className="text-[18px] font-medium tracking-[-0.025em]">{title}</h2>
         <div className="flex shrink-0 items-center gap-1.5">
@@ -96,6 +99,6 @@ export function ComponentShelf({ title, cards, onBrowse, priority = false, entra
           </li>
         ))}
       </ul>
-    </section>
+    </section>)
   );
 }

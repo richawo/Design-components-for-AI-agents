@@ -1,9 +1,10 @@
 import { DocsMobileNav } from "@/components/site/docs-mobile-nav";
 import { DocsNav } from "@/components/site/docs-nav";
-import { allDocs } from "@/lib/content";
+import { localizedDocs } from "@/lib/content";
 
-export default function DocsLayout({ children }: { children: React.ReactNode }) {
-  const docs = allDocs();
+export default async function DocsLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale?: string }> }) {
+  const { locale = "en" } = await params;
+  const docs = await localizedDocs(locale);
   const sections = [...new Set(docs.map((d) => d.section))];
   const groups = sections.map((section) => ({ section, docs: docs.filter((d) => d.section === section).map(({ slug, title }) => ({ slug, title })) }));
   return (
