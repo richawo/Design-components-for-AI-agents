@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
+import { check as checkHostPause } from "./review/audio-host-pause.mjs";
 
 const browser = await launchChromium({ args: ["--mute-audio"] });
 const errors = [],
@@ -18,6 +19,7 @@ try {
   await page.route("**/broken-artwork.png", (route) =>
     route.fulfill({ status: 404, body: "missing" }),
   );
+  await checkHostPause({ page, assert, mount: code => mountFixture(page, "media-audio-transport", "pro", code) });
   await mountFixture(
     page,
     "media-audio-transport",

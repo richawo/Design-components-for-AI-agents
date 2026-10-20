@@ -44,8 +44,11 @@ Meetings has since completed its integration and media review, as recorded below
 Music's ownership follow-up protects its live queue from callback mutation and reads liked state from own
 properties for opaque track IDs. Both original failures are preserved. Four native mounts, four accessibility
 audits, all four reviewed captures and the registered source-fixture workflow pass with strict registry,
-root/all-eleven-block types and all 1,068 unit tests. The reproduced row-Pause wiring defect and full Music
-review remain open; the remaining counts above are unchanged.
+root/all-eleven-block types and all 1,068 unit tests. Row Pause has since been wired to the real transport
+through its optional pauseRequest counter. Both source-fixture suites, twelve transport state audits and
+the two-theme Music row check pass with reviewed captures. Its unchanged 1,500ms regression now measures
+from trusted click dispatch, and still rejects the original source. The full Music review remains open;
+the remaining counts above are unchanged.
 
 ## Previous workspace/input checkpoint (19 October 2026)
 
@@ -317,7 +320,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `footer-sitemap-atlas` | new | current |  |
 | `hero-layout-playground` | new | current |  |
 | `hero-signal-workbench` | new | current |  |
-| `media-audio-transport` | new | current | audio-player-states passes |
+| `media-audio-transport` | new | current | Full audio-player suite passes, including the optional pauseRequest counter: real native clock, retained position, paused source changes and pause winning simultaneous requests. Two source mounts cover both layouts/themes with twelve accessibility audits and twelve reviewed captures. Music row Pause reaches this transport and passes its unchanged 1,500ms deadline; the old source remains a failing negative. Strict registry, root/all-eleven-block types and all 1,068 tests pass. Its film remains queued. |
 | `media-caption-styler` | new | current |  |
 | `media-compare-grid` | new | current |  |
 | `media-crop-workbench` | new | current |  |

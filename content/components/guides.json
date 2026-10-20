@@ -3588,14 +3588,15 @@
     "integration": [
       "Supply a licensed URL in track.src. The waveform is decoded from it, or pass track.peaks (any length, 0–1) to skip decoding; set waveformFromSource={false} to draw a flat timeline instead.",
       "Increment playRequest when someone chooses a track to play; plain next and previous keep the pause state. onNext also runs when a track ends, unless repeat is on.",
-      "onPlaybackChange follows the element’s real events, including failures. Start autoplaying previews with defaultMuted; startAt resumes a saved position."
+      "onPlaybackChange follows the element’s real events, including failures. Start autoplaying previews with defaultMuted; startAt resumes a saved position.",
+      "Use playRequest and pauseRequest counters for deliberate host actions, including track row controls. Pause keeps the real media position and wins if both requests change in one render; source changes alone preserve the accepted pause."
     ],
     "related": [
       "media-track-list",
       "block-music-workspace",
       "mobile-now-playing"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-20"
   },
   "media-track-list": {
     "useWhen": "A playlist, album or Up Next queue where people scan, play, like and reorder tracks, and the playing row should be obvious at a glance.",

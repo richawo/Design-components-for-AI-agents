@@ -30368,6 +30368,12 @@
         "description": "Increment after a deliberate “play this” action. Plain next/previous keeps the current pause state."
       },
       {
+        "name": "pauseRequest",
+        "type": "number",
+        "default": "0",
+        "description": "Increment after an intentional pause. Stops the real media clock at its current position. Pause wins when both request counters change in one render; plain source changes retain the accepted pause."
+      },
+      {
         "name": "startAt",
         "type": "number",
         "description": "Seconds to resume from when a source loads (a saved place)."
