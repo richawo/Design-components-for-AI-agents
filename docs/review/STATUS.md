@@ -291,7 +291,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `bg-topographic-contours` | new | current |  |
 | `button-shimmer-track` | new | current |  |
 | `cards-prismatic-folder` | new | current |  |
-| `collab-call-stage` | new | current | call-stage-states passes |
+| `collab-call-stage` | new | current | Full 58-layout/media suite, four painted idle/hover contrast and accessibility checks, fresh official audit and all ten reviewed captures pass. Shared Leave text retains 5.69:1 at rest and 4.87:1 on hover in both themes. The resting-caption poster is refreshed; its film remains queued. |
 | `collab-message-list` | new | current |  |
 | `content-interactive-spec` | new | current |  |
 | `cta-project-brief` | new | current |  |

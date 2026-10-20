@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
+import { check as checkControlsContrast } from "./review/call-controls-contrast.mjs";
 
 const browser = await launchChromium();
 const results = [],
@@ -12,6 +13,7 @@ try {
     viewport: { width: 1440, height: 900 },
   });
   page.on("pageerror", (error) => errors.push(error.message));
+  await checkControlsContrast({ page, assert, mount: code => mountFixture(page, "collab-call-stage", "pro", code) });
   await mountFixture(
     page,
     "collab-call-stage",
