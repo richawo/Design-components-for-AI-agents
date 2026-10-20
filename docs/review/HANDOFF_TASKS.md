@@ -4,7 +4,9 @@ Self-contained work items from the paused review of the October component additi
 and how to know it's done. Pick any of them up independently. Background, briefs and tooling are in `docs/review/`
 (start with `README.md`); per-component state is in `docs/review/STATUS.md`.
 
-## Follow-up progress (17–20 October 2026)
+## Follow-up progress (17–21 October 2026)
+
+- Task 5 (21 October): Run Replay now discards the return value of its event notification. A host callback such as `events.push(event)` previously supplied a number as React effect cleanup and crashed the next playhead change. The original failure is retained. Its permanent registered regression covers exact time/event callbacks, keyboard transport and speed focus, controlled read-only time, normalized event order, invalid records and empty controls. Sixteen native mounts pass across both themes at phone and desktop widths, with no runtime errors or changed inputs. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. The callback-only change preserves the current default appearance; its film remains in task 1. There are now 58 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/replay-return-*`, `replay-registered/` and `test-results/handoff-eleven-blocks-20261020/agents-run-replay-core*`.
 
 - Task 8 (20 October): File Explorer's removal regression now waits for its rendered empty region before retaining both original region-count assertions. The unchanged component passes all 24 controlled observations; the old immediate check fails ten times, including the deliberately delayed host control. Its complete registered workflow now passes, including controlled selection, copied callback payloads, deep and circular trees, retained focus and live motion preferences. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. The complete data rerun advances through File Explorer and Filter History, then exposes a separate 1,500ms Kanban motion-setup failure. That first failure, source, metadata, test, capture and log are retained for diagnosis; the full data suite is not claimed green. Source hashes stay fixed throughout the rerun. Counts remain 59 older probes and 123 films. Evidence uses `test-results/handoff-eleven-blocks-20261020/file-explorer-sync-*` and `kanban-motion-first-followup/`.
 
@@ -665,7 +667,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-59 finished components still have no dedicated browser regression probe. For each, read its source and
+58 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -673,7 +675,7 @@ as the model for style and depth. Mobile components render through React Native 
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 
-`agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`
+`agents-budget-guard`, `agents-dependency-board`
 `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`, `devtools-icon-workbench`
 `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`, `devtools-schema-migration`
 `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`, `forms-draft-rescue`

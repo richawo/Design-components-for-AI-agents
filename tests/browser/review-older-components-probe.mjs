@@ -1,0 +1,35 @@
+import { runReview } from "./review-harness.mjs";
+
+// Existing family suites pick up the other older cases when their verified files are added.
+await runReview([
+  "agents-budget-guard.mjs",
+  "agents-dependency-board.mjs",
+  "agents-run-replay.mjs",
+  "ai-answer-compare.mjs",
+  "ai-context-budget.mjs",
+  "ai-structured-output.mjs",
+  "auth-recovery-codes.mjs",
+  "bg-fluted-glass.mjs",
+  "bg-topographic-contours.mjs",
+  "button-shimmer-track.mjs",
+  "collab-message-list.mjs",
+  "cta-project-brief.mjs",
+  "effect-border-tracer.mjs",
+  "effect-ink-trail.mjs",
+  "features-compare-lenses.mjs",
+  "features-integration-trace.mjs",
+  "features-shortcut-theatre.mjs",
+  "footer-sitemap-atlas.mjs",
+  "hero-layout-playground.mjs",
+  "hero-signal-workbench.mjs",
+  "layout-split-resizer.mjs",
+  "pixel-halftone-image.mjs",
+  "portfolio-project-reel.mjs",
+  "pricing-seat-simulator.mjs",
+  "pricing-usage-calculator.mjs",
+  "social-proof-case-ledger.mjs",
+  "text-number-odometer.mjs",
+  "text-optical-weight.mjs",
+  "text-outline-fill.mjs",
+  "text-path-typesetter.mjs"
+]);
