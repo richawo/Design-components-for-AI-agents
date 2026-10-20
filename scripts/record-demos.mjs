@@ -35,6 +35,7 @@ import { startTabRecording, stopTabRecording, sourceChangeQuality } from "./lib/
 import { startPageFrameRecording, stopPageFrameRecording, discardPageFrameRecording } from "./lib/page-frame-recording.mjs";
 import { startChangedSourceScreenshots } from "./lib/source-screenshots.mjs";
 import { preserveRejectedCapture } from "./lib/rejected-capture.mjs";
+import { createRecordTargetResolver } from "./lib/record-target.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
 
@@ -344,36 +345,7 @@ async function record(browser, slug) {
     };
     // Resolve after consecutive stable animation frames inside the page. Keeping
     // this to one browser round trip avoids stretching every recorded step.
-    const pointOf = async (t, moving = false) => {
-      const r = await page.evaluate(({ sel, moving }) => new Promise(resolve => {
-        let previous, stable = 0, frame;
-        const finish = value => { clearTimeout(timer); cancelAnimationFrame(frame); resolve(value); };
-        const timer = setTimeout(() => finish(null), 2500);
-        const sample = () => {
-          const el = [...document.querySelectorAll(sel)].find(node =>
-            !node.closest('[inert], [hidden]') && node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden');
-          if (el) {
-            let b = el.getBoundingClientRect();
-            if (b.top < 0 || b.bottom > innerHeight || b.left < 0 || b.right > innerWidth) {
-              el.scrollIntoView({block:'center',inline:'center',behavior:'instant'});
-              b = el.getBoundingClientRect();
-            }
-            const next = {x:b.x,y:b.y,w:b.width,h:b.height};
-            stable = previous && Object.keys(next).every(key => Math.abs(next[key]-previous[key]) <= 0.5) ? stable + 1 : 0;
-            previous = next;
-            if (b.width && b.height && (moving || stable >= 2)) return finish(next);
-          } else { previous = undefined; stable = 0; }
-          frame = requestAnimationFrame(sample);
-        };
-        frame = requestAnimationFrame(sample);
-      }), { sel: targetSelector(t.name), moving });
-      if (!r) {
-        problems.push(`demo target @${t.name} unavailable or still moving when its step ran`);
-        return null;
-      }
-      const [fx, fy] = t.at ?? [0.5, 0.5];
-      return [r.x + r.w * fx, r.y + r.h * fy];
-    };
+    const pointOf = createRecordTargetResolver({ page, targetSelector, onProblem: problem => problems.push(problem) });
 
     const motionWindows = [];
     for (const s of steps) {

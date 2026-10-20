@@ -41,6 +41,7 @@ const publicCases = [
   "review-small-components-probe",
   "review-media-devtools-probe",
   "recording-source-probe",
+  "recording-target-probe",
   "terminal-scroll-probe",
   "component-pages-probe",
   "settings-composition-probe",
