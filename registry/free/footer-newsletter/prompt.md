@@ -45,3 +45,8 @@ Real `<form>` with `noValidate`, a visually hidden label, `type="email"`, `autoc
 - No modal, no confetti, no toast for success; the field itself is the feedback.
 - No red borders before the first submit, no generic "Invalid email".
 - No accent colour, gradient buttons, glow or glass. No social icon grid.
+
+
+**Navigation, input and live preferences**
+
+Follow live motion preferences for validation, loading and figures. Reduced fades reset former blur, position and hairline scale, including content revealed after the preference changed. Coarse-pointer social and legal links retain 44px targets.

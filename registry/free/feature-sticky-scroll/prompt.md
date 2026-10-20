@@ -43,3 +43,8 @@ Build a scroll-driven feature story in React + Tailwind CSS v4 with `motion/reac
 - The numbered markers on the rail are buttons: hovering grows them to 110%, pressing to 95%, and clicking glides the page so that step sits in the middle of the viewport (smooth scroll; instant under reduced motion). The panel follows on its own.
 - Under the sticky panel, two small arrow buttons step back and forward (disabled at the ends, pressing to 0.9) beside the "Step 02 / 04" counter, and the step name slides in (6px, 2px blur) on every change.
 - Colour transitions on headings, body and markers run at 400ms.
+
+
+**Navigation, input and live preferences**
+
+Follow live motion preferences for step navigation and figures. Reduced fades explicitly reset old transforms and blur, including sections that were hidden before the preference changed. Coarse-pointer step controls retain 44px targets.

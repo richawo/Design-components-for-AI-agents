@@ -60,7 +60,7 @@
     "activeStep": "IntersectionObserver band through the viewport middle; inactive titles 35%, bodies 30% (wide); rings up to active take the accent",
     "tabs": "underline on a layoutId spring 500/40",
     "implementation": "figures are motion values rendered as text (no per-frame React state); one timer for the clock, always cleared",
-    "reducedMotion": "short fades only, instant swaps, figures final, no spring on the rail",
+    "reducedMotion": "short fades only, instant swaps, figures final, no spring on the rail Follow live motion preferences for step navigation and figures. Reduced fades explicitly reset old transforms and blur, including sections that were hidden before the preference changed. Coarse-pointer step controls retain 44px targets.",
     "navigation": "rail markers are buttons (hover 1.1, press 0.95) that smooth-scroll their step to centre; prev/next arrows under the panel; step name slides in with blur"
   },
   "responsive": {
@@ -70,7 +70,8 @@
   "accessibility": [
     "each step is a section with a heading",
     "panel states aria-hidden",
-    "no scroll-jacking"
+    "no scroll-jacking",
+    "Follow live motion preferences for step navigation and figures. Reduced fades explicitly reset old transforms and blur, including sections that were hidden before the preference changed. Coarse-pointer step controls retain 44px targets."
   ],
   "content": {
     "brand": "Ferry",

@@ -1,7 +1,18 @@
 "use client";
 
-import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
-import { animate, motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, type Variants } from "motion/react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { animate, motion, useInView, useMotionValue, useScroll, useSpring, useTransform, type Variants } from "motion/react";
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+const readMotionPreference = () => matchMedia(motionQuery).matches;
+const subscribeMotionPreference = (update: () => void) => {
+  const media = matchMedia(motionQuery);
+  media.addEventListener("change", update);
+  return () => media.removeEventListener("change", update);
+};
+function useLiveReducedMotion() {
+  return useSyncExternalStore(subscribeMotionPreference, readMotionPreference, () => false);
+}
 
 type Step = {
   /** Short tab label shown in the product panel. */
@@ -96,7 +107,10 @@ const RISE: Variants = {
   // A null start time snaps: things that render finished never animate.
   show: (delay: number | null) => ({ opacity: 1, y: 0, filter: "blur(0px)", transition: delay === null ? { duration: 0 } : { duration: T.block, ease: EASE, delay } }),
 };
-const FADE: Variants = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.15 } } };
+const FADE: Variants = {
+  hidden: { opacity: 0, y: 0, filter: "none", scaleX: 1 },
+  show: { opacity: 1, y: 0, filter: "none", scaleX: 1, transition: { duration: 0.15, y: { duration: 0 }, filter: { duration: 0 }, scaleX: { duration: 0 } } },
+};
 
 const MONO = "font-mono text-[11px] uppercase";
 const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--fs-ink)";
@@ -122,7 +136,7 @@ export function FeatureStickyScroll({
   theme = "dark",
   step,
 }: FeatureStickyScrollProps) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion();
   const headingId = useId();
   const { active, stepsRef, stepRefs, goTo } = useActiveStep(steps.length, reduce);
   // A changed `step` prop glides to that step; the value present at mount does nothing.
@@ -336,7 +350,7 @@ function StepCopy({ step, index, active, reached, reduce, onGo }: { step: Step; 
         data-demo={`step-${index + 1}`}
         aria-label={`Go to step ${index + 1}: ${step.tab}`}
         aria-current={active ? "step" : undefined}
-        className={`absolute left-0 top-0 hidden size-[31px] items-center justify-center rounded-full border bg-(--fs-bg) font-mono text-[11px] tabular-nums transition-[color,border-color,transform] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 active:scale-95 active:duration-100 ${FOCUS} @5xl:flex ${
+        className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 absolute left-0 top-0 hidden size-[31px] items-center justify-center rounded-full border bg-(--fs-bg) font-mono text-[11px] tabular-nums transition-[color,border-color,transform] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-110 active:scale-95 active:duration-100 ${FOCUS} @5xl:flex ${
           reached ? "border-(--fs-accent) text-(--fs-ink)" : "border-(--fs-ink)/20 text-(--fs-ink)/65 hover:border-(--fs-ink)/45 hover:text-(--fs-ink)/80"
         }`}
       >
@@ -377,7 +391,7 @@ function StepNav({ active, count, label, goTo, reduce }: { active: number; count
               data-demo={d < 0 ? "step-prev" : "step-next"}
               disabled={d < 0 ? active === 0 : active === count - 1}
               aria-label={d < 0 ? "Previous step" : "Next step"}
-              className={`flex size-8 items-center justify-center rounded-full border border-(--fs-ink)/12 text-(--fs-ink)/70 transition-[background-color,color,transform,opacity] duration-150 hover:bg-(--fs-ink)/[0.06] hover:text-(--fs-ink) active:scale-90 disabled:opacity-30 disabled:active:scale-100 ${FOCUS}`}
+              className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 flex size-8 items-center justify-center rounded-full border border-(--fs-ink)/12 text-(--fs-ink)/70 transition-[background-color,color,transform,opacity] duration-150 hover:bg-(--fs-ink)/[0.06] hover:text-(--fs-ink) active:scale-90 disabled:opacity-30 disabled:active:scale-100 ${FOCUS}`}
             >
               <svg viewBox="0 0 16 16" className={`size-3.5 ${d < 0 ? "rotate-180" : ""}`} fill="none" aria-hidden="true">
                 <path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />

@@ -47,3 +47,8 @@ Build a full-width site header in React + Tailwind CSS v4 + `motion/react`, at t
 - No glass pill, no glow behind the CTA, no gradient wordmark.
 - Don't animate the highlight with plain `layoutId` (it slides as a rigid block); the two-edge stretch is the point.
 - Don't let the right cluster wrap; drop labels before anything breaks onto two lines.
+
+
+**Navigation, input and live preferences**
+
+Follow live motion preferences. Clear former rise and blur styles when switching to fades. Preserve modified-link browser intent and native anchors when no navigation callback is supplied. Close mobile action links, release scroll lock and make retiring menus inert. Bound long brand names without clipping ordinary wordmarks. Coarse-pointer controls retain 44px targets.

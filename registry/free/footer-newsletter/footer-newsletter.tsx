@@ -9,7 +9,7 @@ import {
   useId,
   useLayoutEffect,
   useRef,
-  useState,
+  useState, useSyncExternalStore,
   type CSSProperties,
   type FormEvent,
   type ReactNode,
@@ -23,12 +23,22 @@ import {
   useInView,
   useIsPresent,
   useMotionValue,
-  useReducedMotion,
   useTransform,
   type HTMLMotionProps,
   type MotionValue,
   type Variants,
 } from "motion/react";
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+const readMotionPreference = () => matchMedia(motionQuery).matches;
+const subscribeMotionPreference = (update: () => void) => {
+  const media = matchMedia(motionQuery);
+  media.addEventListener("change", update);
+  return () => media.removeEventListener("change", update);
+};
+function useLiveReducedMotion() {
+  return useSyncExternalStore(subscribeMotionPreference, readMotionPreference, () => false);
+}
 
 export type SubscribeResult = "subscribed" | "already-subscribed";
 export type FooterNewsletterLink = { label: string; href: string; external?: boolean };
@@ -119,8 +129,8 @@ const drawX: Variants = {
 };
 /** Reduced motion: one short fade, no transforms, blur or stagger. */
 const fade: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.15 } },
+  hidden: { opacity: 0, y: 0, filter: "none", scaleX: 1 },
+  show: { opacity: 1, y: 0, filter: "none", scaleX: 1, transition: { duration: 0.15, y: { duration: 0 }, filter: { duration: 0 }, scaleX: { duration: 0 } } },
 };
 
 const TYPOS: Record<string, string> = {
@@ -257,7 +267,7 @@ export function FooterNewsletter({
   theme = "dark",
   className = "",
 }: FooterNewsletterProps) {
-  const reduce = !!useReducedMotion();
+  const reduce = useLiveReducedMotion();
   const p = PALETTE[theme];
   const vars = {
     "--fn-bg": p.bg,
@@ -723,7 +733,7 @@ function BottomRow({
               href={s.href}
               target={s.external ? "_blank" : undefined}
               rel={s.external ? "noreferrer" : undefined}
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-2.5 text-[13.5px] text-(--fn-ink)/65 transition-[color] duration-150 group-has-[a:hover]/soc:text-(--fn-ink)/65 hover:text-(--fn-ink)! focus-visible:text-(--fn-ink)! focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-(--fn-ink) active:translate-y-px @4xl:min-h-9"
+              className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 inline-flex min-h-11 items-center gap-1.5 rounded-md px-2.5 text-[13.5px] text-(--fn-ink)/65 transition-[color] duration-150 group-has-[a:hover]/soc:text-(--fn-ink)/65 hover:text-(--fn-ink)! focus-visible:text-(--fn-ink)! focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-(--fn-ink) active:translate-y-px @4xl:min-h-9"
             >
               {s.label === "RSS" ? <RssIcon /> : null}
               {s.label}
@@ -746,7 +756,7 @@ function BottomRow({
             <a
               key={l.label}
               href={l.href}
-              className={`inline-flex min-h-11 items-center rounded-md px-2 transition-[color] duration-150 hover:text-(--fn-ink) active:translate-y-px @4xl:min-h-9 ${FOCUS}`}
+              className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 inline-flex min-h-11 items-center rounded-md px-2 transition-[color] duration-150 hover:text-(--fn-ink) active:translate-y-px @4xl:min-h-9 ${FOCUS}`}
             >
               {l.label}
             </a>

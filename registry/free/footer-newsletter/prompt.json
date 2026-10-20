@@ -71,7 +71,7 @@
     "error": "field-coloured pill with error ring, message + Retry; retry icon −90° on hover",
     "messageLine": "cross-fade 6px offset + 3px blur, 300ms in / 160ms out",
     "press": "0.97 on pills; links 1px down",
-    "reducedMotion": "150ms fades only; count set instantly; no shake, blur or offsets; instant layout"
+    "reducedMotion": "150ms fades only; count set instantly; no shake, blur or offsets; instant layout Follow live motion preferences for validation, loading and figures. Reduced fades reset former blur, position and hairline scale, including content revealed after the preference changed. Coarse-pointer social and legal links retain 44px targets."
   },
   "responsive": {
     "desktop": "centred column; bottom row split left/right",
@@ -86,7 +86,8 @@
     "2px ink focus outline, keyboard only",
     "disabled submit while empty",
     "title read once from an sr-only copy; staggered words aria-hidden",
-    "outgoing controls become inert and leave accessibility immediately; narrow error copy wraps before Retry can clip"
+    "outgoing controls become inert and leave accessibility immediately; narrow error copy wraps before Retry can clip",
+    "Follow live motion preferences for validation, loading and figures. Reduced fades reset former blur, position and hairline scale, including content revealed after the preference changed. Coarse-pointer social and legal links retain 44px targets."
   ],
   "content": {
     "kicker": "The Thursday Letter · Issue 112",

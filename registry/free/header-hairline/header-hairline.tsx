@@ -1,19 +1,30 @@
 "use client";
 
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode, type RefObject } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore, type MouseEvent as ReactMouseEvent, type ReactNode, type RefObject } from "react";
 import {
   AnimatePresence,
   LayoutGroup,
   animate,
   motion,
   useInView,
+  useIsPresent,
   useMotionValue,
   useMotionValueEvent,
-  useReducedMotion,
   useScroll,
   useTransform,
   type Variants,
 } from "motion/react";
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+const readMotionPreference = () => matchMedia(motionQuery).matches;
+const subscribeMotionPreference = (update: () => void) => {
+  const media = matchMedia(motionQuery);
+  media.addEventListener("change", update);
+  return () => media.removeEventListener("change", update);
+};
+function useLiveReducedMotion() {
+  return useSyncExternalStore(subscribeMotionPreference, readMotionPreference, () => false);
+}
 
 /* ------------------------------------------------------------------ */
 /* Types                                                                */
@@ -82,7 +93,10 @@ const RISE: Variants = {
   hidden: { opacity: 0, y: INTRO.rise, filter: `blur(${INTRO.blur}px)` },
   shown: (delay: number = 0) => ({ opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: INTRO.item, ease: EASE_OUT, delay } }),
 };
-const FADE: Variants = { hidden: { opacity: 0 }, shown: { opacity: 1, transition: { duration: INTRO.fade } } };
+const FADE: Variants = {
+  hidden: { opacity: 0, y: 0, filter: "none", scaleX: 1 },
+  shown: { opacity: 1, y: 0, filter: "none", scaleX: 1, transition: { duration: 0.15, y: { duration: 0 }, filter: { duration: 0 }, scaleX: { duration: 0 } } },
+};
 const riseVariants = (reduce: boolean) => (reduce ? FADE : RISE);
 
 /* ------------------------------------------------------------------ */
@@ -189,7 +203,7 @@ export function HeaderHairline({
   scrollState = "auto",
   className = "",
 }: HeaderHairlineProps) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion();
   const uid = useId();
   const menuId = `${uid}-menu`;
   const [innerActive, setInnerActive] = useState(defaultActiveIndex);
@@ -204,9 +218,11 @@ export function HeaderHairline({
   const rise = riseVariants(reduce);
 
   const choose = (i: number, e?: ReactMouseEvent) => {
-    if (e && links[i].href.startsWith("#")) e.preventDefault();
+    if (e && (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)) return false;
+    if (e && onNavigate && links[i].href.startsWith("#")) e.preventDefault();
     if (activeIndex === undefined) setInnerActive(i);
     onNavigate?.(i, links[i]);
+    return true;
   };
 
   const close = useCallback((refocus = true) => {
@@ -239,17 +255,17 @@ export function HeaderHairline({
         style={{ height: HEIGHT.tall }}
         className="@container relative mx-auto flex w-full max-w-[1280px] items-center px-4 sm:px-6"
       >
-        <div className="grid w-full grid-cols-[1fr_auto] items-center gap-4 @min-[896px]:grid-cols-[auto_1fr_auto] @min-[1200px]:grid-cols-[1fr_auto_1fr]">
+        <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4 @min-[896px]:grid-cols-[auto_1fr_auto] @min-[1200px]:grid-cols-[1fr_auto_1fr]">
           <motion.a
             href={brand.href}
             variants={rise}
             initial="hidden"
             animate="shown"
             custom={INTRO.brandAt}
-            className="group -ml-1.5 flex h-10 w-max items-center gap-2 rounded-md px-1.5 outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 group -ml-1.5 flex h-10 w-max min-w-0 max-w-[calc(100%_+_6px)] items-center gap-2 rounded-md px-1.5 outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black [&>svg]:shrink-0"
           >
             <Mark />
-            <span className="font-display text-[17px] font-semibold leading-none tracking-[-0.04em]">{brand.name}</span>
+            <span className="-mr-px min-w-0 truncate pr-px font-display text-[17px] font-semibold leading-none tracking-[-0.04em]">{brand.name}</span>
           </motion.a>
 
           <HoverLinks links={links} active={active} onChoose={choose} reduce={reduce} groupId={uid} />
@@ -264,7 +280,7 @@ export function HeaderHairline({
               <a
                 href={signIn.href}
                 data-demo="signin"
-                className="flex h-8 items-center whitespace-nowrap rounded-lg px-3 text-[13.5px] text-white/65 outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.04] hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 flex h-8 items-center whitespace-nowrap rounded-lg px-3 text-[13.5px] text-white/65 outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.04] hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 {signIn.label}
               </a>
@@ -275,7 +291,7 @@ export function HeaderHairline({
                 data-demo="cta"
                 tabIndex={open ? -1 : undefined}
                 aria-hidden={open || undefined}
-                className={`flex h-8 items-center gap-1.5 whitespace-nowrap rounded-lg bg-white px-3.5 text-[13.5px] font-medium tracking-[-0.01em] text-black shadow-[inset_0_-1px_0_rgba(0,0,0,0.12)] outline-none transition-[background-color,transform,opacity] duration-150 hover:bg-[#e8e8ea] active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 flex h-8 items-center gap-1.5 whitespace-nowrap rounded-lg bg-white px-3.5 text-[13.5px] font-medium tracking-[-0.01em] text-black shadow-[inset_0_-1px_0_rgba(0,0,0,0.12)] outline-none transition-[background-color,transform,opacity] duration-150 hover:bg-[#e8e8ea] active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
                   open ? "pointer-events-none opacity-0" : ""
                 }`}
               >
@@ -300,8 +316,11 @@ export function HeaderHairline({
             cta={cta}
             reduce={reduce}
             onChoose={(i, e) => {
-              choose(i, e);
-              close();
+              if (choose(i, e)) close();
+            }}
+            onAction={(event) => {
+              if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              close(false);
             }}
           />
         ) : null}
@@ -427,7 +446,7 @@ function HoverLinks({
                   onFocus={(e) => e.currentTarget.matches(":focus-visible") && setHovered(i)}
                   onBlur={() => setHovered(null)}
                   onClick={(e) => onChoose(i, e)}
-                  className={`relative flex h-10 items-center whitespace-nowrap rounded-lg px-3 text-[13.5px] tracking-[-0.005em] outline-none transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                  className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 relative flex h-10 items-center whitespace-nowrap rounded-lg px-3 text-[13.5px] tracking-[-0.005em] outline-none transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
                     hovered === i || i === active ? "text-white" : "text-white/65"
                   }`}
                 >
@@ -470,7 +489,7 @@ function SearchChip({ label, mac, held, onSearch }: { label: string; mac: boolea
       data-demo="search"
       aria-label={`${label} (${mac ? "Command" : "Control"} K)`}
       aria-keyshortcuts={mac ? "Meta+K" : "Control+K"}
-      className={`group/s flex h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-2.5 text-[13px] text-white/65 outline-none transition-[background-color,color,transform,box-shadow] duration-150 hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black @4xl:h-8 @4xl:min-w-0 @4xl:justify-start @4xl:pl-2.5 @4xl:pr-1 @4xl:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] @4xl:hover:bg-white/[0.04] @4xl:hover:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)] ${
+      className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 group/s flex h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-2.5 text-[13px] text-white/65 outline-none transition-[background-color,color,transform,box-shadow] duration-150 hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black @4xl:h-8 @4xl:min-w-0 @4xl:justify-start @4xl:pl-2.5 @4xl:pr-1 @4xl:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] @4xl:hover:bg-white/[0.04] @4xl:hover:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)] ${
         held ? "text-white @4xl:bg-white/[0.05]" : ""
       }`}
     >
@@ -541,6 +560,7 @@ function MobileMenu({
   cta,
   reduce,
   onChoose,
+  onAction,
 }: {
   id: string;
   top: number;
@@ -550,7 +570,9 @@ function MobileMenu({
   cta: { label: string; href: string };
   reduce: boolean;
   onChoose: (i: number, e: ReactMouseEvent) => void;
+  onAction: (e: ReactMouseEvent<HTMLAnchorElement>) => void;
 }) {
+  const present = useIsPresent();
   const rise = riseVariants(reduce);
   const exit = { opacity: 0, transition: { duration: 0.1 } };
   return (
@@ -559,6 +581,8 @@ function MobileMenu({
       role="dialog"
       aria-modal="true"
       aria-label="Site menu"
+      inert={!present}
+      aria-hidden={!present || undefined}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.2, ease: EASE_OUT } }}
       exit={{ opacity: 0, transition: { duration: 0.16, ease: EASE_IN } }}
@@ -590,12 +614,14 @@ function MobileMenu({
       <motion.div variants={rise} initial="hidden" animate="shown" exit={exit} custom={MENU.at + (links.length + 1) * MENU.stagger} className="mt-auto grid gap-2 pt-10">
         <a
           href={signIn.href}
+          onClick={onAction}
           className="flex h-12 items-center justify-center rounded-xl text-[15px] font-medium text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)] outline-none transition-[background-color,transform] duration-150 hover:bg-white/[0.04] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white/70"
         >
           {signIn.label}
         </a>
         <a
           href={cta.href}
+          onClick={onAction}
           className="flex h-12 items-center justify-center rounded-xl bg-white text-[15px] font-medium text-black outline-none transition-[background-color,transform] duration-150 hover:bg-[#e8e8ea] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
         >
           {cta.label}
@@ -654,7 +680,7 @@ const CLI = [
 ];
 
 function Stage(props: HeaderHairlineProps) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion();
   const rise = riseVariants(reduce);
   const [startedAt] = useState(() => (typeof performance === "undefined" ? 0 : performance.now()));
   const intro = (k: number) => PAGE.at + k * PAGE.stagger;

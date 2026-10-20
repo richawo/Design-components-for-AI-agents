@@ -62,6 +62,24 @@ source-fixture workflow passes both themes. Strict registry, root/all-eleven-blo
 tests pass after shortening the two dependency descriptions. Evidence uses `test-results/handoff-blocks/hero-*`.
 The changed Hero poster and film remain pending alongside Landing's full integration.
 
+The Landing navigation dependencies now close mobile action links, release scroll lock, retire exiting
+menus, preserve modified clicks and retain native anchors without a callback. Long phone brand names fit;
+all twelve ordinary header defaults stay byte-identical to their originals. Header, workflow and footer
+controls retain 44px coarse-pointer targets. Their mounted motion preferences update, and reduced fades
+clear old blur, position and scale before later sections appear. The header passes 22 mounts, thirteen
+accessibility audits and 27 inspected captures. The composed dependency review passes 24 mounts, 42 audits
+and 42 inspected captures, including the formerly blurred live-reduced sections. The registered native
+suite passes both themes with unchanged timing assertions; the original Feature source still fails with
+the new two-frame preference readiness gate. Strict registry, root/all-eleven-block types and all 1,083
+tests pass. Original failures and the rejected blurred draft remain local. Full Landing integration and
+media are still pending, with 68 suites in the next complete checkpoint. The complete existing Footer
+request, ownership and exact-retry regression also passes both themes after these shared changes.
+
+Upstream localisation through `a0fb3ff` is integrated with all 24 existing working files preserved. Fresh
+checks pass all 1,083 tests. This repair adds no translation keys; the workspace localisation audit reports
+185,046 missing translations across 29 editions and zero invalid protected terms. English fallback remains
+available under the repository policy. Localisation completion and the next full release check remain open.
+
 All eight final smaller components also have reviewed current films and posters. Fashion, Legal, Meetings, People and SaaS Dashboard have
 reviewed current block films and paired posters. Commerce, Financial Report and Music retain their old films after
 guarded rejections; rejected raw evidence remains local. Legal's new take reaches its completion receipt after
