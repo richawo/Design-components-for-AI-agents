@@ -3,10 +3,26 @@
     "Memmo Alfama, Travessa das Merceeiras",
     "Autumn Supper Club: Smoke & Orchard",
     "Node, Python, Go, Ruby, Swift",
-    "Juno Park · juno.park@fernhill.io"
+    "Juno Park · juno.park@fernhill.io",
+    "Agent Approval Gate",
+    "Agent Diff Review",
+    "Agent Plan",
+    "Agent Status Pill",
+    "Agent Tool Call",
+    "Chat Thread",
+    "Commerce Operations Workspace",
+    "Return Desk",
+    "Variant Stock Matrix"
   ],
   "_preserveInPreviews": {
-    "hero-blur-statement": ["Tessel", "Kiln", "Meridian", "Parcel", "Northwind", "Strata"]
+    "hero-blur-statement": [
+      "Tessel",
+      "Kiln",
+      "Meridian",
+      "Parcel",
+      "Northwind",
+      "Strata"
+    ]
   },
   "fr": {
     "Docs": "Documentation",
@@ -23,7 +39,8 @@
     "Underline Tabs": "Onglets soulignés",
     "Signal found": "Signal détecté",
     "at 1420 MHz.": "à 1420 MHz.",
-    "Signal found at 1420 MHz.": "Signal détecté à 1420 MHz."
+    "Signal found at 1420 MHz.": "Signal détecté à 1420 MHz.",
+    "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready.": "État contrôlé de la requête, avec la même structure que useChat de AI SDK. Une valeur non définie simule réflexion → streaming → prêt."
   },
   "it": {
     "A monochrome, dark-first React Native inbox: rows rise from blur, swipe actions fill at their thresholds, a full swipe archives with glass undo, and new mail lands.": "Una casella di posta React Native monocromatica, scura per impostazione predefinita: le righe emergono dalla sfocatura, le azioni di scorrimento si riempiono alle rispettive soglie, uno scorrimento completo archivia con un comando Annulla dall’effetto vetro e i nuovi messaggi arrivano."
@@ -52,5 +69,11 @@
     "Remove discarded changes in `onDiscard`. Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (run `npx install-expo-modules` once in bare apps) and verify on devices with real connectivity changes.": "Töröld az elvetett módosításokat az `onDiscard` visszahívásban. Telepítsd az `expo-blur`, az `expo-linear-gradient` és a `react-native-svg` csomagokat (natív projekteknél egyszer futtasd az `npx install-expo-modules` parancsot), majd valódi eszközökön ellenőrizd a működést tényleges hálózati kapcsolatváltozások mellett.",
     "Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps). The mark's flight measures on-screen positions, so test inside your navigation container on devices.": "Telepítsd az `expo-blur`, az `expo-linear-gradient` és a `react-native-svg` csomagokat (natív projekteknél egyszer futtasd az `npx install-expo-modules` parancsot). A jelvény repülési animációja a képernyőn mért pozíciókra épül, ezért teszteld valódi eszközökön, a saját navigációs konténeredben.",
     "Pass the growing JSON as `text` on every chunk with `status` (streaming, done, stopped, error). Partial JSON is expected: each value opens at its first character and closes at its last.": "Minden új adatrésznél add át a bővülő JSON-t a `text` propban, az állapotot pedig a `status` propban (streaming, done, stopped, error). A részleges JSON támogatott: minden érték az első karakterénél nyílik meg, és az utolsónál zárul le."
+  },
+  "es": {
+    "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready.": "Estado controlado de la solicitud, con la misma estructura que useChat de AI SDK. Si no se define, simula pensar → transmitir → listo."
+  },
+  "ro": {
+    "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready.": "Starea controlată a cererii, cu aceeași structură ca useChat din AI SDK. O valoare nedefinită simulează gândire → streaming → gata."
   }
 }
