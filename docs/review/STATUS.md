@@ -328,7 +328,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `media-focus-lightbox` | new | current |  |
 | `media-image-contact-sheet` | new | current |  |
 | `media-spatial-collection` | new | current |  |
-| `media-track-list` | new | current | audio-player-states passes |
+| `media-track-list` | new | current | audio-player-states passes; live reduced-motion/filter retirement, keyboard and real pointer reorder verified |
 | `media-transcript-player` | new | current |  |
 | `media-trim-timeline` | new | current |  |
 | `navigation-context-rail` | new | current |  |
