@@ -2563,7 +2563,8 @@
     "integration": [
       "Pass `hires` with `tasks`, ordered `phases` with due days and `today` to place the Today marker.",
       "`onComplete` receives { hireId, taskId, note } from a tick or the drawer; reject it to reopen the task with a retry message.",
-      "Provide `onReopen` to enable Undo and unticking; use `selectMode=\"native\"` for the platform hire picker."
+      "Provide `onReopen` to enable Undo and unticking; use `selectMode=\"native\"` for the platform hire picker.",
+      "Use actionsDisabled when record browsing and draft notes must remain available while completion/decision and reopening actions are blocked. Omit it to retain existing local interactions."
     ],
     "related": [
       "onboarding-setup-checklist",
@@ -2593,7 +2594,8 @@
     "integration": [
       "Express durations, balances and cover in half-day units; invalid dates or duplicate request IDs are named and can’t be approved.",
       "Pass `absences` for leave already booked so the calendar shows who else is off; cover figures should already account for them.",
-      "`onDecision` receives { requestId, decision, note } and can reject to keep the note; `onReopen` powers Undo."
+      "`onDecision` receives { requestId, decision, note } and can reject to keep the note; `onReopen` powers Undo.",
+      "Use actionsDisabled when record browsing and draft notes must remain available while completion/decision and reopening actions are blocked. Omit it to retain existing local interactions."
     ],
     "related": [
       "hr-shift-coverage",

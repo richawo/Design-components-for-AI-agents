@@ -26751,6 +26751,12 @@
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Near-black (default) or white surfaces."
+      },
+      {
+        "name": "actionsDisabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Block new completion/decision and reopening actions while keeping records and draft notes available. Omit to retain existing local interactions."
       }
     ],
     "added": "2026-10-11",
@@ -27022,6 +27028,12 @@
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Surface palette."
+      },
+      {
+        "name": "actionsDisabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Block new completion/decision and reopening actions while keeping records and draft notes available. Omit to retain existing local interactions."
       }
     ],
     "added": "2026-10-11",

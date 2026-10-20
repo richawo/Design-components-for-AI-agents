@@ -53,6 +53,12 @@ People's department-selection follow-up now retains the available fallback when 
 Its original failure is archived, and both-theme source regressions, accessibility and full registered People
 workflow pass with strict registry, root/all-eleven-block types and all 1,068 tests. The full People review remains open.
 
+People's missing-writer correction now keeps notes editable while disabling completion and leave writes.
+Both original fake-success receipts are archived. New callbacks enable the retained draft, and withdrawing
+them blocks writes immediately. Both-theme state audits and the complete People/onboarding/leave source
+regressions pass. Shared parts expose optional actionsDisabled with unchanged defaults. The full People
+review remains open, with no inventory change.
+
 ## Previous workspace/input checkpoint (19 October 2026)
 
 The workspace/input checkpoint covers **all 64 browser suites across runs**: the full run is 63/64,
