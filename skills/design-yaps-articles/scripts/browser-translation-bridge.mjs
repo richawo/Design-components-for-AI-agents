@@ -2,10 +2,12 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import {loadBlogSource,corpusUnits,readJson,stableSlugs} from '/Users/richardawoyemi/ai-prototypes/design-components-for-ai-agents/scripts/lib/blog-source.mjs';
-import {encode,SEPARATOR,splitBatch} from '/Users/richardawoyemi/ai-prototypes/design-components-for-ai-agents/scripts/lib/translation-tokens.mjs';
-import {isUntouched,protectedIntact} from '/Users/richardawoyemi/ai-prototypes/design-components-for-ai-agents/scripts/lib/translation-quality.mjs';
-import {LOCALES} from '/Users/richardawoyemi/ai-prototypes/design-components-for-ai-agents/lib/blog/locales.mjs';
+import {loadBlogSource,corpusUnits,readJson,stableSlugs} from '../../../scripts/lib/blog-source.mjs';
+import {encode,SEPARATOR,splitBatch} from '../../../scripts/lib/translation-tokens.mjs';
+import {isUntouched,protectedIntact} from '../../../scripts/lib/translation-quality.mjs';
+import {translationBodyForJob} from '../../../scripts/lib/browser-translation-guard.mjs';
+import {fileURLToPath} from 'node:url';
+import {LOCALES} from '../../../lib/blog/locales.mjs';
 
 function numberedParts(output,count){
  const marks=[...output.matchAll(/ZXQ([0-9]{3})QXZ/gi)];
@@ -15,7 +17,8 @@ function numberedParts(output,count){
  return parts.every(Boolean)?parts:null;
 }
 
-const source=loadBlogSource('/Users/richardawoyemi/ai-prototypes/design-components-for-ai-agents');
+const source=loadBlogSource(fileURLToPath(new URL('../../../',import.meta.url)));
+const markerSeed=crypto.randomBytes(4).toString('hex').toUpperCase();
 const keys=corpusUnits(source),queue=[],token=crypto.randomBytes(12).toString('hex');
 const dictionaries={};let serial=0,done=0,accepted=0;
 function save(locale){
@@ -27,7 +30,7 @@ function save(locale){
   fs.writeFileSync(slugFile,JSON.stringify(stableSlugs(source,locale,d,readJson(slugFile)),null,2)+'\n');
  }
 }
-function job(locale,group,attempt=0){return {id:String(serial++),locale:locale.code,target:locale.translateAs,language:locale.name,text:group.length===1?encode(group[0]).text:group.map((k,i)=>'ZXQ'+String(i).padStart(3,'0')+'QXZ\n'+encode(k).text).join('\n\n'),group,attempt}}
+function job(locale,group,attempt=0){const id=String(serial++),responseMarker='ZXJOB'+markerSeed+id+'QXZ';const body=group.length===1?encode(group[0]).text:group.map((k,i)=>'ZXQ'+String(i).padStart(3,'0')+'QXZ\n'+encode(k).text).join('\n\n');return {id,locale:locale.code,target:locale.translateAs,language:locale.label,responseMarker,text:responseMarker+'\n\n'+body,group,attempt}}
 for(const locale of LOCALES.filter(l=>l.code!=='en')){
  const d=readJson(path.join(source.base,'i18n','strings',locale.code+'.json'));dictionaries[locale.code]=d;
  const missing=keys.filter(k=>!d[k]||isUntouched(k,d[k])||!protectedIntact(k,d[k]));
@@ -37,7 +40,7 @@ for(const locale of LOCALES.filter(l=>l.code!=='en')){
 }
 const escape=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 function render(status='Ready'){
- const next=queue[0];const view=next?{id:next.id,locale:next.locale,target:next.target,language:next.language,text:next.text}:null;
+ const next=queue[0];const view=next?{id:next.id,locale:next.locale,target:next.target,language:next.language,responseMarker:next.responseMarker,text:next.text}:null;
  return '<!doctype html><html><head><title>Blog translation workbench</title><style>body{font:16px system-ui;max-width:900px;margin:40px auto}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#eee;padding:16px}textarea{width:100%;height:160px}input{display:block}</style></head><body><h1>Blog translation workbench</h1><section aria-label="Status"><p>'+escape(status)+'; '+done+' batches completed; '+accepted+' units saved; '+queue.length+' batches remaining.</p></section><section aria-label="Work item"><pre>'+escape(JSON.stringify(view))+'</pre></section><form method="POST" action="/'+token+'/result"><label>Job ID<input name="job" aria-label="Job ID"></label><label>Translation result<textarea name="result" aria-label="Translation result"></textarea></label><button>Save translation</button></form></body></html>'
 }
 http.createServer((req,res)=>{
@@ -48,7 +51,9 @@ http.createServer((req,res)=>{
  let body='';req.on('data',chunk=>{body+=chunk;if(body.length>200000)req.destroy()});req.on('end',()=>{
   const fields=new URLSearchParams(body),task=queue[0];
   if(!task||fields.get('job')!==task.id)return respond('Wrong job; nothing saved');
-  const output=fields.get('result')||'',parts=task.group.length===1?[output]:numberedParts(output,task.group.length);
+  const output=translationBodyForJob(fields.get('result')||'',task.responseMarker);
+  if(output===null)return respond('Wrong response marker; nothing saved');
+  const parts=task.group.length===1?[output]:numberedParts(output,task.group.length);
   const failures=[];
   for(let i=0;i<task.group.length;i++){
    const key=task.group[i],restored=parts?encode(key).restore(parts[i]):null;
