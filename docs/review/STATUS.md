@@ -33,6 +33,14 @@ guarded rejections; rejected raw evidence remains local. Legal's new take reache
 the recorder's scrolling-target correction. The remaining inventory is **7 blocks, 59 older probes and 120 films**.
 Allocation Chart needs a new film after its full-value readout changed.
 
+The 20 October table follow-up fixes offscreen reduced-motion figures remaining at zero. Initial and live
+preferences now settle the values independently of the intersection observer and clear prior rise/blur effects.
+The registered table suite and full Financial Report workflow pass through Next with unchanged exact-value
+assertions. Nineteen source mounts, six accessibility audits and twenty approved captures pass; all twelve
+settled defaults match their approved references byte-for-byte. Strict registry, root/all-eleven-block types
+and all 1,068 unit tests pass. The original combined-run failure and rejected intermediate blur remain archived.
+Meetings integration and its full review are still in progress; these queue counts are unchanged.
+
 ## Previous workspace/input checkpoint (19 October 2026)
 
 The workspace/input checkpoint covers **all 64 browser suites across runs**: the full run is 63/64,

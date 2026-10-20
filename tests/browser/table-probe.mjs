@@ -1,5 +1,6 @@
 import { checkTable as checkCompactTable } from './review/financial-compact-values.mjs';
 import { checkTable } from './review/financial-number-formats.mjs';
+import { check as checkReducedFigures } from './review/table-reduced-figures.mjs';
 import assert from "node:assert/strict";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
@@ -36,6 +37,8 @@ console.log(
 try {
   await checkTable({page:p,assert,mount:code=>mountFixture(p,"data-table-sortable","free",code)});
   await checkCompactTable({page:p,assert,mount:code=>mountFixture(p,"data-table-sortable","free",code)});
+  await checkReducedFigures({page:p,assert,mount:code=>mountFixture(p,"data-table-sortable","free",code)});
+  assert.deepEqual(errors, []);
 } finally {
   await b.close();
 }

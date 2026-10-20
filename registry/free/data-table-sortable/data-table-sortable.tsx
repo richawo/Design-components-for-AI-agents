@@ -17,7 +17,7 @@ import {
   type ReactNode,
   type Ref,
 } from "react";
-import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, type Variants } from "motion/react";
+import { AnimatePresence, animate, motion, useInView, useMotionValue, type Variants } from "motion/react";
 import { ArrowDown, X } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -302,6 +302,18 @@ function inkOn(hex: string) {
 /** useLayoutEffect in the browser, useEffect on the server (no warning). */
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
+function useLiveReducedMotion() {
+  const [reduce, setReduce] = useState(false);
+  useIsoLayoutEffect(() => {
+    const media = matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduce(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+  return reduce;
+}
+
 /** Keeps the latest value of a prop or state in a ref, for stable handlers. */
 function useLatest<V>(value: V) {
   const ref = useRef(value);
@@ -351,8 +363,8 @@ const cardIn: Variants = {
   }),
 };
 const fade: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.15 } },
+  hidden: { opacity: 0, y: 0, filter: "none", transition: { duration: 0 } },
+  show: { opacity: 1, y: 0, filter: "none", transition: { duration: 0.15, y: { duration: 0 }, filter: { duration: 0 } } },
 };
 
 /**
@@ -389,12 +401,12 @@ function Figure({
     return mv.on("change", paint);
   }, [mv, formatRef, format]);
 
+  useIsoLayoutEffect(() => {
+    if (reduce) mv.set(value);
+  }, [value, reduce, mv]);
+
   useEffect(() => {
-    if (!run) return;
-    if (reduce) {
-      mv.set(value);
-      return;
-    }
+    if (!run || reduce) return;
     const controls = animate(mv, value, { duration: 0.6, ease: EASE, delay });
     return () => controls.stop();
   }, [run, value, reduce, delay, mv]);
@@ -740,7 +752,7 @@ function SortableTableWithColumns({
   onBulkAction,
   className = "",
 }: DataTableSortableProps) {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useLiveReducedMotion();
   const uid = useId();
   const palette = PALETTE[theme];
   const fmt = useFormatters(locale, currency);
