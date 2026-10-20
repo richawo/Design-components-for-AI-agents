@@ -13,6 +13,7 @@ const specs = [
   ["block-saas-landing", "Your Studio workspace request is received."],
   ["block-meetings-workspace", "Studio review"],
   ["block-music-workspace", "Paper Lanterns"],
+  ["block-team-workspace", "Phone pass ready, @Noor"],
 ];
 const requested = new Set(process.argv.slice(2));
 for (const slug of requested) assert.ok(specs.some(([name]) => name === slug), `Unknown block replay: ${slug}`);
@@ -148,6 +149,22 @@ try {
         }, true);
       });
     }
+    if (slug === "block-team-workspace") {
+      await page.evaluate(() => {
+        window.teamReplay = { actions: [], inputs: [], sends: [] };
+        document.addEventListener("click", event => {
+          const name = event.target.closest?.("[data-demo]")?.dataset.demo;
+          if (["reply-m1", "close-thread", "editor", "send-studio"].includes(name)) window.teamReplay.actions.push(name);
+          if (name === "send-studio") {
+            const editor = document.querySelector('[data-composer="studio"] [role="textbox"]');
+            window.teamReplay.sends.push({ text: editor?.innerText.replace(/\u00a0/g, " ").trim(), tokens: [...(editor?.querySelectorAll('[data-token="person"]') ?? [])].map(node => node.dataset.id) });
+          }
+        }, true);
+        document.addEventListener("input", event => {
+          if (event.target.matches?.('[data-composer="studio"] [role="textbox"]')) window.teamReplay.inputs.push(event.target.innerText.replace(/\u00a0/g, " "));
+        });
+      });
+    }
     let dashboardDownload;
     if (slug === "block-saas-dashboard") {
       dashboardDownload = page.waitForEvent('download');
@@ -168,6 +185,17 @@ try {
       (await page.locator("#root").innerText()).includes(final),
       slug + " intended end",
     );
+    if (slug === "block-team-workspace") {
+      const trace = await page.evaluate(() => window.teamReplay);
+      assert.deepEqual(trace.actions, ["reply-m1", "close-thread", "editor", "send-studio"]);
+      assert.equal(trace.inputs.at(-1), "Phone pass ready, @no");
+      assert.deepEqual(trace.sends, [{ text: "Phone pass ready, @Noor", tokens: ["noor"] }]);
+      assert.equal(meta.demo.loop, false);
+      assert.equal(await page.getByRole("log").getByText("Phone pass ready, @Noor", { exact: true }).count(), 1);
+      assert.equal(await page.locator('[data-composer="studio"] [role="textbox"]').innerText(), "");
+      assert.equal(await page.getByRole("button", { name: "Close message thread", exact: true }).count(), 0);
+      assert.equal(await page.getByRole("alert").count(), 0);
+    }
     if (slug === "block-saas-landing") {
       const trace = await page.evaluate(() => window.landingReplay);
       assert.deepEqual(trace.clicks, ["plan-studio", "email", "submit"]);

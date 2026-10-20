@@ -6803,13 +6803,20 @@
     ],
     "added": "2026-10-12",
     "demo": {
+      "loop": false,
       "steps": [
+        "wait:350",
         "click:@reply-m1",
-        "wait:800",
+        "wait:400",
         "click:@close-thread",
+        "wait:200",
+        "click:@editor:0.15,0.82",
+        "type:Phone pass ready, @no",
         "wait:300",
-        "click:@nav-product",
-        "wait:700"
+        "key:Enter",
+        "wait:200",
+        "click:@send-studio",
+        "wait:1000"
       ]
     },
     "controls": [
