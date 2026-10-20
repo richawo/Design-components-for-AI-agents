@@ -35,10 +35,19 @@ regression passes both themes with strict registry, root/all-eleven-block types 
 request copy needs a new film. Landing's request/offer draft passes 22 source mounts, thirty audits and thirty
 reviewed captures; its full block review remains open. The next complete checkpoint has 67 browser suites.
 
+Landing's request correction now renders actual hero line breaks, retires removed plan selections, preserves
+email drafts across plan changes and prevents retired replies from clearing newer requests. Retained feature
+columns stay aligned to the original offer order, unavailable writers disable submission and modified links
+preserve the current selection. Seven original failures remain archived. Its final 24-mount source run passes
+32 accessibility audits and all 32 approved captures, including 26 exact reviewed references. The complete
+registered source-fixture workflow and all core checks pass. Private correction: `955d3cd`. Its five-prop
+contract stays intact; full composition, Next integration, poster and film review remain open. Its changed
+hero adds the old Landing film to the queue.
+
 All eight final smaller components also have reviewed current films and posters. Fashion, Legal, Meetings, People and SaaS Dashboard have
 reviewed current block films and paired posters. Commerce, Financial Report and Music retain their old films after
 guarded rejections; rejected raw evidence remains local. Legal's new take reaches its completion receipt after
-the recorder's scrolling-target correction. The remaining inventory is **3 blocks, 59 older probes and 122 films**.
+the recorder's scrolling-target correction. The remaining inventory is **3 blocks, 59 older probes and 123 films**.
 Allocation Chart needs a new film after its full-value readout changed.
 
 The 20 October table follow-up fixes offscreen reduced-motion figures remaining at zero. Initial and live

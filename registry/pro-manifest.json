@@ -6683,17 +6683,17 @@
       {
         "name": "plans",
         "type": "LandingPlan[]",
-        "description": "Unique plan IDs, display prices, units and CTA labels. Choices lead to the request form with the selected plan context."
+        "description": "Nonempty plan IDs, display prices, units and CTA labels. Duplicate IDs retain the first plan and its original feature column. Removed selections retire to the available fallback; restored plans cannot reclaim it."
       },
       {
         "name": "groups",
         "type": "MatrixGroup[]",
-        "description": "Feature groups with values aligned to the supplied plan order."
+        "description": "Feature groups with values aligned to the original supplied plan order. Filtering invalid or duplicate plans retains each remaining original column."
       },
       {
         "name": "onStart",
         "type": "(request: WorkspaceStartRequest) => Promise<void>",
-        "description": "Accept a workspace request containing the valid email and chosen plan ID. Reject to preserve the address for retry; account creation and billing remain host flows."
+        "description": "Accept the valid email and chosen plan ID. Reject to preserve the address for exact retry. Each request retains its original plan context; retired replies cannot replace newer feedback. An unavailable writer disables submission while the address stays editable. Account creation and billing remain host flows."
       },
       {
         "name": "theme",
