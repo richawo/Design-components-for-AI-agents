@@ -62,7 +62,15 @@ export function SiteFooter({ locale = "en", copy = {} }: { locale?: string; copy
             ))}
           </div>
         </div>
-        <div className="mt-16 flex flex-col justify-between gap-3 border-t border-white/[0.07] py-6 text-[13px] text-site-fg-3 sm:flex-row">
+        <nav aria-label={t("More from Yaps")} className="mt-12 border-t border-white/[0.07] pt-6">
+          <h2 className="text-[13px] font-medium text-site-fg">{t("More from Yaps")}</h2>
+          <ul className="mt-3 flex flex-wrap gap-x-8 gap-y-2 text-[14px] text-site-fg-2">
+            <li><a href="https://www.yaps.ai/" translate="no" className="inline-flex min-h-11 items-center rounded-sm transition-colors hover:text-site-fg">Yaps</a></li>
+            <li><a href="https://study.yaps.ai/" translate="no" className="inline-flex min-h-11 items-center rounded-sm transition-colors hover:text-site-fg">Study Yaps</a></li>
+            <li><a href="https://post.yaps.ai/" translate="no" className="inline-flex min-h-11 items-center rounded-sm transition-colors hover:text-site-fg">Post Yaps</a></li>
+          </ul>
+        </nav>
+        <div className="mt-8 flex flex-col justify-between gap-3 border-t border-white/[0.07] py-6 text-[13px] text-site-fg-3 sm:flex-row">
           <p>© 2026 Design for AI. {t("Free components MIT licensed.")}</p>
           <MarkdownLink label={t("View as Markdown")} className="rounded-sm font-mono text-[11px] uppercase tracking-[0.16em] transition-colors duration-150 hover:text-site-fg" />
         </div>
