@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Task 7 (20 October): SaaS Metrics Dashboard now shares one valid reporting date and offers only consecutive current/previous daily comparisons. Identical duplicates count once, conflicting days are omitted, removed metrics retire their selection, and KPI/trend percentages agree. Detached export snapshots preserve the host and next report; accepted or rejected receipts stay visible without losing navigation or search. Empty views have written states. Shared chart/KPI phone controls retain 44px targets, first taps read the requested day and tooltips stay inside the plot. Default workspace names fit their wide column. Original failures remain archived. The 53-mount source review passes 54 accessibility audits and all 68 approved captures, including 32 byte-identical reviewed references. Four coarse-pointer mounts pass 24 more audits and 24 reviewed captures. The final Next workflow, both-theme phone workflows, exact CSV/inspection replay, theme control, official audit and six matching Next/source scenes pass with all 1,727 public and 1,180 private source/media files frozen. The unchanged shared chart and table Next regressions pass too. Strict registry, root/all-eleven-block types and all 1,068 unit tests pass. The eight-prop contract and Pro boundary remain intact. Its reviewed 5.5s film and paired settled Next poster retain the complete 820px workspace, inspect 9 October and end with the exported seven-day signup receipt (345 total). Actual browser playback reaches the same decoded ending. Source gap is 18ms, delivery is 16.5ms and moving-frame p95 is 17.27ms, with no stalls and unchanged guards. Three blocks, 59 older probes and 121 films remain. The next complete batch release checkpoint remains pending.
+
 - SaaS reporting follow-up (20 October): Dashboard comparisons now require real consecutive ISO days, count identical duplicates once, omit conflicting days and share one reporting date across metrics. Removed metrics retire their selection. Exports receive detached point and filtered-row snapshots, preserve percentage precision and show accepted or rejected outcomes in the visible footer. Empty Trend and workspace views have written states. The eight original failing outcomes remain archived. The 51-mount source review passes 52 accessibility audits and all 66 reviewed captures. Complete registered source/phone workflows and the exact metadata replay pass, including the inspected 9 October signup value and downloaded seven-day CSV totalling 345. Strict registry, root/all-eleven-block types and all 1,068 unit tests pass. The eight-prop contract and Pro boundary remain intact. Next integration, media and the full block review remain open; counts stay at four blocks, 59 older probes and 121 films.
 
 - SaaS phone dependency follow-up (20 October): Revenue Trend now focuses before picking a pointer position, so the first tap reads the requested day. Its measured tooltip stays inside the plot. Chart and KPI period radios retain 44px coarse-pointer targets, and narrow table headers give density controls their own row. Original wrong-day, 28px-target, clipped-tooltip and split-heading failures remain archived. Four dashboard phone mounts pass 24 accessibility audits and all 24 reviewed captures across both themes and 320/390px. Complete chart and table source-fixture regressions, strict registry validation, root/all-eleven-block types and all 1,068 unit tests pass. Existing desktop demo actions remain unchanged. The broader SaaS Dashboard review remains open; counts stay at four blocks, 59 older probes and 121 films.
@@ -638,7 +640,7 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (4 blocks)
+## 7. Continue the review (3 blocks)
 
 Same process as the 202 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
@@ -684,12 +686,12 @@ reference; the reviewed dark capture differs only in eight pixels around its Pai
 registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
 Commerce completed its full review with this dependency; ten other blocks remain open.
 
-- **Commerce, Fashion, Financial Report, Legal, Meetings, Music and People Workspace** are reviewed. Keep these blocks compatible with their rebuilt parts.
+- **Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace and SaaS Dashboard** are reviewed. Keep these blocks compatible with their rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: four of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report, Legal, Meetings, Music and People Workspace are reviewed. Many parts changed their look and some their props;
+- **Blocks**, after their parts: three of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace and SaaS Dashboard are reviewed. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
 
-`block-saas-dashboard`, `block-saas-landing`,
+`block-saas-landing`,
 `block-team-workspace`, `block-workspace-settings`.
 
 ## 8. Final release checks
