@@ -1250,7 +1250,7 @@ function SortableTableWithColumns({
       className={`@container relative w-full max-w-[1040px] overflow-hidden rounded-[16px] bg-[var(--dt-card)] font-sans text-[var(--dt-ink)] [box-shadow:var(--dt-shadow)] ${className}`}
     >
       {/* Head */}
-      <motion.div variants={reduce ? fade : rise} custom={T.head} className={`flex items-center justify-between gap-4 border-b px-4 py-4 @[640px]:px-5 ${HAIRLINE}`}>
+      <motion.div variants={reduce ? fade : rise} custom={T.head} className={`flex items-center justify-between gap-4 border-b px-4 py-4 @[640px]:px-5 [@media(pointer:coarse)]:@max-[340px]:flex-col [@media(pointer:coarse)]:@max-[340px]:items-start ${HAIRLINE}`}>
         <div className="min-w-0">
           <h2 id={titleId} className="font-display text-[17px] font-semibold leading-tight tracking-[-0.02em]">
             {title}

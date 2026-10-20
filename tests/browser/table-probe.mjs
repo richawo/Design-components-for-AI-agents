@@ -1,4 +1,5 @@
 import { checkTable as checkCompactTable } from './review/financial-compact-values.mjs';
+import { check as checkPhoneHeading } from './review/table-phone-heading.mjs';
 import { checkTable } from './review/financial-number-formats.mjs';
 import { check as checkReducedFigures } from './review/table-reduced-figures.mjs';
 import assert from "node:assert/strict";
@@ -38,6 +39,17 @@ try {
   await checkTable({page:p,assert,mount:code=>mountFixture(p,"data-table-sortable","free",code)});
   await checkCompactTable({page:p,assert,mount:code=>mountFixture(p,"data-table-sortable","free",code)});
   await checkReducedFigures({page:p,assert,mount:code=>mountFixture(p,"data-table-sortable","free",code)});
+  const phone = await b.newPage({viewport:{width:320,height:1100},reducedMotion:'reduce',hasTouch:true,isMobile:true});
+  phone.on('pageerror',error=>errors.push(error.message));
+  try {
+    for (const width of [320,390]) {
+      await phone.setViewportSize({width,height:1100});
+      for (const theme of ['dark','light']) {
+        await checkPhoneHeading({page:phone,assert,mount:code=>mountFixture(phone,'data-table-sortable','free',
+          code.replaceAll('<Subject.DataTableSortable',`<Subject.DataTableSortable theme="${theme}" `))});
+      }
+    }
+  } finally { await phone.close(); }
   assert.deepEqual(errors, []);
 } finally {
   await b.close();

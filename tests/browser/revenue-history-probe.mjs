@@ -1,5 +1,6 @@
 import { checkAllocation as checkCompactAllocation } from './review/financial-compact-values.mjs';
 import { checkAllocation } from './review/financial-number-formats.mjs';
+import { checkRevenuePointer, checkKpiTargets } from './review/revenue-first-pointer.mjs';
 import assert from "node:assert/strict";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
@@ -103,6 +104,27 @@ try {
   );
   await checkAllocation({page,assert,mount:code=>mountFixture(page,"chart-allocation","pro",code)});
   await checkCompactAllocation({page,assert,mount:code=>mountFixture(page,"chart-allocation","pro",code)});
+  await checkRevenuePointer({page,assert,mount:code=>mountFixture(page,"chart-revenue-trend","pro",code)});
+  const touchPage = await browser.newPage({
+    viewport: { width: 390, height: 1000 },
+    reducedMotion: 'reduce', hasTouch: true, isMobile: true,
+  });
+  touchPage.on('pageerror', error => errors.push(error.message));
+  try {
+    for (const width of [320, 390]) {
+      await touchPage.setViewportSize({width,height:1000});
+      for (const theme of ['dark','light']) {
+        for (const [slug,name,check] of [
+          ['chart-revenue-trend','ChartRevenueTrend',checkRevenuePointer],
+          ['dashboard-kpi-cards','DashboardKpiCards',checkKpiTargets],
+        ]) {
+          await check({page:touchPage,assert,mount:code=>mountFixture(touchPage,slug,'pro',
+            code.replaceAll('<Subject.'+name, `<Subject.${name} theme="${theme}" `))});
+        }
+      }
+    }
+  } finally { await touchPage.close(); }
+  assert.deepEqual(errors, []);
 } finally {
   await browser.close();
 }
