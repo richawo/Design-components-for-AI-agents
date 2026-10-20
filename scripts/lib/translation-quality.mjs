@@ -30,7 +30,18 @@ export function isUntouched(source        , translated        )          {
   const squash = (value        ) => decodeEntities(value).replace(/\s+/g, "");
   // A short label can legitimately stay English ("Image resizer" in Swedish,
   // "Brand team" in Danish); only a sentence handed back whole is a refusal.
-  return words(source).length >= 4 && squash(source) === squash(translated) && looksUntranslated(source, translated);
+  if (words(source).length >= 4 && squash(source) === squash(translated) && looksUntranslated(source, translated)) return true;
+  // A translated opening must not hide later sentences returned in English.
+  // Exclude literal code and protected names before comparing ordinary prose.
+  const prose = (value) => plainText(value.replace(/<code\b[^>]*>[\s\S]*?<\/code>/gi, " ")).replace(PROTECTED, " ");
+  const normalized = (value) => (value.toLowerCase().match(/\p{L}{2,}/gu) ?? []).join(" ");
+  const reply = ` ${normalized(prose(translated))} `;
+  const sentences = new Intl.Segmenter("en", { granularity: "sentence" }).segment(prose(source));
+  for (const { segment } of sentences) {
+    const sentence = normalized(segment);
+    if (sentence.split(" ").length >= 8 && reply.includes(` ${sentence} `)) return true;
+  }
+  return false;
 }
 
 /** Every name, URL, path and identifier in the source survives verbatim in the reply. */

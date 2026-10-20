@@ -11,4 +11,14 @@ describe("unchanged translation detection", () => {
     expect(isUntouched("The team&#39;s brief describes the visible component behaviour.", "Le document de l’équipe décrit le comportement visible du composant.")).toBe(false);
     expect(isUntouched("Brand team", "Brand team")).toBe(false);
   });
+
+  it("rejects an English sentence hidden after a translated opening", () => {
+    const source = "Choose the appropriate foundation. Existing Tailwind Plus owners should review their actual needs before migrating working code.";
+    expect(isUntouched(source, "適切な基盤を選びます。 Existing Tailwind Plus owners should review their actual needs before migrating working code.")).toBe(true);
+  });
+
+  it("keeps literal code and translated prose out of the partial-sentence check", () => {
+    const source = "Inspect the result. <code>Existing owners should review their actual needs before migrating working code.</code>";
+    expect(isUntouched(source, "Vérifiez le résultat. <code>Existing owners should review their actual needs before migrating working code.</code>")).toBe(false);
+  });
 });
