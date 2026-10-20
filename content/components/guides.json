@@ -3522,18 +3522,21 @@
     "updated": "2026-10-19"
   },
   "block-people-workspace": {
-    "useWhen": "A people team needs department context, new-hire tasks and leave coverage in one product workspace.",
-    "avoidWhen": "Payroll processing, automatic hiring decisions or leave approvals disconnected from authoritative HR records.",
+    "updated": "2026-10-20",
+    "useWhen": "Composing a department-scoped roster, retained onboarding tasks and leave decisions with coverage context.",
+    "avoidWhen": "Treating local state as durable HR persistence or presenting inconsistent employee IDs and employment dates.",
     "integration": [
-      "Provide consistent employee IDs across department members, milestones, onboarding and leave records.",
-      "The block retains the separate views and their drafts. Each completion or decision carries its department ID and the underlying typed payload.",
-      "Connect the callbacks to your HR service. The default export is an offline example; production actions require a supplied host callback."
+      "Supply coherent employee IDs and employment/start dates across department rosters, milestones and onboarding records. Keep referenceDate as the explicit ISO reporting day.",
+      "Retained panes keep notes and accepted local progress with their department. A completion or leave decision carries its original department ID and underlying typed payload even while another department is selected.",
+      "Await host writers before announcing a receipt. Missing writers keep browsing and draft notes available while write actions are disabled; adding or withdrawing writers preserves the current draft.",
+      "Honor arriving and authoritative task flags. Retired records and operations cannot close another colleague draft or resurrect old progress when an ID returns. Use the full hire/task identity for opaque IDs."
     ],
     "related": [
-      "block-workspace-settings",
-      "block-saas-dashboard"
-    ],
-    "updated": "2026-10-12"
+      "hr-people-dashboard",
+      "hr-employee-onboarding",
+      "hr-leave-approval",
+      "layout-workspace-shell"
+    ]
   },
   "block-legal-workspace": {
     "useWhen": "Building a legal matter page where a portfolio, contractual evidence and client document requests share the same matter and reporting date.",

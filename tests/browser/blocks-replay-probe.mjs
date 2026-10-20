@@ -7,7 +7,7 @@ const specs = [
   ["block-workspace-settings", "Preferences saved."],
   ["block-financial-report", "September 2026 exported."],
   ["block-fashion-workspace", "Line plan saved"],
-  ["block-people-workspace", "A considered first week"],
+  ["block-people-workspace", "Step recorded"],
   ["block-legal-workspace", "Completion evidence recorded for Deliver the quarterly service report."],
   ["block-commerce-workspace", "RET-ORD-1042 · Return request recorded"],
   ["block-saas-landing", "Your Solo workspace."],
@@ -105,6 +105,23 @@ try {
         }, true);
       });
     }
+    if (slug === "block-people-workspace") {
+      await page.evaluate(() => {
+        window.peopleReplay = { actions: [], notes: [], confirmations: [] };
+        document.addEventListener("click", event => {
+          const name = event.target.closest?.("[data-demo]")?.dataset.demo;
+          if (["nav-onboarding", "task-access", "completion-note", "completion-confirm", "record"].includes(name)) {
+            window.peopleReplay.actions.push(name);
+          }
+        }, true);
+        document.addEventListener("input", event => {
+          if (event.target.dataset?.demo === "completion-note") window.peopleReplay.notes.push(event.target.value);
+        });
+        document.addEventListener("change", event => {
+          if (event.target.dataset?.demo === "completion-confirm") window.peopleReplay.confirmations.push(event.target.checked);
+        });
+      });
+    }
     if (slug === "block-music-workspace") {
       await page.evaluate(() => {
         window.musicReplay = [];
@@ -121,6 +138,18 @@ try {
       (await page.locator("#root").innerText()).includes(final),
       slug + " intended end",
     );
+    if (slug === "block-people-workspace") {
+      const trace = await page.evaluate(() => window.peopleReplay);
+      assert.deepEqual(trace.actions, ["nav-onboarding", "task-access", "completion-note", "completion-confirm", "record"]);
+      assert.equal(trace.notes.at(-1), "Access checked. IT-208.");
+      assert.deepEqual(trace.confirmations, [true]);
+      const pane = page.getByRole("tabpanel", { name: "Onboarding", exact: true });
+      assert.equal(await page.getByRole("tab", { name: "Onboarding", exact: true }).getAttribute("aria-selected"), "true");
+      assert.equal(await pane.getByRole("status").filter({ hasText: "Step recorded · Workspace and account access" }).isVisible(), true);
+      assert.equal(await pane.getByText("2 of 4 required steps complete", { exact: true }).count(), 1);
+      assert.equal(await pane.getByRole("checkbox", { name: "Mark “Workspace and account access” not done for Noor Ali", exact: true }).isChecked(), true);
+      assert.equal(await pane.getByRole("button", { name: "Record completion", exact: true }).count(), 0);
+    }
     if (slug === "block-music-workspace") {
       const trace = await page.evaluate(() => window.musicReplay);
       assert.deepEqual(trace.map(step => step.name), ["music-listen", "queue-blue", "nav-queue", "track-lanterns"]);

@@ -1,4 +1,6 @@
 export async function check({page,mount,assert,capture=async()=>{}}) {
+ const originalViewport=page.viewportSize();
+ try {
   await page.setViewportSize({width:1440,height:1600});
   await mount(`createRoot(document.getElementById('root')).render(<Subject.default/>);`);
   const usual=await page.getByRole('button',{name:'New colleague: Noor Ali',exact:true}).getByText('Noor Ali',{exact:true}).evaluate(node=>({height:node.getBoundingClientRect().height,lineHeight:parseFloat(getComputedStyle(node).lineHeight)}));
@@ -30,4 +32,5 @@ export async function check({page,mount,assert,capture=async()=>{}}) {
       }
     }
   }
+ } finally { if(originalViewport)await page.setViewportSize(originalViewport); }
 }

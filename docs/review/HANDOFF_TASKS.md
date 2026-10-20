@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Task 7 (20 October): People Operations Workspace now uses compact view names and retained scrolling panes for its roster, onboarding plan and leave coverage. Department selection, missing writers, arriving and authoritative completion flags, retired replies, opaque hire/task identities, original callback contexts, retained notes and exact retries remain covered. Roster and onboarding dates agree. Empty states name departments, and long colleague names clear their breadcrumbs and dates in all picker modes. Retiring completion receipts and Undo actions leave accessibility immediately. Its 55-mount source review passes 78 accessibility audits and all 92 approved captures, including 66 byte-identical reviewed references. Six coarse-pointer mounts pass 34 more accessibility audits and all 34 reviewed phone captures; controls retain 44px targets and an edge tap on the real checkbox label records the intended task. The complete Next workflow, both-theme phone workflows, exact five-action typed-note/confirmation replay, all three affected HR regressions, theme control, official audit and six matched Next/source scenes pass with frozen sources. Strict registry, root/all-eleven-block types and all 1,068 unit tests pass. Callback contracts and Pro boundaries remain intact. Its reviewed 6.2s film and paired settled Next poster retain the complete 820px workspace, type Access checked. IT-208., and end at the accepted completion receipt with two of four required steps complete. Browser playback reaches the same decoded ending. Maximum source gap is 28ms, delivery is 76ms and moving-frame p95 is 17.81ms, with no stalls and unchanged guards. Four blocks, 59 older probes and 121 films remain. The next complete batch release checkpoint remains pending.
+
 - People header and receipt follow-up (20 October): long colleague names and department metadata now stay inside onboarding headers in single, custom and native picker modes. Ordinary wide names retain one line and their original reviewed pixels. Retiring completion receipts and Undo actions become inert and hidden from accessibility immediately. Both original failures remain archived. The 31-mount combined source review passes eighteen accessibility audits and all 32 reviewed captures. The complete canonical onboarding source regression, strict registry, root/all-eleven-block types and all 1,068 unit tests pass. Nonvisual demo targets now identify the completion note and confirmation. The full People block review remains open; counts stay at five blocks, 59 older probes and 121 films.
 
 - People arriving-data follow-up (20 October): Employee Onboarding now takes arriving completion flags as its baseline and follows later authoritative flag changes. Retired operations cannot close another colleague's draft, resurrect work after an ID returns, or announce an unrelated success. Complete hire/task identities remain separate even when IDs contain the former separator. Drawers keep their own identities and retiring controls become inert immediately. Empty or hidden panes retarget their entry observer when records arrive, so normal-motion content paints. Original source fails all ten combined outcome checks. Twelve state mounts and sixteen accessibility audits now pass, including newer host completion surviving an old rejection. The 19-mount view/layout review passes fourteen more accessibility audits; all 24 settled defaults and view captures are byte-identical, and four new entrance captures are reviewed. All 44 captures are approved. The complete registered People and canonical onboarding source-fixture regressions, strict registry, root/all-eleven-block types and all 1,068 unit tests pass. Callbacks retain their raw IDs and signatures. The full People block review remains open; counts remain five blocks, 59 older probes and 121 films.
@@ -632,7 +634,7 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (5 blocks)
+## 7. Continue the review (4 blocks)
 
 Same process as the 202 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
@@ -678,12 +680,12 @@ reference; the reviewed dark capture differs only in eight pixels around its Pai
 registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
 Commerce completed its full review with this dependency; ten other blocks remain open.
 
-- **Commerce, Fashion, Financial Report, Legal, Meetings and Music Workspace** are reviewed. Keep these blocks compatible with their rebuilt parts.
+- **Commerce, Fashion, Financial Report, Legal, Meetings, Music and People Workspace** are reviewed. Keep these blocks compatible with their rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: five of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report, Legal, Meetings and Music Workspace are reviewed. Many parts changed their look and some their props;
+- **Blocks**, after their parts: four of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report, Legal, Meetings, Music and People Workspace are reviewed. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
 
-`block-people-workspace`, `block-saas-dashboard`, `block-saas-landing`,
+`block-saas-dashboard`, `block-saas-landing`,
 `block-team-workspace`, `block-workspace-settings`.
 
 ## 8. Final release checks

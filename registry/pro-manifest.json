@@ -6454,7 +6454,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "A complete HR workspace linking a department overview, employee onboarding and leave review. Retained views preserve drafts and include department context in callbacks.",
+    "description": "A people operations workspace with department context, retained onboarding and leave drafts, host acknowledgements and coherent roster, start-date and coverage views.",
     "tags": [
       "block",
       "workspace",
@@ -6483,7 +6483,7 @@
       {
         "name": "scopes",
         "type": "PeopleWorkspaceScope[]",
-        "description": "Unique department contexts with employees, milestones, new hires, leave requests, balances and coverage."
+        "description": "Department contexts with stable, nonempty unique IDs and employee, milestone, onboarding, leave, balance and coverage records. The first valid department ID wins. A retired department falls back once and cannot reclaim selection just by returning."
       },
       {
         "name": "referenceDate",
@@ -6494,12 +6494,12 @@
       {
         "name": "onComplete",
         "type": "(payload: { departmentId: string; completion: OnboardingCompletion }) => void | Promise<void>",
-        "description": "Record an onboarding task after host validation."
+        "description": "Record a task after host validation, with the original department and hire/task IDs. Missing callbacks keep records and notes available while completion actions remain disabled."
       },
       {
         "name": "onDecision",
         "type": "(payload: { departmentId: string; decision: LeaveDecision }) => void | Promise<void>",
-        "description": "Persist a reviewed leave decision with department context."
+        "description": "Persist a reviewed leave decision with its original department context. Missing callbacks keep records and notes available while approval/decline actions remain disabled."
       },
       {
         "name": "theme",
@@ -6520,9 +6520,15 @@
     ],
     "demo": {
       "steps": [
-        "wait:350",
         "click:@nav-onboarding",
-        "wait:2200"
+        "wait:450",
+        "click:@task-access",
+        "wait:450",
+        "click:@completion-note",
+        "type:Access checked. IT-208.",
+        "click:@completion-confirm",
+        "click:@record",
+        "wait:800"
       ],
       "loop": false
     },
