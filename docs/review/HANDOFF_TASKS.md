@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Task 7 (20 October): SaaS Landing completes its block review. Product copy, complete plan units, sticky navigation, phone actions, live motion preferences, exact request ownership and native text direction pass the reviewed source and Next workflows. The 73-mount composition review passes 62 accessibility audits and 76 approved primary captures, with twelve inspected detail crops. Six final Next/source scenes match geometry; four English pairs remain byte-identical after the direction repair. French/Arabic phone and desktop flows, theme controls, official audit and the exact 7.47s metadata replay pass. All ten added display keys are present in all 29 non-English editions; the wider localisation backlog retains English fallback. Strict registry, root/all-eleven-block types and all 1,084 tests pass. The reviewed 6.8s, 287 KB first film and paired settled Next poster show the Hero, Studio selection, exact typed email and complete received-request receipt. Browser playback reaches the same decoded ending with no errors. Maximum source gap is 21ms, changed-source delivery is 32.44ms and moving-frame p95 is 18.49ms, with no stalls and unchanged guards; all 55 capture inputs remain fixed. Source and media evidence uses `test-results/handoff-blocks/saas-landing-*` and `*direction*`. The five-prop contract and Pro boundary remain intact. Two blocks, 59 older probes and 123 films remain; the next complete checkpoint has 68 browser suites.
+
 - Landing text-direction follow-up (20 October): Hero sentences and Footer headings, body copy and animated feedback now choose their direction from the text. English fallback retains its word order on RTL pages, and supplied Arabic copy retains RTL reading order inside LTR layouts. The original Hero fails all three direction cases; the original Footer fails all nine heading/body/status checks. Those failures remain archived. The final twelve source mounts pass eighteen accessibility audits and all eighteen inspected captures, including exact typed-email callbacks in both themes. The complete registered native marketing suite passes. Six current Next/source scenes match geometry, and four English scenes remain byte-identical to their approved pre-repair captures. Four French/Arabic phone and desktop flows pass four more audits, with all twelve settled route captures inspected. Strict registry, root/all-eleven-block types and all 1,084 tests pass. No translation keys or callback contracts change. Broader localisation coverage remains incomplete under the English-fallback policy. Evidence uses `test-results/handoff-blocks/*direction*`. The Landing poster and first guarded film attempt remain pending, so counts stay at three blocks, 59 older probes and 124 films.
 
 - Landing live-demo integration (20 October): the complete registered workflow passes through Next in both themes. Six actual Next scenes match standalone-source geometry; four scene pairs are byte-identical and all twelve images are inspected. The 55 tracked source/runtime/metadata/replay files stay fixed during the final integration phase. Theme controls and the official audit pass. The revised 7.47s metadata script retains the Hero opening, chooses Studio, types the exact example email and ends at the received-request state with one submission. Its exact replay passes. Strict registry, root/all-eleven-block types and all 1,084 current tests pass after the parallel editorial translation update closes its temporary blog-coverage failure. The private demo metadata is `650c26c`. French and Arabic phone/desktop request flows and four accessibility audits pass; visual review retains an open word-direction defect for English fallback on RTL pages. That shared Hero/Footer repair and the Landing poster/film remain pending. Counts stay at three blocks, 59 older probes and 124 films.
@@ -514,7 +516,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (124 components)
+## 1. Re-record demo videos (123 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -534,7 +536,6 @@ slug or per small group). Notes:
 Slugs:
 
 `hero-blur-statement`
-`block-saas-landing`
 `footer-newsletter`
 `chart-allocation`
 `block-financial-report`
@@ -674,7 +675,7 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (3 blocks)
+## 7. Continue the review (2 blocks)
 
 Same process as the 202 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
@@ -720,12 +721,11 @@ reference; the reviewed dark capture differs only in eight pixels around its Pai
 registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
 Commerce completed its full review with this dependency; ten other blocks remain open.
 
-- **Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace and SaaS Dashboard** are reviewed. Keep these blocks compatible with their rebuilt parts.
+- **Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace, SaaS Dashboard and SaaS Landing** are reviewed. Keep these blocks compatible with their rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: three of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace and SaaS Dashboard are reviewed. Many parts changed their look and some their props;
+- **Blocks**, after their parts: two of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report, Legal, Meetings, Music, People Workspace, SaaS Dashboard and SaaS Landing are reviewed. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
 
-`block-saas-landing`,
 `block-team-workspace`, `block-workspace-settings`.
 
 ## 8. Final release checks
