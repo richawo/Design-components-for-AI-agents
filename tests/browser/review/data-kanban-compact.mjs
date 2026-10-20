@@ -24,20 +24,24 @@ async function checkExit({page,mount,assert}) {
 async function checkMotion({page,mount,assert}) {
   await page.emulateMedia({reducedMotion:'no-preference'});
   await mount(`createRoot(document.getElementById('root')).render(<Subject.CompactKanban/>);`);
-  await page.getByRole('button',{name:'Add column',exact:false}).click();
-  await page.waitForFunction(()=>{
-    const form=document.querySelector('form');
-    const opacity=form?Number(getComputedStyle(form).opacity):1;
-    return opacity>0&&opacity<.95;
-  },null,{polling:'raf',timeout:1500});
-  await page.emulateMedia({reducedMotion:'reduce'});
-  const frame=await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    const form=document.querySelector('form'),style=getComputedStyle(form);
-    resolve({opacity:Number(style.opacity),height:form.getBoundingClientRect().height,preference:matchMedia('(prefers-reduced-motion: reduce)').matches});
-  }))));
-  assert.equal(frame.preference,true);
-  assert.equal(frame.opacity,1,'A live reduced-motion preference immediately finishes the open column form: '+JSON.stringify(frame));
-  assert.equal(await page.getByRole('textbox',{name:'Column name',exact:true}).evaluate(input=>input===document.activeElement),true,'Motion preference changes retain the column-name focus');
+  // Observe before clicking and react while its result is still pending: the entrance can finish before click() returns.
+  await Promise.all([
+    page.waitForFunction(()=>{
+      const form=document.querySelector('form');
+      const opacity=form?Number(getComputedStyle(form).opacity):1;
+      return opacity>0&&opacity<.95;
+    },null,{polling:'raf',timeout:1500}).then(async()=>{
+      await page.emulateMedia({reducedMotion:'reduce'});
+      const frame=await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        const form=document.querySelector('form'),style=getComputedStyle(form);
+        resolve({opacity:Number(style.opacity),height:form.getBoundingClientRect().height,preference:matchMedia('(prefers-reduced-motion: reduce)').matches});
+      }))));
+      assert.equal(frame.preference,true);
+      assert.equal(frame.opacity,1,'A live reduced-motion preference immediately finishes the open column form: '+JSON.stringify(frame));
+      assert.equal(await page.getByRole('textbox',{name:'Column name',exact:true}).evaluate(input=>input===document.activeElement),true,'Motion preference changes retain the column-name focus');
+    }),
+    page.getByRole('button',{name:'Add column',exact:false}).click(),
+  ]);
 }
 
 async function checkFocus({page,mount,assert}) {
