@@ -55,6 +55,9 @@ const config: NextConfig = {
     return {
       beforeFiles: [
         // Markdown companions for agents: /components/hero-editorial.md
+        // These root companions must precede the localized catch-all route.
+        { source: "/index.md", destination: "/md/page/index" },
+        { source: "/:page(components|blocks|pricing|docs|account).md", destination: "/md/page/:page" },
         { source: "/components/:slug.md", destination: "/md/components/:slug" },
         { source: "/blocks/:slug.md", destination: "/md/blocks/:slug" },
         { source: "/blog.md", destination: "/md/blog/en" },

@@ -53,7 +53,21 @@ for (const block of blocks) {
 }
 const xml = await (await fetch(base + "/sitemaps/en.xml")).text();
 for (const block of blocks) assert.ok(xml.includes(`/blocks/${block.slug}`));
-const markdown = await (await fetch(base + "/blocks.md")).text();
+let markdown = "";
+for (const name of ["index", "components", "blocks", "pricing", "docs", "account"]) {
+  const response = await fetch(base + "/" + name + ".md");
+  assert.equal(response.status, 200, name + ": root Markdown companion");
+  assert.match(response.headers.get("content-type") ?? "", /^text\/markdown\b/);
+  const body = await response.text();
+  assert.ok(body.startsWith("---\n"), name + ": frontmatter");
+  assert.match(body, /\n# \S/);
+  assert.ok(body.split("\n").includes("canonical: https://design.yaps.ai/" + (name === "index" ? "" : name)));
+  if (name === "blocks") markdown = body;
+}
+const sitemapResponse = await fetch(base + "/sitemap.md");
+assert.equal(sitemapResponse.status, 200, "Keep the real Markdown sitemap route");
+assert.match(sitemapResponse.headers.get("content-type") ?? "", /^text\/markdown\b/);
+assert.equal((await fetch(base + "/missing-handoff-page.md")).status, 404);
 for (const block of blocks) assert.ok(markdown.includes(block.slug));
 const browser = await launchChromium();
 try {
