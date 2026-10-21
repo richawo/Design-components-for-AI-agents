@@ -1,6 +1,6 @@
 # Review status
 
-Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 7 older interaction probes and 123 films remain.
+Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 4 older interaction probes and 123 films remain.
 
 Task 1 (20 October): Settings Panel has a reviewed 5.7s, 131 KB first refresh film and paired settled Next poster for its stronger fields. The exact replay enables Product news, selects Compact density and saves both values once; browser playback and an independent decoder reach the same Changes saved ending. All states fit measured 832×800 framing with the complete 680px panel visible. Maximum source gap is 43ms, changed-source delivery is 37.52ms and moving-frame p95 is 18.53ms, with no stalls, unchanged guards and all 88 capture inputs fixed. The earlier original assets remain archived. All eleven blocks are complete; 59 older probes and 123 films remain. The complete 68-suite release checkpoint is next. Evidence uses `test-results/handoff-blocks/settings-panel-*`.
 
@@ -329,7 +329,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `input-dual-range` | new | current | Registered constrained keyboard endpoints, native drag commit, exact reset and disabled/invalid ranges. Film queued. |
 | `input-expression-editor` | new | current | Registered formula results, exact failed saves/retries, Revert and settled autocomplete validation. Film queued. |
 | `input-unit-converter` | new | current | Registered affine unit conversion, controlled acceptance, retained invalid edits, keyboard ruler and invalid units. Film queued. |
-| `selects-tree-picker` | new | current |  |
+| `selects-tree-picker` | new | current | Registered locked-leaf preservation, exact ordered selections, keyboard search and loading retry/empty nodes. Film queued. |
 | `input-color-swatches` | current | current | Next-backed keyboard presets, exact/no-op callbacks, native custom colours, filtered/empty presets, invalid-value repair, controlled/read-only/disabled and live reduced-motion regression passes. The small hex caption retains AA around mid-grey and all control boundaries exceed 3:1. The 45-mount source review, 28 state/default accessibility audits, six widths, entrance/state captures, four controls, official audit and exact Terracotta replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. Reviewed 3.6s film and paired poster are current, with all recording guards retained. |
 | `input-tag-editor` | current | current | Next-backed Enter/comma/paste/IME, duplicate/limit, keyboard removal, copied arrays, controlled/read-only/disabled and live reduced-motion regression passes. Adding returns focus to the entry, and its boundary exceeds 3:1 in both themes. The 37-mount source review, twenty state/default accessibility audits, six widths, entrance/state captures, four controls, official audit and exact add/remove replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. Reviewed 3.1s film and paired poster are current, with all recording guards retained. |
 | `input-password-checklist` | current | current | Next-backed raw callback, controlled/read-only/disabled, keyboard reveal, empty/custom/single policy, Unicode and live reduced-motion regression passes. Default policy classes and character counting are corrected; empty fields have a measured 3:1 boundary. The 37-mount source review, 22 state/default accessibility audits, six widths, entrance/state captures, four controls, official audit and exact revealed-text replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. Reviewed 3.25s film and paired poster are current, with all recording guards retained. |
@@ -471,9 +471,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `media-track-list` | new | current | audio-player-states passes; live reduced-motion/filter retirement, keyboard and real pointer reorder verified |
 | `media-transcript-player` | new | current | Registered actual local WAV duration, gated seeking, exact cue/rate/playback events and unavailable media. Film queued. |
 | `media-trim-timeline` | new | current |  |
-| `navigation-context-rail` | new | current |  |
+| `navigation-context-rail` | new | current | Registered accepted destinations, exact retries, superseded signals and live drawer reopen/empty sections. Film queued. |
 | `navigation-lens-dock` | new | current | Retained accepted-page marker during pending navigation; exact retries, keyboard paths and superseded signals regression. Film queued. |
-| `navigation-stacked-tabs` | new | current |  |
+| `navigation-stacked-tabs` | new | current | Registered retained editor drafts, close/restore/reorder retries, exact payloads and empty tabs. Film queued. |
 | `pixel-halftone-image` | new | current |  |
 | `portfolio-project-reel` | new | current | Registered keyboard project navigation, focus retention, endpoint locks and empty projects. Film queued. |
 | `pricing-seat-simulator` | new | current |  |

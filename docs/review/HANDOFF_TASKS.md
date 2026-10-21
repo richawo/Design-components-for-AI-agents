@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Tree Picker, Context Rail and Stacked Tabs now have dedicated registered regressions. Locked leaves survive group toggles; ordered selection, search, keyboard focus and loading retry pass. Destination changes preserve accepted content through exact failed retries and ignore a retired request after cancellation. Tabs retain real editor drafts through close, restore and reorder failures/retries. The rail probe inspects the live drawer after its bounded exit rather than an inert retiring copy. Empty data pass without product changes; films remain queued. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. There are now 4 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/selection-navigation-registered/` and `test-results/handoff-older-probes/selection-navigation-core-frozen.json`.
+
 - Task 5 (21 October): Prismatic Folder and Interactive Spec now have dedicated registered regressions. Keyboard disclosure, file selection and exact failed-open retries preserve the document preview and locked-file state. Specification rows keep keyboard part selection/focus, convert 25.4 mm to 1.0 in and clear with Escape. Empty inputs pass. The fixtures use the existing polite error region and displayed imperial precision; original mismatches are archived. Product sources and queued films are unchanged. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. There are now 7 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/selection-navigation-registered/` and `test-results/handoff-older-probes/selection-navigation-core-frozen.json`.
 
 - Task 5 (21 October): Project Brief, Project Reel and Case Ledger now have dedicated registered regressions. Brief validation rejects invalid email, retains failed drafts and retries the exact payload through a receipt. Reel keyboard navigation preserves track focus and respects its endpoints. Case Ledger filters industries, opens and closes quotes, and reports a missing baseline without non-finite metrics. Empty inputs pass. Product sources and queued films are unchanged. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. There are now 9 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/marketing-workflows-registered/` and `test-results/handoff-older-probes/marketing-workflows-core-frozen.json`.
@@ -727,7 +729,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-7 finished components still have no dedicated browser regression probe. For each, read its source and
+4 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -739,14 +741,14 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 
 
-`selects-tree-picker`, `layout-split-resizer`
+`layout-split-resizer`
 
 
 
 
 
-`navigation-context-rail`
-`navigation-stacked-tabs`, `pixel-halftone-image`, `pricing-seat-simulator`
+
+`pixel-halftone-image`, `pricing-seat-simulator`
 `pricing-usage-calculator`
 
 ## 6. Finish parked rebuilds (complete)
