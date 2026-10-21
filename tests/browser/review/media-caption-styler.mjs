@@ -1,0 +1,34 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.captionJobs=[];window.captionStyles=[];createRoot(document.getElementById('root')).render(<Subject.MediaCaptionStyler media={null} defaultCaption="Keep this caption." aspectRatio={9/16} safeInset={10} onChange={style=>window.captionStyles.push({...style})} onSave={(snapshot,signal)=>new Promise((resolve,reject)=>window.captionJobs.push({snapshot:structuredClone(snapshot),signal,resolve,reject}))}/>);`);
+  const caption = page.locator('[data-demo="caption-text"]');
+  await caption.fill('A clear caption for the final frame.');
+  await page.locator('[data-demo="caption-position-top"]').focus();
+  await page.keyboard.press('Space');
+  await page.waitForFunction(() => window.captionStyles.at(-1)?.placement === 'top');
+  const save = page.locator('[data-demo="caption-save"]');
+  await save.focus();
+  await save.press('Enter');
+  await page.waitForFunction(() => window.captionJobs.length === 1);
+  assert.equal(await save.getAttribute('aria-busy'), 'true');
+  await page.evaluate(() => window.captionJobs[0].reject(Error('Caption service unavailable')));
+  await page.getByRole('alert').filter({ hasText: 'Caption service unavailable' }).waitFor();
+  assert.equal(await caption.inputValue(), 'A clear caption for the final frame.');
+  await save.focus();
+  await save.press('Space');
+  await page.waitForFunction(() => window.captionJobs.length === 2);
+  const calls = await page.evaluate(() => window.captionJobs.map(job => job.snapshot));
+  assert.deepEqual(calls[0], calls[1]);
+  assert.equal(calls[1].caption, 'A clear caption for the final frame.');
+  assert.equal(calls[1].style.placement, 'top');
+  assert.equal(calls[1].mediaId, null);
+  assert.equal(calls[1].referenceWidth, 1080);
+  assert.equal(calls[1].aspectRatio, 9 / 16);
+  assert.equal(calls[1].safeInset, 10);
+  await page.evaluate(() => window.captionJobs[1].resolve());
+  await page.waitForFunction(() => !document.querySelector('[data-demo="caption-save"]').hasAttribute('aria-busy') || document.querySelector('[data-demo="caption-save"]').getAttribute('aria-busy') === 'false');
+  await page.getByRole('alert').waitFor({ state: 'hidden' });
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.MediaCaptionStyler media={null} caption=""/>);`);
+  assert.equal(await page.locator('[data-demo="caption-text"]').inputValue(), '');
+  assert.equal(await page.locator('[data-demo="caption-text"]').isDisabled(), true);
+  assert.equal(await page.locator('[data-demo="caption-save"]').count(), 0);
+}

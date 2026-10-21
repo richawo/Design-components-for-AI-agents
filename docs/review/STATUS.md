@@ -1,6 +1,6 @@
 # Review status
 
-Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 24 older interaction probes and 123 films remain.
+Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 18 older interaction probes and 123 films remain.
 
 Task 1 (20 October): Settings Panel has a reviewed 5.7s, 131 KB first refresh film and paired settled Next poster for its stronger fields. The exact replay enables Product news, selects Compact density and saves both values once; browser playback and an independent decoder reach the same Changes saved ending. All states fit measured 832×800 framing with the complete 680px panel visible. Maximum source gap is 43ms, changed-source delivery is 37.52ms and moving-frame p95 is 18.53ms, with no stalls, unchanged guards and all 88 capture inputs fixed. The earlier original assets remain archived. All eleven blocks are complete; 59 older probes and 123 films remain. The complete 68-suite release checkpoint is next. Evidence uses `test-results/handoff-blocks/settings-panel-*`.
 
@@ -461,15 +461,15 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `hero-layout-playground` | new | current |  |
 | `hero-signal-workbench` | new | current |  |
 | `media-audio-transport` | new | current | Full audio-player suite passes, including the optional pauseRequest counter: real native clock, retained position, paused source changes and pause winning simultaneous requests. Two source mounts cover both layouts/themes with twelve accessibility audits and twelve reviewed captures. Music row Pause reaches this transport and passes its unchanged 1,500ms deadline; the old source remains a failing negative. Strict registry, root/all-eleven-block types and all 1,068 tests pass. Its film remains queued. |
-| `media-caption-styler` | new | current |  |
+| `media-caption-styler` | new | current | Registered retained captions/styles, exact failed saves/retries and controlled empty text. Film queued. |
 | `media-compare-grid` | new | current | Keyboard focus selects the toolbar proof; unlinked Fit preserves other cameras. Registered accepted/read-only and empty-state workflows. Film queued. |
-| `media-crop-workbench` | new | current |  |
-| `media-device-switcher` | new | current |  |
-| `media-focus-lightbox` | new | current |  |
-| `media-image-contact-sheet` | new | current |  |
+| `media-crop-workbench` | new | current | Registered square crop geometry, straighten keys, exact failed saves/retries and absent images. Film queued. |
+| `media-device-switcher` | new | current | Registered actual device container sizes, rotation, retained DOM drafts, preview retry and empty presets. Film queued. |
+| `media-focus-lightbox` | new | current | Registered keyboard image/zoom navigation, focus return, controlled read-only and empty gallery. Film queued. |
+| `media-image-contact-sheet` | new | current | Registered keyboard pick order, exact failed batch retries, retained flags and empty frames. Film queued. |
 | `media-spatial-collection` | new | current | Outgoing album details retire immediately; registered shelf/list, exact retries, abort/late completion and empty collection coverage. Film queued. |
 | `media-track-list` | new | current | audio-player-states passes; live reduced-motion/filter retirement, keyboard and real pointer reorder verified |
-| `media-transcript-player` | new | current |  |
+| `media-transcript-player` | new | current | Registered actual local WAV duration, gated seeking, exact cue/rate/playback events and unavailable media. Film queued. |
 | `media-trim-timeline` | new | current |  |
 | `navigation-context-rail` | new | current |  |
 | `navigation-lens-dock` | new | current | Retained accepted-page marker during pending navigation; exact retries, keyboard paths and superseded signals regression. Film queued. |

@@ -1,0 +1,30 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.cropChanges=[];window.cropJobs=[];const image={src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><path fill="#555" d="M0 0h400v300H0z"/><circle cx="200" cy="150" r="80" fill="#ccc"/></svg>'),alt:'Local crop fixture',name:'fixture.svg',width:400,height:300};createRoot(document.getElementById('root')).render(<Subject.MediaCropWorkbench image={image} aspects={[{key:'original',label:'Original',ratio:'original'},{key:'square',label:'Square',ratio:1}]} defaultAspect="original" defaultRect={{x:.1,y:.1,width:.8,height:.8}} onChange={crop=>window.cropChanges.push(structuredClone(crop))} onApply={(crop,signal)=>new Promise((resolve,reject)=>window.cropJobs.push({crop:structuredClone(crop),signal,resolve,reject}))}/>);`);
+  await page.locator('[data-demo="aspect-square"]').focus();
+  await page.keyboard.press('Space');
+  await page.waitForFunction(() => window.cropChanges.at(-1)?.aspect === 'square');
+  const squared = await page.evaluate(() => window.cropChanges.at(-1));
+  assert.equal(squared.output.width, squared.output.height);
+  await page.locator('[data-demo="straighten"]').focus();
+  await page.keyboard.press('ArrowRight');
+  await page.waitForFunction(() => window.cropChanges.at(-1)?.angle > 0);
+  const apply = page.locator('[data-demo="apply"]');
+  await apply.focus();
+  await apply.press('Enter');
+  await page.waitForFunction(() => window.cropJobs.length === 1);
+  assert.equal(await apply.getAttribute('aria-busy'), 'true');
+  await page.evaluate(() => window.cropJobs[0].reject(Error('Crop service unavailable')));
+  await page.waitForFunction(() => document.querySelector('[data-demo="apply"]').textContent.includes('Try again'));
+  await apply.focus();
+  await apply.press('Space');
+  await page.waitForFunction(() => window.cropJobs.length === 2);
+  assert.deepEqual(await page.evaluate(() => window.cropJobs[0].crop), await page.evaluate(() => window.cropJobs[1].crop));
+  const crop = await page.evaluate(() => window.cropJobs[1].crop);
+  assert.equal(crop.aspect, 'square');
+  assert.ok(crop.rect.x >= 0 && crop.rect.y >= 0 && crop.rect.x + crop.rect.width <= 1.000001 && crop.rect.y + crop.rect.height <= 1.000001);
+  await page.evaluate(() => window.cropJobs[1].resolve());
+  await page.waitForFunction(() => document.querySelector('[data-demo="apply"]').textContent.includes('Saved'));
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.MediaCropWorkbench image={null}/>);`);
+  assert.equal(await page.locator('[data-demo="apply"]:enabled').count(), 0);
+  assert.equal(await page.locator('[data-demo="crop-area"]').count(), 0);
+}

@@ -1,0 +1,36 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.deviceChanges=[];window.rotations=[];window.deviceRetries=0;const presets=[{id:'phone',label:'Phone',kind:'phone',width:320,height:640},{id:'tablet',label:'Tablet',kind:'tablet',width:800,height:600}];function Host(){const[status,setStatus]=React.useState('ready');window.setDeviceStatus=setStatus;return <Subject.MediaDeviceSwitcher presets={presets} status={status} content={<textarea aria-label="Preview draft" defaultValue="Initial draft"/>} onValueChange={(id,preset)=>window.deviceChanges.push({id,width:preset.width,height:preset.height})} onRotatedChange={rotated=>window.rotations.push(rotated)} onRetry={()=>{window.deviceRetries++;if(window.deviceRetries>1)setStatus('ready')}}/>};createRoot(document.getElementById('root')).render(<Host/>);`);
+  const draft = page.getByRole('textbox', { name: 'Preview draft', exact: true });
+  await draft.fill('Keep this device preview draft.');
+  await page.evaluate(() => { window.retainedDeviceField = document.querySelector('textarea'); });
+  const phone = page.locator('[data-demo="device-phone"]');
+  await phone.focus();
+  await phone.press('ArrowRight');
+  await page.waitForFunction(() => window.deviceChanges.length === 1);
+  assert.deepEqual(await page.evaluate(() => window.deviceChanges[0]), { id: 'tablet', width: 800, height: 600 });
+  await page.waitForFunction(() => document.querySelector('[data-device]').dataset.device === 'tablet');
+  const containerWidth = () => draft.evaluate(node => { for (let at = node.parentElement; at; at = at.parentElement) if (getComputedStyle(at).containerType === 'inline-size') return at.clientWidth; return null; });
+  assert.equal(await containerWidth(), 800);
+  await page.locator('[data-demo="rotate-device"]').focus();
+  await page.keyboard.press('Space');
+  await page.waitForFunction(() => window.rotations.length === 1);
+  assert.deepEqual(await page.evaluate(() => window.rotations), [true]);
+  assert.equal(await containerWidth(), 600);
+  assert.equal(await draft.inputValue(), 'Keep this device preview draft.');
+  assert.equal(await page.evaluate(() => window.retainedDeviceField === document.querySelector('textarea')), true);
+  await page.evaluate(() => window.setDeviceStatus('error'));
+  const retry = page.locator('[data-demo="retry-preview"]');
+  await retry.waitFor();
+  await retry.focus();
+  await retry.press('Enter');
+  await page.waitForFunction(() => window.deviceRetries === 1);
+  assert.equal(await page.locator('textarea').inputValue(), 'Keep this device preview draft.');
+  await retry.press('Space');
+  await page.waitForFunction(() => window.deviceRetries === 2);
+  await draft.waitFor();
+  assert.equal(await draft.inputValue(), 'Keep this device preview draft.');
+  assert.equal(await page.evaluate(() => window.retainedDeviceField === document.querySelector('textarea')), true);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.MediaDeviceSwitcher presets={[]} content={<p>Empty preview content</p>}/>);`);
+  assert.equal(await page.locator('[data-demo^="device-"]').count(), 0);
+  assert.equal(await page.locator('[data-device]').count(), 0);
+}

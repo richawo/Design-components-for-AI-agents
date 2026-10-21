@@ -1,0 +1,30 @@
+export async function check({ page, mount, assert }) {
+  const images = `[{id:'first',src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><path fill="gray" d="M0 0h200v100H0z"/></svg>'),alt:'First local frame',title:'First frame',width:200,height:100},{id:'second',src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><path fill="white" d="M0 0h200v100H0z"/></svg>'),alt:'Second local frame',title:'Second frame',width:200,height:100}]`;
+  await mount(`window.lightboxOpens=[];window.lightboxSelections=[];createRoot(document.getElementById('root')).render(<Subject.MediaFocusLightbox images={${images}} onOpenChange={open=>window.lightboxOpens.push(open)} onValueChange={(id,image)=>window.lightboxSelections.push({id,title:image.title})}/>);`);
+  await page.locator('[data-demo="thumb-0"]').focus();
+  await page.keyboard.press('Enter');
+  const dialog = page.getByRole('dialog');
+  await dialog.waitFor();
+  await page.keyboard.press('ArrowRight');
+  await page.waitForFunction(() => window.lightboxSelections.length === 1);
+  assert.deepEqual(await page.evaluate(() => window.lightboxSelections), [{ id: 'second', title: 'Second frame' }]);
+  const zoomOut = page.locator('[data-demo="zoom-out"]');
+  assert.equal(await zoomOut.isDisabled(), true);
+  await page.locator('[data-demo="zoom-in"]').focus();
+  await page.keyboard.press('Space');
+  await page.waitForFunction(() => !document.querySelector('[data-demo="zoom-out"]').disabled);
+  await page.locator('[data-demo="close-viewer"]').focus();
+  await page.keyboard.press('Enter');
+  await dialog.waitFor({ state: 'hidden' });
+  assert.deepEqual(await page.evaluate(() => window.lightboxOpens), [true, false]);
+  assert.equal(await page.evaluate(() => document.activeElement?.matches('[data-demo^="thumb-"]')), true);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.MediaFocusLightbox images={${images}} open value="first"/>);`);
+  await page.getByRole('dialog').waitFor();
+  assert.equal(await page.locator('[data-demo="close-viewer"]').isDisabled(), true);
+  assert.equal(await page.locator('[data-demo="next-image"]').isDisabled(), true);
+  await page.keyboard.press('Escape');
+  assert.equal(await page.getByRole('dialog').count(), 1);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.MediaFocusLightbox images={[]}/>);`);
+  assert.equal(await page.locator('[data-demo^="thumb-"]').count(), 0);
+  assert.equal(await page.getByRole('dialog').count(), 0);
+}

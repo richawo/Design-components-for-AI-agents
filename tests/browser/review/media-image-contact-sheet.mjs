@@ -1,0 +1,30 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.contactFlags=[];window.contactJobs=[];const src='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160"><path fill="#666" d="M0 0h240v160H0z"/></svg>');createRoot(document.getElementById('root')).render(<Subject.MediaImageContactSheet frames={[{id:'one',alt:'First local frame',src},{id:'two',alt:'Second local frame',src}]} defaultFlags={{}} onFlagsChange={flags=>window.contactFlags.push({...flags})} onSendPicks={(ids,signal)=>new Promise((resolve,reject)=>window.contactJobs.push({ids:[...ids],signal,resolve,reject}))}/>);`);
+  const first = page.locator('[data-demo="frame-1"]');
+  const second = page.locator('[data-demo="frame-2"]');
+  await first.focus();
+  await first.press('ArrowRight');
+  assert.equal(await second.evaluate(node => node === document.activeElement), true);
+  await second.press('p');
+  await second.press('ArrowLeft');
+  await first.press('p');
+  await page.waitForFunction(() => window.contactFlags.at(-1)?.one === 'pick' && window.contactFlags.at(-1)?.two === 'pick');
+  const send = page.locator('[data-demo="send"]');
+  await send.focus();
+  await send.press('Enter');
+  await page.waitForFunction(() => window.contactJobs.length === 1);
+  assert.equal(await send.getAttribute('aria-busy'), 'true');
+  await page.evaluate(() => window.contactJobs[0].reject(Error('Editor unavailable')));
+  await page.waitForFunction(() => document.querySelector('[data-demo="send"]').textContent.includes('Try again'));
+  assert.equal(await first.getAttribute('aria-pressed'), 'true');
+  assert.equal(await second.getAttribute('aria-pressed'), 'true');
+  await send.focus();
+  await send.press('Space');
+  await page.waitForFunction(() => window.contactJobs.length === 2);
+  assert.deepEqual(await page.evaluate(() => window.contactJobs.map(job => job.ids)), [['two', 'one'], ['two', 'one']]);
+  await page.evaluate(() => window.contactJobs[1].resolve());
+  await page.waitForFunction(() => document.querySelector('[data-demo="send"]').textContent.includes('Sent'));
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.MediaImageContactSheet frames={[]} defaultFlags={{}}/>);`);
+  assert.equal(await page.locator('[data-demo^="frame-"]').count(), 0);
+  assert.equal(await page.locator('[data-demo="send"]:enabled').count(), 0);
+}
