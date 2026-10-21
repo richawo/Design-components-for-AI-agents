@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Release Compare now disables deployment without a writer and passes detached base/target snapshots. Both original counterexamples remain archived. Its three native mounts and complete registered workflow cover review gates, exact failed-then-successful requests, retained viewed files, keyboard target selection, rollback direction, loading retry and empty comparisons. Both inspected phone state captures pass; default presentation and its queued film are unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass on the shared Node24 checkpoint with every implementation input fixed. Original unit assertions and limits remain unchanged; earlier timing failures and recovery controls are preserved. Private correction: `e77e486`. There are now 39 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/` with `release-contract-baseline/`, `release-contract-final/`, `release-complete-native/` and `release-registered/` and `developer-devtools-unit-recovery-node24-*`.
+
 - Task 5 (21 October): Incident Timeline now handles invalid or missing impact times without crashing or inventing epoch labels, disables empty Replay and sends detached event snapshots. Future rows and hovered timestamps retain readable contrast; reduced readout swaps settle without blur or translation. Dense markers keep exact time coordinates in separate rows with 24px mouse and 44px touch targets. The final sixteen state/accessibility checks and complete registered five-fixture workflow pass, including actual dense clicks and taps. The native official audit passes all original checks and limits; all ten captures are inspected. The software audit retains its separate desktop paint timeout. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. Earlier unit timeouts remain preserved; the original content test recovers unchanged on Node24 with one worker. The inspected current poster is refreshed; its film remains queued. The Unavailable key is covered in all 29 translated editions, with nine dictionary gaps closed and all prior values retained. The wider localisation audit retains 183,990 missing units, zero invalid protected terms and English fallback. There are now 40 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/incident-state-targets-final/`, `incident-registered-final/`, `incident-official-audit-native-control/`, `incident-poster-targets/`, `incident-translations/` and `developer-devtools-unit-recovery-node24-*`.
 
 - Task 5 (21 October): Icon Workbench now has a dedicated registered regression for keyword filtering, keyboard selection, exact selected IDs, JSX format selection and copied source. Failed copy retains the query and selected glyph; the exact retry succeeds while pending export stays locked. Clear search restores both fixtures, and an empty set remains explicit. Both native mounts and the complete registered case pass without product changes. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. There are now 41 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/developer-ai-first-native/`, `ai-context-native-semantics/`, `ai-context-dom-trace-v2/`, `ai-auth-registered-after-dom-trace/`, `icon-workbench-registered/` and `developer-ai-coverage-core-*`.
@@ -699,7 +701,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-40 finished components still have no dedicated browser regression probe. For each, read its source and
+39 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -708,7 +710,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 
 
-`devtools-release-compare`, `devtools-request-replay`, `devtools-schema-migration`
+`devtools-request-replay`, `devtools-schema-migration`
 `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`, `forms-draft-rescue`
 `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`, `input-unit-converter`
 `selects-tree-picker`, `layout-split-resizer`
