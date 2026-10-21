@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Number Odometer now observes mounted reduced-motion changes and retires its initial delay when the preference changes. The preserved original fails the 700ms target-value check; the corrected native paint check reaches the target in 38ms with the real preference active, no errors and unchanged guards. Its permanent four-mount regression also covers exact formatted announcements, changing values, keyboard period selection/focus and invalid locale/currency fallback. Native and registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Its current amount capture is inspected. Default styling is unchanged, and its film remains in task 1. There are now 47 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/background-text-trim-first-native/`, `optical-odometer-full-native/`, `odometer-paint/` and `odometer-registered/`.
+
 - Task 5 (21 October): Optical Weight now keeps accepted values independent from host notifications. Refused controlled proposals cannot emit commits; rejected uncontrolled writes retain both the accepted value and the editable draft. Slider and held-stepper gestures commit their actual final value once, and native touch cancellation restores the starting value. Callback mutation cannot rewrite the specimen. All six original counterexamples are retained. Twenty-four native checks pass across both themes at phone and desktop widths; the expanded ten-mount native and permanent registered workflows also pass, including exact retries, invalid axes, read-only fields and font recovery. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Current phone/desktop state captures are inspected; default styling and its queued film are unchanged. There are now 48 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/optical-value-*`, `optical-cancel-baseline/`, `optical-odometer-full-native/` and `optical-registered/`.
 
 - Task 5 (21 October): Trim Timeline now discards playback notification return values. A callback returning `Array.push()` previously became invalid React cleanup and unmounted the editor during range/playback changes. The failing source, runtime errors and original case are retained. Its permanent registered workflow covers keyboard trim edges, exact ranges, offline playback notifications, failed/successful saves with selections retained, reset and keyboard file selection when media is absent. Both native mounts and the complete registered case pass with no runtime errors; its current empty-media capture is inspected. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Default appearance is unchanged, and its film remains in task 1. There are now 49 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/background-text-trim-first-native/`, its passing `trim-outline-path-followup-native/` record and `media-trim-registered/`.
@@ -685,7 +687,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-48 finished components still have no dedicated browser regression probe. For each, read its source and
+47 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -705,7 +707,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 `media-device-switcher`, `media-focus-lightbox`, `media-image-contact-sheet`, `media-spatial-collection`
 `media-transcript-player`, `navigation-context-rail`, `navigation-lens-dock`
 `navigation-stacked-tabs`, `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`
-`pricing-usage-calculator`, `social-proof-case-ledger`, `text-number-odometer`
+`pricing-usage-calculator`, `social-proof-case-ledger`
 `text-path-typesetter`
 
 ## 6. Finish parked rebuilds (complete)
