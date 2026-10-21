@@ -1,0 +1,34 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.rangeChanges=[];window.rangeCommits=[];createRoot(document.getElementById('root')).render(<Subject.InputDualRange min={0} max={100} step={5} minimumGap={10} defaultValue={[20,60]} histogram={[]} onValueChange={value=>window.rangeChanges.push([...value])} onValueCommit={value=>window.rangeCommits.push([...value])}/>);`);
+  const lower = page.locator('[data-demo="range-lo"]');
+  const upper = page.locator('[data-demo="range-hi"]');
+  await upper.focus();
+  await upper.press('ArrowLeft');
+  await page.waitForFunction(() => window.rangeCommits.length === 1);
+  assert.deepEqual(await page.evaluate(() => window.rangeCommits[0]), [20, 55]);
+  await lower.focus();
+  await lower.press('End');
+  await page.waitForFunction(() => window.rangeCommits.length === 2);
+  assert.deepEqual(await page.evaluate(() => window.rangeCommits[1]), [45, 55]);
+  const rail = await page.locator('[data-demo="range-rail"]').boundingBox();
+  const thumb = await lower.boundingBox();
+  await page.mouse.move(thumb.x + thumb.width / 2, thumb.y + thumb.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(rail.x + rail.width * 0.1, thumb.y + thumb.height / 2, { steps: 10 });
+  await page.mouse.up();
+  await page.waitForFunction(() => window.rangeCommits.length === 3);
+  const dragged = await page.evaluate(() => window.rangeCommits[2]);
+  assert.ok(dragged[0] < 45 && dragged[1] === 55 && dragged[1] - dragged[0] >= 10);
+  const reset = page.locator('[data-demo="range-reset"]');
+  await reset.focus();
+  await reset.press('Enter');
+  await page.waitForFunction(() => window.rangeCommits.length === 4);
+  assert.deepEqual(await page.evaluate(() => window.rangeCommits[3]), [20, 60]);
+  await mount(`window.disabledRangeCommits=[];createRoot(document.getElementById('root')).render(<Subject.InputDualRange disabled histogram={[]} onValueCommit={value=>window.disabledRangeCommits.push(value)}/>);`);
+  await lower.focus();
+  await lower.press('ArrowRight');
+  assert.deepEqual(await page.evaluate(() => window.disabledRangeCommits), []);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.InputDualRange min={NaN} max={NaN} step={0} histogram={[]}/>);`);
+  for (const slider of await page.getByRole('slider').all()) assert.equal(await slider.getAttribute('aria-disabled'), 'true');
+  assert.doesNotMatch(await page.locator('#root').innerText(), /NaN|Infinity/);
+}

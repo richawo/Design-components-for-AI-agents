@@ -1,0 +1,33 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.expressionJobs=[];createRoot(document.getElementById('root')).render(<Subject.InputExpressionEditor fields={[{id:'revenue',label:'Revenue',kind:'number'}]} rows={[{id:'account',label:'Fixture account',values:{revenue:100}}]} defaultValue="revenue" resultFormat="number" onValueChange={formula=>new Promise((resolve,reject)=>window.expressionJobs.push({formula,resolve,reject}))}/>);`);
+  const formula = page.locator('[data-demo="formula"]');
+  await formula.fill('revenue + 10');
+  await formula.press('Control+Enter');
+  await page.waitForFunction(() => window.expressionJobs.length === 1);
+  const save = page.locator('[data-demo="formula-save"]');
+  assert.equal(await save.getAttribute('aria-disabled'), 'true');
+  assert.match(await save.innerText(), /Saving/);
+  await page.evaluate(() => window.expressionJobs[0].reject(Error('Formula service unavailable')));
+  await page.getByRole('alert').filter({ hasText: /save/i }).waitFor();
+  assert.equal(await formula.inputValue(), 'revenue + 10');
+  assert.match(await page.getByRole('row').filter({ hasText: 'Fixture account' }).innerText(), /110/);
+  await save.focus();
+  await save.press('Space');
+  await page.waitForFunction(() => window.expressionJobs.length === 2);
+  assert.deepEqual(await page.evaluate(() => window.expressionJobs.map(job => job.formula)), ['revenue + 10', 'revenue + 10']);
+  await page.evaluate(() => window.expressionJobs[1].resolve());
+  await page.waitForFunction(() => document.querySelector('[data-demo="formula-save"]').textContent.includes('Saved'));
+  await formula.fill('revenue + 20');
+  await page.locator('[data-demo="formula-revert"]').focus();
+  await page.keyboard.press('Enter');
+  assert.equal(await formula.inputValue(), 'revenue + 10');
+  await formula.fill('unavailable_field +');
+  assert.equal(await save.isDisabled(), true);
+  if (await formula.getAttribute('aria-expanded') === 'true') await formula.press('Escape');
+  await page.waitForFunction(() => document.querySelector('[data-demo="formula"]').getAttribute('aria-invalid') === 'true');
+  assert.equal(await formula.getAttribute('aria-invalid'), 'true');
+  assert.equal(await formula.inputValue(), 'unavailable_field +');
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.InputExpressionEditor fields={[]} rows={[]} defaultValue=""/>);`);
+  assert.equal(await page.locator('[data-demo="formula-save"]').isDisabled(), true);
+  assert.equal(await page.locator('[data-demo="formula"]').inputValue(), '');
+}

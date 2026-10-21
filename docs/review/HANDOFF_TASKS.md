@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): All five older input probes are now registered: Cron Builder, Detent Dial, Dual Range, Expression Editor and Unit Converter. Keyboard edits, native range dragging, exact commits, retained failed saves and retries, accepted Revert, affine units and invalid/read-only inputs pass without product changes. The dial probe accepts its displayed typographic minus while still requiring exact numeric payloads. Revert and formula validation wait for existing bounded state updates; their original failures remain archived. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. There are now 28 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/inputs-registered/` and `test-results/handoff-older-probes/inputs-core-frozen.json`.
+
 - Task 5 (21 October): The four remaining date/form probes are now registered. Date Range Calendar retires booking results after a new pick, Clear or a controlled range replacement. Late success and rejection cannot settle a newer request, while equivalent controlled dates retain it. Exact failed retries, calendar keyboard selection, unavailable/disabled dates, timezone slot proposals, branching validation and draft recovery pass. The original stale-result failure and the follow-up exiting-label timing mismatch remain preserved; the regression waits for the existing bounded label transition without changing its deadline. Current calendar and draft captures are inspected. Default presentation and queued films are unchanged. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. Private correction: `cb29ebd`. There are now 33 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/date-forms-registered/` and `test-results/handoff-older-probes/date-forms-core-frozen.json`.
 
 - Task 5 (21 October): Schema Migration now detaches callback plans and retained step reports. Missing, duplicate, unknown and non-finite results cannot authorize Apply; a valid failed prefix keeps its actual error. Unverified reports leave database state unconfirmed and require a fresh passing dry run. Empty plans cannot run, and the built-in sample runner remains usable. Four original contract failures, eight initial state-audit failures and the missing-focus counterexample remain archived. The complete fifteen-fixture registered workflow, twelve native state audits and separate visible keyboard-focus control pass. All twelve state captures and the corrected focus pair are inspected. The state-audit source differs from the final source only by that independently verified focus correction. Its inspected current poster retains the complete card and footer in measured 1504×940 framing; the film remains queued. Both new display messages are covered in all 29 translated editions, with all prior values preserved. The wider localisation audit reports 183,990 existing gaps, zero invalid protected terms and English fallback. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass on the shared Node24 checkpoint with every implementation input fixed. Original unit assertions and limits remain unchanged; earlier timing failures and recovery controls are preserved. Private correction: `b0e47b0`. There are now 37 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/` with `migration-contract-*`, `migration-readable-state-a11y/`, `migration-sql-focus-*`, `schema-migration-registered-visible-focus/`, `migration-poster-framed/` and `migration-translations/` and `developer-devtools-unit-recovery-node24-*`.
@@ -707,7 +709,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-33 finished components still have no dedicated browser regression probe. For each, read its source and
+28 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -718,7 +720,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 
 
-`input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`, `input-unit-converter`
+
 `selects-tree-picker`, `layout-split-resizer`
 `cards-prismatic-folder`, `collab-message-list`, `content-interactive-spec`
 `cta-project-brief`, `features-compare-lenses`

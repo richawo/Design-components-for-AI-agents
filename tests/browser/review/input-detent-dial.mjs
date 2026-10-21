@@ -1,0 +1,35 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.dialJobs=[];window.dialChanges=[];createRoot(document.getElementById('root')).render(<Subject.InputDetentDial defaultValue={-18} onValueChange={value=>window.dialChanges.push(value)} onValueCommit={value=>new Promise((resolve,reject)=>window.dialJobs.push({value,resolve,reject}))}/>);`);
+  const dial = page.locator('[data-demo="dial"]');
+  const entry = page.locator('[data-demo="dial-value"]');
+  await dial.focus();
+  await dial.press('ArrowUp');
+  await page.waitForFunction(() => window.dialJobs.length === 1);
+  assert.equal(await dial.getAttribute('aria-valuenow'), '-17');
+  assert.deepEqual(await page.evaluate(() => window.dialChanges), [-17]);
+  await page.evaluate(() => window.dialJobs[0].reject(Error('Mixer unavailable')));
+  const retry = page.getByRole('button', { name: 'Retry', exact: true });
+  await retry.waitFor();
+  assert.equal((await entry.inputValue()).replaceAll('−', '-'), '-17');
+  await retry.focus();
+  await retry.press('Enter');
+  await page.waitForFunction(() => window.dialJobs.length === 2);
+  assert.deepEqual(await page.evaluate(() => window.dialJobs.map(job => job.value)), [-17, -17]);
+  await page.evaluate(() => window.dialJobs[1].resolve());
+  await page.getByRole('status').filter({ hasText: 'Saved' }).waitFor();
+  await entry.fill('invalid');
+  await entry.press('Enter');
+  assert.equal(await entry.getAttribute('aria-invalid'), 'true');
+  assert.equal(await dial.getAttribute('aria-valuenow'), '-17');
+  await entry.press('Escape');
+  assert.equal((await entry.inputValue()).replaceAll('−', '-'), '-17');
+  await mount(`window.unacceptedDialCommits=[];createRoot(document.getElementById('root')).render(<Subject.InputDetentDial value={-18} onValueChange={()=>undefined} onValueCommit={value=>window.unacceptedDialCommits.push(value)}/>);`);
+  await dial.focus();
+  await dial.press('ArrowUp');
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  assert.equal(await dial.getAttribute('aria-valuenow'), '-18');
+  assert.deepEqual(await page.evaluate(() => window.unacceptedDialCommits), []);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.InputDetentDial min={10} max={0} step={0} marks={[]}/>);`);
+  assert.equal(await entry.isDisabled(), true);
+  assert.doesNotMatch(await page.locator('#root').innerText(), /NaN|Infinity/);
+}

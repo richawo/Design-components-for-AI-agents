@@ -1,0 +1,35 @@
+export async function check({ page, mount, assert }) {
+  const schedule = `{cadence:'weekly',time:'09:00',weekdays:[1,3],timeZone:'Europe/London',repeatedTime:'first'}`;
+  await mount(`window.cronJobs=[];createRoot(document.getElementById('root')).render(<Subject.InputCronBuilder defaultValue={${schedule}} referenceInstant="2026-10-20T08:00:00Z" onValueChange={schedule=>new Promise((resolve,reject)=>window.cronJobs.push({schedule:structuredClone(schedule),resolve,reject}))}/>);`);
+  const friday = page.locator('[data-demo="cron-day-5"]');
+  await friday.focus();
+  await friday.press('Space');
+  const time = page.locator('[data-demo="cron-time"]');
+  await time.fill('10:45');
+  await time.press('Enter');
+  await time.press('Control+Enter');
+  await page.waitForFunction(() => window.cronJobs.length === 1);
+  const save = page.locator('[data-demo="cron-save"]');
+  assert.equal(await save.getAttribute('aria-disabled'), 'true');
+  assert.match(await save.innerText(), /Saving/);
+  await page.evaluate(() => window.cronJobs[0].reject(Error('Scheduler unavailable')));
+  await page.getByRole('alert').filter({ hasText: /save/i }).waitFor();
+  assert.equal(await time.inputValue(), '10:45');
+  assert.equal(await friday.getAttribute('aria-pressed'), 'true');
+  await save.focus();
+  await save.press('Space');
+  await page.waitForFunction(() => window.cronJobs.length === 2);
+  const expected = { cadence: 'weekly', time: '10:45', weekdays: [1, 3, 5], timeZone: 'Europe/London', repeatedTime: 'first' };
+  assert.deepEqual(await page.evaluate(() => window.cronJobs.map(job => job.schedule)), [expected, expected]);
+  await page.evaluate(() => window.cronJobs[1].resolve());
+  await page.waitForFunction(() => document.querySelector('[data-demo="cron-save"]').textContent.includes('Saved'));
+  await time.fill('11:15');
+  await time.press('Enter');
+  await page.locator('[data-demo="cron-revert"]').focus();
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => document.querySelector('[data-demo="cron-time"]').value === '10:45');
+  assert.equal(await time.inputValue(), '10:45');
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.InputCronBuilder defaultValue={{...${schedule},time:'25:00',timeZone:'Not/AZone',weekdays:[]}} timeZones={[]}/>);`);
+  assert.equal(await page.locator('[data-demo="cron-save"]').isDisabled(), true);
+  assert.doesNotMatch(await page.locator('#root').innerText(), /NaN|Invalid Date|Infinity/);
+}

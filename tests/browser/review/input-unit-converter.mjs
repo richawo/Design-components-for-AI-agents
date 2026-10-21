@@ -1,0 +1,37 @@
+export async function check({ page, mount, assert }) {
+  const units = `[{id:'c',label:'Celsius',symbol:'°C',factor:1},{id:'f',label:'Fahrenheit',symbol:'°F',factor:1.8,offset:32}]`;
+  await mount(`window.unitChanges=[];function Host(){const[value,setValue]=React.useState({base:0,unitId:'c'});return <Subject.InputUnitConverter label="Temperature" hint="Test temperature" units={${units}} value={value} minBase={-40} maxBase={100} span={50} onValueChange={next=>{window.unitChanges.push({...next});setValue(next)}}/>};createRoot(document.getElementById('root')).render(<Host/>);`);
+  const fahrenheit = page.locator('[data-demo="unit-f"]');
+  await fahrenheit.focus();
+  await fahrenheit.press('Space');
+  await page.waitForFunction(() => window.unitChanges.length === 1);
+  assert.deepEqual(await page.evaluate(() => window.unitChanges[0]), { base: 0, unitId: 'f' });
+  const reading = page.locator('[data-demo="reading"]');
+  await reading.focus();
+  await reading.press('Enter');
+  const entry = page.getByRole('textbox', { name: 'Temperature in fahrenheit', exact: true });
+  await entry.fill('212');
+  await entry.press('Enter');
+  await page.waitForFunction(() => window.unitChanges.length === 2);
+  assert.deepEqual(await page.evaluate(() => window.unitChanges[1]), { base: 100, unitId: 'f' });
+  await reading.click();
+  await entry.fill('-459');
+  await entry.press('Enter');
+  assert.equal(await entry.getAttribute('aria-invalid'), 'true');
+  assert.equal(await entry.inputValue(), '-459');
+  assert.equal(await page.evaluate(() => window.unitChanges.length), 2);
+  await entry.press('Escape');
+  await reading.waitFor();
+  const ruler = page.locator('[data-demo="ruler"]');
+  await ruler.focus();
+  await ruler.press('ArrowLeft');
+  await page.waitForFunction(() => window.unitChanges.length > 2);
+  const stepped = await page.evaluate(() => window.unitChanges.at(-1));
+  assert.equal(stepped.unitId, 'f');
+  assert.ok(stepped.base < 100 && stepped.base >= -40);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.InputUnitConverter units={[]}/>);`);
+  assert.equal(await page.getByRole('alert').count(), 1);
+  assert.equal(await page.locator('[data-demo="ruler"]').count(), 0);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.InputUnitConverter units={[{id:'invalid',label:'Invalid',symbol:'?',factor:0}]}/>);`);
+  assert.equal(await page.getByRole('alert').count(), 1);
+}
