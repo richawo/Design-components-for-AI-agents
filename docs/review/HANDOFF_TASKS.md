@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Spatial Collection now makes outgoing album details inert, hides them from assistive technology and disables their Open action as soon as selection changes. The native mutation-boundary control preserves the original enabled outgoing action and verifies its correction without changing animation timing. Its expanded shelf/list workflow verifies current album payloads, exact failed retries, aborted opens, late completion isolation and empty collections. Native and registered workflows pass; the changed transition capture is inspected. The probe uses the existing polite status region and waits for the current detail to mount. Default presentation and its queued film are unchanged. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. Private correction: `fb7147c`. There are now 25 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/spatial-collection-registered/` and `test-results/handoff-older-probes/spatial-collection-core-frozen.json`.
+
 - Task 5 (21 October): Compare Grid now makes keyboard focus select the proof used by toolbar actions. Fit follows the linked state and preserves the other camera when views are unlinked. The original focus timeout and independent Fit counterexample remain archived. Its complete three-mount native and registered workflows pass, including linked zoom, independent camera edits, accepted commits, read-only controls and empty variants. The separate native Fit control preserves the first camera at 200% while fitting the second to 100%; its capture is inspected. Default presentation and its queued film are unchanged. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. Private correction: `e90e7ae`. There are now 26 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/compare-grid-registered/` and `test-results/handoff-older-probes/compare-grid-core-frozen.json`.
 
 - Task 5 (21 October): Lens Dock now retains aria-current on the accepted page while another destination is pending. The current page marker and destination spinner remain separate. Its full native and registered keyboard workflows cover disabled items, failed opening with exact retry and aborting a superseded destination. The original missing-marker counterexample is preserved. The current pending-state capture is inspected; default presentation and its queued film are unchanged. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. Private correction: `9623b2e`. There are now 27 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/lens-dock-registered/` and `test-results/handoff-older-probes/lens-dock-core-frozen.json`.
@@ -713,7 +715,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-26 finished components still have no dedicated browser regression probe. For each, read its source and
+25 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -730,7 +732,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 `cta-project-brief`, `features-compare-lenses`
 `features-integration-trace`, `features-shortcut-theatre`, `footer-sitemap-atlas`, `hero-layout-playground`
 `hero-signal-workbench`, `media-caption-styler`, `media-crop-workbench`
-`media-device-switcher`, `media-focus-lightbox`, `media-image-contact-sheet`, `media-spatial-collection`
+`media-device-switcher`, `media-focus-lightbox`, `media-image-contact-sheet`
 `media-transcript-player`, `navigation-context-rail`
 `navigation-stacked-tabs`, `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`
 `pricing-usage-calculator`, `social-proof-case-ledger`
