@@ -1,0 +1,33 @@
+export async function check({ page, mount, assert }) {
+  const variants = `[{id:'one',label:'First proof',src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><path fill="#555" d="M0 0h200v100H0z"/></svg>'),alt:'First local proof'},{id:'two',label:'Second proof',src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><path fill="#888" d="M0 0h200v100H0z"/></svg>'),alt:'Second local proof'}]`;
+  await mount(`window.compareRequests=[];window.compareCommits=[];createRoot(document.getElementById('root')).render(<Subject.MediaCompareGrid variants={${variants}} onValueChange={value=>window.compareRequests.push(structuredClone(value))} onValueCommit={value=>window.compareCommits.push(structuredClone(value))}/>);`);
+  const zoom = page.locator('[data-demo="zoom-in"]');
+  await zoom.focus();
+  await zoom.press('Enter');
+  await page.waitForFunction(() => window.compareCommits.length > 0);
+  const linked = await page.evaluate(() => window.compareCommits.at(-1));
+  assert.equal(linked.linked, true);
+  assert.ok(linked.views.one.zoom > 1);
+  assert.equal(linked.views.one.zoom, linked.views.two.zoom);
+  await page.locator('[data-demo="link"]').focus();
+  await page.keyboard.press('Space');
+  await page.waitForFunction(() => window.compareCommits.at(-1)?.linked === false);
+  await page.locator('[data-demo="proof-two"]').focus();
+  await page.waitForFunction(() => window.compareRequests.at(-1)?.activeId === 'two');
+  await zoom.focus();
+  await zoom.press('Enter');
+  await page.waitForFunction(() => window.compareCommits.at(-1)?.views.two.zoom > window.compareCommits.at(-1)?.views.one.zoom);
+  const independent = await page.evaluate(() => window.compareCommits.at(-1));
+  assert.equal(independent.views.one.zoom, linked.views.one.zoom);
+  await page.locator('[data-demo="fit"]').focus();
+  await page.keyboard.press('Space');
+  await page.waitForFunction(() => window.compareCommits.at(-1)?.views.two.zoom === 1);
+  assert.equal(await page.evaluate(() => window.compareCommits.at(-1).views.one.zoom), linked.views.one.zoom);
+  await mount(`window.readonlyCompareCommits=[];createRoot(document.getElementById('root')).render(<Subject.MediaCompareGrid variants={${variants}} value={{activeId:'one',linked:true,views:{one:{zoom:1,x:0,y:0},two:{zoom:1,x:0,y:0}}}} onValueCommit={value=>window.readonlyCompareCommits.push(value)}/>);`);
+  await page.locator('[data-demo="zoom-in"]').focus();
+  await page.keyboard.press('Enter');
+  assert.deepEqual(await page.evaluate(() => window.readonlyCompareCommits), []);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.MediaCompareGrid variants={[]}/>);`);
+  assert.equal(await page.locator('[data-demo^="proof-"]').count(), 0);
+  assert.equal(await page.locator('[data-demo="zoom-in"]:enabled').count(), 0);
+}
