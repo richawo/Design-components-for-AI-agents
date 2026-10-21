@@ -1,0 +1,30 @@
+export async function check({ page, mount, assert }) {
+  const originalViewport = page.viewportSize();
+  await page.setViewportSize({ width: 1440, height: 1200 });
+  await mount(`window.layoutWidths=[];createRoot(document.getElementById('root')).render(<Subject.HeroLayoutPlayground minWidth={240} maxWidth={600} defaultWidth={320} step={10} breakpoints={[{name:'Stack',width:240},{name:'Split',width:400},{name:'Full',width:600}]} content={<textarea aria-label="Layout draft" defaultValue="Initial layout draft"/>} onWidthChange={width=>window.layoutWidths.push(width)}/>);`);
+  await page.locator('#root').evaluate(node => { node.style.maxWidth = 'none'; });
+  const draft = page.getByRole('textbox', { name: 'Layout draft', exact: true });
+  await draft.fill('Keep this responsive draft.');
+  await page.evaluate(() => { window.layoutDraftNode = document.querySelector('textarea'); });
+  const handle = page.locator('[data-demo="layout-handle"]');
+  await handle.focus();
+  await handle.press('Home');
+  await page.waitForFunction(() => window.layoutWidths.at(-1) === 240);
+  assert.equal(await handle.getAttribute('aria-valuenow'), '240');
+  await handle.press('End');
+  await page.waitForFunction(() => window.layoutWidths.at(-1) > 320);
+  const widest = Number(await handle.getAttribute('aria-valuemax'));
+  assert.equal(Number(await handle.getAttribute('aria-valuenow')), widest);
+  assert.ok(widest <= 600);
+  const contentWidth = await draft.evaluate(node => { for (let at = node.parentElement; at; at = at.parentElement) if (getComputedStyle(at).containerType === 'inline-size') return at.clientWidth; return null; });
+  assert.ok(contentWidth !== null && Math.abs(contentWidth - widest) <= 2);
+  await page.locator('[data-demo="reset-layout"]').focus();
+  await page.keyboard.press('Space');
+  await page.waitForFunction(() => window.layoutWidths.at(-1) === 320);
+  assert.equal(await draft.inputValue(), 'Keep this responsive draft.');
+  assert.equal(await page.evaluate(() => window.layoutDraftNode === document.querySelector('textarea')), true);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.HeroLayoutPlayground width={300} breakpoints={[]} content={<button>Live frame content</button>}/>);`);
+  assert.equal(await page.locator('[data-demo="layout-handle"]').getAttribute('aria-disabled'), 'true');
+  assert.equal(await page.getByRole('button', { name: 'Live frame content', exact: true }).isEnabled(), true);
+  if (originalViewport) await page.setViewportSize(originalViewport);
+}
