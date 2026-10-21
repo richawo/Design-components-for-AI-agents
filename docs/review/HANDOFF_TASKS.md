@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Schema Migration now detaches callback plans and retained step reports. Missing, duplicate, unknown and non-finite results cannot authorize Apply; a valid failed prefix keeps its actual error. Unverified reports leave database state unconfirmed and require a fresh passing dry run. Empty plans cannot run, and the built-in sample runner remains usable. Four original contract failures, eight initial state-audit failures and the missing-focus counterexample remain archived. The complete fifteen-fixture registered workflow, twelve native state audits and separate visible keyboard-focus control pass. All twelve state captures and the corrected focus pair are inspected. The state-audit source differs from the final source only by that independently verified focus correction. Its inspected current poster retains the complete card and footer in measured 1504×940 framing; the film remains queued. Both new display messages are covered in all 29 translated editions, with all prior values preserved. The wider localisation audit reports 183,990 existing gaps, zero invalid protected terms and English fallback. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass on the shared Node24 checkpoint with every implementation input fixed. Original unit assertions and limits remain unchanged; earlier timing failures and recovery controls are preserved. Private correction: `b0e47b0`. There are now 37 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/` with `migration-contract-*`, `migration-readable-state-a11y/`, `migration-sql-focus-*`, `schema-migration-registered-visible-focus/`, `migration-poster-framed/` and `migration-translations/` and `developer-devtools-unit-recovery-node24-*`.
+
 - Task 5 (21 October): Request Replay now settles Cancel locally even when its transport ignores AbortSignal, and job identity prevents retired resolutions or rejections from settling a newer request. Initial run/draft state, edit notifications, dispatched requests and received header tuples retain detached snapshots. All three original counterexamples remain archived. The expanded three-mount native and registered workflows verify both Cancel routes, exact retries, retained drafts, late resolve/reject isolation, response headers, invalid JSON and keyboard reset. Current cancellation/header captures are inspected. Default presentation and its queued film are unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass on the shared Node24 checkpoint with every implementation input fixed. Original unit assertions and limits remain unchanged; earlier timing failures and recovery controls are preserved. Private correction: `58444d1`. There are now 38 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/` with `replay-contract-baseline/`, `replay-contract-final/`, `replay-complete-native/` and `request-replay-registered-final/` and `developer-devtools-unit-recovery-node24-*`.
 
 - Task 5 (21 October): Release Compare now disables deployment without a writer and passes detached base/target snapshots. Both original counterexamples remain archived. Its three native mounts and complete registered workflow cover review gates, exact failed-then-successful requests, retained viewed files, keyboard target selection, rollback direction, loading retry and empty comparisons. Both inspected phone state captures pass; default presentation and its queued film are unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass on the shared Node24 checkpoint with every implementation input fixed. Original unit assertions and limits remain unchanged; earlier timing failures and recovery controls are preserved. Private correction: `e77e486`. There are now 39 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/` with `release-contract-baseline/`, `release-contract-final/`, `release-complete-native/` and `release-registered/` and `developer-devtools-unit-recovery-node24-*`.
@@ -703,7 +705,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-38 finished components still have no dedicated browser regression probe. For each, read its source and
+37 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -712,7 +714,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 
 
-`devtools-schema-migration`
+
 `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`, `forms-draft-rescue`
 `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`, `input-unit-converter`
 `selects-tree-picker`, `layout-split-resizer`
