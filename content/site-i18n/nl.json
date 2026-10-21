@@ -23422,5 +23422,6 @@
   "No channels yet.": "Nog geen kanalen.",
   "comment": "reactie",
   "No profile fields are available.": "Er zijn geen profielvelden beschikbaar.",
-  "Workspace access": "Toegang tot werkruimte"
+  "Workspace access": "Toegang tot werkruimte",
+  "The path layout is invalid.": "De padindeling is ongeldig."
 }

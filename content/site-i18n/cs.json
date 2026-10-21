@@ -23422,5 +23422,6 @@
   "No channels yet.": "Zatím žádné kanály.",
   "comment": "komentář",
   "No profile fields are available.": "Nejsou k dispozici žádná pole profilu.",
-  "Workspace access": "Přístup k pracovnímu prostoru"
+  "Workspace access": "Přístup k pracovnímu prostoru",
+  "The path layout is invalid.": "Rozvržení křivky je neplatné."
 }

@@ -23422,5 +23422,6 @@
   "No channels yet.": "Încă nu există canale.",
   "comment": "comentariu",
   "No profile fields are available.": "Nu sunt disponibile câmpuri de profil.",
-  "Workspace access": "Acces la spațiul de lucru"
+  "Workspace access": "Acces la spațiul de lucru",
+  "The path layout is invalid.": "Aspectul traseului nu este valid."
 }

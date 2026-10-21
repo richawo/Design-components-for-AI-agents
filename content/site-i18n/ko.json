@@ -1938,5 +1938,6 @@
   "comment": "댓글",
   "Workspace settings": "워크스페이스 설정",
   "No profile fields are available.": "사용할 수 있는 프로필 필드가 없습니다.",
-  "Workspace access": "워크스페이스 접근"
+  "Workspace access": "워크스페이스 접근",
+  "The path layout is invalid.": "경로 레이아웃이 유효하지 않습니다."
 }

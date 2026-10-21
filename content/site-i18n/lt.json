@@ -2011,5 +2011,6 @@
   "comment": "komentaras",
   "Workspace settings": "Darbo srities nustatymai",
   "No profile fields are available.": "Nėra prieinamų profilio laukų.",
-  "Workspace access": "Prieiga prie darbo srities"
+  "Workspace access": "Prieiga prie darbo srities",
+  "The path layout is invalid.": "Kreivės išdėstymas netinkamas."
 }

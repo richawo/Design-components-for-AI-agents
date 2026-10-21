@@ -1938,5 +1938,6 @@
   "comment": "评论",
   "Workspace settings": "工作区设置",
   "No profile fields are available.": "没有可用的个人资料字段。",
-  "Workspace access": "工作区访问权限"
+  "Workspace access": "工作区访问权限",
+  "The path layout is invalid.": "路径布局无效。"
 }

@@ -23422,5 +23422,6 @@
   "No channels yet.": "Még nincsenek csatornák.",
   "comment": "megjegyzés",
   "No profile fields are available.": "Nincsenek elérhető profilmezők.",
-  "Workspace access": "Hozzáférés a munkaterülethez"
+  "Workspace access": "Hozzáférés a munkaterülethez",
+  "The path layout is invalid.": "Az útvonal elrendezése érvénytelen."
 }

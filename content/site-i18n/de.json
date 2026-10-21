@@ -23422,5 +23422,6 @@
   "No channels yet.": "Noch keine Kanäle.",
   "comment": "Kommentar",
   "No profile fields are available.": "Es sind keine Profilfelder verfügbar.",
-  "Workspace access": "Arbeitsbereichszugriff"
+  "Workspace access": "Arbeitsbereichszugriff",
+  "The path layout is invalid.": "Das Pfadlayout ist ungültig."
 }

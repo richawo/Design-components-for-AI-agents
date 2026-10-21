@@ -23422,5 +23422,6 @@
   "No channels yet.": "Aucune chaîne pour l'instant.",
   "comment": "commentaire",
   "No profile fields are available.": "Aucun champ de profil n’est disponible.",
-  "Workspace access": "Accès à l’espace de travail"
+  "Workspace access": "Accès à l’espace de travail",
+  "The path layout is invalid.": "La disposition du tracé n’est pas valide."
 }

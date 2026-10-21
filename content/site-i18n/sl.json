@@ -23422,5 +23422,6 @@
   "No channels yet.": "Ni še kanalov.",
   "comment": "komentar",
   "No profile fields are available.": "Polja profila niso na voljo.",
-  "Workspace access": "Dostop do delovnega prostora"
+  "Workspace access": "Dostop do delovnega prostora",
+  "The path layout is invalid.": "Postavitev poti ni veljavna."
 }

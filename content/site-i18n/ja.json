@@ -23422,5 +23422,6 @@
   "No channels yet.": "まだチャンネルがありません。",
   "comment": "コメント",
   "No profile fields are available.": "利用可能なプロフィール項目はありません。",
-  "Workspace access": "ワークスペースへのアクセス"
+  "Workspace access": "ワークスペースへのアクセス",
+  "The path layout is invalid.": "パスのレイアウトが無効です。"
 }

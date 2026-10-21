@@ -2011,5 +2011,6 @@
   "comment": "komentārs",
   "Workspace settings": "Darbvietas iestatījumi",
   "No profile fields are available.": "Nav pieejamu profila lauku.",
-  "Workspace access": "Piekļuve darbvietai"
+  "Workspace access": "Piekļuve darbvietai",
+  "The path layout is invalid.": "Ceļa izkārtojums nav derīgs."
 }

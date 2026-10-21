@@ -23422,5 +23422,6 @@
   "No channels yet.": "Zatiaľ žiadne kanály.",
   "comment": "komentár",
   "No profile fields are available.": "Nie sú k dispozícii žiadne polia profilu.",
-  "Workspace access": "Prístup k pracovnému priestoru"
+  "Workspace access": "Prístup k pracovnému priestoru",
+  "The path layout is invalid.": "Rozloženie krivky je neplatné."
 }

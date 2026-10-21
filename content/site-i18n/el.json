@@ -10903,5 +10903,6 @@
   "comment": "σχόλιο",
   "Workspace settings": "Ρυθμίσεις χώρου εργασίας",
   "No profile fields are available.": "Δεν υπάρχουν διαθέσιμα πεδία προφίλ.",
-  "Workspace access": "Πρόσβαση στον χώρο εργασίας"
+  "Workspace access": "Πρόσβαση στον χώρο εργασίας",
+  "The path layout is invalid.": "Η διάταξη της διαδρομής δεν είναι έγκυρη."
 }

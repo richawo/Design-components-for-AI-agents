@@ -2530,5 +2530,6 @@
   "comment": "kommentaar",
   "Workspace settings": "Tööruumi seaded",
   "No profile fields are available.": "Profiiliväljad pole saadaval.",
-  "Workspace access": "Juurdepääs tööruumile"
+  "Workspace access": "Juurdepääs tööruumile",
+  "The path layout is invalid.": "Raja paigutus ei ole sobiv."
 }

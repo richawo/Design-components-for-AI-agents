@@ -23422,5 +23422,6 @@
   "No channels yet.": "Каналов пока нет.",
   "comment": "комментарий",
   "No profile fields are available.": "Поля профиля недоступны.",
-  "Workspace access": "Доступ к рабочему пространству"
+  "Workspace access": "Доступ к рабочему пространству",
+  "The path layout is invalid.": "Макет контура недопустим."
 }

@@ -23422,5 +23422,6 @@
   "No channels yet.": "Ingen kanaler endnu.",
   "comment": "kommentar",
   "No profile fields are available.": "Ingen profilfelter er tilgængelige.",
-  "Workspace access": "Adgang til arbejdsområdet"
+  "Workspace access": "Adgang til arbejdsområdet",
+  "The path layout is invalid.": "Stilayoutet er ugyldigt."
 }

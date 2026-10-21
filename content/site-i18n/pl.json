@@ -23422,5 +23422,6 @@
   "No channels yet.": "Nie ma jeszcze kanałów.",
   "comment": "komentarz",
   "No profile fields are available.": "Brak dostępnych pól profilu.",
-  "Workspace access": "Dostęp do obszaru roboczego"
+  "Workspace access": "Dostęp do obszaru roboczego",
+  "The path layout is invalid.": "Układ ścieżki jest nieprawidłowy."
 }

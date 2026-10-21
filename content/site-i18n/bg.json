@@ -23422,5 +23422,6 @@
   "No channels yet.": "Все още няма канали.",
   "comment": "коментар",
   "No profile fields are available.": "Няма налични полета за профил.",
-  "Workspace access": "Достъп до работното пространство"
+  "Workspace access": "Достъп до работното пространство",
+  "The path layout is invalid.": "Оформлението на контура е невалидно."
 }
