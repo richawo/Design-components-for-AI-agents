@@ -1,5 +1,7 @@
 # Review status
 
+Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 43 older interaction probes and 123 films remain.
+
 Task 1 (20 October): Settings Panel has a reviewed 5.7s, 131 KB first refresh film and paired settled Next poster for its stronger fields. The exact replay enables Product news, selects Compact density and saves both values once; browser playback and an independent decoder reach the same Changes saved ending. All states fit measured 832×800 framing with the complete 680px panel visible. Maximum source gap is 43ms, changed-source delivery is 37.52ms and moving-frame p95 is 18.53ms, with no stalls, unchanged guards and all 88 capture inputs fixed. The earlier original assets remain archived. All eleven blocks are complete; 59 older probes and 123 films remain. The complete 68-suite release checkpoint is next. Evidence uses `test-results/handoff-blocks/settings-panel-*`.
 
 Task 7 (20 October): Workspace Settings completes the eleventh and final block review. Compact retained views, detached save snapshots, exact retries, pending edits, hidden failures, replacement-policy ownership, empty/arriving data, independent instances and long phone content pass. Coarse actions retain 44px targets, field boundaries measure 4.16:1 dark and 4.50:1 light, and complete feedback wraps above narrow-screen actions. Live motion preferences and natural English/Arabic text direction pass the 55-mount composition review and focused nineteen-mount direction follow-up. The permanent workflow passes 48 mouse/keyboard and six touch mounts. All 71 current integration captures are approved: 49 match accepted references and 22 are newly inspected. The actual Next replay, shared Settings regression, normal headings, six matching source/Next scenes, French/Arabic phone and desktop saves, theme control and all four official audits pass with 81 inputs unchanged. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. Three display keys are covered in all 29 non-English editions; the wider 183,999-unit localisation backlog retains English fallback. The ten-prop contract and Pro boundary remain intact. Its reviewed 4.9s, 92 KB first film and paired settled Next poster retain the complete 820px workspace, clear the weekly digest and end with Preferences saved. Actual playback and an independent decoder agree. Maximum source gap is 14ms, changed-source delivery is 32.00ms and moving-frame p95 is 17.42ms, with no stalls and all guards intact. All 88 capture inputs remain fixed. The current queue is 59 older probes and 124 films, including the changed Settings Panel; fresh complete release checks remain pending. Evidence uses `test-results/handoff-blocks/settings-*`.
@@ -304,9 +306,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `agents-budget-guard` | new | current |  |
 | `agents-dependency-board` | new | current |  |
 | `agents-run-replay` | new | current |  |
-| `ai-answer-compare` | new | current |  |
-| `ai-context-budget` | new | current |  |
-| `ai-structured-output` | new | current |  |
+| `ai-answer-compare` | new | current | Dedicated native and registered interaction regression passes; keyboard paths, host notifications and empty states are covered. Product source unchanged. See the 21 October Task 5 evidence in HANDOFF_TASKS.md. |
+| `ai-context-budget` | new | current | Dedicated native and registered interaction regression passes; keyboard paths, host notifications and empty states are covered. Product source unchanged. See the 21 October Task 5 evidence in HANDOFF_TASKS.md. |
+| `ai-structured-output` | new | current | Dedicated native and registered interaction regression passes; keyboard paths, host notifications and empty states are covered. Product source unchanged. See the 21 October Task 5 evidence in HANDOFF_TASKS.md. |
 | `auth-recovery-codes` | new | current |  |
 | `devtools-icon-workbench` | new | current |  |
 | `devtools-incident-timeline` | new | current |  |
