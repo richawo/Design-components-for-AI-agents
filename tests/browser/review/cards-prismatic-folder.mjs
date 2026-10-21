@@ -1,0 +1,33 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.folderOpens=[];window.fileSelections=[];window.fileJobs=[];createRoot(document.getElementById('root')).render(<Subject.CardsPrismaticFolder files={[{id:'guide',name:'Guide.md',kind:'document',size:'2 KB',modified:'Today',preview:'Keep this document preview.'},{id:'locked',name:'Archive.pdf',kind:'document',size:'3 KB',modified:'Yesterday',available:false,note:'Archived'}]} onOpenChange={open=>window.folderOpens.push(open)} onFileSelect={file=>window.fileSelections.push(file.id)} onFileOpen={file=>new Promise((resolve,reject)=>window.fileJobs.push({id:file.id,resolve,reject}))}/>);`);
+  const folder = page.locator('[data-demo="folder-toggle"]');
+  await folder.focus();
+  await folder.press('Enter');
+  assert.deepEqual(await page.evaluate(() => window.folderOpens), [true]);
+  const file = page.locator('[data-demo="file-guide"]');
+  await file.waitFor();
+  await file.focus();
+  await file.press('Space');
+  await page.waitForFunction(() => window.fileSelections.length === 1);
+  assert.deepEqual(await page.evaluate(() => window.fileSelections), ['guide']);
+  const open = page.locator('[data-demo="file-open"]');
+  await open.focus();
+  await open.press('Enter');
+  await page.waitForFunction(() => window.fileJobs.length === 1);
+  assert.equal(await open.getAttribute('aria-busy'), 'true');
+  await open.press('Enter');
+  assert.equal(await page.evaluate(() => window.fileJobs.length), 1);
+  await page.evaluate(() => window.fileJobs[0].reject(Error('File service unavailable')));
+  await page.getByRole('status').filter({ hasText: 'File service unavailable' }).waitFor();
+  assert.equal(await page.getByText('Keep this document preview.', { exact: true }).count(), 1);
+  await open.focus();
+  await open.press('Space');
+  await page.waitForFunction(() => window.fileJobs.length === 2);
+  assert.deepEqual(await page.evaluate(() => window.fileJobs.map(job => job.id)), ['guide', 'guide']);
+  await page.evaluate(() => window.fileJobs[1].resolve());
+  await page.getByRole('button', { name: 'Opened', exact: true }).waitFor();
+  assert.equal(await page.locator('[data-demo="file-locked"]').isDisabled(), true);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.CardsPrismaticFolder files={[]} defaultOpen/>);`);
+  await page.getByText('Nothing filed yet', { exact: true }).waitFor();
+  assert.equal(await page.locator('[data-demo^="file-"]').count(), 0);
+}
