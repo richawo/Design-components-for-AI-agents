@@ -1,6 +1,6 @@
 # Review status
 
-Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 37 older interaction probes and 123 films remain.
+Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 33 older interaction probes and 123 films remain.
 
 Task 1 (20 October): Settings Panel has a reviewed 5.7s, 131 KB first refresh film and paired settled Next poster for its stronger fields. The exact replay enables Product news, selects Compact density and saves both values once; browser playback and an independent decoder reach the same Changes saved ending. All states fit measured 832×800 framing with the complete 680px panel visible. Maximum source gap is 43ms, changed-source delivery is 37.52ms and moving-frame p95 is 18.53ms, with no stalls, unchanged guards and all 88 capture inputs fixed. The earlier original assets remain archived. All eleven blocks are complete; 59 older probes and 123 films remain. The complete 68-suite release checkpoint is next. Evidence uses `test-results/handoff-blocks/settings-panel-*`.
 
@@ -320,10 +320,10 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `date-range-calendar` | new | current |  |
-| `date-timezone-overlap` | new | current |  |
-| `forms-branching-survey` | new | current |  |
-| `forms-draft-rescue` | new | current |  |
+| `date-range-calendar` | new | current | Retired booking identity for new/cleared/controlled ranges; exact retry, late success/rejection and keyboard regression. Film queued. |
+| `date-timezone-overlap` | new | current | Registered exact keyboard slots, participant selection, failed proposal/retry and invalid/empty inputs. Film queued. |
+| `forms-branching-survey` | new | current | Registered branching, validation, retained failed submit and exact retry coverage. Film queued. |
+| `forms-draft-rescue` | new | current | Registered draft comparison, accepted recovery, retry and read-only/empty-state coverage. Film queued. |
 | `input-cron-builder` | new | current |  |
 | `input-detent-dial` | new | current |  |
 | `input-dual-range` | new | current |  |
