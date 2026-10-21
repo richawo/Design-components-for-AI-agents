@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Incident Timeline now handles invalid or missing impact times without crashing or inventing epoch labels, disables empty Replay and sends detached event snapshots. Future rows and hovered timestamps retain readable contrast; reduced readout swaps settle without blur or translation. Dense markers keep exact time coordinates in separate rows with 24px mouse and 44px touch targets. The final sixteen state/accessibility checks and complete registered five-fixture workflow pass, including actual dense clicks and taps. The native official audit passes all original checks and limits; all ten captures are inspected. The software audit retains its separate desktop paint timeout. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. Earlier unit timeouts remain preserved; the original content test recovers unchanged on Node24 with one worker. The inspected current poster is refreshed; its film remains queued. The Unavailable key is covered in all 29 translated editions, with nine dictionary gaps closed and all prior values retained. The wider localisation audit retains 183,990 missing units, zero invalid protected terms and English fallback. There are now 40 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/incident-state-targets-final/`, `incident-registered-final/`, `incident-official-audit-native-control/`, `incident-poster-targets/`, `incident-translations/` and `developer-devtools-unit-recovery-node24-*`.
+
 - Task 5 (21 October): Icon Workbench now has a dedicated registered regression for keyword filtering, keyboard selection, exact selected IDs, JSX format selection and copied source. Failed copy retains the query and selected glyph; the exact retry succeeds while pending export stays locked. Clear search restores both fixtures, and an empty set remains explicit. Both native mounts and the complete registered case pass without product changes. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. There are now 41 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/developer-ai-first-native/`, `ai-context-native-semantics/`, `ai-context-dom-trace-v2/`, `ai-auth-registered-after-dom-trace/`, `icon-workbench-registered/` and `developer-ai-coverage-core-*`.
 
 - Task 5 (21 October): Recovery Codes now has a dedicated registered regression using synthetic account data and codes. Keyboard export failure/retry produces identical files and excludes used codes; confirmation preserves the stored acknowledgement after failure, blocks duplicate pending confirmation and reaches the success view after retry. Empty-code copy, download and print actions remain disabled. Both native mounts and the complete registered case pass without product changes. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. There are now 42 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/developer-ai-first-native/`, `ai-context-native-semantics/`, `ai-context-dom-trace-v2/`, `ai-auth-registered-after-dom-trace/`, `icon-workbench-registered/` and `developer-ai-coverage-core-*`.
@@ -697,7 +699,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-41 finished components still have no dedicated browser regression probe. For each, read its source and
+40 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -706,7 +708,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 
 
-`devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`, `devtools-schema-migration`
+`devtools-release-compare`, `devtools-request-replay`, `devtools-schema-migration`
 `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`, `forms-draft-rescue`
 `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`, `input-unit-converter`
 `selects-tree-picker`, `layout-split-resizer`
