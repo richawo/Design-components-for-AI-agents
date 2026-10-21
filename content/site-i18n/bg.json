@@ -23423,5 +23423,7 @@
   "comment": "коментар",
   "No profile fields are available.": "Няма налични полета за профил.",
   "Workspace access": "Достъп до работното пространство",
-  "The path layout is invalid.": "Оформлението на контура е невалидно."
+  "The path layout is invalid.": "Оформлението на контура е невалидно.",
+  "The run report is incomplete or invalid.": "Отчетът за изпълнението е непълен или невалиден.",
+  "Database state is unconfirmed. Check it before retrying.": "Състоянието на базата данни не е потвърдено. Проверете го, преди да опитате отново."
 }

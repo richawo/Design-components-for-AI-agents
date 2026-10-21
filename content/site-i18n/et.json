@@ -2531,5 +2531,8 @@
   "Workspace settings": "Tööruumi seaded",
   "No profile fields are available.": "Profiiliväljad pole saadaval.",
   "Workspace access": "Juurdepääs tööruumile",
-  "The path layout is invalid.": "Raja paigutus ei ole sobiv."
+  "The path layout is invalid.": "Raja paigutus ei ole sobiv.",
+  "Unavailable": "Pole saadaval",
+  "The run report is incomplete or invalid.": "Käitamisaruanne on puudulik või vigane.",
+  "Database state is unconfirmed. Check it before retrying.": "Andmebaasi olek on kinnitamata. Kontrolli seda enne uuesti proovimist."
 }

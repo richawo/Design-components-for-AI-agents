@@ -23423,5 +23423,7 @@
   "comment": "reactie",
   "No profile fields are available.": "Er zijn geen profielvelden beschikbaar.",
   "Workspace access": "Toegang tot werkruimte",
-  "The path layout is invalid.": "De padindeling is ongeldig."
+  "The path layout is invalid.": "De padindeling is ongeldig.",
+  "The run report is incomplete or invalid.": "Het uitvoeringsrapport is onvolledig of ongeldig.",
+  "Database state is unconfirmed. Check it before retrying.": "De databasestatus is niet bevestigd. Controleer deze voordat je het opnieuw probeert."
 }

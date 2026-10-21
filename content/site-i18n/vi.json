@@ -1939,5 +1939,8 @@
   "Workspace settings": "Cài đặt không gian làm việc",
   "No profile fields are available.": "Không có trường hồ sơ nào.",
   "Workspace access": "Quyền truy cập không gian làm việc",
-  "The path layout is invalid.": "Bố cục đường dẫn không hợp lệ."
+  "The path layout is invalid.": "Bố cục đường dẫn không hợp lệ.",
+  "Unavailable": "Không khả dụng",
+  "The run report is incomplete or invalid.": "Báo cáo chạy không đầy đủ hoặc không hợp lệ.",
+  "Database state is unconfirmed. Check it before retrying.": "Trạng thái cơ sở dữ liệu chưa được xác nhận. Hãy kiểm tra trước khi thử lại."
 }

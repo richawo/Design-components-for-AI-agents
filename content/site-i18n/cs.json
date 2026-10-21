@@ -23423,5 +23423,7 @@
   "comment": "komentář",
   "No profile fields are available.": "Nejsou k dispozici žádná pole profilu.",
   "Workspace access": "Přístup k pracovnímu prostoru",
-  "The path layout is invalid.": "Rozvržení křivky je neplatné."
+  "The path layout is invalid.": "Rozvržení křivky je neplatné.",
+  "The run report is incomplete or invalid.": "Zpráva o spuštění je neúplná nebo neplatná.",
+  "Database state is unconfirmed. Check it before retrying.": "Stav databáze není potvrzen. Před dalším pokusem jej zkontrolujte."
 }

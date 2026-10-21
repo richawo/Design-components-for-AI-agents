@@ -10904,5 +10904,8 @@
   "Workspace settings": "Ρυθμίσεις χώρου εργασίας",
   "No profile fields are available.": "Δεν υπάρχουν διαθέσιμα πεδία προφίλ.",
   "Workspace access": "Πρόσβαση στον χώρο εργασίας",
-  "The path layout is invalid.": "Η διάταξη της διαδρομής δεν είναι έγκυρη."
+  "The path layout is invalid.": "Η διάταξη της διαδρομής δεν είναι έγκυρη.",
+  "Unavailable": "Μη διαθέσιμο",
+  "The run report is incomplete or invalid.": "Η αναφορά εκτέλεσης είναι ελλιπής ή μη έγκυρη.",
+  "Database state is unconfirmed. Check it before retrying.": "Η κατάσταση της βάσης δεδομένων δεν έχει επιβεβαιωθεί. Ελέγξτε την πριν δοκιμάσετε ξανά."
 }

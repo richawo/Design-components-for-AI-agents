@@ -1939,5 +1939,8 @@
   "Workspace settings": "إعدادات مساحة العمل",
   "No profile fields are available.": "لا تتوفر حقول للملف الشخصي.",
   "Workspace access": "الوصول إلى مساحة العمل",
-  "The path layout is invalid.": "تخطيط المسار غير صالح."
+  "The path layout is invalid.": "تخطيط المسار غير صالح.",
+  "Unavailable": "غير متاح",
+  "The run report is incomplete or invalid.": "تقرير التشغيل غير مكتمل أو غير صالح.",
+  "Database state is unconfirmed. Check it before retrying.": "حالة قاعدة البيانات غير مؤكدة. تحقق منها قبل إعادة المحاولة."
 }

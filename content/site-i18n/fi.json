@@ -23423,5 +23423,7 @@
   "comment": "kommentti",
   "No profile fields are available.": "Profiilikenttiä ei ole saatavilla.",
   "Workspace access": "Työtilan käyttöoikeudet",
-  "The path layout is invalid.": "Polun asettelu ei kelpaa."
+  "The path layout is invalid.": "Polun asettelu ei kelpaa.",
+  "The run report is incomplete or invalid.": "Suoritusraportti on puutteellinen tai virheellinen.",
+  "Database state is unconfirmed. Check it before retrying.": "Tietokannan tilaa ei ole vahvistettu. Tarkista se ennen kuin yrität uudelleen."
 }

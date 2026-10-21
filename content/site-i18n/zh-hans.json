@@ -1939,5 +1939,8 @@
   "Workspace settings": "工作区设置",
   "No profile fields are available.": "没有可用的个人资料字段。",
   "Workspace access": "工作区访问权限",
-  "The path layout is invalid.": "路径布局无效。"
+  "The path layout is invalid.": "路径布局无效。",
+  "Unavailable": "不可用",
+  "The run report is incomplete or invalid.": "运行报告不完整或无效。",
+  "Database state is unconfirmed. Check it before retrying.": "数据库状态尚未确认。请检查后再重试。"
 }

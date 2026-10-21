@@ -23423,5 +23423,7 @@
   "comment": "komentar",
   "No profile fields are available.": "Polja profila niso na voljo.",
   "Workspace access": "Dostop do delovnega prostora",
-  "The path layout is invalid.": "Postavitev poti ni veljavna."
+  "The path layout is invalid.": "Postavitev poti ni veljavna.",
+  "The run report is incomplete or invalid.": "Poročilo o izvedbi je nepopolno ali neveljavno.",
+  "Database state is unconfirmed. Check it before retrying.": "Stanje podatkovne zbirke ni potrjeno. Pred ponovnim poskusom ga preverite."
 }

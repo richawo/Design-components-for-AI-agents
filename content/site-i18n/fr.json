@@ -23423,5 +23423,7 @@
   "comment": "commentaire",
   "No profile fields are available.": "Aucun champ de profil n’est disponible.",
   "Workspace access": "Accès à l’espace de travail",
-  "The path layout is invalid.": "La disposition du tracé n’est pas valide."
+  "The path layout is invalid.": "La disposition du tracé n’est pas valide.",
+  "The run report is incomplete or invalid.": "Le rapport d’exécution est incomplet ou invalide.",
+  "Database state is unconfirmed. Check it before retrying.": "L’état de la base de données n’est pas confirmé. Vérifiez-le avant de réessayer."
 }

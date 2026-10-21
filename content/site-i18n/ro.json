@@ -23423,5 +23423,7 @@
   "comment": "comentariu",
   "No profile fields are available.": "Nu sunt disponibile câmpuri de profil.",
   "Workspace access": "Acces la spațiul de lucru",
-  "The path layout is invalid.": "Aspectul traseului nu este valid."
+  "The path layout is invalid.": "Aspectul traseului nu este valid.",
+  "The run report is incomplete or invalid.": "Raportul de execuție este incomplet sau invalid.",
+  "Database state is unconfirmed. Check it before retrying.": "Starea bazei de date nu este confirmată. Verificați-o înainte de a încerca din nou."
 }

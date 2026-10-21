@@ -23423,5 +23423,7 @@
   "comment": "коментар",
   "No profile fields are available.": "Поля профілю недоступні.",
   "Workspace access": "Доступ до робочого простору",
-  "The path layout is invalid.": "Макет контуру недійсний."
+  "The path layout is invalid.": "Макет контуру недійсний.",
+  "The run report is incomplete or invalid.": "Звіт про виконання неповний або недійсний.",
+  "Database state is unconfirmed. Check it before retrying.": "Стан бази даних не підтверджено. Перевірте його перед повторною спробою."
 }

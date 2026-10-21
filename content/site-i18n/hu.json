@@ -23423,5 +23423,7 @@
   "comment": "megjegyzés",
   "No profile fields are available.": "Nincsenek elérhető profilmezők.",
   "Workspace access": "Hozzáférés a munkaterülethez",
-  "The path layout is invalid.": "Az útvonal elrendezése érvénytelen."
+  "The path layout is invalid.": "Az útvonal elrendezése érvénytelen.",
+  "The run report is incomplete or invalid.": "A futási jelentés hiányos vagy érvénytelen.",
+  "Database state is unconfirmed. Check it before retrying.": "Az adatbázis állapota nincs megerősítve. Ellenőrizze az újrapróbálkozás előtt."
 }

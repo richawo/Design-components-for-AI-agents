@@ -2012,5 +2012,8 @@
   "Workspace settings": "Darbvietas iestatījumi",
   "No profile fields are available.": "Nav pieejamu profila lauku.",
   "Workspace access": "Piekļuve darbvietai",
-  "The path layout is invalid.": "Ceļa izkārtojums nav derīgs."
+  "The path layout is invalid.": "Ceļa izkārtojums nav derīgs.",
+  "Unavailable": "Nav pieejams",
+  "The run report is incomplete or invalid.": "Izpildes pārskats ir nepilnīgs vai nederīgs.",
+  "Database state is unconfirmed. Check it before retrying.": "Datubāzes stāvoklis nav apstiprināts. Pirms mēģināt vēlreiz, pārbaudiet to."
 }

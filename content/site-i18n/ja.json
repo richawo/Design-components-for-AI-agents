@@ -23423,5 +23423,7 @@
   "comment": "コメント",
   "No profile fields are available.": "利用可能なプロフィール項目はありません。",
   "Workspace access": "ワークスペースへのアクセス",
-  "The path layout is invalid.": "パスのレイアウトが無効です。"
+  "The path layout is invalid.": "パスのレイアウトが無効です。",
+  "The run report is incomplete or invalid.": "実行レポートが不完全、または無効です。",
+  "Database state is unconfirmed. Check it before retrying.": "データベースの状態は未確認です。再試行する前に確認してください。"
 }

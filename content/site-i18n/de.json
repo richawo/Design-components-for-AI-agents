@@ -23423,5 +23423,7 @@
   "comment": "Kommentar",
   "No profile fields are available.": "Es sind keine Profilfelder verfügbar.",
   "Workspace access": "Arbeitsbereichszugriff",
-  "The path layout is invalid.": "Das Pfadlayout ist ungültig."
+  "The path layout is invalid.": "Das Pfadlayout ist ungültig.",
+  "The run report is incomplete or invalid.": "Der Ausführungsbericht ist unvollständig oder ungültig.",
+  "Database state is unconfirmed. Check it before retrying.": "Der Datenbankstatus ist unbestätigt. Prüfen Sie ihn vor einem erneuten Versuch."
 }
