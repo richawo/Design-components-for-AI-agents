@@ -1,0 +1,32 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.briefJobs=[];createRoot(document.getElementById('root')).render(<Subject.CtaProjectBrief services={[{id:'web',label:'Website',phrase:'a new website',typical:20}]} budgets={[{id:'20-40',min:20,max:40}]} timelines={[{id:'quarter',label:'Next quarter',detail:'A planned launch',phrase:'next quarter'}]} defaultValue={{services:['web'],budget:'20-40',timeline:'quarter',name:'Ada Vale',email:'invalid',company:'Studio',notes:'Keep this project note.'}} nextSteps={[]} onSubmit={brief=>new Promise((resolve,reject)=>window.briefJobs.push({brief:structuredClone(brief),resolve,reject}))}/>);`);
+  const send = page.locator('[data-demo="send"]');
+  await send.focus();
+  await send.press('Enter');
+  assert.equal(await page.evaluate(() => window.briefJobs.length), 0);
+  const email = page.locator('[data-demo="email"]');
+  assert.equal(await email.getAttribute('aria-invalid'), 'true');
+  await email.fill('ada@example.test');
+  await send.focus();
+  await send.press('Space');
+  await page.waitForFunction(() => window.briefJobs.length === 1);
+  assert.equal(await send.getAttribute('aria-busy'), 'true');
+  await page.evaluate(() => window.briefJobs[0].reject(Error('Briefing service unavailable')));
+  await page.getByRole('alert').filter({ hasText: 'Your brief is still here' }).waitFor();
+  assert.equal(await email.inputValue(), 'ada@example.test');
+  assert.equal(await page.locator('[data-demo="name"]').inputValue(), 'Ada Vale');
+  await send.focus();
+  await send.press('Enter');
+  await page.waitForFunction(() => window.briefJobs.length === 2);
+  const calls = await page.evaluate(() => window.briefJobs.map(job => job.brief));
+  assert.deepEqual(calls[0], calls[1]);
+  assert.deepEqual(calls[1], { services: ['web'], budget: '20-40', timeline: 'quarter', name: 'Ada Vale', email: 'ada@example.test', company: 'Studio', notes: 'Keep this project note.' });
+  await page.evaluate(() => window.briefJobs[1].resolve({ reference: 'BRIEF-TEST-42' }));
+  await page.getByText('BRIEF-TEST-42', { exact: true }).waitFor();
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.CtaProjectBrief services={[]} budgets={[]} timelines={[]} nextSteps={[]}/>);`);
+  await page.locator('[data-demo="send"]').focus();
+  await page.keyboard.press('Enter');
+  assert.equal(await page.locator('[data-demo^="service-"]').count(), 0);
+  assert.equal(await page.locator('[data-demo^="budget-"]').count(), 0);
+  assert.equal(await page.locator('[data-demo^="timeline-"]').count(), 0);
+}
