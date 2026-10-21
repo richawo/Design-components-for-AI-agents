@@ -78,8 +78,8 @@ export async function mountFixture(page, slug, tier, fixture, { frameStyle } = {
   if (!styles.length) throw new Error(`Preview ${slug} has no registry stylesheet.`);
   await page.route("**/__component_audit__", (route) =>
     route.fulfill({
-      contentType: "text/html",
-      body: `<!doctype html><html lang="en"><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Component audit</title>${styles.map((h) => `<link rel="stylesheet" href="${h}">`).join("")}</head><body style="margin:0;background:#090909;color:#f4f4f4"><main style="${frame}" id="root"></main></body></html>`,
+      contentType: "text/html; charset=utf-8",
+      body: `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Component audit</title>${styles.map((h) => `<link rel="stylesheet" href="${h}">`).join("")}</head><body style="margin:0;background:#090909;color:#f4f4f4"><main style="${frame}" id="root"></main></body></html>`,
     }),
   );
   await page.goto(`${base}/__component_audit__`);
