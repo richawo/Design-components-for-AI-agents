@@ -32,6 +32,7 @@ describe("owned source screenshot fallback", () => {
       quality: 92,
       fromSurface: true,
       captureBeyondViewport: false,
+      optimizeForSpeed: true,
     });
     expect(state.onFrame).toHaveBeenCalledWith({
       data: "actual-owned-surface",

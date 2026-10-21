@@ -33,6 +33,8 @@ export function startChangedSourceScreenshots({ page, cdp, getLatestFrameTime, o
       quality,
       fromSurface: true,
       captureBeyondViewport: false,
+      // Favor image delivery over compression work at the same JPEG quality.
+      optimizeForSpeed: true,
     });
     const capturedAt = Date.now() / 1000;
     if (typeof screenshot?.data !== "string" || !screenshot.data.length)
