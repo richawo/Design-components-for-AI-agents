@@ -16,6 +16,8 @@ export async function check({page,mount,assert}) {
  await page.waitForFunction(()=>window.outlinePageFinished);
  assert.equal(await reset.isDisabled(),false);await reset.focus();await reset.press('Enter');
  await page.waitForFunction(()=>document.querySelector('[data-demo="outline-passage"]').scrollTop===0);
+ // Native scroll position changes before the scheduled reading-state update commits.
+ await page.waitForFunction(()=>document.querySelector('[data-demo="outline-reset"]').disabled);
  assert.equal(await reset.isDisabled(),true);
  await page.setViewportSize({width:320,height:1000});
  await mount(`createRoot(document.getElementById('root')).render(<Subject.TextOutlineFill text="" as="p" fontSize={Number.POSITIVE_INFINITY} progress={Number.NaN}/>);`);
