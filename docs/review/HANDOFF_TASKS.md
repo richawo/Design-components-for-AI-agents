@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Compare Lenses, Integration Trace and Shortcut Theatre now have dedicated registered regressions. Keyboard lens/stage selection, controlled read-only lenses, exact ordered offline integration replay, supplied Create/Done shortcuts and visible issue states pass. Empty inputs stay explicit. The integration receipt locator includes its existing separator, and the Done check observes the semantic status icon. Original locator mismatches remain archived; no product changes or queued films are included. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. There are now 15 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/marketing-workflows-registered/` and `test-results/handoff-older-probes/marketing-workflows-core-frozen.json`.
+
 - Task 5 (21 October): Six older media probes are now registered: Caption Styler, Crop Workbench, Device Switcher, Focus Lightbox, Image Contact Sheet and Transcript Player. Their complete keyboard workflows verify exact crop/save payloads, retained failed work and retries, measured device container sizes, retained DOM drafts, controlled values, focus restoration, pick order and actual local WAV duration/seek/playback events. Empty or unavailable media remain explicit. No product changes are needed. The probes use Caption Styler’s disabled controlled-text field and Contact Sheet’s documented P shortcut for picking; Space retains its loupe behavior. Original mismatches remain archived. Their queued films remain outstanding. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. There are now 18 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/media-workflows-registered/` and `test-results/handoff-older-probes/media-workflows-core-frozen.json`.
 
 - Task 5 (21 October): Message List now leaves terminal full stops outside mention handles, preserving internal dots. Known mentions render their names and retain current-user markers; unknown longer handles remain plain text. Its three-mount native and registered workflow covers exact reaction/reply notifications, retained failed posts and retry. The original punctuation counterexample remains archived. Shared Team messages, composition, long mentions and mixed-direction reading pass in both themes across thirty native mounts. The direction check now examines the recognized display name; literal quoted handles remain unchanged. Current standalone and both-theme mixed-direction captures are inspected. Default demo messages and queued films are unchanged. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. Private correction: `f980eca`. There are now 24 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/mentions-registered/` and `test-results/handoff-older-probes/mentions-core-frozen.json`.
@@ -719,7 +721,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-18 finished components still have no dedicated browser regression probe. For each, read its source and
+15 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -733,8 +735,8 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 `selects-tree-picker`, `layout-split-resizer`
 `cards-prismatic-folder`, `content-interactive-spec`
-`cta-project-brief`, `features-compare-lenses`
-`features-integration-trace`, `features-shortcut-theatre`, `footer-sitemap-atlas`, `hero-layout-playground`
+`cta-project-brief`
+`footer-sitemap-atlas`, `hero-layout-playground`
 `hero-signal-workbench`
 
 `navigation-context-rail`
