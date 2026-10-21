@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Icon Workbench now has a dedicated registered regression for keyword filtering, keyboard selection, exact selected IDs, JSX format selection and copied source. Failed copy retains the query and selected glyph; the exact retry succeeds while pending export stays locked. Clear search restores both fixtures, and an empty set remains explicit. Both native mounts and the complete registered case pass without product changes. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. There are now 41 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/developer-ai-first-native/`, `ai-context-native-semantics/`, `ai-context-dom-trace-v2/`, `ai-auth-registered-after-dom-trace/`, `icon-workbench-registered/` and `developer-ai-coverage-core-*`.
+
 - Task 5 (21 October): Recovery Codes now has a dedicated registered regression using synthetic account data and codes. Keyboard export failure/retry produces identical files and excludes used codes; confirmation preserves the stored acknowledgement after failure, blocks duplicate pending confirmation and reaches the success view after retry. Empty-code copy, download and print actions remain disabled. Both native mounts and the complete registered case pass without product changes. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. There are now 42 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/developer-ai-first-native/`, `ai-context-native-semantics/`, `ai-context-dom-trace-v2/`, `ai-auth-registered-after-dom-trace/`, `icon-workbench-registered/` and `developer-ai-coverage-core-*`.
 
 - Task 5 (21 October): Answer Compare, Context Budget and Structured Output now have dedicated registered regressions. Keyboard preferences, reasons, answer retry, retained failed votes and exact vote payloads pass. Context trimming, native switch state, required-source totals, retained failed attachments and exact retries pass. Structured field navigation, targeted repair, exact copied JSON, streaming Stop, regeneration and empty extraction pass. Their eight native mounts and complete registered cases pass without product changes. The Context probe observes the native checkbox checked property rather than an absent explicit ARIA attribute. Its first registered timeout remains archived; four fresh/reused software/native DOM checks find the expected button, and the unchanged-deadline workflow rerun passes. No timing fix is claimed. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass. There are now 43 older probes and 123 films outstanding. Evidence uses `test-results/handoff-older-probes/developer-ai-first-native/`, `ai-context-native-semantics/`, `ai-context-dom-trace-v2/`, `ai-auth-registered-after-dom-trace/`, `icon-workbench-registered/` and `developer-ai-coverage-core-*`.
@@ -695,7 +697,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-42 finished components still have no dedicated browser regression probe. For each, read its source and
+41 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -703,7 +705,7 @@ as the model for style and depth. Mobile components render through React Native 
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 
-`devtools-icon-workbench`
+
 `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`, `devtools-schema-migration`
 `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`, `forms-draft-rescue`
 `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`, `input-unit-converter`
