@@ -1,0 +1,37 @@
+export async function check({ page, mount, assert }) {
+  const roles = `[{id:'editor',label:'Editor',description:'Can edit',minimum:1,maximum:5,priceMinor:{monthly:1200,annual:12000}},{id:'viewer',label:'Viewer',description:'Can read',minimum:0,maximum:10,priceMinor:{monthly:0,annual:0}}]`;
+  await mount(`window.seatChanges=[];window.seatJobs=[];createRoot(document.getElementById('root')).render(<Subject.PricingSeatSimulator roles={${roles}} defaultValue={{term:'monthly',counts:{editor:2,viewer:1}}} onValueChange={(mix,estimate)=>window.seatChanges.push(structuredClone({mix,estimate}))} onContinue={(mix,estimate)=>new Promise((resolve,reject)=>window.seatJobs.push({mix:structuredClone(mix),estimate:structuredClone(estimate),resolve,reject}))}/>);`);
+  const editor = page.locator('[data-demo="seat-count-editor"]');
+  await editor.focus();
+  await editor.press('ArrowUp');
+  await page.waitForFunction(() => window.seatChanges.length === 1);
+  await page.waitForFunction(() => document.querySelector('[data-demo="seat-count-editor"]').value === '3');
+  assert.equal(await editor.inputValue(), '3');
+  const annual = page.locator('[data-demo="seat-term-annual"]');
+  await annual.focus();
+  await annual.press('Space');
+  await page.waitForFunction(() => window.seatChanges.length === 2);
+  const next = page.locator('[data-demo="seat-continue"]');
+  await next.focus();
+  await next.press('Enter');
+  await page.waitForFunction(() => window.seatJobs.length === 1);
+  assert.equal(await next.getAttribute('aria-busy'), 'true');
+  assert.equal(await next.isDisabled(), true);
+  await page.evaluate(() => window.seatJobs[0].reject(Error('Fixture checkout unavailable')));
+  await page.getByRole('alert').filter({ hasText: 'your seats are kept' }).waitFor();
+  assert.equal(await editor.inputValue(), '3');
+  assert.equal(await annual.getAttribute('aria-checked'), 'true');
+  await next.focus();
+  await next.press('Space');
+  await page.waitForFunction(() => window.seatJobs.length === 2);
+  const calls = await page.evaluate(() => window.seatJobs.map(({ mix, estimate }) => ({ mix, estimate })));
+  assert.deepEqual(calls[0], calls[1]);
+  assert.deepEqual(calls[1].mix, { term: 'annual', counts: { editor: 3, viewer: 1 } });
+  assert.deepEqual(calls[1].estimate, { term: 'annual', seats: 4, totalMinor: 36000, lines: [{ id: 'editor', count: 3, rateMinor: 12000, amountMinor: 36000 }, { id: 'viewer', count: 1, rateMinor: 0, amountMinor: 0 }] });
+  await page.evaluate(() => window.seatJobs[1].resolve());
+  await page.getByRole('status').filter({ hasText: 'Seats held for checkout.' }).waitFor();
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.PricingSeatSimulator roles={[]} defaultValue={{term:'monthly',counts:{}}}/>);`);
+  assert.equal(await next.count(), 0);
+  assert.equal(await page.getByRole('spinbutton').count(), 0);
+  assert.doesNotMatch(await page.locator('#root').innerText(), /NaN|Infinity/);
+}

@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Seat Simulator and Usage Calculator now have dedicated registered regressions. Keyboard seat counts and annual terms produce exact integer line items and totals. Usage checks both a block boundary and the next started block. Failed checkout retains the chosen inputs, and retries send identical estimates. Empty roles or missing rates expose no actionable checkout; invalid rates remain disabled without non-finite values. The original draft-sync and absent-action fixture mismatches are archived. No product changes or film replacements are included. The invalid-rate mount includes a real writer, so missing callbacks cannot mask its validation gate. The original 59-item queue is verified against its Git source; every original component now has a dedicated case reachable from a production suite. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. There are now 0 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/pricing-valid-writer-registered/` and `test-results/handoff-older-probes/pricing-workflows-core-frozen.json`.
+
 - Task 5 (21 October): Split Resizer and Halftone Image now have dedicated registered regressions. The separator covers keyboard resize, collapse/restore, reset, native dragging onto the default 67% snap point and free dragging beyond its magnetic distance. Disabled panes remain explicit. Halftone uses the visible responsive controls, exports actual PNG blobs and retains exact parameters through a failed export and retry. Empty sources remain disabled. The initial snap-versus-pointer assumption is archived; source behavior, timing limits and queued films are unchanged. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. There are now 2 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/selection-navigation-registered/` and `test-results/handoff-older-probes/selection-navigation-core-frozen.json`.
 
 - Task 5 (21 October): Tree Picker, Context Rail and Stacked Tabs now have dedicated registered regressions. Locked leaves survive group toggles; ordered selection, search, keyboard focus and loading retry pass. Destination changes preserve accepted content through exact failed retries and ignore a retired request after cancellation. Tabs retain real editor drafts through close, restore and reorder failures/retries. The rail probe inspects the live drawer after its bounded exit rather than an inert retiring copy. Empty data pass without product changes; films remain queued. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. There are now 4 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/selection-navigation-registered/` and `test-results/handoff-older-probes/selection-navigation-core-frozen.json`.
@@ -729,29 +731,11 @@ runs. Earlier checkpoints and their original failures remain archived below.
 - Recording-source, demo editing and pointer-focus checks pass with their existing negative controls retained.
   Page checks also pass for granted, denied, failed and retried Pro access and private source boundaries.
 
-## 5. Write browser probes for components that have none
+## 5. Write browser probes for components that have none (complete)
 
-2 finished components still have no dedicated browser regression probe. For each, read its source and
-`meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
-`scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
-with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
-as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
-see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
+All 59 components in the original queue now have dedicated regression cases registered in the production browser runner. Their component workflows and required registry, type and unit checks pass on the recorded source checkpoints. Keyboard actions, failed callback retries with retained work and empty or invalid data are covered where applicable.
 
-
-
-
-
-
-
-
-
-
-
-
-
-`pricing-seat-simulator`
-`pricing-usage-calculator`
+The original queue is preserved at public `7070dd67`. The complete suite mapping and exact current case/source hashes are recorded in `test-results/handoff-older-probes/all-original-probes-inventory.json`. The full release checkpoint remains in task 8.
 
 ## 6. Finish parked rebuilds (complete)
 
