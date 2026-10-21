@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–21 October 2026)
 
+- Task 5 (21 October): Lens Dock now retains aria-current on the accepted page while another destination is pending. The current page marker and destination spinner remain separate. Its full native and registered keyboard workflows cover disabled items, failed opening with exact retry and aborting a superseded destination. The original missing-marker counterexample is preserved. The current pending-state capture is inspected; default presentation and its queued film are unchanged. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. Private correction: `9623b2e`. There are now 27 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/lens-dock-registered/` and `test-results/handoff-older-probes/lens-dock-core-frozen.json`.
+
 - Task 5 (21 October): All five older input probes are now registered: Cron Builder, Detent Dial, Dual Range, Expression Editor and Unit Converter. Keyboard edits, native range dragging, exact commits, retained failed saves and retries, accepted Revert, affine units and invalid/read-only inputs pass without product changes. The dial probe accepts its displayed typographic minus while still requiring exact numeric payloads. Revert and formula validation wait for existing bounded state updates; their original failures remain archived. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. There are now 28 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/inputs-registered/` and `test-results/handoff-older-probes/inputs-core-frozen.json`.
 
 - Task 5 (21 October): The four remaining date/form probes are now registered. Date Range Calendar retires booking results after a new pick, Clear or a controlled range replacement. Late success and rejection cannot settle a newer request, while equivalent controlled dates retain it. Exact failed retries, calendar keyboard selection, unavailable/disabled dates, timezone slot proposals, branching validation and draft recovery pass. The original stale-result failure and the follow-up exiting-label timing mismatch remain preserved; the regression waits for the existing bounded label transition without changing its deadline. Current calendar and draft captures are inspected. Default presentation and queued films are unchanged. The complete registered workflows, strict registry, root/all-eleven-block types and all 1,099 unit tests pass with fixed implementation inputs. Private correction: `cb29ebd`. There are now 33 older probes and 123 films outstanding. Evidence: `test-results/handoff-older-probes/date-forms-registered/` and `test-results/handoff-older-probes/date-forms-core-frozen.json`.
@@ -709,7 +711,7 @@ runs. Earlier checkpoints and their original failures remain archived below.
 
 ## 5. Write browser probes for components that have none
 
-28 finished components still have no dedicated browser regression probe. For each, read its source and
+27 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -727,7 +729,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 `features-integration-trace`, `features-shortcut-theatre`, `footer-sitemap-atlas`, `hero-layout-playground`
 `hero-signal-workbench`, `media-caption-styler`, `media-compare-grid`, `media-crop-workbench`
 `media-device-switcher`, `media-focus-lightbox`, `media-image-contact-sheet`, `media-spatial-collection`
-`media-transcript-player`, `navigation-context-rail`, `navigation-lens-dock`
+`media-transcript-player`, `navigation-context-rail`
 `navigation-stacked-tabs`, `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`
 `pricing-usage-calculator`, `social-proof-case-ledger`
 

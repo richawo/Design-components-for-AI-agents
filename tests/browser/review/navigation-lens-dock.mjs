@@ -1,0 +1,36 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.dockJobs=[];createRoot(document.getElementById('root')).render(<Subject.NavigationLensDock items={[{id:'home',label:'Home',icon:<span>H</span>},{id:'locked',label:'Locked',disabled:true,disabledReason:'Unavailable',icon:<span>L</span>},{id:'notes',label:'Notes',icon:<span>N</span>}]} defaultValue="home" onActivate={(id,item,signal)=>new Promise((resolve,reject)=>window.dockJobs.push({id,itemId:item.id,label:item.label,signal,resolve,reject}))}/>);`);
+  const home = page.locator('[data-demo="tool-home"]');
+  const locked = page.locator('[data-demo="tool-locked"]');
+  const notes = page.locator('[data-demo="tool-notes"]');
+  await home.focus();
+  await home.press('ArrowRight');
+  assert.equal(await locked.evaluate(node => node === document.activeElement), true);
+  await locked.press('Enter');
+  assert.equal(await page.evaluate(() => window.dockJobs.length), 0);
+  await locked.press('ArrowRight');
+  assert.equal(await notes.evaluate(node => node === document.activeElement), true);
+  await notes.press('Space');
+  await page.waitForFunction(() => window.dockJobs.length === 1);
+  assert.equal(await notes.getAttribute('aria-busy'), 'true');
+  assert.equal(await home.getAttribute('aria-current'), 'page');
+  await page.evaluate(() => window.dockJobs[0].reject(Error('Notes unavailable')));
+  const retry = page.locator('[data-demo="retry"]');
+  await retry.waitFor();
+  assert.equal(await home.getAttribute('aria-current'), 'page');
+  await retry.focus();
+  await retry.press('Enter');
+  await page.waitForFunction(() => window.dockJobs.length === 2);
+  assert.deepEqual(await page.evaluate(() => window.dockJobs.map(({ id, itemId, label }) => ({ id, itemId, label }))), [{ id: 'notes', itemId: 'notes', label: 'Notes' }, { id: 'notes', itemId: 'notes', label: 'Notes' }]);
+  await page.evaluate(() => window.dockJobs[1].resolve());
+  await page.waitForFunction(() => document.querySelector('[data-demo="tool-notes"]').getAttribute('aria-current') === 'page');
+  await home.click();
+  await page.waitForFunction(() => window.dockJobs.length === 3);
+  await notes.click();
+  assert.equal(await page.evaluate(() => window.dockJobs[2].signal.aborted), true);
+  await page.evaluate(() => window.dockJobs[2].resolve());
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  assert.equal(await notes.getAttribute('aria-current'), 'page');
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.NavigationLensDock items={[]}/>);`);
+  assert.equal(await page.getByRole('button').count(), 0);
+}
