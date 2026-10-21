@@ -1,6 +1,6 @@
 # Review status
 
-Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 4 older interaction probes and 123 films remain.
+Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 2 older interaction probes and 123 films remain.
 
 Task 1 (20 October): Settings Panel has a reviewed 5.7s, 131 KB first refresh film and paired settled Next poster for its stronger fields. The exact replay enables Product news, selects Compact density and saves both values once; browser playback and an independent decoder reach the same Changes saved ending. All states fit measured 832×800 framing with the complete 680px panel visible. Maximum source gap is 43ms, changed-source delivery is 37.52ms and moving-frame p95 is 18.53ms, with no stalls, unchanged guards and all 88 capture inputs fixed. The earlier original assets remain archived. All eleven blocks are complete; 59 older probes and 123 films remain. The complete 68-suite release checkpoint is next. Evidence uses `test-results/handoff-blocks/settings-panel-*`.
 
@@ -431,7 +431,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `layout-split-resizer` | new | current |  |
+| `layout-split-resizer` | new | current | Registered keyboard, native snapped/free dragging, collapse/restore, reset and disabled separators. Film queued. |
 | `layout-workspace-shell` | new | current | all eight block workflows and retained-panel/focus checks pass; header menus stay above embedded drawers |
 | `scroll-background-wipe` | new | current | complete Next-backed scroll suite passes, including exact reversal and reduced motion |
 | `scroll-chapter-stack` | new | current | complete pro-scroll-probe passes; first-frame resize release, before/after/negative replay and both-theme accessibility verified |
@@ -474,7 +474,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `navigation-context-rail` | new | current | Registered accepted destinations, exact retries, superseded signals and live drawer reopen/empty sections. Film queued. |
 | `navigation-lens-dock` | new | current | Retained accepted-page marker during pending navigation; exact retries, keyboard paths and superseded signals regression. Film queued. |
 | `navigation-stacked-tabs` | new | current | Registered retained editor drafts, close/restore/reorder retries, exact payloads and empty tabs. Film queued. |
-| `pixel-halftone-image` | new | current |  |
+| `pixel-halftone-image` | new | current | Registered visible responsive controls, actual PNG exports, exact retry parameters and empty source. Film queued. |
 | `portfolio-project-reel` | new | current | Registered keyboard project navigation, focus retention, endpoint locks and empty projects. Film queued. |
 | `pricing-seat-simulator` | new | current |  |
 | `pricing-usage-calculator` | new | current |  |

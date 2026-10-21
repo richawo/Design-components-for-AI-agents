@@ -1,0 +1,33 @@
+export async function check({ page, mount, assert }) {
+  await mount(`window.halftoneChanges=[];window.halftoneJobs=[];const source={id:'fixture-image',src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160"><path fill="#333" d="M0 0h240v160H0z"/><circle cx="120" cy="80" r="55" fill="#ddd"/></svg>'),alt:'Local tonal test image'};createRoot(document.getElementById('root')).render(<Subject.PixelHalftoneImage source={source} defaultValue={{cell:12,threshold:.2,angle:30,shape:'dot'}} onValueChange={value=>window.halftoneChanges.push({...value})} onExport={(result,signal)=>new Promise((resolve,reject)=>window.halftoneJobs.push({result:{sourceId:result.sourceId,width:result.width,height:result.height,value:{...result.value},blob:{type:result.blob.type,size:result.blob.size}},signal,resolve,reject}))}/>);`);
+  const square = page.locator('[data-demo="halftone-shape-square"]:visible');
+  await square.focus();
+  await square.press('Enter');
+  await page.waitForFunction(() => window.halftoneChanges.length === 1);
+  const cell = page.locator('[data-demo="halftone-cell"]:visible');
+  await cell.focus();
+  await cell.press('ArrowRight');
+  await page.waitForFunction(() => window.halftoneChanges.length === 2);
+  const exportButton = page.locator('[data-demo="halftone-export"]:visible');
+  await page.waitForFunction(() => !document.querySelector('[data-demo="halftone-export"]').disabled);
+  await exportButton.focus();
+  await exportButton.press('Space');
+  await page.waitForFunction(() => window.halftoneJobs.length === 1);
+  const first = await page.evaluate(() => window.halftoneJobs[0].result);
+  assert.equal(first.sourceId, 'fixture-image');
+  assert.equal(first.value.shape, 'square');
+  assert.equal(first.value.cell, 13);
+  assert.equal(first.blob.type, 'image/png');
+  assert.ok(first.blob.size > 100 && first.width > 0 && first.height > 0 && Math.max(first.width, first.height) <= 4096);
+  await page.evaluate(() => window.halftoneJobs[0].reject(Error('Export destination unavailable')));
+  await page.getByRole('alert').filter({ hasText: 'Export destination unavailable' }).waitFor();
+  assert.equal(await square.getAttribute('aria-checked'), 'true');
+  await exportButton.focus();
+  await exportButton.press('Enter');
+  await page.waitForFunction(() => window.halftoneJobs.length === 2);
+  assert.deepEqual(await page.evaluate(() => window.halftoneJobs[1].result.value), first.value);
+  await page.evaluate(() => window.halftoneJobs[1].resolve());
+  await page.getByRole('alert').waitFor({ state: 'hidden' });
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.PixelHalftoneImage source={{id:'empty',src:'',alt:'No image'}}/>);`);
+  assert.equal(await page.locator('[data-demo="halftone-export"]:visible').isDisabled(), true);
+}

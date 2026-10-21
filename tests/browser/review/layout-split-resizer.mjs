@@ -1,0 +1,51 @@
+// Keyboard, pointer drag, collapse/restore and reset use accepted separator values.
+export async function check({ page, mount, assert }) {
+  await mount(`window.splitChanges=[];createRoot(document.getElementById('root')).render(<Subject.LayoutSplitResizer orientation="horizontal" minPrimary={80} minSecondary={80} height={320} defaultValue={50} primaryLabel="Query" secondaryLabel="Result" primary={<p>Query editor stays mounted.</p>} secondary={<p>Result data stays mounted.</p>} onValueChange={(value,reason)=>window.splitChanges.push({value,reason})}/>);`);
+  const divider = page.getByRole('separator', { name: 'Resize Query and Result', exact: true });
+  await divider.focus();
+  await divider.press('ArrowRight');
+  await page.waitForFunction(() => window.splitChanges.length === 1);
+  const grown = await page.evaluate(() => window.splitChanges[0]);
+  assert.equal(grown.reason, 'keyboard');
+  assert.ok(grown.value > 50 && grown.value < 100);
+  await divider.press('Enter');
+  await page.waitForFunction(() => window.splitChanges.length === 2);
+  assert.deepEqual(await page.evaluate(() => window.splitChanges[1]), { value: 0, reason: 'collapse' });
+  const rail = page.getByRole('button', { name: 'Show Query', exact: true });
+  await rail.waitFor();
+  await rail.focus();
+  await rail.press('Space');
+  await page.waitForFunction(() => window.splitChanges.length === 3);
+  assert.deepEqual(await page.evaluate(() => window.splitChanges[2]), { value: grown.value, reason: 'restore' });
+  assert.equal(await page.getByText('Query editor stays mounted.', { exact: true }).count(), 1);
+  assert.equal(await page.getByText('Result data stays mounted.', { exact: true }).count(), 1);
+  await divider.dblclick();
+  await page.waitForFunction(() => window.splitChanges.length === 4);
+  assert.deepEqual(await page.evaluate(() => window.splitChanges[3]), { value: 50, reason: 'reset' });
+  const before = await divider.boundingBox();
+  assert.ok(before);
+  await page.mouse.move(before.x + before.width / 2, before.y + before.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(before.x + before.width / 2 + 45, before.y + before.height / 2, { steps: 8 });
+  await page.mouse.up();
+  await page.waitForFunction(() => window.splitChanges.length === 5);
+  const dragged = await page.evaluate(() => window.splitChanges[4]);
+  assert.equal(dragged.reason, 'snap');
+  assert.ok(Math.abs(dragged.value - 67) < 0.01, 'The native drag reaches the default 67% snap point');
+  await page.waitForFunction(() => Math.abs(Number(document.querySelector('[role="separator"]').getAttribute('aria-valuenow')) - 67) < 0.01);
+  const snapped = await divider.boundingBox();
+  await page.mouse.move(snapped.x + snapped.width / 2, snapped.y + snapped.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(snapped.x + snapped.width / 2 - 20, snapped.y + snapped.height / 2, { steps: 6 });
+  await page.mouse.up();
+  await page.waitForFunction(() => window.splitChanges.length === 6);
+  const free = await page.evaluate(() => window.splitChanges[5]);
+  assert.equal(free.reason, 'pointer');
+  assert.ok(free.value > 50 && free.value < 67, 'Dragging beyond the magnetic distance moves freely');
+
+  await mount(`window.readonlySplitChanges=[];createRoot(document.getElementById('root')).render(<Subject.LayoutSplitResizer disabled primary={null} secondary={null} height={320} onValueChange={(value,reason)=>window.readonlySplitChanges.push({value,reason})}/>);`);
+  await page.getByRole('separator').focus();
+  await page.keyboard.press('ArrowDown');
+  assert.deepEqual(await page.evaluate(() => window.readonlySplitChanges), []);
+  assert.equal(await page.getByRole('separator').getAttribute('aria-disabled'), 'true');
+}
