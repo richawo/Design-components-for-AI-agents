@@ -1,6 +1,6 @@
 # Review status
 
-Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 25 older interaction probes and 123 films remain.
+Current inventory (21 October): all 202 standalone reviews and all eleven block reviews are complete; 24 older interaction probes and 123 films remain.
 
 Task 1 (20 October): Settings Panel has a reviewed 5.7s, 131 KB first refresh film and paired settled Next poster for its stronger fields. The exact replay enables Product news, selects Compact density and saves both values once; browser playback and an independent decoder reach the same Changes saved ending. All states fit measured 832×800 framing with the complete 680px panel visible. Maximum source gap is 43ms, changed-source delivery is 37.52ms and moving-frame p95 is 18.53ms, with no stalls, unchanged guards and all 88 capture inputs fixed. The earlier original assets remain archived. All eleven blocks are complete; 59 older probes and 123 films remain. The complete 68-suite release checkpoint is next. Evidence uses `test-results/handoff-blocks/settings-panel-*`.
 
@@ -449,7 +449,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `button-shimmer-track` | new | current |  |
 | `cards-prismatic-folder` | new | current |  |
 | `collab-call-stage` | new | current | Full 58-layout/media suite, four painted idle/hover contrast and accessibility checks, fresh official audit and all ten reviewed captures pass. Coarse-pointer header actions retain 44px targets; native 320/390px taps, readable narrow headings and all four reviewed touch captures pass in both themes. Shared Leave text retains 5.69:1 at rest and 4.87:1 on hover. The resting-caption poster is refreshed; its film remains queued. |
-| `collab-message-list` | new | current |  |
+| `collab-message-list` | new | current | Terminal punctuation and internal-dot mentions, unknown prefixes, exact reactions/replies and failed-message retry; shared Team checks pass. Film queued. |
 | `content-interactive-spec` | new | current |  |
 | `cta-project-brief` | new | current |  |
 | `effect-border-tracer` | new | current |  |

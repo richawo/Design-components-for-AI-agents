@@ -19,7 +19,7 @@ export async function check({page,mount,assert,capture=async()=>{}}) {
     await sample('header-description',page.getByText(description,{exact:true}),textDirection);
     await sample('navigation-label',page.locator('[data-demo="nav-studio"] span').filter({hasText:name}).last(),textDirection);
     await sample('message-body',page.getByRole('log').locator('p').filter({hasText:prefix}),textDirection);
-    await sample('latin-handle',page.getByRole('log').locator('p span').filter({hasText:'@noor.'}).last(),'ltr');
+    await sample('latin-handle',page.getByRole('log').getByText('@Noor',{exact:true}),'ltr');
     await sample('message-reply-label',page.locator('[data-demo="reply-m1"] > span.whitespace-nowrap'), 'ltr');
     await sample('composer-placeholder',page.getByText('Write a message. @ mentions a person.',{exact:true}), 'ltr');
     await sample('composer-title',page.getByRole('heading',{name:'Message '+name,exact:true}),'ltr');
