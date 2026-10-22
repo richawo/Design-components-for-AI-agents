@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Backorder Allocation, Bundle Builder and Customer Timeline now have reviewed 4.78s, 5.83s and 3.93s films. They reserve 120 units under promise-date priority while retaining the 36-unit shortage and two missed promises, recover from an invalid 30% bundle discount to a valid £126 draft at 20%, and select fulfilled order 1903 with its complete £176 payment breakdown. Measured 1420px, 1340px and 1320px source scenes retain all required tables, controls, bounded history and final receipts, with matching inspected opening posters. Native playback and independent decoding agree on 287, 350 and 236 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 54 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/commerce-allocation-bundle-history/` and the individual selected-take folders.
+
 - Task 1 (22 October): Wholesale Order, Preorder Planner and Size Guide now have reviewed 5.08s, 5.08s and 4.33s films. They submit 38 units across three styles for £3,332, close a 500-unit production order with 381 customers charged £55,245 and 119 units held for launch, and convert a 96cm chest entry to 37.8in while retaining the S recommendation. Measured 1260px, 1220px and 1340px source scenes retain complete matrices, the charge confirmation, chart, measurement table and final receipts, with matching inspected opening posters. Native playback and independent decoding agree on 305, 305 and 260 frames with zero drops. Every original recording guard and source input remains fixed. Component and demo sources are unchanged. There are now 57 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/fashion-wholesale-preorder-sizing/` and the individual selected-take folders.
 
 - Task 8 (22 October), security and release checkpoint: `6fb1832e` upgrades Next.js from 16.4.0 to 16.4.2 after the original security-stop failure, which remains archived. The affected range is documented in the [Next.js advisory](https://github.com/vercel/next.js/security/advisories/GHSA-2464-fhr4-w9xw); the target-version npm advisory response is now empty. Strict registry, root/all-eleven-block types and all 1,136 unit tests pass with 2,247 implementation inputs fixed. The standard publication build and Worker dry run pass every original guard: router 2,928,301 bytes, runtime 58,982,999 bytes and compressed maps 4,903,500 bytes, retaining all 36 copied dependency files. Five focused framework suites pass against the prepared Worker. All eight local native navigation visits pass, the blocking negative control fails all eight for the expected frame delay, and all three recovery modes pass. The live public `6fb1832e` / private `26957988` marker stays fixed through eight passing production visits, all three recovery modes and eleven anonymous cache/licence boundaries. Cold Mobile Settings reaches visible preview readiness in 2,208ms; second frames stay below 57ms, previews request 11 or 12 scripts, and no browser/server failures occur. The earlier 3,038ms miss is retained; these samples do not establish a uniform latency gain or eliminate the underlying Cloudflare incident. All 60 remaining framing plans retain their exact component/demo inputs. Final film publication and the final media/build-marker check remain open. Evidence: `test-results/handoff-next-security-patch-20261022/`, `test-results/handoff-next-security-patch-release-20261022/`, `test-results/handoff-next-security-patch-browser-20261022/`, `test-results/handoff-next-security-patch-runtime-20261022/` and `test-results/handoff-next-security-patch-production-20261022/`. The nine inspected local runtime screenshots are early/clipped diagnostics with limits recorded in their visual-inspection receipt.
@@ -698,7 +700,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (57 components)
+## 1. Re-record demo videos (54 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -722,8 +724,8 @@ Slugs:
 `block-music-workspace`
 
 `fashion-assortment-planner`
-`commerce-backorder-allocation`, `commerce-bundle-builder`
-`commerce-customer-timeline`, `commerce-shipping-estimator`, `layout-split-resizer`, `layout-workspace-shell`
+
+`commerce-shipping-estimator`, `layout-split-resizer`, `layout-workspace-shell`
 `scroll-background-wipe`, `scroll-chapter-stack`, `scroll-cinema-frame`, `bg-fluted-glass`
 `bg-topographic-contours`, `button-shimmer-track`, `cards-prismatic-folder`, `collab-call-stage`
 `collab-message-list`, `content-interactive-spec`, `cta-project-brief`, `effect-border-tracer`, `effect-ink-trail`
