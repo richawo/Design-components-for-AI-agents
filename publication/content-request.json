@@ -1,16 +1,12 @@
 {
   "version": 2,
-  "requestId": "2026-10-22-next-five",
-  "mode": "weekday",
-  "requestedAt": "2026-10-22T03:28:03.020Z",
-  "privateContentCommit": "b74273ec3fac3fc660d6973ab8949bee50b9ee75",
-  "sourceInputsSha256": "92820c965ef8211ef69b81b5831230e94d9c92262e3a2ff268e117508db6f623",
-  "approvalSha256": "d059070b9d54ad1a4e8908d342e4530932ba2ea75f7d0d82d168a298d6e27ac4",
+  "requestId": "2026-10-22-blog-video-shadcnblocks",
+  "mode": "manual",
+  "requestedAt": "2026-10-22T21:13:47.944Z",
+  "privateContentCommit": "3c43bf8823e2852fa08577c26a5c75de52a9f8ff",
+  "sourceInputsSha256": "3d9ac0ee413a174c61ceca9e8142a861a9a92c123f504bc7d4a5f821f3472d84",
+  "approvalSha256": "0f58d48fe146ca414bcf007a0645a309cf5d4ed1ef915908b75406997b8aca80",
   "articleSlugs": [
-    "ui-kit-licensing-for-agencies",
-    "magic-ui-alternatives",
-    "aceternity-ui-alternatives",
-    "shadcnblocks-alternatives",
-    "react-saas-dashboard-components"
+    "shadcnblocks-alternatives"
   ]
 }
