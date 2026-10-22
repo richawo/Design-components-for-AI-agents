@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 9 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 6 films remain.
+
+Task 1 (22 October): Path Typesetter, Chapter Stack and Horizontal Showcase now have reviewed 3.45s, 3.78s and 3.58s films. They reshape and select the Wave text path, stack the architectural chapters through the complete Resolution card, and traverse the horizontal projects to Northlight. Measured 980px, 900px and 900px scenes retain the demonstrated controls and complete final cards, with inspected opening posters. The two scroll examples preserve their intentionally bounded page context and neighbouring previews. Native playback and independent decoding agree on 207, 227 and 215 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 6 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/path-typesetter-and-scroll-chapters/` and the individual selected-take folders.
 
 Task 1 (22 October): Number Odometer, Optical Weight and Outline Fill now have reviewed 5.27s, 4.73s and 4.65s films. They roll period totals before restoring Today, vary type weight before resetting, and fill the sticky headline through native essay scrolling before returning to the opening context. Measured 760px, 900px and 900px scenes retain the complete demonstrated controls and ending states, with inspected paired posters. The essay remains an intentionally bounded reading view. Native playback and independent decoding agree on 316, 284 and 279 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 9 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/odometer-weight-and-outline/` and the individual selected-take folders.
 
@@ -562,10 +564,10 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `layout-split-resizer` | current | current | Registered keyboard, native snapped/free dragging, collapse/restore, reset and disabled separators. Film queued. 22 October: a reviewed 5.53s film is current; prior rejected takes remain archived. |
 | `layout-workspace-shell` | new | current | all eight block workflows and retained-panel/focus checks pass; header menus stay above embedded drawers |
 | `scroll-background-wipe` | current | current | complete Next-backed scroll suite passes, including exact reversal and reduced motion 22 October: a reviewed 4.68s film is current; prior rejected takes remain archived. |
-| `scroll-chapter-stack` | new | current | complete pro-scroll-probe passes; first-frame resize release, before/after/negative replay and both-theme accessibility verified |
+| `scroll-chapter-stack` | current | current | complete pro-scroll-probe passes; first-frame resize release, before/after/negative replay and both-theme accessibility verified 22 October: a reviewed 3.78s film is current; prior rejected takes remain archived. |
 | `scroll-cinema-frame` | current | current | complete Next-backed scroll suite passes; exact reversal, playable WebM, offscreen pause and broken-film recovery verified 22 October: a reviewed 4.18s film is current; prior rejected takes remain archived. |
 | `scroll-expanding-mosaic` | new | current | source-fixture scroll/reversal, live demo, failed-image/empty/long-copy/reduced-motion states, controls and accessibility pass |
-| `scroll-horizontal-showcase` | new | current | source-fixture scroll/reversal, demo, keyboard, bitmap/failed-image/empty/reduced-motion states, controls and accessibility pass; project-width text layout verified |
+| `scroll-horizontal-showcase` | current | current | source-fixture scroll/reversal, demo, keyboard, bitmap/failed-image/empty/reduced-motion states, controls and accessibility pass; project-width text layout verified 22 October: a reviewed 3.58s film is current; prior rejected takes remain archived. |
 | `scroll-image-curtain` | new | current | source-fixture scroll/reversal, live demo, keyboard, failed-image/long-copy/reduced-motion states, controls and accessibility pass |
 
 ## Marketing, media, navigation and other (39)
@@ -610,7 +612,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `text-number-odometer` | current | current | 22 October: a reviewed 5.27s film is current; prior rejected takes remain archived. |
 | `text-optical-weight` | current | current | 22 October: a reviewed 4.73s film is current; prior rejected takes remain archived. |
 | `text-outline-fill` | current | current | 22 October: a reviewed 4.65s film is current; prior rejected takes remain archived. |
-| `text-path-typesetter` | new | current |  |
+| `text-path-typesetter` | current | current | 22 October: a reviewed 3.45s film is current; prior rejected takes remain archived. |
 
 ## Component bugs the new probes found (all eight resolved)
 
