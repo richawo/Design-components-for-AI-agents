@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 12 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 9 films remain.
+
+Task 1 (22 October): Number Odometer, Optical Weight and Outline Fill now have reviewed 5.27s, 4.73s and 4.65s films. They roll period totals before restoring Today, vary type weight before resetting, and fill the sticky headline through native essay scrolling before returning to the opening context. Measured 760px, 900px and 900px scenes retain the complete demonstrated controls and ending states, with inspected paired posters. The essay remains an intentionally bounded reading view. Native playback and independent decoding agree on 316, 284 and 279 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 9 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/odometer-weight-and-outline/` and the individual selected-take folders.
 
 Task 1 (22 October): Seat Simulator, Usage Calculator and Case Ledger now have reviewed 5.05s, 5.22s and 4.23s films. They hold the annual 12-seat quote for checkout, compare usage presets before restoring the 600-render included allowance, and expand the complete Norrland proof before filtering to Retail with its 84 percent median footer. The actual expanded movie middle is independently decoded and inspected; other All-page rows remain intentionally below the bounded view. Measured 980px, 980px and 900px scenes retain the demonstrated controls and complete final results, with inspected paired posters. Native playback and independent decoding agree on 303, 313 and 254 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 12 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/seat-usage-and-case-ledger/` and the individual selected-take folders.
 
@@ -605,9 +607,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `pricing-seat-simulator` | current | current | Registered keyboard seat/term edits, exact integer invoice lines, retained failed checkout retries and empty roles. Film queued. 22 October: a reviewed 5.05s film is current; prior rejected takes remain archived. |
 | `pricing-usage-calculator` | current | current | Registered started-block boundaries, exact integer estimates, retained failed checkout retries and missing/invalid rates. Film queued. 22 October: a reviewed 5.22s film is current; prior rejected takes remain archived. |
 | `social-proof-case-ledger` | current | current | Registered quotes, industry filtering, exact open/close notifications and zero-baseline/empty cases. Film queued. 22 October: a reviewed 4.23s film is current; prior rejected takes remain archived. |
-| `text-number-odometer` | new | current |  |
-| `text-optical-weight` | new | current |  |
-| `text-outline-fill` | new | current |  |
+| `text-number-odometer` | current | current | 22 October: a reviewed 5.27s film is current; prior rejected takes remain archived. |
+| `text-optical-weight` | current | current | 22 October: a reviewed 4.73s film is current; prior rejected takes remain archived. |
+| `text-outline-fill` | current | current | 22 October: a reviewed 4.65s film is current; prior rejected takes remain archived. |
 | `text-path-typesetter` | new | current |  |
 
 ## Component bugs the new probes found (all eight resolved)

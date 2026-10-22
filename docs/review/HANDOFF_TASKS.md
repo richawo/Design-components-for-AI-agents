@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Number Odometer, Optical Weight and Outline Fill now have reviewed 5.27s, 4.73s and 4.65s films. They roll period totals before restoring Today, vary type weight before resetting, and fill the sticky headline through native essay scrolling before returning to the opening context. Measured 760px, 900px and 900px scenes retain the complete demonstrated controls and ending states, with inspected paired posters. The essay remains an intentionally bounded reading view. Native playback and independent decoding agree on 316, 284 and 279 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 9 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/odometer-weight-and-outline/` and the individual selected-take folders.
+
 - Task 1 (22 October): Seat Simulator, Usage Calculator and Case Ledger now have reviewed 5.05s, 5.22s and 4.23s films. They hold the annual 12-seat quote for checkout, compare usage presets before restoring the 600-render included allowance, and expand the complete Norrland proof before filtering to Retail with its 84 percent median footer. The actual expanded movie middle is independently decoded and inspected; other All-page rows remain intentionally below the bounded view. Measured 980px, 980px and 900px scenes retain the demonstrated controls and complete final results, with inspected paired posters. Native playback and independent decoding agree on 303, 313 and 254 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 12 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/seat-usage-and-case-ledger/` and the individual selected-take folders.
 
 - Task 1 (22 October): Stacked Tabs, Halftone Image and Project Reel now have reviewed 5.32s, 4.90s and 5.48s films. They reopen the complete pricing CSV after tab actions, adjust and export the halftone still life, and traverse the project carousel before settling on Aster Health. Measured 720px, 980px and 1280px scenes retain the complete demonstrated controls, results and inspected opening posters. Native playback and independent decoding agree on 319, 294 and 329 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 15 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/stacked-tabs-halftone-and-project-reel/` and the individual selected-take folders.
@@ -740,7 +742,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (12 components)
+## 1. Re-record demo videos (9 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -767,7 +769,6 @@ Slugs:
 
 `navigation-lens-dock`
 
-`text-number-odometer`, `text-optical-weight`, `text-outline-fill`
 `text-path-typesetter`, `scroll-horizontal-showcase`, `scroll-expanding-mosaic`, `scroll-image-curtain`
 
 
