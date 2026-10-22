@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 51 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 48 films remain.
+
+Task 1 (22 October): Fluted Glass, Topographic Contours and Shimmer Track Button now have reviewed 4.40s, 4.30s and 3.95s films. They change ridge width and compare the unobstructed artwork, move the relief spotlight and increase contour density to 25, and complete the four-region deployment. The measured scenes retain all foreground text, controls and settled results, with matching inspected opening posters. Native playback and independent decoding agree on 264, 258 and 237 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 48 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/glass-contours-and-shimmer/` and the individual selected-take folders.
 
 Task 1 (22 October): Shipping Estimator, Interactive Spec and Project Brief now have reviewed 5.57s, 4.82s and 6.12s films. They book free Parcelline Economy 48 for order 4788, inspect the lamp elbow and switch its dimensions to inches, and submit the complete Website and Motion brief for a £30–60k budget this quarter. Measured 1180px, 900px and 1000px scenes retain the complete routing, specifications, controls and final receipts, with matching inspected opening posters. Native playback and independent decoding agree on 334, 289 and 367 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 51 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/shipping-spec-and-project-brief/` and the individual selected-take folders.
 
@@ -532,9 +534,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `bg-fluted-glass` | new | current |  |
-| `bg-topographic-contours` | new | current |  |
-| `button-shimmer-track` | new | current |  |
+| `bg-fluted-glass` | current | current | 22 October: a reviewed 4.40s film is current; prior rejected takes remain archived. |
+| `bg-topographic-contours` | current | current | 22 October: a reviewed 4.30s film is current; prior rejected takes remain archived. |
+| `button-shimmer-track` | current | current | 22 October: a reviewed 3.95s film is current; prior rejected takes remain archived. |
 | `cards-prismatic-folder` | new | current | Registered disclosure, exact file selections/open retries, retained preview, locked and empty files. Film queued. |
 | `collab-call-stage` | new | current | Full 58-layout/media suite, four painted idle/hover contrast and accessibility checks, fresh official audit and all ten reviewed captures pass. Coarse-pointer header actions retain 44px targets; native 320/390px taps, readable narrow headings and all four reviewed touch captures pass in both themes. Shared Leave text retains 5.69:1 at rest and 4.87:1 on hover. The resting-caption poster is refreshed; its film remains queued. |
 | `collab-message-list` | new | current | Terminal punctuation and internal-dot mentions, unknown prefixes, exact reactions/replies and failed-message retry; shared Team checks pass. Film queued. |
