@@ -22118,7 +22118,7 @@
     "demo": {
       "steps": [
         "wait:800",
-        "click:@style-kn236",
+        "click:@performer-kn236",
         "wait:1400",
         "click:@send",
         "wait:1600"

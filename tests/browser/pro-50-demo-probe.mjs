@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
+import { check as checkMerchandisingDemo } from "./review/fashion-merchandising-demo.mjs";
 // Replay the same metadata that drives the component page and recorded preview.
 // A separate copy of the steps drifts when a transition needs settling time.
 const specs = fs
@@ -91,6 +92,15 @@ try {
   )) {
     replay = { slug };
     const tier = fs.existsSync(`registry/pro/${slug}`) ? "pro" : "free";
+    if (slug === "fashion-merchandising-dashboard") {
+      await checkMerchandisingDemo({
+        page, assert,
+        mount: code => mountFixture(page, slug, tier, code),
+      });
+      assert.deepEqual(errors, [], slug);
+      console.log("PASS live replay " + slug);
+      continue;
+    }
     const meta = JSON.parse(
       fs.readFileSync(`registry/${tier}/${slug}/meta.json`),
     );
