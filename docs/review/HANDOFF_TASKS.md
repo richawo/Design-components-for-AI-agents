@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Financial Report, Commerce Workspace and Music Workspace now have reviewed 5.57s, 4.90s and 4.47s films. They export the September report after reviewing its complete cost table, record a £125 Merino crew return request and retain the complete three-track queue with Paper Lanterns paused. Their measured 940px scenes retain the fixed workspace controls, bounded content and settled final results, with matching inspected opening posters. Native playback and independent decoding agree on 334, 294 and 268 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. All eleven composed blocks now have reviewed current films. There are now 45 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/financial-commerce-and-music-blocks/` and the individual selected-take folders.
+
 - Task 1 (22 October): Fluted Glass, Topographic Contours and Shimmer Track Button now have reviewed 4.40s, 4.30s and 3.95s films. They change ridge width and compare the unobstructed artwork, move the relief spotlight and increase contour density to 25, and complete the four-region deployment. The measured scenes retain all foreground text, controls and settled results, with matching inspected opening posters. Native playback and independent decoding agree on 264, 258 and 237 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 48 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/glass-contours-and-shimmer/` and the individual selected-take folders.
 
 - Task 1 (22 October): Shipping Estimator, Interactive Spec and Project Brief now have reviewed 5.57s, 4.82s and 6.12s films. They book free Parcelline Economy 48 for order 4788, inspect the lamp elbow and switch its dimensions to inches, and submit the complete Website and Motion brief for a £30–60k budget this quarter. Measured 1180px, 900px and 1000px scenes retain the complete routing, specifications, controls and final receipts, with matching inspected opening posters. Native playback and independent decoding agree on 334, 289 and 367 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 51 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/shipping-spec-and-project-brief/` and the individual selected-take folders.
@@ -704,7 +706,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (48 components)
+## 1. Re-record demo videos (45 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -722,10 +724,6 @@ slug or per small group). Notes:
 - Demos that need a viewport bigger than the card can use `--frame-viewport` (see `docs/COMPONENT_QA.md`).
 
 Slugs:
-
-`block-financial-report`
-`block-commerce-workspace`
-`block-music-workspace`
 
 `fashion-assortment-planner`
 
