@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 119 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 118 films remain.
+
+Task 1 (22 October): Setup Checklist now has a reviewed 5.62s, 94 KB film. It completes Add your first source, opens the final task and ends at 3/3 with a readable completion receipt. Native playback and an independent 337-frame decode agree, with no dropped frames. Maximum source gap is 10ms, changed-source delivery is 54.66ms and moving-frame p95 is 17.06ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 118 films outstanding. Evidence: `test-results/handoff-films-20261022/onboarding-setup-checklist/first/`.
 
 Task 1 (22 October): Booking Slots now has a reviewed 5.63s, 72 KB film. It selects Monday 10:30, changes the visible day and accepts Tuesday 10:00 with the matching confirmation. Native playback and an independent 338-frame decode agree, with no dropped frames. Maximum source gap is 11ms, changed-source delivery is 14.47ms and moving-frame p95 is 17.61ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 119 films outstanding. Evidence: `test-results/handoff-films-20261022/date-booking-slots/first/`.
 
