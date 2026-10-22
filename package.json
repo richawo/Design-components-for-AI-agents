@@ -30,7 +30,8 @@
     "site:audit": "node scripts/audit-site-i18n.mjs",
     "audit:components": "node scripts/audit-components.mjs",
     "test:components": "node scripts/test-components.mjs",
-    "test:component-data": "node scripts/test-component-data.mjs"
+    "test:component-data": "node scripts/test-component-data.mjs",
+    "publication:request": "node scripts/request-publication.mjs"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",

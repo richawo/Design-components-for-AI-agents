@@ -39,6 +39,7 @@ import { showcaseCollections } from "../lib/showcase-collections.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 import { packContent } from "./lib/content-pack.mjs";
 import { writePublicContentRuntime } from "./lib/public-content-runtime.mjs";
+import { verifyPublicationRequest } from "./lib/publication-request.mjs";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const registryDir = path.join(root, "registry");
@@ -415,6 +416,7 @@ const mdFiles = (dir) => {
   );
 };
 const editorial = loadBlogSource(root);
+const publicationRequest = verifyPublicationRequest(root, editorial.posts);
 const editorialBundle = bundleBlog(editorial);
 let blogImages = {};
 if (editorial.posts.length) {
@@ -438,6 +440,7 @@ writeJson(path.join(root, "public", ".well-known", "design-build.json"), {
   publicCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
   privateContentCommit: editorial.posts.length && fs.existsSync(path.join(root, "registry", "pro", ".git"))
     ? execFileSync("git", ["rev-parse", "HEAD"], { cwd: path.join(root, "registry", "pro"), encoding: "utf8" }).trim() : null,
+  ...(publicationRequest ? { editorialRequest: publicationRequest } : {}),
   blogPosts: editorial.posts.filter((post) => !post.data.draft).length,
   blogLocales: editorial.posts.length ? ["en", ...Object.keys(editorialBundle.localizedBlog)] : [],
 });

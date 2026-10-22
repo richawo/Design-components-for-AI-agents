@@ -1,0 +1,26 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import {createHash} from "node:crypto";
+import {afterEach,describe,expect,it} from "vitest";
+import {publicationInputs,verifyPublicationRequest,assertPublicationDay,londonDay} from "../scripts/lib/publication-request.mjs";
+const hash=(x:string|Buffer)=>createHash("sha256").update(x).digest("hex");
+const roots:string[]=[];afterEach(()=>{for(const r of roots.splice(0))fs.rmSync(r,{recursive:true,force:true});});
+function fixture(){
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),"dfa-request-"));roots.push(root);const base=path.join(root,"registry/pro/_site");
+ const write=(file:string,data:unknown)=>{const p=path.join(base,file);fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,typeof data==="string"?data:JSON.stringify(data));return p};
+ const raw='---\nslug: test-guide\ndate: 2026-10-22\n---\nOriginal article.\n';write("blog/test-guide.md",raw);write("i18n/strings/fr.json",{});write("assets/cover.svg","<svg/>");write("config.json",{});const book='| DFA-R01 | Useful | Evidence |\n';write("research/EDITORIAL_RULES.md",book);
+ const inputs=publicationInputs(root),review={sourceSha256:hash(raw),rulebookSha256:hash(book),sourceInputsSha256:inputs.sha256,rules:[{id:"DFA-R01",verdict:"pass",reason:"Observed a worked decision",evidence:"trial.json"}],resultReviews:Array.from({length:5},(_,i)=>({url:`https://example.com/${i}`,readOn:"2026-10-22",analysis:"Read the complete page and compared scope and original value."}))};
+ const reviewPath=write("research/review.json",review),approval={requestId:"2026-10-22-test",sourceInputsSha256:inputs.sha256,rulebookSha256:hash(book),articles:[{slug:"test-guide",sourceSha256:hash(raw),review:"research/review.json",reviewSha256:hash(fs.readFileSync(reviewPath))}]};
+ const approved=write("publication/approved-batch.json",approval),request={version:1,requestId:approval.requestId,mode:"weekday",requestedAt:"2026-10-22T08:00:00Z",privateContentCommit:"a".repeat(40),sourceInputsSha256:inputs.sha256,approvalSha256:hash(fs.readFileSync(approved)),articleSlugs:["test-guide"]};
+ return{root,base,write,review,approval,request,posts:[{raw,data:{slug:"test-guide",date:"2026-10-22"}}]};
+}
+describe("source-bound publication requests",()=>{
+ it("accepts a complete approved source and binds it to the public build marker",()=>{const f=fixture();expect(verifyPublicationRequest(f.root,f.posts,f.request)?.requestId).toBe(f.request.requestId)});
+ it("rejects changed translations, assets or article source after approval",()=>{for(const file of ["i18n/strings/fr.json","assets/cover.svg","blog/test-guide.md"]){const f=fixture();f.write(file,"changed");expect(()=>verifyPublicationRequest(f.root,f.posts,f.request)).toThrow("inputs changed")}});
+ it("rejects a newer rulebook even if the article text did not change",()=>{const f=fixture();f.write("research/EDITORIAL_RULES.md","| DFA-R02 | New check | Evidence |\n");expect(()=>verifyPublicationRequest(f.root,f.posts,f.request)).toThrow("approval is stale")});
+ it("rejects failed, pending and omitted current rule verdicts",()=>{for(const verdict of ["pending","fail","missing"]){const f=fixture();f.review.rules=verdict==="missing"?[]:[{...f.review.rules[0],verdict}];const p=f.write("research/review.json",f.review);f.approval.articles[0].reviewSha256=hash(fs.readFileSync(p));const a=f.write("publication/approved-batch.json",f.approval);f.request.approvalSha256=hash(fs.readFileSync(a));expect(()=>verifyPublicationRequest(f.root,f.posts,f.request)).toThrow("current rule")}});
+ it("rejects an incomplete leading-page review set",()=>{const f=fixture();f.review.resultReviews.pop();const p=f.write("research/review.json",f.review);f.approval.articles[0].reviewSha256=hash(fs.readFileSync(p));const a=f.write("publication/approved-batch.json",f.approval);f.request.approvalSha256=hash(fs.readFileSync(a));expect(()=>verifyPublicationRequest(f.root,f.posts,f.request)).toThrow("Five to ten")});
+ it("uses London midnight and weekday boundaries, including BST",()=>{expect(londonDay("2026-06-01T23:30:00Z")).toBe("2026-06-02");expect(()=>assertPublicationDay({mode:"weekday",requestedAt:"2026-10-23T23:30:00Z",articleSlugs:["one"]},[])).toThrow("weekend")});
+ it("rejects a sixth owner already dated for the same publication day across requests",()=>{const f=fixture();expect(()=>assertPublicationDay(f.request,Array.from({length:6},()=>({data:{date:"2026-10-22"}})))).toThrow("daily ceiling")});
+});

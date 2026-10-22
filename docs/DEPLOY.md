@@ -164,7 +164,9 @@ npm run deploy:dry-run            # build and bundle without uploading
 Pro source lives in `richawo/Design-for-AI`. Pushing there doesn't rebuild
 this Worker. Either hit *Retry build* on the latest deployment, or create a
 [Deploy Hook](https://developers.cloudflare.com/workers/ci-cd/builds/deploy-hooks/)
-and call it from a GitHub Action in the Pro repo.
+and use the manual fallback workflow in the Pro repo. Normal editorial batches
+use the source-bound public publication signal described in `docs/BLOG.md`,
+which triggers the existing Cloudflare integration without an Actions job.
 
 ## Check a deployment
 

@@ -60,11 +60,34 @@ Agents can discover every language through `llms.txt` and `/sitemap.md`. The
 remote MCP `get_page` tool reads the same localized hubs and articles as their
 Markdown routes, including canonical provenance.
 
-Private `_site/` changes trigger the private repository's publishing workflow.
-It uses a scoped Cloudflare deployment hook stored as a GitHub secret; the hook
-URL must never appear in public source or logs. Production builds run the blog
-audit and tests before deploying. `/.well-known/design-build.json` identifies
-the public and private commits used to build the site.
+## Source-bound editorial publication
+
+The private hook workflow is now a manual fallback. Normal weekday publication
+uses the existing Cloudflare integration on the public repository, independently
+of GitHub Actions billing. No deployment secret enters the public signal.
+
+Complete the private source and affected dictionaries, retain the full current
+checklist verdicts and five to ten substantive leading-page reviews per owner,
+and commit `_site/publication/approved-batch.json` with its source-bound review
+records. From the public root run `npm run publication:request`, then commit and
+push only `publication/content-request.json`. It contains the private revision,
+input and approval hashes, request identity and selected slugs. Cloudflare runs
+the normal required source/locales audit, registry generation, types, tests,
+production build and unchanged package guards.
+
+Registry generation rejects a changed source/dictionary/asset, stale rulebook,
+missing or pending rule, incomplete peer review set or a sixth new owner dated
+for the same London publication day. It writes the validated request identity
+into `/.well-known/design-build.json`. Match that identity and current content
+on production before marking a request published. An uncertain attempt resumes
+the same request. The routine counts previously published owners before writing
+another batch and preserves original publication dates.
+
+A public source clone can fetch no private files without authorization. Hosted
+runs may use the connected GitHub snapshot procedure in
+`skills/design-yaps-articles/references/cloud-publishing.md`; it preserves Git
+blob identities without copying a token into the cloud shell. The actual
+Cloudflare build continues using its existing read-only private deploy key.
 
 `npm run cf:deploy` deploys the built Worker and submits indexable sitemap URLs
 to IndexNow after verifying the live build and public key file. `npm run
