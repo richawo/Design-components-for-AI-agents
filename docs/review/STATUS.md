@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 64 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 63 films remain.
+
+Task 1 (22 October): Cashflow Dashboard now has a reviewed 4.22s film. Moving the rent payment into 4 January clears the forecast floor breach; the selected week then shows its three movements and complete matching totals. The measured 1000px scene preserves both charts, the bounded transaction list, Undo and the full metrics footer, with a matching inspected poster. Native playback and independent decoding agree on 253 frames with zero dropped frames. All original recording guards and source inputs remain fixed; component and demo sources are unchanged. There are now 63 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/cashflow-payment-move/` and the individual selected-take folders.
 
 Task 1 (22 October): Receivables Aging, Reconciliation and Scenario Forecast now have reviewed 6.20s, 6.03s and 5.68s films. They send the final-notice reminder, balance all nine statement lines while retaining the uncleared cheque, and move the funding pin before saving the 14.4-month runway scenario. Complete measured 1180px, 1240px and 1080px scenes retain the required tables, controls and receipts, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. All source inputs and original recording guards remain fixed; component and demo sources are unchanged. There are now 64 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/finance-receivables-reconciliation-forecast/` and the individual selected-take folders.
 
@@ -453,7 +455,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
 | `finance-budget-variance` | new | current | rewritten, passes against Next; dark/light accessibility and responsive/state captures pass |
-| `finance-cashflow-dashboard` | new | current | rewritten, passes on Next; accessibility, responsive/state/entrance and selected-week list geometry pass |
+| `finance-cashflow-dashboard` | current | current | rewritten, passes on Next; accessibility, responsive/state/entrance and selected-week list geometry pass 22 October: a reviewed 4.22s film is current; prior rejected takes remain archived. |
 | `finance-close-checklist` | current | current | rewritten, passes 22 October: a reviewed 5.20s film is current; prior rejected takes remain archived. |
 | `finance-expense-review` | current | current | rewritten, passes 22 October: a reviewed 5.90s film is current; prior rejected takes remain archived. |
 | `finance-invoice-composer` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 6.00s film is current; prior rejected takes remain archived. |

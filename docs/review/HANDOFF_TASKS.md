@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Cashflow Dashboard now has a reviewed 4.22s film. Moving the rent payment into 4 January clears the forecast floor breach; the selected week then shows its three movements and complete matching totals. The measured 1000px scene preserves both charts, the bounded transaction list, Undo and the full metrics footer, with a matching inspected poster. Native playback and independent decoding agree on 253 frames with zero dropped frames. All original recording guards and source inputs remain fixed; component and demo sources are unchanged. There are now 63 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/cashflow-payment-move/` and the individual selected-take folders.
+
 - Task 1 (22 October): Receivables Aging, Reconciliation and Scenario Forecast now have reviewed 6.20s, 6.03s and 5.68s films. They send the final-notice reminder, balance all nine statement lines while retaining the uncleared cheque, and move the funding pin before saving the 14.4-month runway scenario. Complete measured 1180px, 1240px and 1080px scenes retain the required tables, controls and receipts, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. All source inputs and original recording guards remain fixed; component and demo sources are unchanged. There are now 64 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/finance-receivables-reconciliation-forecast/` and the individual selected-take folders.
 
 - Task 1 (22 October): Expense Review, Invoice Composer and Payment Run now have reviewed 5.90s, 6.00s and 5.53s films. They approve and reject claims before the next receipt settles, send the eight-day Net 15 invoice for 16,473 pounds, and confirm three payments totalling 23,746.40 pounds. Measured framing retains the complete required content, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Expense uses the separately pushed terminal hold. All three captures keep their source inputs fixed and pass every original recording guard. The earlier blurred-ending and source/delivery/moving-frame rejections remain archived. There are now 67 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/finance-approval-invoice-payment/` and the individual selected-take folders.
@@ -678,7 +680,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (64 components)
+## 1. Re-record demo videos (63 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -714,7 +716,7 @@ Slugs:
 `media-trim-timeline`, `navigation-context-rail`, `navigation-lens-dock`, `navigation-stacked-tabs`
 `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`, `pricing-usage-calculator`
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
-`text-path-typesetter`, `scroll-horizontal-showcase`, `scroll-expanding-mosaic`, `scroll-image-curtain`, `finance-budget-variance`, `finance-cashflow-dashboard`, `fashion-preorder-planner`, `fashion-collection-line-plan`, `fashion-merchandising-dashboard`, `fashion-size-guide`
+`text-path-typesetter`, `scroll-horizontal-showcase`, `scroll-expanding-mosaic`, `scroll-image-curtain`, `finance-budget-variance`, `fashion-preorder-planner`, `fashion-collection-line-plan`, `fashion-merchandising-dashboard`, `fashion-size-guide`
 
 
 ## 2. Retake stale posters (complete)
