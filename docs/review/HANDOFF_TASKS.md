@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Budget Guard, Dependency Board and Run Replay now have reviewed 4.82s, 4.85s and 5.22s films. They show a real cap increase to 50 dollars and resumed-step receipt, retry of the failed invoice-PDF task, and timeline playback with a visible seek and matching state. Complete controls and working content remain in frame. Native playback and independently decoded endings agree with zero dropped frames; all original guards and capture inputs stay fixed. Current posters and component/demo sources are retained. There are now 112 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/agent-guard-board-replay/` and the individual first-take folders.
+
 - Task 1 (22 October): Bullet Targets and Slope Comparison now have reviewed 3.50s and 3.48s films. Bullet Targets changes periods and settles on October values of 42 docs, 28 reviews and 86 percent. Slope Comparison selects Exports, then Editor, ending at 58 to 70 percent. Both complete neutral cards remain readable, and actual native playback agrees with independently decoded endings with zero dropped frames. Every original recording guard and all capture inputs remain fixed; current posters and component/demo sources are retained. There are now 115 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/chart-period-comparisons/` and the individual first-take folders.
 
 - Task 8 (22 October): the complete 69-suite sweep passes 68 suites and exposes a live reduced-motion race in composed Settings. All 94 standalone and eleven block metadata replays pass, with 2,070 browser inputs and all seven prepared modules fixed. Permission Matrix now honours the native media preference before its JavaScript observer catches up, while hidden and inert controls remain retired. The complete two-theme Settings workflow, the original 45ms check, the stale-observer negative control and direct retired-control focus check pass. The corrected default normal-motion captures remain byte-identical. Strict registry, root/all-eleven-block types and all 1,136 unit tests pass. The fresh receipted production build and exact prepared Worker pass both official audits and both-theme native policy checks; twenty settled audit captures are inspected. All registered workflows therefore have passing results across the full and focused runs, rather than a new all-green sweep. Private fix: `12167d2`; public regression: `dfae2157`. The three already published film rows now agree with their current media. No manual deployment or production-incident resolution is claimed. There are still 117 films outstanding. Evidence: `test-results/handoff-after-accessibility-20261022/registered-suites/`, `settings-motion/` beside it, and `test-results/handoff-settings-motion-receipted-release-20261022/`.
@@ -634,7 +636,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (115 components)
+## 1. Re-record demo videos (112 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -657,8 +659,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`agents-budget-guard`, `agents-dependency-board`
-`agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
+`ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
 `devtools-schema-migration`, `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`
 `forms-draft-rescue`, `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`

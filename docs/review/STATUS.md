@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 115 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 112 films remain.
+
+Task 1 (22 October): Budget Guard, Dependency Board and Run Replay now have reviewed 4.82s, 4.85s and 5.22s films. They show a real cap increase to 50 dollars and resumed-step receipt, retry of the failed invoice-PDF task, and timeline playback with a visible seek and matching state. Complete controls and working content remain in frame. Native playback and independently decoded endings agree with zero dropped frames; all original guards and capture inputs stay fixed. Current posters and component/demo sources are retained. There are now 112 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/agent-guard-board-replay/` and the individual first-take folders.
 
 Task 1 (22 October): Bullet Targets and Slope Comparison now have reviewed 3.50s and 3.48s films. Bullet Targets changes periods and settles on October values of 42 docs, 28 reviews and 86 percent. Slope Comparison selects Exports, then Editor, ending at 58 to 70 percent. Both complete neutral cards remain readable, and actual native playback agrees with independently decoded endings with zero dropped frames. Every original recording guard and all capture inputs remain fixed; current posters and component/demo sources are retained. There are now 115 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/chart-period-comparisons/` and the individual first-take folders.
 
@@ -323,9 +325,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `agents-budget-guard` | new | current |  |
-| `agents-dependency-board` | new | current |  |
-| `agents-run-replay` | new | current |  |
+| `agents-budget-guard` | current | current | 22 October: a reviewed 4.82s film is current; prior rejected takes remain archived. |
+| `agents-dependency-board` | current | current | 22 October: a reviewed 4.85s film is current; prior rejected takes remain archived. |
+| `agents-run-replay` | current | current | 22 October: a reviewed 5.22s film is current; prior rejected takes remain archived. |
 | `ai-answer-compare` | new | current | Dedicated native and registered interaction regression passes; keyboard paths, host notifications and empty states are covered. Product source unchanged. See the 21 October Task 5 evidence in HANDOFF_TASKS.md. |
 | `ai-context-budget` | new | current | Dedicated native and registered interaction regression passes; keyboard paths, host notifications and empty states are covered. Product source unchanged. See the 21 October Task 5 evidence in HANDOFF_TASKS.md. |
 | `ai-structured-output` | new | current | Dedicated native and registered interaction regression passes; keyboard paths, host notifications and empty states are covered. Product source unchanged. See the 21 October Task 5 evidence in HANDOFF_TASKS.md. |
