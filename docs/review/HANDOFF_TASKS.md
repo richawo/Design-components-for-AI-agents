@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Support Triage, Usage Policy and Workspace Dashboard now have reviewed 4.73s, 5.10s and 4.90s films. They route support tickets and retain an owner receipt, save the API blocking policy with a 148,000-request cap, and change the dashboard period and metric before inspecting a real chart value. Full-replay geometry verifies complete 1000px, 1020px and measured 1360px scenes, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 87 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/triage-policy-workspace-overview/` and the individual selected-take folders.
+
 - Task 1 (22 October): Notification Inbox, Report Scheduler and Saved Views now have reviewed 5.37s, 4.82s and 4.87s films. They archive and snooze inbox items, edit a report into its intended monthly draft, and save a six-account filtered view. The scheduler uses a measured 1340px viewport and matching inspected poster so its added report section and complete footer remain visible; its clipped first take is retained. Full-replay geometry checks observe every unchanged metadata step. Native playback and independently decoded endings agree with zero dropped frames; every original recording guard and capture input stays fixed. Component and demo sources are unchanged. There are now 90 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/inbox-scheduling-saved-views/` and the individual selected-take folders.
 
 - Task 1 (22 October): Expression Editor, Unit Converter and Tree Picker now have reviewed 4.52s, 4.75s and 4.75s films. They save a formula including credit, change units and adjust the ruler to 101.5 inches, and filter the hierarchy before selecting Sales EMEA with existing choices retained. Complete editors, values and final controls stay visible. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; current posters and component/demo sources are retained. There are now 93 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/expression-conversion-tree-inputs/` and the individual selected-take folders.
@@ -654,7 +656,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (90 components)
+## 1. Re-record demo videos (87 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -677,7 +679,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`saas-support-triage`, `saas-usage-policy`, `saas-workspace-dashboard`, `legal-clause-library`
+`legal-clause-library`
 `legal-document-requests`, `legal-evidence-index`, `legal-matter-dashboard`, `legal-matter-intake`
 `legal-obligation-tracker`, `legal-renewal-planner`, `legal-signature-request`, `hr-compensation-review`
 `hr-employee-onboarding`, `hr-interview-scorecard`, `hr-leave-approval`, `hr-org-explorer`, `hr-people-dashboard`

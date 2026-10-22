@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 90 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 87 films remain.
+
+Task 1 (22 October): Support Triage, Usage Policy and Workspace Dashboard now have reviewed 4.73s, 5.10s and 4.90s films. They route support tickets and retain an owner receipt, save the API blocking policy with a 148,000-request cap, and change the dashboard period and metric before inspecting a real chart value. Full-replay geometry verifies complete 1000px, 1020px and measured 1360px scenes, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 87 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/triage-policy-workspace-overview/` and the individual selected-take folders.
 
 Task 1 (22 October): Notification Inbox, Report Scheduler and Saved Views now have reviewed 5.37s, 4.82s and 4.87s films. They archive and snooze inbox items, edit a report into its intended monthly draft, and save a six-account filtered view. The scheduler uses a measured 1340px viewport and matching inspected poster so its added report section and complete footer remain visible; its clipped first take is retained. Full-replay geometry checks observe every unchanged metadata step. Native playback and independently decoded endings agree with zero dropped frames; every original recording guard and capture input stays fixed. Component and demo sources are unchanged. There are now 90 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/inbox-scheduling-saved-views/` and the individual selected-take folders.
 
@@ -392,9 +394,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `saas-notification-inbox` | current | current | rewritten, passes 22 October: a reviewed 5.37s film is current; prior rejected takes remain archived. |
 | `saas-report-scheduler` | current | current | rewritten, passes 22 October: a reviewed 4.82s film is current; prior rejected takes remain archived. |
 | `saas-saved-views` | current | current | rewritten, passes 22 October: a reviewed 4.87s film is current; prior rejected takes remain archived. |
-| `saas-support-triage` | new | current | rewritten, passes against Next; pending/rejected undo, exiting controls and invalid timestamps fixed |
-| `saas-usage-policy` | new | current | rewritten, passes (warning thresholds and empty usage fixed) |
-| `saas-workspace-dashboard` | new | current | rewritten, passes |
+| `saas-support-triage` | current | current | rewritten, passes against Next; pending/rejected undo, exiting controls and invalid timestamps fixed 22 October: a reviewed 4.73s film is current; prior rejected takes remain archived. |
+| `saas-usage-policy` | current | current | rewritten, passes (warning thresholds and empty usage fixed) 22 October: a reviewed 5.10s film is current; prior rejected takes remain archived. |
+| `saas-workspace-dashboard` | current | current | rewritten, passes 22 October: a reviewed 4.90s film is current; prior rejected takes remain archived. |
 
 ## Legal suite (9)
 
