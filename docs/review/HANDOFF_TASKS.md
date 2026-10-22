@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Icon Workbench, Incident Timeline and Release Compare now have reviewed 5.72s, 5.78s and 5.17s films. They show Compass anatomy and JSX, real incident replay followed by the pool-saturation details, and required-file review ending in a requested promotion. Icon Workbench and Release Compare retain complete validated 1000px and 1180px scenes with matching inspected posters. Native playback and independent decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 105 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/developer-inspection-tools/` and the individual selected-take folders.
+
 - Task 1 (22 October): Recovery Codes now has a reviewed 6.02s film. It reveals the existing demo codes, copies them, accepts the saved-code acknowledgement and ends on the complete confirmation with 8 of 10 codes left and clipboard copy recorded. Native playback and the independent 361-frame decode agree with zero dropped frames. All original capture guards and inputs remain fixed; the current poster and component/demo sources are retained. There are now 108 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/recovery-code-save/` and the individual selected-take folders.
 
 - Task 1 (22 October): Answer Compare, Context Budget and Structured Output now have reviewed 6.38s, 5.13s and 3.75s films. They reach a recorded answer preference, a trimmed context total of 23,140 tokens and a fully valid ten-field invoice. Context Budget uses the measured existing 1080px preview height and a matching complete poster: all states fit with zero document scrolling. Its clipped 900px take remains rejected and archived. Native playback and independent endings agree with zero dropped frames. All recording guards and capture inputs remain fixed; component and demo sources are unchanged. There are now 109 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/ai-review-context-schema/` and the individual first-take folders.
@@ -640,7 +642,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (108 components)
+## 1. Re-record demo videos (105 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -663,7 +665,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
+`devtools-request-replay`
 `devtools-schema-migration`, `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`
 `forms-draft-rescue`, `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`
 `input-unit-converter`, `selects-tree-picker`
