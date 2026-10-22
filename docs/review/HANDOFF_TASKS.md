@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Spatial Collection, Track List and Transcript Player now have reviewed 4.97s, 3.68s and 4.90s films. They move through the record shelf to Night Ferry, select and like Before the City Wakes while retaining its intentional live playback, and seek words and waveform before returning to the paused 1.9s cue. Measured 1180px, 760px and 820px scenes retain complete controls and ending states, with inspected paired posters. Native playback and independent decoding agree on 298, 221 and 294 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 20 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/shelf-playlist-and-transcript/` and the individual selected-take folders.
+
 - Task 1 (22 October): Device Switcher, Focus Lightbox and Image Contact Sheet now have reviewed 5.72s, 6.18s and 5.83s films. They compare the Porto itinerary across devices, zoom and advance the lighthouse lightbox before restoring the six-frame gallery, and send five selected monochrome exposures to edit. Measured 900px, 1360px and 1120px scenes retain the demonstrated controls and settled endings, with inspected paired posters. Device content remains intentionally bounded within its screen. Native playback and independent decoding agree on 343, 371 and 350 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 23 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/device-focus-and-contact-sheet/` and the individual selected-take folders.
 
 - Task 1 (22 October): Compare Grid now has a reviewed 5.75s film after removing one redundant consecutive zoom action. The replay inspects both paper stocks, reaches 150 percent and uses Fit to restore both complete covers to 100 percent. The complete measured 1000px scene and paired opening poster are inspected. All original timing and size limits pass, including the unchanged 600KiB ceiling; the preserved oversize first take remains unapproved. Native playback and independent decoding agree on 345 frames with zero drops. Twenty encoder-free preparation seconds and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component and recorder code are unchanged. There are now 26 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/compare-grid-single-zoom/` and the individual selected-take folders.
@@ -732,7 +734,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (23 components)
+## 1. Re-record demo videos (20 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -756,7 +758,7 @@ Slugs:
 
 `hero-layout-playground`
 `media-crop-workbench`
-`media-spatial-collection`, `media-track-list`, `media-transcript-player`
+
 `media-trim-timeline`, `navigation-context-rail`, `navigation-lens-dock`, `navigation-stacked-tabs`
 `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`, `pricing-usage-calculator`
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
