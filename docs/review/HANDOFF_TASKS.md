@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Renewal Planner and Signature Request now have reviewed 5.12s and 5.18s films. The actual renewal drag moves the as-of line from 17 October to 24 November before recording the renegotiation decision. The signature demo changes routing, sends its request and ends with Jordan signed and Maya next. Full-replay geometry supplies complete measured 1280px and 980px scenes with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames; every original recording guard and capture input stays fixed. Component and demo sources are unchanged. There are now 79 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/renewal-and-signature-routing/` and the individual selected-take folders.
+
 - Task 1 (22 October): Matter Dashboard, Matter Intake and Obligation Tracker now have reviewed 4.62s, 4.30s and 4.97s films. They filter and expand a negotiation matter, add a party and expose conflict-review results, and record DOC-502 evidence with a Done stamp. Full-replay geometry supplies complete 1180px, measured 1120px and 1060px scenes, with matching inspected posters. All lower controls, paper summaries and final states remain visible. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 81 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/legal-matter-intake-obligations/` and the individual selected-take folders.
 
 - Task 1 (22 October): Clause Library, Document Requests and Evidence Index now have reviewed 4.73s, 3.88s and 5.22s films. They compare and insert clause 7, receive the signed lease with a 3-of-5 completion count, and include exhibit C in an exported manifest while retaining its broken-chain warning. Full-replay geometry supplies complete 1220px and 920px scenes for the first two, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 84 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/legal-clause-documents-evidence/` and the individual selected-take folders.
@@ -660,7 +662,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (81 components)
+## 1. Re-record demo videos (79 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -683,7 +685,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`legal-renewal-planner`, `legal-signature-request`, `hr-compensation-review`
+`hr-compensation-review`
 `hr-employee-onboarding`, `hr-interview-scorecard`, `hr-leave-approval`, `hr-org-explorer`, `hr-people-dashboard`
 `hr-policy-acknowledgement`, `hr-shift-coverage`, `finance-close-checklist`, `finance-expense-review`
 `finance-invoice-composer`, `finance-payment-run`, `finance-receivables-aging`, `finance-reconciliation`
