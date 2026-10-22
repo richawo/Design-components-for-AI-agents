@@ -6,10 +6,12 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ButtonH
 import { AccountSignIn } from "./account-sign-in";
 import { MeasuredHeight } from "./measured-height";
 import { CopyButton } from "./copy-button";
+import { AgentConnect } from "./agent-connect";
 import { planById } from "@/lib/pricing";
 
 type Licence = { id: string; plan: string; seats: number; status: string; expiresAt: number | null; owner: boolean; active: boolean; token: string | null; members: { email: string; invitation_sent_at: number | null }[] };
-type Account = { user: { email: string }; hasBilling: boolean; pendingCheckout: boolean; licences: Licence[] };
+type Connection = { id: string; name: string; created_at: number; last_used_at: number };
+type Account = { user: { email: string }; hasBilling: boolean; pendingCheckout: boolean; licences: Licence[]; connections?: Connection[] };
 type State = { status: "loading" | "signed-out" | "unavailable" } | { status: "signed-in"; account: Account } | { status: "key"; email: string; licence: Licence };
 const names: Record<string, string> = { "pro-yearly": "Pro yearly", "pro-lifetime": "Pro lifetime", "team-yearly": "Team yearly", "team-lifetime": "Team lifetime" };
 const field = "w-full rounded-xl border border-white/[0.12] bg-site-bg px-4 py-3 text-base text-site-fg outline-none transition-colors placeholder:text-site-fg-3 focus:border-site-accent";
@@ -162,17 +164,18 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
 
           {awaiting && <div className="site-surface rounded-[24px] p-7"><h2 className="text-xl font-semibold">Your payment is being confirmed.</h2><p className="mt-2 text-sm leading-relaxed text-site-fg-2">Your licence will appear here after payment clears. You can also return from the email we send when it is ready.</p><AccountActionButton busy={busy} actionId="refresh" type="button" onClick={() => action("refresh", load)} className="site-btn site-btn-secondary mt-4 h-11 px-4 text-sm">Refresh account</AccountActionButton>{feedback("refresh")}</div>}
           {signedIn && !awaiting && !licences.some((l) => l.active) && <div className="site-surface rounded-[24px] p-7 sm:p-8"><h2 className="text-2xl font-semibold tracking-[-0.035em]">{selected ? `Continue with ${names[selected.id]}.` : "Your account is ready."}</h2><p className="mt-3 text-[15px] leading-relaxed text-site-fg-2">{selected ? `$${selected.price} USD ${selected.cadence === "year" ? "per year" : "once"}. Your licence will be linked to this email address.` : "Choose Pro to unlock the full library, prompts and private registry. Team invitations appear here when you sign in with the invited email."}</p>{selected ? <AccountActionButton busy={busy} actionId="checkout" onClick={() => action("checkout", checkout)} className="site-btn site-btn-accent mt-5 h-11 px-6 text-sm"><AccountActionLabel idle="Continue to checkout" pending="Opening checkout…" busy={busy === "checkout"} /></AccountActionButton> : <Link href="/pricing" className="site-btn site-btn-accent mt-5 h-11 px-6 text-sm">Choose a plan</Link>}{feedback("checkout")}</div>}
-          {welcome && licences.some((l) => l.active) && <p role="status" className="text-lg text-site-fg">Your library is ready. Copy your key below to connect your agents.</p>}
+          {welcome && licences.some((l) => l.active) && <p role="status" className="text-lg text-site-fg">Your library is ready. Connect your agents below.</p>}
           {licences.map((licence) => <div key={licence.id} className="site-surface site-in min-w-0 rounded-[24px] p-7 sm:p-8">
             <div className="flex flex-wrap justify-between gap-4"><div><p className="font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3">{licence.owner ? "Your licence" : "Library access"}</p><h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em]">{names[licence.plan] || licence.plan}</h2><p className="mt-2 text-[15px] text-site-fg-2">{licence.active ? licence.expiresAt ? `Access through ${new Date(licence.expiresAt * 1000).toLocaleDateString(locale === "en" ? "en-GB" : locale, { day: "numeric", month: "long", year: "numeric" })}` : "Lifetime access" : licence.status === "past_due" ? "Payment needs attention. Open billing to update your payment method." : licence.status === "refunded" ? "This payment was refunded." : licence.status === "disputed" ? "Access is suspended while the payment dispute is reviewed." : "This licence is no longer active."}</p></div></div>
             {licence.token && <LicenceKey token={licence.token} />}
             {licence.owner && licence.seats > 1 && <TeamSeats licence={licence} busy={busy?.startsWith(`team:${licence.id}:`) ? busy.slice(`team:${licence.id}:`.length) : busy === null ? null : "other"} action={(id, fn, slot = "form") => action(`team:${licence.id}:${id}`, fn, `team:${licence.id}:${slot}`)} reload={load} feedback={(slot) => feedback(`team:${licence.id}:${slot}`)} />}
           </div>)}
-          {licences.some((l) => l.active) && <div className="grid gap-6 md:grid-cols-3">{[
-            { title: "CLI", code: "npx https://design.yaps.ai/cli.tgz login <your key>", text: "Then add any Pro component with npx https://design.yaps.ai/cli.tgz add <slug>." },
-            { title: "MCP server", code: "claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp --header \"Authorization: Bearer $DESIGN_FOR_AI_LICENSE\"", text: "Use the same URL and authorization header in Cursor or Windsurf." },
-            { title: "shadcn", code: "npx shadcn@latest add @design-for-ai-pro/<slug>", text: "Add the Pro registry to components.json first. The installation guide has the full example." },
-          ].map((item) => <div key={item.title} className="site-surface min-w-0 rounded-[20px] p-5"><h3 className="font-mono text-xs uppercase tracking-[0.14em] text-site-fg-3">{item.title}</h3><p className="mt-3 overflow-x-auto rounded-xl bg-white/[0.04] p-3 font-mono text-[12px] leading-relaxed">{item.code}</p><p className="mt-3 text-sm leading-relaxed text-site-fg-2">{item.text}</p></div>)}</div>}
+          {identified && <AgentConnect licenceKey={licences.find((l) => l.active && l.token)?.token} />}
+          {signedIn && !!state.account.connections?.length && <Connections connections={state.account.connections} busy={busy} feedback={feedback}
+            disconnect={(id) => action(`disconnect:${id}`, async () => {
+              const { connections } = await post("/api/account/connections", { id }, "DELETE");
+              setState((current) => current.status === "signed-in" ? { status: "signed-in", account: { ...current.account, connections } } : current);
+            }, "connections")} />}
           {identified && <Link href="/docs/installation" className="inline-block text-sm text-site-fg-2 underline decoration-white/20 underline-offset-4">Read the installation guide</Link>}
         </>
       )}
@@ -217,5 +220,19 @@ function TeamSeats({ licence, busy, action, reload, feedback }: { licence: Licen
   return localize(<div data-account-action-scope="" className="mt-7 border-t border-white/[0.08] pt-6"><h3 className="text-xl font-semibold tracking-[-0.025em]">Team seats</h3><p className="mt-2 text-sm text-site-fg-2">{licence.members.length + 1} of {licence.seats} seats in use, including your owner seat. Members receive an email invitation and sign in to get a personal key.</p>
     {licence.members.length > 0 && <ul className="mt-4 divide-y divide-white/[0.07]">{licence.members.map((member) => <li key={member.email} className="py-3"><div className="flex flex-wrap items-center justify-between gap-3"><div className="min-w-0"><p className="break-all text-sm text-site-fg-2">{member.email}</p>{!member.invitation_sent_at && <p className="mt-1 text-xs text-site-fg-3">Invitation email needs to be sent.</p>}</div><div className="flex gap-4">{!member.invitation_sent_at && licence.active && <AccountActionButton busy={busy} actionId={`invite:${member.email}`} onClick={() => action(`invite:${member.email}`, async () => { await post("/api/account/team", { licenceId: licence.id, email: member.email }); await reload(); }, member.email)} className="min-h-11 text-sm text-site-fg-2 underline underline-offset-4">Send invitation</AccountActionButton>}<AccountActionButton busy={busy} actionId={`remove:${member.email}`} onClick={() => action(`remove:${member.email}`, async () => { await post("/api/account/team", { licenceId: licence.id, email: member.email }, "DELETE"); await reload(); }, member.email)} className="min-h-11 text-sm text-site-fg-2 underline underline-offset-4">Remove</AccountActionButton></div></div>{feedback(member.email)}</li>)}</ul>}
     {licence.active && licence.members.length < licence.seats - 1 && <form onSubmit={invite} className="mt-5"><label htmlFor={`invite-${licence.id}`} className="mb-2 block text-sm text-site-fg-2">Invite by email</label><div className="flex flex-col gap-3 sm:flex-row"><input id={`invite-${licence.id}`} type="email" required autoComplete="off" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="teammate@example.com" className={`${field} min-w-0 flex-1`} /><AccountActionButton busy={busy} actionId="invite" type="submit" className="site-btn site-btn-primary h-12 shrink-0 px-6 text-sm"><AccountActionLabel idle="Invite member" pending="Sending…" busy={busy === "invite"} /></AccountActionButton></div>{feedback("form")}</form>}
+  </div>);
+}
+
+function Connections({ connections, busy, disconnect, feedback }: { connections: Connection[]; busy: string | null; disconnect: (id: string) => Promise<void>; feedback: (scope: string) => ReactNode }) {
+  const { localize, locale } = useSiteI18n();
+  const date = (ms: number) => new Date(ms).toLocaleDateString(locale === "en" ? "en-GB" : locale, { day: "numeric", month: "short", year: "numeric" });
+  return localize(<div data-account-action-scope="" className="site-surface min-w-0 rounded-[24px] p-7 sm:p-8">
+    <h3 className="text-xl font-semibold tracking-[-0.025em]">Connected agents</h3>
+    <p className="mt-2 text-sm text-site-fg-2">Agents you approved through browser sign-in. Disconnecting one stops its access immediately.</p>
+    <ul className="mt-4 divide-y divide-white/[0.07]">{connections.map((connection) => <li key={connection.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+      <div className="min-w-0"><p className="break-words text-sm text-site-fg">{connection.name}</p><p className="mt-1 text-xs text-site-fg-3">Connected {date(connection.created_at)} · Last used {date(connection.last_used_at)}</p></div>
+      <AccountActionButton busy={busy} actionId={`disconnect:${connection.id}`} onClick={() => void disconnect(connection.id)} className="min-h-11 text-sm text-site-fg-2 underline underline-offset-4">Disconnect</AccountActionButton>
+    </li>)}</ul>
+    {feedback("connections")}
   </div>);
 }

@@ -67,8 +67,8 @@ const SCOPES = {
   detail: [...CARD_FILES, "components/site/preview-frame.tsx", "components/site/controls-panel.tsx", "components/site/source-tabs.tsx", "components/site/component-install.tsx", "components/site/accent-picker.tsx", "lib/pro-source-client.ts"],
   home: [...CARD_FILES, "components/site/home-catalogue.tsx", "lib/showcase-collections.mjs"],
   pricing: ["components/site/pricing-plans.tsx", "lib/copy.ts", "lib/pricing.ts", "lib/commerce/billing.ts", "lib/commerce/env.ts"],
-  account: ["components/site/account-panel.tsx", "components/site/account-sign-in.tsx", "lib/pricing.ts"],
-  connect: ["components/site/oauth-consent.tsx", "components/site/account-sign-in.tsx"],
+  account: ["components/site/account-panel.tsx", "components/site/account-sign-in.tsx", "components/site/agent-connect.tsx", "lib/pricing.ts"],
+  connect: ["components/site/oauth-consent.tsx", "components/site/account-sign-in.tsx", "components/site/agent-connect.tsx"],
 };
 
 export function siteCorpus(root) {
