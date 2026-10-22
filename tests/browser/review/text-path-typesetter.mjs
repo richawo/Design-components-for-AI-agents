@@ -6,13 +6,13 @@ export async function check({page,mount,assert}) {
  const handle=page.locator('[data-demo="handle-c1"]');await handle.focus();await handle.press('ArrowRight');
  await page.waitForFunction(()=>window.pathCommits.length===1);assert.ok(Math.abs(await page.evaluate(()=>window.pathCommits[0].path.c1.x)-.304)<1e-6);
  await handle.press('Shift+ArrowLeft');assert.equal(await page.evaluate(()=>window.pathCommits.length),2);assert.ok(Math.abs(await page.evaluate(()=>window.pathCommits[1].path.c1.x)-.284)<1e-6);
- const canvas=page.getByRole('img',{name:/set along a curved path/});const box=await canvas.boundingBox(),start=await handle.boundingBox();
+ const canvas=page.getByRole('group',{name:/set along a curved path/});const box=await canvas.boundingBox(),start=await handle.boundingBox();
  await page.mouse.move(start.x+start.width/2,start.y+start.height/2);await page.mouse.down();await page.mouse.move(box.x+box.width*.4,box.y+box.height*.7,{steps:12});await page.mouse.up();
  assert.equal(await page.evaluate(()=>window.pathCommits.length),3);const dragged=await page.evaluate(()=>window.pathCommits[2]);assert.ok(Math.abs(dragged.path.c1.x-.4)<.003&&Math.abs(dragged.path.c1.y-.7)<.003);
  const phrase=page.locator('[data-demo="phrase"]');await phrase.fill('One  clear line');assert.equal(await page.evaluate(()=>window.phrases.at(-1)),'One  clear line');assert.equal(await page.locator('textPath').textContent(),'One clear line');
  await page.locator('[data-demo="shape-wave"]').click();assert.equal(await page.evaluate(()=>window.pathCommits.length),4);assert.equal(await page.locator('[data-demo="shape-wave"]').getAttribute('aria-pressed'),'true');
  const align=page.getByRole('radiogroup',{name:'Alignment',exact:true});await align.getByRole('radio',{checked:true}).focus();await page.keyboard.press('ArrowRight');assert.equal(await page.evaluate(()=>window.pathCommits.at(-1).align),'end');
- await phrase.fill('');assert.equal(await page.getByRole('img',{name:'Empty path',exact:true}).count(),1);assert.equal(await page.locator('[data-demo="fit"]').count(),0,'An empty phrase has no overflowing letters to fit');
+ await phrase.fill('');assert.equal(await page.getByRole('group',{name:'Empty path',exact:true}).count(),1);assert.equal(await page.locator('[data-demo="fit"]').count(),0,'An empty phrase has no overflowing letters to fit');
  await mount(`window.pathCommits=[];createRoot(document.getElementById('root')).render(<Subject.TextPathTypesetter defaultValue={${layout}} disabled onValueCommit={value=>window.pathCommits.push(value)}/>);`);
  assert.equal(await page.locator('[data-demo="phrase"]').isDisabled(),true);await page.locator('[data-demo="handle-c1"]').focus();await page.keyboard.press('ArrowRight');assert.deepEqual(await page.evaluate(()=>window.pathCommits),[]);
  await mount(`function Host(){const[value,setValue]=React.useState(${layout});window.replacePath=setValue;return <Subject.TextPathTypesetter value={value} onValueChange={setValue}/>};createRoot(document.getElementById('root')).render(<Host/>);`);
@@ -35,7 +35,7 @@ export async function checkMorph({page,mount,assert}) {
   ]);
   await page.waitForFunction(()=>window.curveMorphCommits.length===1);
   assert.equal(await wave.getAttribute('aria-pressed'),'true');
-  const actual=await page.evaluate(()=>{const svg=document.querySelector('.tpt-canvas svg[role="img"]'),box=svg.viewBox.baseVal;return Object.fromEntries(['start','c1','c2','end'].map(key=>{const matrix=document.querySelector('[data-demo="handle-'+key+'"]').transform.baseVal.consolidate().matrix;return[key,{x:matrix.e/box.width,y:matrix.f/box.height}]}))});
+  const actual=await page.evaluate(()=>{const svg=document.querySelector('.tpt-canvas svg[role="group"]'),box=svg.viewBox.baseVal;return Object.fromEntries(['start','c1','c2','end'].map(key=>{const matrix=document.querySelector('[data-demo="handle-'+key+'"]').transform.baseVal.consolidate().matrix;return[key,{x:matrix.e/box.width,y:matrix.f/box.height}]}))});
   const saved=await page.evaluate(()=>window.curveMorphCommits[0]);
   for(const key of ['start','c1','c2','end'])for(const coordinate of ['x','y'])assert.ok(Math.abs(actual[key][coordinate]-saved.path[key][coordinate])<.0002,'The finished morph callback describes its visible control points');
  } finally {await page.emulateMedia({reducedMotion:'reduce'})}
@@ -68,7 +68,7 @@ async function checkHostLayouts({page,mount,assert}) {
    else if(kind==='unchanged-drop') {
     await handle.scrollIntoViewIfNeeded();const box=await handle.boundingBox();await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();await page.mouse.up();
    } else if(session) {
-    await handle.scrollIntoViewIfNeeded();const start=await handle.boundingBox(),canvas=await page.locator('.tpt-canvas svg[role="img"]').boundingBox();
+    await handle.scrollIntoViewIfNeeded();const start=await handle.boundingBox(),canvas=await page.locator('.tpt-canvas svg[role="group"]').boundingBox();
     await handle.evaluate(node=>{window.hostPathCancels=0;node.addEventListener('pointercancel',()=>window.hostPathCancels++)});
     const x=start.x+start.width/2,y=start.y+start.height/2,endX=canvas.x+canvas.width*.4,endY=canvas.y+canvas.height*.7;
     await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:0}]});

@@ -16,4 +16,11 @@ export async function check({page,mount,assert}) {
  await url.fill('https://api.example.test/orders?review=1');await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));assert.equal(await url.inputValue(),'https://api.example.test/orders?review=1','Edit notifications receive independent draft snapshots');assert.equal(await page.getByRole('textbox',{name:'Content-Type value',exact:true}).inputValue(),'application/json');
  await mount(`${data}window.invalidReplays=0;createRoot(document.getElementById('root')).render(<Subject.DevtoolsRequestReplay capture={capture} onReplay={async()=>{window.invalidReplays++;return {status:200,headers:[],body:'{}'}}}/>);`);
  await body.fill('{');await body.press('Control+Enter');await page.getByRole('alert').filter({hasText:'Fix the body before replaying'}).waitFor();assert.equal(await page.evaluate(()=>window.invalidReplays),0);assert.equal(await body.evaluate(node=>node===document.activeElement),true);await page.getByRole('button',{name:'Reset to original',exact:true}).focus();await page.keyboard.press('Enter');await page.waitForFunction(()=>document.querySelector('[data-demo="replay-body"]').value==='{"quantity":1}');
+ await mount(`${data}capture.response.body=JSON.stringify({items:Array.from({length:80},(_,index)=>({id:index,label:'Response item '+index}))});createRoot(document.getElementById('root')).render(<Subject.DevtoolsRequestReplay capture={capture}/>);`);
+ const response=page.getByRole('region',{name:'Response content',exact:true});
+ assert.equal(await response.evaluate(node=>node.scrollHeight>node.clientHeight),true,'A long response needs its own scroll region');
+ await response.focus();await response.press('PageDown');
+ await page.waitForFunction(()=>document.querySelector('[aria-label="Response content"]').scrollTop>0);
+ assert.equal(await response.evaluate(node=>node===document.activeElement),true,'Keyboard scrolling retains focus in the response');
+ assert.equal(await response.evaluate(node=>getComputedStyle(node).outlineStyle!=='none'&&parseFloat(getComputedStyle(node).outlineWidth)>=2),true,'The response has a visible keyboard-focus outline');
 }
