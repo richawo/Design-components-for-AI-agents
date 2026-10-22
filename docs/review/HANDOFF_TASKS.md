@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Workspace Shell now has a reviewed 4.27s film. Overview, the complete five-project table and all four Activity events fit the measured 1280 × 880 scene, including the full workspace footer and inspected opening poster. The existing direct page-frame transport at original JPEG 92 passes all unchanged recording limits: source gap 19ms, changed-source delivery 33ms and moving p95 of 18ms. Uninterrupted native playback and independent decoding agree on 256 frames with zero drops. Primary-video JSON counting repairs a preserved trailing-comma verification failure; midpoint screenshots are taken after the playthrough, with the earlier two-drop observation retained. Combined capture and completed playback monitoring remain explicit and retain twenty encoder-free preparation seconds, unchanged movie bytes and no external encoding. Both earlier rejected takes remain preserved. No component, metadata, recorder or quality-limit change, or product latency improvement, is claimed. There are now 3 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/workspace-shell-direct-page/` and the individual selected-take folders.
+
 - Task 1 (22 October): Expanding Mosaic and Image Curtain now have reviewed 4.17s and 4.27s films. They expand the centre dune from the nine-image mosaic and part the neutral editorial cover to reveal the desert scene. The measured 900px views retain the complete final image, figure, captions and demonstrated controls, with inspected opening posters. Native playback and independent decoding agree on 250 and 256 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 4 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/expanding-mosaic-and-image-curtain/` and the individual selected-take folders.
 
 - Task 1 (22 October): Path Typesetter, Chapter Stack and Horizontal Showcase now have reviewed 3.45s, 3.78s and 3.58s films. They reshape and select the Wave text path, stack the architectural chapters through the complete Resolution card, and traverse the horizontal projects to Northlight. Measured 980px, 900px and 900px scenes retain the demonstrated controls and complete final cards, with inspected opening posters. The two scroll examples preserve their intentionally bounded page context and neighbouring previews. Native playback and independent decoding agree on 207, 227 and 215 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 6 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/path-typesetter-and-scroll-chapters/` and the individual selected-take folders.
@@ -746,7 +748,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (4 components)
+## 1. Re-record demo videos (3 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -764,8 +766,6 @@ slug or per small group). Notes:
 - Demos that need a viewport bigger than the card can use `--frame-viewport` (see `docs/COMPONENT_QA.md`).
 
 Slugs:
-
-`layout-workspace-shell`
 
 `hero-layout-playground`
 `media-crop-workbench`
