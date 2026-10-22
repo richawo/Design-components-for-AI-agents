@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Close Checklist now has a reviewed 5.20s film. Both remaining tasks complete before sign-off ends with 12 of 12 done, Closed and the complete signed October paper receipt. The measured 1104 by 1100 source viewport preserves every card and control dimension, with a matching inspected poster. Native playback and the independently decoded ending agree with zero dropped frames. Every original recording guard passes; component and demo sources are unchanged. The original encoded-delivery rejection remains archived. There are now 70 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/close-checklist-signoff/` and the individual selected-take folders.
+
 - Task 1 (22 October), demo timing: Expense Review now gives the next claim 2.2 seconds after rejection to finish entering. The native exact-player comparison preserves the old ending with six unfinished text/control blurs and verifies zero with the extra 800ms. The complete receipt, policy checks and actions are inspected. Strict registry, root/all-eleven-block types and all 1,136 unit tests pass with 2,245 implementation inputs fixed. Only the terminal demo wait changes; the rejected first film remains archived and the replacement film is still queued. Translation seeding runs in a scratch workspace; display text is unchanged. The existing site audit reports 185,002 missing units and zero invalid protected terms. Evidence: `test-results/handoff-films-20261022/finance-expense-review/terminal-timing/` and `test-results/handoff-older-probes/expense-demo-terminal-final-core-frozen.json`.
 
 - Task 1 (22 October): Policy Acknowledgement and Shift Coverage now have reviewed 5.35s and 5.12s films. They reach the policy end, accept the required statements and sign with the team count moving to 8 of 12; the rota drag rejects the first target, assigns Ollie and publishes 24 of 28 covered shifts. Full-replay geometry supplies complete measured 1060px and 900px scenes with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 71 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/policy-signing-shift-publishing/` and the individual selected-take folders.
@@ -670,7 +672,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (71 components)
+## 1. Re-record demo videos (70 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -693,7 +695,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`finance-close-checklist`, `finance-expense-review`
+`finance-expense-review`
 `finance-invoice-composer`, `finance-payment-run`, `finance-receivables-aging`, `finance-reconciliation`
 `finance-scenario-forecast`, `fashion-assortment-planner`, `fashion-exchange-selector`, `fashion-launch-calendar`
 `fashion-wholesale-order`, `commerce-backorder-allocation`, `commerce-bundle-builder`

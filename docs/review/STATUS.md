@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 71 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 70 films remain.
+
+Task 1 (22 October): Close Checklist now has a reviewed 5.20s film. Both remaining tasks complete before sign-off ends with 12 of 12 done, Closed and the complete signed October paper receipt. The measured 1104 by 1100 source viewport preserves every card and control dimension, with a matching inspected poster. Native playback and the independently decoded ending agree with zero dropped frames. Every original recording guard passes; component and demo sources are unchanged. The original encoded-delivery rejection remains archived. There are now 70 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/close-checklist-signoff/` and the individual selected-take folders.
 
 Task 1 (22 October), demo timing: Expense Review now gives the next claim 2.2 seconds after rejection to finish entering. The native exact-player comparison preserves the old ending with six unfinished text/control blurs and verifies zero with the extra 800ms. The complete receipt, policy checks and actions are inspected. Strict registry, root/all-eleven-block types and all 1,136 unit tests pass with 2,245 implementation inputs fixed. Only the terminal demo wait changes; the rejected first film remains archived and the replacement film is still queued. Translation seeding runs in a scratch workspace; display text is unchanged. The existing site audit reports 185,002 missing units and zero invalid protected terms. Evidence: `test-results/handoff-films-20261022/finance-expense-review/terminal-timing/` and `test-results/handoff-older-probes/expense-demo-terminal-final-core-frozen.json`.
 
@@ -446,7 +448,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | --- | --- | --- | --- |
 | `finance-budget-variance` | new | current | rewritten, passes against Next; dark/light accessibility and responsive/state captures pass |
 | `finance-cashflow-dashboard` | new | current | rewritten, passes on Next; accessibility, responsive/state/entrance and selected-week list geometry pass |
-| `finance-close-checklist` | new | current | rewritten, passes |
+| `finance-close-checklist` | current | current | rewritten, passes 22 October: a reviewed 5.20s film is current; prior rejected takes remain archived. |
 | `finance-expense-review` | new | current | rewritten, passes |
 | `finance-invoice-composer` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `finance-payment-run` | new | current | rewritten, passes on the Next-backed source-fixture runner |
