@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 73 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 71 films remain.
+
+Task 1 (22 October): Policy Acknowledgement and Shift Coverage now have reviewed 5.35s and 5.12s films. They reach the policy end, accept the required statements and sign with the team count moving to 8 of 12; the rota drag rejects the first target, assigns Ollie and publishes 24 of 28 covered shifts. Full-replay geometry supplies complete measured 1060px and 900px scenes with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 71 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/policy-signing-shift-publishing/` and the individual selected-take folders.
 
 Task 1 (22 October): Leave Approval, Org Explorer and People Dashboard now have reviewed 5.17s, 5.55s and 3.38s films. They approve the selected leave and update allowance, navigate reporting relationships into Noor Ali, and filter the overview to Engineering with its matching metrics and events. Full-replay geometry supplies complete 1000px, measured 1000px and measured 1420px scenes with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 73 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/leave-org-people-overview/` and the individual selected-take folders.
 
@@ -433,8 +435,8 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `hr-leave-approval` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 5.17s film is current; prior rejected takes remain archived. |
 | `hr-org-explorer` | current | current | rewritten Next regression passes, including held-frame tree/search focus ownership; both-theme accessibility and successive keyboard navigation pass 22 October: a reviewed 5.55s film is current; prior rejected takes remain archived. |
 | `hr-people-dashboard` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 3.38s film is current; prior rejected takes remain archived. |
-| `hr-policy-acknowledgement` | new | current | rewritten, passes on the Next-backed source-fixture runner |
-| `hr-shift-coverage` | new | current | rewritten, passes |
+| `hr-policy-acknowledgement` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 5.35s film is current; prior rejected takes remain archived. |
+| `hr-shift-coverage` | current | current | rewritten, passes 22 October: a reviewed 5.12s film is current; prior rejected takes remain archived. |
 
 ## Finance suite (9)
 
