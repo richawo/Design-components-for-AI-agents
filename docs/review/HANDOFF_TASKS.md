@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Background Wipe and Cinema Frame now have reviewed 4.68s and 4.18s films. They reveal the complete sunrise scene and adjust its sun/readouts through the real scroll action, then expand the monochrome Low Water frame into its settled full-scene view. Measured 900px scenes retain all required story, readouts and film captions, with matching inspected opening posters. Native playback and independent decoding agree on 281 and 251 frames with zero drops. Both pass twenty encoder-free preparation seconds, every original recording guard and unchanged source/media/Git snapshots, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. Workspace Shell remains queued after its preserved screenshot and native rejections. There are now 33 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/background-wipe-and-cinema-frame/` and the individual selected-take folders.
+
 - Task 1 (22 October): Collection Line Plan now has a reviewed 3.77s film. Adding an Outerwear style and saving ends with the complete receipt for 20 options, 684 units and £35,996 shared with buying. The measured 1264×1120 scene preserves the same card, controls and complete ending text, with a matching inspected opening poster; lower categories remain outside the bounded view. The existing owned-tab transport passes every original recorder guard. Additional checks of its 215 actual input frames retain 18ms moving-frame p95, 29ms changed-source arrival and zero motion stalls. Its sole longer interval is a static reading hold with no source mutations. Native playback and independent decoding agree on 226 exported frames with zero drops. The two screenshot-based delivery rejections and the overbroad whole-stream diagnostic remain archived. Source inputs stay fixed; no component, metadata or recorder source changes, threshold relaxation or product latency improvement is claimed. There are now 35 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/collection-line-plan-owned-tab/` and the individual selected-take folders.
 
 - Task 1 (22 October): Merchandising Dashboard and Split Resizer now have reviewed 4.42s and 5.53s films. They select the visible Merino roll neck summary and retain the complete three-style £41,400 pricing-review receipt, then resize, collapse and restore the query/results split. Measured 900px and 700px scenes retain the demonstrated chart, performer list, complete fixed receipt, query and bounded results, with matching inspected opening posters. Native playback and independent decoding agree on 265 and 332 frames with zero drops. Twenty encoder-free preparation seconds and every original recording guard remain; monitoring observes no external encoding during either owned job. Sources stay fixed. Collection Line Plan remains queued after its preserved first rejection at 103.28ms changed-frame delivery against the unchanged 100ms limit. There are now 36 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/merchandising-and-split-resizer/` and the individual selected-take folders.
@@ -716,7 +718,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (35 components)
+## 1. Re-record demo videos (33 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -736,7 +738,7 @@ slug or per small group). Notes:
 Slugs:
 
 `layout-workspace-shell`
-`scroll-background-wipe`, `scroll-chapter-stack`, `scroll-cinema-frame`
+`scroll-chapter-stack`
 
 `features-integration-trace`, `features-shortcut-theatre`, `footer-sitemap-atlas`
 `hero-layout-playground`, `hero-signal-workbench`, `media-audio-transport`, `media-caption-styler`
