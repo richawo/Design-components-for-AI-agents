@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "requestId": "2026-10-22-next-five",
+  "mode": "weekday",
+  "requestedAt": "2026-10-22T03:28:03.020Z",
+  "privateContentCommit": "a112544f0a0082bd4d2858e62009947765557563",
+  "sourceInputsSha256": "92820c965ef8211ef69b81b5831230e94d9c92262e3a2ff268e117508db6f623",
+  "approvalSha256": "5ae6a3ffacd6ef8bb541b087ed115554598e347def585ebaa8d6a35001aafd2b",
+  "articleSlugs": [
+    "ui-kit-licensing-for-agencies",
+    "magic-ui-alternatives",
+    "aceternity-ui-alternatives",
+    "shadcnblocks-alternatives",
+    "react-saas-dashboard-components"
+  ]
+}
