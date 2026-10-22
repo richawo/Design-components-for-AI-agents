@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Bullet Targets and Slope Comparison now have reviewed 3.50s and 3.48s films. Bullet Targets changes periods and settles on October values of 42 docs, 28 reviews and 86 percent. Slope Comparison selects Exports, then Editor, ending at 58 to 70 percent. Both complete neutral cards remain readable, and actual native playback agrees with independently decoded endings with zero dropped frames. Every original recording guard and all capture inputs remain fixed; current posters and component/demo sources are retained. There are now 115 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/chart-period-comparisons/` and the individual first-take folders.
+
 - Task 8 (22 October): the complete 69-suite sweep passes 68 suites and exposes a live reduced-motion race in composed Settings. All 94 standalone and eleven block metadata replays pass, with 2,070 browser inputs and all seven prepared modules fixed. Permission Matrix now honours the native media preference before its JavaScript observer catches up, while hidden and inert controls remain retired. The complete two-theme Settings workflow, the original 45ms check, the stale-observer negative control and direct retired-control focus check pass. The corrected default normal-motion captures remain byte-identical. Strict registry, root/all-eleven-block types and all 1,136 unit tests pass. The fresh receipted production build and exact prepared Worker pass both official audits and both-theme native policy checks; twenty settled audit captures are inspected. All registered workflows therefore have passing results across the full and focused runs, rather than a new all-green sweep. Private fix: `12167d2`; public regression: `dfae2157`. The three already published film rows now agree with their current media. No manual deployment or production-incident resolution is claimed. There are still 117 films outstanding. Evidence: `test-results/handoff-after-accessibility-20261022/registered-suites/`, `settings-motion/` beside it, and `test-results/handoff-settings-motion-receipted-release-20261022/`.
 
 - Task 1 (22 October): Request Waterfall now has a reviewed 4.10s, 67 KB film. It selects the documents request, then the workspace request, with their actual timing details and a clear final HTTP 200 response. Native playback and an independent 246-frame decode agree, with no dropped frames. Maximum source gap is 10ms, changed-source delivery is 13.45ms and moving-frame p95 is 17.42ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 117 films outstanding. Evidence: `test-results/handoff-films-20261022/devtools-request-waterfall/first/`.
@@ -632,7 +634,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (117 components)
+## 1. Re-record demo videos (115 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -655,8 +657,6 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`chart-bullet-targets`
-`chart-slope-comparison`
 `agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
