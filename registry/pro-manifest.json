@@ -23763,7 +23763,7 @@
         "key:r",
         "wait:700",
         "click:@confirm-reject",
-        "wait:1400"
+        "wait:2200"
       ],
       "loop": false
     },
