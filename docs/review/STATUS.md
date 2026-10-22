@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 67 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 64 films remain.
+
+Task 1 (22 October): Receivables Aging, Reconciliation and Scenario Forecast now have reviewed 6.20s, 6.03s and 5.68s films. They send the final-notice reminder, balance all nine statement lines while retaining the uncleared cheque, and move the funding pin before saving the 14.4-month runway scenario. Complete measured 1180px, 1240px and 1080px scenes retain the required tables, controls and receipts, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. All source inputs and original recording guards remain fixed; component and demo sources are unchanged. There are now 64 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/finance-receivables-reconciliation-forecast/` and the individual selected-take folders.
 
 Task 1 (22 October): Expense Review, Invoice Composer and Payment Run now have reviewed 5.90s, 6.00s and 5.53s films. They approve and reject claims before the next receipt settles, send the eight-day Net 15 invoice for 16,473 pounds, and confirm three payments totalling 23,746.40 pounds. Measured framing retains the complete required content, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Expense uses the separately pushed terminal hold. All three captures keep their source inputs fixed and pass every original recording guard. The earlier blurred-ending and source/delivery/moving-frame rejections remain archived. There are now 67 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/finance-approval-invoice-payment/` and the individual selected-take folders.
 
@@ -456,9 +458,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `finance-expense-review` | current | current | rewritten, passes 22 October: a reviewed 5.90s film is current; prior rejected takes remain archived. |
 | `finance-invoice-composer` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 6.00s film is current; prior rejected takes remain archived. |
 | `finance-payment-run` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 5.53s film is current; prior rejected takes remain archived. |
-| `finance-receivables-aging` | new | current | rewritten, passes on the Next-backed source-fixture runner |
-| `finance-reconciliation` | new | current | pro-industry and demo probes pass on Next; exact currency and matched selection fixed |
-| `finance-scenario-forecast` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `finance-receivables-aging` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 6.20s film is current; prior rejected takes remain archived. |
+| `finance-reconciliation` | current | current | pro-industry and demo probes pass on Next; exact currency and matched selection fixed 22 October: a reviewed 6.03s film is current; prior rejected takes remain archived. |
+| `finance-scenario-forecast` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 5.68s film is current; prior rejected takes remain archived. |
 
 ## Fashion suite (8)
 
