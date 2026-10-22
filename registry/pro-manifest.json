@@ -30871,7 +30871,6 @@
         "hover:@proof-uncoated:0.62,0.47",
         "wait:700",
         "click:@zoom-in",
-        "click:@zoom-in",
         "wait:500",
         "hover:@proof-coated:0.35,0.82",
         "wait:600",
