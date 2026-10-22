@@ -63,8 +63,8 @@ export function PreviewFrame({
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ref = useRef<HTMLIFrameElement>(null);
   const box = useRef<HTMLDivElement>(null);
-  const width = platform === "mobile" ? "100%" : VIEWPORTS.find((v) => v.key === vp)!.width;
-  const frameHeight = platform === "mobile" ? 940 : height;
+  const width = platform === "mobile" ? "390px" : VIEWPORTS.find((v) => v.key === vp)!.width;
+  const frameHeight = platform === "mobile" ? 844 : height;
 
   /* -------------------------------------------------------------- */
   /* Tuned values and the demo, over the preview protocol            */
