@@ -42,6 +42,7 @@ const config: NextConfig = {
     return config;
   },
   experimental: { globalNotFound: true },
+  serverExternalPackages: ["@design-yaps/public-content-runtime"],
   devIndicators: false,
   agentRules: false,
   transpilePackages: [

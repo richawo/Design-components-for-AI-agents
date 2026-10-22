@@ -8,7 +8,11 @@ Generated content and social cards stay out of the public Git index.
 The readable generated `content.json` remains available for audits. Runtime
 routes import `content-packed.json`, a gzip/base64 pack decoded once per Worker
 isolate through Node zlib. This keeps the multilingual corpus below the Worker
-module limit without removing text or language editions. The content-pack test
+module limit without removing text or language editions. Registry generation also
+writes the ignored `@design-yaps/public-content-runtime` package in `node_modules`.
+Next treats it as server external so independently compiled routes share one
+packed editorial payload. Development retains the directly watched JSON bundle.
+The final deployment rejects a missing or duplicated public pack. The content-pack test
 checks the complete generated payload against the readable source.
 
 Use Node 24, matching production. Run `npm run blog:translate` after changing

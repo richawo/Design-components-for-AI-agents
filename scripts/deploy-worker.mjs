@@ -6,6 +6,7 @@ import { execFileSync } from "node:child_process";
 import { gzipSync } from "node:zlib";
 import { compactGeneratedSourceMap } from "./lib/source-map-budget.mjs";
 import { copyPreparedServerAssets } from "./lib/prepared-server-assets.mjs";
+import { assertSinglePublicContentCopy } from "./lib/public-content-runtime.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const directory = path.join(root, ".open-next", "deploy");
@@ -68,6 +69,9 @@ if (!fs.existsSync(path.join(directory, "lazy-modules/lazy-server.mjs")) ||
     fs.statSync(path.join(directory, "worker.js")).size >= 4 * 1024 * 1024) {
   throw new Error("The public Worker entrypoint lost its small lazy-server boundary");
 }
+const publicPack = JSON.parse(fs.readFileSync(path.join(root, "registry/__generated__/content-packed.json"), "utf8"));
+const packedBytes = assertSinglePublicContentCopy(fs.readFileSync(path.join(directory, "lazy-modules/lazy-server.mjs"), "utf8"), publicPack);
+console.log(`Public content: one shared ${packedBytes}-byte packed payload`);
 fs.mkdirSync(archive, { recursive: true });
 let total = 0;
 for (const name of filesIn(directory).filter((file) => file.endsWith(".map"))) {

@@ -38,6 +38,7 @@ import { conveyorVideoManifest } from "./lib/conveyor-videos.mjs";
 import { showcaseCollections } from "../lib/showcase-collections.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 import { packContent } from "./lib/content-pack.mjs";
+import { writePublicContentRuntime } from "./lib/public-content-runtime.mjs";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const registryDir = path.join(root, "registry");
@@ -430,7 +431,9 @@ const siteContent = { ...editorialBundle, blogImages, docs: mdFiles("docs") };
 buildSiteI18n(root);
 // The readable bundle supports audits; request-time code imports only its pack.
 writeJson(path.join(outDir, "content.json"), siteContent);
-writeJson(path.join(outDir, "content-packed.json"), packContent(siteContent));
+const packedPublicContent = packContent(siteContent);
+writeJson(path.join(outDir, "content-packed.json"), packedPublicContent);
+writePublicContentRuntime(root, packedPublicContent);
 writeJson(path.join(root, "public", ".well-known", "design-build.json"), {
   publicCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
   privateContentCommit: editorial.posts.length && fs.existsSync(path.join(root, "registry", "pro", ".git"))
