@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Answer Compare, Context Budget and Structured Output now have reviewed 6.38s, 5.13s and 3.75s films. They reach a recorded answer preference, a trimmed context total of 23,140 tokens and a fully valid ten-field invoice. Context Budget uses the measured existing 1080px preview height and a matching complete poster: all states fit with zero document scrolling. Its clipped 900px take remains rejected and archived. Native playback and independent endings agree with zero dropped frames. All recording guards and capture inputs remain fixed; component and demo sources are unchanged. There are now 109 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/ai-review-context-schema/` and the individual first-take folders.
+
 - Task 1 (22 October): Budget Guard, Dependency Board and Run Replay now have reviewed 4.82s, 4.85s and 5.22s films. They show a real cap increase to 50 dollars and resumed-step receipt, retry of the failed invoice-PDF task, and timeline playback with a visible seek and matching state. Complete controls and working content remain in frame. Native playback and independently decoded endings agree with zero dropped frames; all original guards and capture inputs stay fixed. Current posters and component/demo sources are retained. There are now 112 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/agent-guard-board-replay/` and the individual first-take folders.
 
 - Task 1 (22 October): Bullet Targets and Slope Comparison now have reviewed 3.50s and 3.48s films. Bullet Targets changes periods and settles on October values of 42 docs, 28 reviews and 86 percent. Slope Comparison selects Exports, then Editor, ending at 58 to 70 percent. Both complete neutral cards remain readable, and actual native playback agrees with independently decoded endings with zero dropped frames. Every original recording guard and all capture inputs remain fixed; current posters and component/demo sources are retained. There are now 115 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/chart-period-comparisons/` and the individual first-take folders.
@@ -636,7 +638,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (112 components)
+## 1. Re-record demo videos (109 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -659,7 +661,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
+`auth-recovery-codes`
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
 `devtools-schema-migration`, `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`
 `forms-draft-rescue`, `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`
