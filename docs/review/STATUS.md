@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 63 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 62 films remain.
+
+Task 1 (22 October): Budget Variance now has a reviewed 5.28s film. Engineering expands and the Cloud hosting explanation is saved, ending with the accepted note and 3 of 4 material variances explained. The measured 1024 by 960 responsive scene retains the complete header, account rows and footer with zero scrolling, plus a matching inspected opening poster. Native playback and independent decoding agree with zero dropped frames, and every original recording guard passes. Both earlier quality-rejected takes remain archived. Component and demo sources are unchanged; no permanent latency improvement is claimed. There are now 62 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/budget-variance-explanation/` and the individual selected-take folders.
 
 Task 1 (22 October): Cashflow Dashboard now has a reviewed 4.22s film. Moving the rent payment into 4 January clears the forecast floor breach; the selected week then shows its three movements and complete matching totals. The measured 1000px scene preserves both charts, the bounded transaction list, Undo and the full metrics footer, with a matching inspected poster. Native playback and independent decoding agree on 253 frames with zero dropped frames. All original recording guards and source inputs remain fixed; component and demo sources are unchanged. There are now 63 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/cashflow-payment-move/` and the individual selected-take folders.
 
@@ -454,7 +456,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `finance-budget-variance` | new | current | rewritten, passes against Next; dark/light accessibility and responsive/state captures pass |
+| `finance-budget-variance` | current | current | rewritten, passes against Next; dark/light accessibility and responsive/state captures pass 22 October: a reviewed 5.28s film is current; prior rejected takes remain archived. |
 | `finance-cashflow-dashboard` | current | current | rewritten, passes on Next; accessibility, responsive/state/entrance and selected-week list geometry pass 22 October: a reviewed 4.22s film is current; prior rejected takes remain archived. |
 | `finance-close-checklist` | current | current | rewritten, passes 22 October: a reviewed 5.20s film is current; prior rejected takes remain archived. |
 | `finance-expense-review` | current | current | rewritten, passes 22 October: a reviewed 5.90s film is current; prior rejected takes remain archived. |
