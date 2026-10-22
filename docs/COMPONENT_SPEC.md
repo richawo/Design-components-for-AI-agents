@@ -147,6 +147,11 @@ character); targets are only ever `@name`; at least one step targets an
 element; nothing is left held down. Show the component's idea in one breath:
 the state change it exists for, not a tour.
 
+Scrolling follows the virtual cursor. A `scroll:` step uses the nearest
+vertical scrolling panel with room in that direction, then its parent or the
+window. A panel's scroll containment keeps the gesture inside it. Hover over
+the intended panel before scrolling.
+
 How the live player behaves, so a demo looks the same live as in the recorded
 video (which uses real input):
 

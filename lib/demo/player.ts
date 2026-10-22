@@ -172,7 +172,7 @@ export class DemoPlayer {
         }
         return;
       case "scroll":
-        this.win.scrollBy({ top: s.px, behavior: "smooth" });
+        this.scroll(s.px);
         return this.sleep(TIMING.scrollSettle);
     }
   }
@@ -180,6 +180,21 @@ export class DemoPlayer {
   /* ---------------------------------------------------------------- */
   /* Pointer                                                            */
   /* ---------------------------------------------------------------- */
+
+  /** Start a wheel gesture under the cursor, respecting nested scroll containment. */
+  private scroll(px: number) {
+    const doc = this.win.document;
+    for (let panel = doc.elementFromPoint(this.x, this.y); panel && panel !== doc.scrollingElement; panel = panel.parentElement) {
+      const style = this.win.getComputedStyle(panel);
+      if (!["auto", "scroll"].includes(style.overflowY)) continue;
+      const hasRoom = px < 0 ? panel.scrollTop > 0 : panel.scrollTop + panel.clientHeight < panel.scrollHeight;
+      if (hasRoom || ["contain", "none"].includes(style.overscrollBehaviorY)) {
+        panel.scrollBy({ top: px, behavior: "smooth" });
+        return;
+      }
+    }
+    this.win.scrollBy({ top: px, behavior: "smooth" });
+  }
 
   private point(t: DemoTarget): [number, number] | null {
     const el = [...this.win.document.querySelectorAll(targetSelector(t.name))].find(node =>
