@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 6 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 4 films remain.
+
+Task 1 (22 October): Expanding Mosaic and Image Curtain now have reviewed 4.17s and 4.27s films. They expand the centre dune from the nine-image mosaic and part the neutral editorial cover to reveal the desert scene. The measured 900px views retain the complete final image, figure, captions and demonstrated controls, with inspected opening posters. Native playback and independent decoding agree on 250 and 256 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 4 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/expanding-mosaic-and-image-curtain/` and the individual selected-take folders.
 
 Task 1 (22 October): Path Typesetter, Chapter Stack and Horizontal Showcase now have reviewed 3.45s, 3.78s and 3.58s films. They reshape and select the Wave text path, stack the architectural chapters through the complete Resolution card, and traverse the horizontal projects to Northlight. Measured 980px, 900px and 900px scenes retain the demonstrated controls and complete final cards, with inspected opening posters. The two scroll examples preserve their intentionally bounded page context and neighbouring previews. Native playback and independent decoding agree on 207, 227 and 215 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 6 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/path-typesetter-and-scroll-chapters/` and the individual selected-take folders.
 
@@ -566,9 +568,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `scroll-background-wipe` | current | current | complete Next-backed scroll suite passes, including exact reversal and reduced motion 22 October: a reviewed 4.68s film is current; prior rejected takes remain archived. |
 | `scroll-chapter-stack` | current | current | complete pro-scroll-probe passes; first-frame resize release, before/after/negative replay and both-theme accessibility verified 22 October: a reviewed 3.78s film is current; prior rejected takes remain archived. |
 | `scroll-cinema-frame` | current | current | complete Next-backed scroll suite passes; exact reversal, playable WebM, offscreen pause and broken-film recovery verified 22 October: a reviewed 4.18s film is current; prior rejected takes remain archived. |
-| `scroll-expanding-mosaic` | new | current | source-fixture scroll/reversal, live demo, failed-image/empty/long-copy/reduced-motion states, controls and accessibility pass |
+| `scroll-expanding-mosaic` | current | current | source-fixture scroll/reversal, live demo, failed-image/empty/long-copy/reduced-motion states, controls and accessibility pass 22 October: a reviewed 4.17s film is current; prior rejected takes remain archived. |
 | `scroll-horizontal-showcase` | current | current | source-fixture scroll/reversal, demo, keyboard, bitmap/failed-image/empty/reduced-motion states, controls and accessibility pass; project-width text layout verified 22 October: a reviewed 3.58s film is current; prior rejected takes remain archived. |
-| `scroll-image-curtain` | new | current | source-fixture scroll/reversal, live demo, keyboard, failed-image/long-copy/reduced-motion states, controls and accessibility pass |
+| `scroll-image-curtain` | current | current | source-fixture scroll/reversal, live demo, keyboard, failed-image/long-copy/reduced-motion states, controls and accessibility pass 22 October: a reviewed 4.27s film is current; prior rejected takes remain archived. |
 
 ## Marketing, media, navigation and other (39)
 
