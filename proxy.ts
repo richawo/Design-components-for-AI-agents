@@ -3,6 +3,15 @@ import { localeByCode } from "@/lib/blog/locales.mjs";
 import { SITE_ROUTES, preferredLocale, localizePath } from "@/lib/i18n/routing";
 
 export function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname === "/oauth/authorize") {
+    // The approval page must never be framed or leak its query to other sites.
+    const response = NextResponse.next();
+    response.headers.set("Content-Security-Policy", "frame-ancestors 'none'");
+    response.headers.set("X-Frame-Options", "DENY");
+    response.headers.set("Referrer-Policy", "no-referrer");
+    response.headers.set("Cache-Control", "private, no-store");
+    return response;
+  }
   const parts = request.nextUrl.pathname.split("/").filter(Boolean);
   const preference = preferredLocale(request.headers.get("cookie"));
   if (preference !== "en" && (request.nextUrl.pathname === "/account" || (request.nextUrl.pathname === "/pricing" && request.nextUrl.searchParams.has("cancelled")))) {
@@ -37,4 +46,4 @@ export function proxy(request: NextRequest) {
   response.headers.set("Vary", "Accept");
   return response;
 }
-export const config = { matcher: ["/blog/:path*", "/:locale/blog/:path*", "/en/:path*", "/account", "/pricing"] };
+export const config = { matcher: ["/blog/:path*", "/:locale/blog/:path*", "/en/:path*", "/account", "/pricing", "/oauth/authorize"] };

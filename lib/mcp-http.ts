@@ -1,7 +1,7 @@
 import "server-only";
 import { commerceEnv } from "@/lib/commerce/env";
 import { requireCommerceLicense } from "@/lib/commerce/licences";
-import { ACCESS_PREFIX, accessTokenUser, accountLicence } from "@/lib/commerce/oauth";
+import { ACCESS_PREFIX, accessTokenUser, accountLicence, oauthOrigin } from "@/lib/commerce/oauth";
 import { handleMessage, type Ctx, type KeyIssue } from "@/lib/mcp";
 
 /**
@@ -26,11 +26,10 @@ type Mode = "open" | "signed-in";
 type Auth = { ctx: Ctx } | { challenge: Response };
 
 function challenge(req: Request, error?: { code: string; description: string }) {
-  const origin = new URL(req.url).origin;
   const path = new URL(req.url).pathname.replace(/\/+$/, "");
   const parts = [
     ...(error ? [`error="${error.code}"`, `error_description="${error.description}"`] : []),
-    `resource_metadata="${origin}/.well-known/oauth-protected-resource${path}"`,
+    `resource_metadata="${oauthOrigin()}/.well-known/oauth-protected-resource${path}"`,
     'scope="mcp"',
   ];
   return new Response(JSON.stringify({ error: error?.code ?? "unauthorized", error_description: error?.description ?? "Sign in to Design for AI to use this MCP server." }), {

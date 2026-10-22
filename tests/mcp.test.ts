@@ -111,7 +111,7 @@ describe("MCP connection notices", () => {
   it("challenges the signed-in endpoint so clients start browser sign-in", async () => {
     const missing = await mcpPost(rpc(), "signed-in");
     expect(missing.status).toBe(401);
-    expect(missing.headers.get("WWW-Authenticate")).toContain('resource_metadata="https://design.example.invalid/.well-known/oauth-protected-resource/mcp/pro"');
+    expect(missing.headers.get("WWW-Authenticate")).toContain('resource_metadata="https://design.yaps.ai/.well-known/oauth-protected-resource/mcp/pro"');
     const rejected = await mcpPost(rpc({ Authorization: "Bearer dfa_bad.key" }), "signed-in");
     expect(rejected.status).toBe(401);
     expect(rejected.headers.get("WWW-Authenticate")).toContain('error="invalid_token"');

@@ -1,6 +1,7 @@
 import "server-only";
 import crypto from "node:crypto";
 import type { Verified } from "@/lib/license";
+import { site } from "@/lib/site";
 import { digest, rateLimit, type AccountUser } from "./auth";
 import { CommerceError, type CommerceEnv } from "./env";
 import { accountLicences, activeLicence, licencePayload } from "./licences";
@@ -34,6 +35,13 @@ export class OAuthError extends Error {
 export type OAuthClient = { id: string; name: string; redirect_uris: string; secret_hash: string | null; created_at: number };
 export type AuthorizationRequest = { client: OAuthClient; redirectUri: string; state: string | null; challenge: string; scope: string };
 export type Connection = { id: string; name: string; created_at: number; last_used_at: number };
+
+/**
+ * The canonical origin is the issuer and resource identity everywhere. Request
+ * URLs are not used: behind the Worker router they can carry the route host or
+ * scheme, and clients require the challenge, metadata and token audience to agree.
+ */
+export const oauthOrigin = () => new URL(site.url).origin;
 
 const token = (prefix = "") => prefix + crypto.randomBytes(32).toString("base64url");
 const missingSchema = (error: unknown) => error instanceof Error && /no such table: oauth_/.test(error.message);

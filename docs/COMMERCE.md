@@ -25,6 +25,19 @@ Version 2 keys carry a signed account identity and licence ID. Every Pro request
 - Open or lost disputes suspend access. A won dispute restores access when the current payment and subscription remain valid. Manual revocations remain revoked.
 - A plan downgrade to one seat disables member access. Previously downloaded code remains governed by the licence terms.
 
+## Agent sign-in (MCP OAuth)
+
+`/mcp` stays open: free components need nothing, and a licence key header still unlocks Pro. `/mcp/pro` requires a credential. Without one it returns 401 with `WWW-Authenticate: Bearer resource_metadata=…`, and MCP clients (Claude Code, the Claude app, ChatGPT, Cursor, VS Code, Codex) run OAuth 2.1 against this site:
+
+1. Discovery: `/.well-known/oauth-protected-resource/mcp/pro` (RFC 9728) names this origin as the authorization server; `/.well-known/oauth-authorization-server` (RFC 8414) lists the endpoints.
+2. The client registers at `/oauth/register` (RFC 7591). Redirects must be HTTPS, loopback HTTP or a private-use app scheme. Public clients use no secret; clients that ask for `client_secret_post` or `client_secret_basic` receive one, stored as a digest.
+3. `/oauth/authorize` is the consent page. The user signs in with their email code if needed, sees the client name, the account's Pro status and where they will be returned, then approves. `/api/oauth/approve` re-validates the full request, requires the session and a same-origin JSON request, and issues a five-minute single-use code. The page cannot be framed.
+4. `/oauth/token` exchanges the code with PKCE (S256 only) for a one-hour access token (`dfa_at_…`) and a 90-day rotating refresh token (`dfa_rt_…`). A replayed code or rotated-out refresh token ends that connection. `/oauth/revoke` (RFC 7009) ends it on request.
+
+Tokens are stored only as `AUTH_SECRET` digests in `oauth_grants`. They are valid on the MCP endpoints only; the registry, source and download APIs keep requiring a licence key. Every MCP request resolves paid access from billing state, exactly like a browser session, so upgrades, renewals, refunds and team removals take effect without reconnecting. Signed-in accounts list their connected agents on `/account` and can disconnect each one. Rotating `AUTH_SECRET` disconnects every agent.
+
+The open endpoint explains credential problems instead of silently serving the free tier: an empty header (unset variable), an unexpanded `$VARIABLE`, a wrong scheme, or an expired, revoked or invalid key.
+
 The Worker checks the raw Stripe signature before processing an event. The endpoint is `https://design.yaps.ai/api/billing/webhook` and uses API version `2026-09-30.endive`.
 
 ## Operational setup
@@ -35,7 +48,7 @@ D1: `design-yaps-commerce`, binding `COMMERCE_DB`, database ID `d1a4a9fc-8234-45
 npx wrangler d1 migrations apply COMMERCE_DB --remote
 ```
 
-Encrypted runtime secrets are `AUTH_SECRET`, `LICENSE_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `RESEND_API_KEY`. Do not rotate `LICENSE_SECRET` casually: it signs existing keys. Rotating `AUTH_SECRET` invalidates sessions and outstanding codes.
+Encrypted runtime secrets are `AUTH_SECRET`, `LICENSE_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `RESEND_API_KEY`. Do not rotate `LICENSE_SECRET` casually: it signs existing keys. Rotating `AUTH_SECRET` invalidates sessions, outstanding codes and every agent connection.
 
 Use a dedicated restricted Stripe key with these permissions:
 

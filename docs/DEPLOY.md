@@ -127,7 +127,7 @@ provenance and the successful local/production smoke evidence.
    | Secret | Why |
    | --- | --- |
    | `LICENSE_SECRET` | Signs and verifies licence keys. 32+ random characters (`openssl rand -base64 48`). Never change it once keys are issued, or every key stops working. |
-   | `AUTH_SECRET` | Hashes email codes, sessions and rate-limit identifiers. 32+ random characters. |
+   | `AUTH_SECRET` | Hashes email codes, sessions, agent (OAuth) tokens and rate-limit identifiers. 32+ random characters. |
    | `STRIPE_SECRET_KEY` | Dedicated restricted key for checkout and billing reads. |
    | `STRIPE_WEBHOOK_SECRET` | Verifies raw events sent to `/api/billing/webhook`. |
    | `RESEND_API_KEY` | Sending-only key restricted to `yaps.ai`, for authentication and licence emails. |
@@ -139,7 +139,9 @@ provenance and the successful local/production smoke evidence.
    $179 once, $299 a year and $499 once.
 
    Apply D1 migrations before code that needs new schema:
-   `npx wrangler d1 migrations apply COMMERCE_DB --remote`.
+   `npx wrangler d1 migrations apply COMMERCE_DB --remote`. Migration
+   `0004_mcp_oauth.sql` adds the agent sign-in tables; until it is applied,
+   `/mcp/pro` sign-in answers 503 while `/mcp`, keys and accounts keep working.
 
 4. **Deploy.** Push to `main`, or hit *Retry build*. The first deploy creates
    the `design.yaps.ai` custom domain and its certificate, because `yaps.ai`
