@@ -81,7 +81,10 @@ export function cookieValue(req: Request, name: string) {
 }
 
 export async function sessionUser(env: CommerceEnv, req: Request): Promise<AccountUser | null> {
-  const token = cookieValue(req, SESSION_COOKIE);
+  return sessionTokenUser(env, cookieValue(req, SESSION_COOKIE));
+}
+
+export async function sessionTokenUser(env: CommerceEnv, token: string | null | undefined): Promise<AccountUser | null> {
   if (!token || token.length > 100) return null;
   return env.COMMERCE_DB.prepare(
     "SELECT u.id, u.email, u.stripe_customer_id FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=? AND s.expires_at>?",
