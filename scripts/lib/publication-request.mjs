@@ -51,7 +51,10 @@ export function assertPublicationDay({requestedAt,mode,articleSlugs},posts) {
 }
 export function verifyPublicationRequest(root,posts,providedRequest) {
   const file=path.join(root,"publication/content-request.json");
-  if(!providedRequest&&!fs.existsSync(file))return null;
+  if(!providedRequest&&!fs.existsSync(file)){
+    if(fs.existsSync(path.join(root,"registry/pro/_site/publication/approved-batch.json")))throw new Error("Approved editorial source requires its matching public publication request");
+    return null;
+  }
   const request=providedRequest??json(file),base=path.join(root,"registry/pro/_site");
   if(request.version!==2||!/^\d{4}-\d{2}-\d{2}-[a-z0-9-]+$/.test(request.requestId)||!/^[a-f0-9]{40}$/.test(request.privateContentCommit))throw new Error("Invalid publication request identity");
   const inputs=publicationInputs(root);

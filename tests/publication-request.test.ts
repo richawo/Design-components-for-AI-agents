@@ -17,6 +17,7 @@ function fixture(){
  return{root,base,write,review,approval,request,posts:[{raw,data:{slug:"test-guide",date:"2026-10-22"}}]};
 }
 describe("source-bound publication requests",()=>{
+ it("does not publish a newly approved private batch before its matching request arrives",()=>{const f=fixture();expect(()=>verifyPublicationRequest(f.root,f.posts)).toThrow("matching public publication request");fs.rmSync(path.join(f.base,"publication/approved-batch.json"));expect(verifyPublicationRequest(f.root,f.posts)).toBeNull()});
  it("accepts a complete approved source and binds it to the public build marker",()=>{const f=fixture();expect(verifyPublicationRequest(f.root,f.posts,f.request)?.requestId).toBe(f.request.requestId)});
  it("rejects changed translations, assets or article source after approval",()=>{for(const file of ["i18n/strings/fr.json","assets/cover.svg","blog/test-guide.md"]){const f=fixture();f.write(file,"changed");expect(()=>verifyPublicationRequest(f.root,f.posts,f.request)).toThrow("inputs changed")}});
  it("rejects a newer rulebook even if the article text did not change",()=>{const f=fixture();f.write("research/EDITORIAL_RULES.md","| DFA-R02 | New check | Evidence |\n");expect(()=>verifyPublicationRequest(f.root,f.posts,f.request)).toThrow("approval is stale")});
