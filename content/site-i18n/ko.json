@@ -1942,5 +1942,6 @@
   "The path layout is invalid.": "경로 레이아웃이 유효하지 않습니다.",
   "Unavailable": "사용할 수 없음",
   "The run report is incomplete or invalid.": "실행 보고서가 불완전하거나 유효하지 않습니다.",
-  "Database state is unconfirmed. Check it before retrying.": "데이터베이스 상태가 확인되지 않았습니다. 다시 시도하기 전에 확인하세요."
+  "Database state is unconfirmed. Check it before retrying.": "데이터베이스 상태가 확인되지 않았습니다. 다시 시도하기 전에 확인하세요.",
+  "Response content": "응답 내용"
 }

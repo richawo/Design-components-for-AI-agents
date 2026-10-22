@@ -23425,5 +23425,6 @@
   "Workspace access": "Доступ к рабочему пространству",
   "The path layout is invalid.": "Макет контура недопустим.",
   "The run report is incomplete or invalid.": "Отчёт о выполнении неполный или недействительный.",
-  "Database state is unconfirmed. Check it before retrying.": "Состояние базы данных не подтверждено. Проверьте его перед повторной попыткой."
+  "Database state is unconfirmed. Check it before retrying.": "Состояние базы данных не подтверждено. Проверьте его перед повторной попыткой.",
+  "Response content": "Содержание ответа"
 }

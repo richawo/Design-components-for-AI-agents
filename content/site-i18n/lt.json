@@ -2015,5 +2015,6 @@
   "The path layout is invalid.": "Kreivės išdėstymas netinkamas.",
   "Unavailable": "Nepasiekiama",
   "The run report is incomplete or invalid.": "Vykdymo ataskaita neišsami arba netinkama.",
-  "Database state is unconfirmed. Check it before retrying.": "Duomenų bazės būsena nepatvirtinta. Prieš bandydami dar kartą, ją patikrinkite."
+  "Database state is unconfirmed. Check it before retrying.": "Duomenų bazės būsena nepatvirtinta. Prieš bandydami dar kartą, ją patikrinkite.",
+  "Response content": "Atsakymo turinys"
 }

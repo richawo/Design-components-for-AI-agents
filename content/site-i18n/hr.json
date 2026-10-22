@@ -23425,5 +23425,6 @@
   "Workspace access": "Pristup radnom prostoru",
   "The path layout is invalid.": "Raspored putanje nije valjan.",
   "The run report is incomplete or invalid.": "Izvješće o izvršavanju nepotpuno je ili nevaljano.",
-  "Database state is unconfirmed. Check it before retrying.": "Stanje baze podataka nije potvrđeno. Provjerite ga prije ponovnog pokušaja."
+  "Database state is unconfirmed. Check it before retrying.": "Stanje baze podataka nije potvrđeno. Provjerite ga prije ponovnog pokušaja.",
+  "Response content": "Sadržaj odgovora"
 }

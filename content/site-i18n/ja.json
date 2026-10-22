@@ -23425,5 +23425,6 @@
   "Workspace access": "ワークスペースへのアクセス",
   "The path layout is invalid.": "パスのレイアウトが無効です。",
   "The run report is incomplete or invalid.": "実行レポートが不完全、または無効です。",
-  "Database state is unconfirmed. Check it before retrying.": "データベースの状態は未確認です。再試行する前に確認してください。"
+  "Database state is unconfirmed. Check it before retrying.": "データベースの状態は未確認です。再試行する前に確認してください。",
+  "Response content": "回答内容"
 }

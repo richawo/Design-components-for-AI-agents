@@ -2534,5 +2534,6 @@
   "The path layout is invalid.": "Raja paigutus ei ole sobiv.",
   "Unavailable": "Pole saadaval",
   "The run report is incomplete or invalid.": "Käitamisaruanne on puudulik või vigane.",
-  "Database state is unconfirmed. Check it before retrying.": "Andmebaasi olek on kinnitamata. Kontrolli seda enne uuesti proovimist."
+  "Database state is unconfirmed. Check it before retrying.": "Andmebaasi olek on kinnitamata. Kontrolli seda enne uuesti proovimist.",
+  "Response content": "Vastuse sisu"
 }

@@ -23425,5 +23425,6 @@
   "Workspace access": "Acesso ao espaço de trabalho",
   "The path layout is invalid.": "O layout do caminho é inválido.",
   "The run report is incomplete or invalid.": "O relatório da execução está incompleto ou é inválido.",
-  "Database state is unconfirmed. Check it before retrying.": "O estado do banco de dados não foi confirmado. Verifique antes de tentar novamente."
+  "Database state is unconfirmed. Check it before retrying.": "O estado do banco de dados não foi confirmado. Verifique antes de tentar novamente.",
+  "Response content": "Conteúdo da resposta"
 }

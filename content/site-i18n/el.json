@@ -10907,5 +10907,6 @@
   "The path layout is invalid.": "Η διάταξη της διαδρομής δεν είναι έγκυρη.",
   "Unavailable": "Μη διαθέσιμο",
   "The run report is incomplete or invalid.": "Η αναφορά εκτέλεσης είναι ελλιπής ή μη έγκυρη.",
-  "Database state is unconfirmed. Check it before retrying.": "Η κατάσταση της βάσης δεδομένων δεν έχει επιβεβαιωθεί. Ελέγξτε την πριν δοκιμάσετε ξανά."
+  "Database state is unconfirmed. Check it before retrying.": "Η κατάσταση της βάσης δεδομένων δεν έχει επιβεβαιωθεί. Ελέγξτε την πριν δοκιμάσετε ξανά.",
+  "Response content": "Περιεχόμενο απόκρισης"
 }

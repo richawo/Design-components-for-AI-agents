@@ -23425,5 +23425,6 @@
   "Workspace access": "Adgang til arbejdsområdet",
   "The path layout is invalid.": "Stilayoutet er ugyldigt.",
   "The run report is incomplete or invalid.": "Kørselsrapporten er ufuldstændig eller ugyldig.",
-  "Database state is unconfirmed. Check it before retrying.": "Databasens tilstand er ubekræftet. Kontrollér den, før du prøver igen."
+  "Database state is unconfirmed. Check it before retrying.": "Databasens tilstand er ubekræftet. Kontrollér den, før du prøver igen.",
+  "Response content": "Svarindhold"
 }

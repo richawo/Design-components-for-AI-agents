@@ -23425,5 +23425,6 @@
   "Workspace access": "Prístup k pracovnému priestoru",
   "The path layout is invalid.": "Rozloženie krivky je neplatné.",
   "The run report is incomplete or invalid.": "Správa o spustení je neúplná alebo neplatná.",
-  "Database state is unconfirmed. Check it before retrying.": "Stav databázy nie je potvrdený. Pred ďalším pokusom ho skontrolujte."
+  "Database state is unconfirmed. Check it before retrying.": "Stav databázy nie je potvrdený. Pred ďalším pokusom ho skontrolujte.",
+  "Response content": "Obsah odpovede"
 }

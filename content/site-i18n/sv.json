@@ -23425,5 +23425,6 @@
   "Workspace access": "Åtkomst till arbetsytan",
   "The path layout is invalid.": "Banans layout är ogiltig.",
   "The run report is incomplete or invalid.": "Körningsrapporten är ofullständig eller ogiltig.",
-  "Database state is unconfirmed. Check it before retrying.": "Databasens tillstånd är obekräftat. Kontrollera det innan du försöker igen."
+  "Database state is unconfirmed. Check it before retrying.": "Databasens tillstånd är obekräftat. Kontrollera det innan du försöker igen.",
+  "Response content": "Svarsinnehåll"
 }
