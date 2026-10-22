@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 54 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 51 films remain.
+
+Task 1 (22 October): Shipping Estimator, Interactive Spec and Project Brief now have reviewed 5.57s, 4.82s and 6.12s films. They book free Parcelline Economy 48 for order 4788, inspect the lamp elbow and switch its dimensions to inches, and submit the complete Website and Motion brief for a £30–60k budget this quarter. Measured 1180px, 900px and 1000px scenes retain the complete routing, specifications, controls and final receipts, with matching inspected opening posters. Native playback and independent decoding agree on 334, 289 and 367 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 51 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/shipping-spec-and-project-brief/` and the individual selected-take folders.
 
 Task 1 (22 October): Backorder Allocation, Bundle Builder and Customer Timeline now have reviewed 4.78s, 5.83s and 3.93s films. They reserve 120 units under promise-date priority while retaining the 36-unit shortage and two missed promises, recover from an invalid 30% bundle discount to a valid £126 draft at 20%, and select fulfilled order 1903 with its complete £176 payment breakdown. Measured 1420px, 1340px and 1320px source scenes retain all required tables, controls, bounded history and final receipts, with matching inspected opening posters. Native playback and independent decoding agree on 287, 350 and 236 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 54 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/commerce-allocation-bundle-history/` and the individual selected-take folders.
 
@@ -511,7 +513,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `commerce-backorder-allocation` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 4.78s film is current; prior rejected takes remain archived. |
 | `commerce-bundle-builder` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 5.83s film is current; prior rejected takes remain archived. |
 | `commerce-customer-timeline` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 3.93s film is current; prior rejected takes remain archived. |
-| `commerce-shipping-estimator` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `commerce-shipping-estimator` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 5.57s film is current; prior rejected takes remain archived. |
 
 ## Scroll and layout (8)
 
@@ -536,8 +538,8 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `cards-prismatic-folder` | new | current | Registered disclosure, exact file selections/open retries, retained preview, locked and empty files. Film queued. |
 | `collab-call-stage` | new | current | Full 58-layout/media suite, four painted idle/hover contrast and accessibility checks, fresh official audit and all ten reviewed captures pass. Coarse-pointer header actions retain 44px targets; native 320/390px taps, readable narrow headings and all four reviewed touch captures pass in both themes. Shared Leave text retains 5.69:1 at rest and 4.87:1 on hover. The resting-caption poster is refreshed; its film remains queued. |
 | `collab-message-list` | new | current | Terminal punctuation and internal-dot mentions, unknown prefixes, exact reactions/replies and failed-message retry; shared Team checks pass. Film queued. |
-| `content-interactive-spec` | new | current | Registered exact part selection, keyboard focus, imperial conversion, Escape and empty parts. Film queued. |
-| `cta-project-brief` | new | current | Registered email validation, retained failed brief, exact retry payload/receipt and empty choices. Film queued. |
+| `content-interactive-spec` | current | current | Registered exact part selection, keyboard focus, imperial conversion, Escape and empty parts. Film queued. 22 October: a reviewed 4.82s film is current; prior rejected takes remain archived. |
+| `cta-project-brief` | current | current | Registered email validation, retained failed brief, exact retry payload/receipt and empty choices. Film queued. 22 October: a reviewed 6.12s film is current; prior rejected takes remain archived. |
 | `effect-border-tracer` | new | current |  |
 | `effect-ink-trail` | new | current |  |
 | `features-compare-lenses` | new | current | Registered keyboard lens/stage selection, exact events, controlled read-only and empty stages. Film queued. |

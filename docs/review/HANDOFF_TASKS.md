@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Shipping Estimator, Interactive Spec and Project Brief now have reviewed 5.57s, 4.82s and 6.12s films. They book free Parcelline Economy 48 for order 4788, inspect the lamp elbow and switch its dimensions to inches, and submit the complete Website and Motion brief for a £30–60k budget this quarter. Measured 1180px, 900px and 1000px scenes retain the complete routing, specifications, controls and final receipts, with matching inspected opening posters. Native playback and independent decoding agree on 334, 289 and 367 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 51 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/shipping-spec-and-project-brief/` and the individual selected-take folders.
+
 - Task 1 (22 October): Backorder Allocation, Bundle Builder and Customer Timeline now have reviewed 4.78s, 5.83s and 3.93s films. They reserve 120 units under promise-date priority while retaining the 36-unit shortage and two missed promises, recover from an invalid 30% bundle discount to a valid £126 draft at 20%, and select fulfilled order 1903 with its complete £176 payment breakdown. Measured 1420px, 1340px and 1320px source scenes retain all required tables, controls, bounded history and final receipts, with matching inspected opening posters. Native playback and independent decoding agree on 287, 350 and 236 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 54 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/commerce-allocation-bundle-history/` and the individual selected-take folders.
 
 - Task 1 (22 October): Wholesale Order, Preorder Planner and Size Guide now have reviewed 5.08s, 5.08s and 4.33s films. They submit 38 units across three styles for £3,332, close a 500-unit production order with 381 customers charged £55,245 and 119 units held for launch, and convert a 96cm chest entry to 37.8in while retaining the S recommendation. Measured 1260px, 1220px and 1340px source scenes retain complete matrices, the charge confirmation, chart, measurement table and final receipts, with matching inspected opening posters. Native playback and independent decoding agree on 305, 305 and 260 frames with zero drops. Every original recording guard and source input remains fixed. Component and demo sources are unchanged. There are now 57 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/fashion-wholesale-preorder-sizing/` and the individual selected-take folders.
@@ -700,7 +702,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (54 components)
+## 1. Re-record demo videos (51 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -725,10 +727,10 @@ Slugs:
 
 `fashion-assortment-planner`
 
-`commerce-shipping-estimator`, `layout-split-resizer`, `layout-workspace-shell`
+`layout-split-resizer`, `layout-workspace-shell`
 `scroll-background-wipe`, `scroll-chapter-stack`, `scroll-cinema-frame`, `bg-fluted-glass`
 `bg-topographic-contours`, `button-shimmer-track`, `cards-prismatic-folder`, `collab-call-stage`
-`collab-message-list`, `content-interactive-spec`, `cta-project-brief`, `effect-border-tracer`, `effect-ink-trail`
+`collab-message-list`, `effect-border-tracer`, `effect-ink-trail`
 `features-compare-lenses`, `features-integration-trace`, `features-shortcut-theatre`, `footer-sitemap-atlas`
 `hero-layout-playground`, `hero-signal-workbench`, `media-audio-transport`, `media-caption-styler`
 `media-compare-grid`, `media-crop-workbench`, `media-device-switcher`, `media-focus-lightbox`
