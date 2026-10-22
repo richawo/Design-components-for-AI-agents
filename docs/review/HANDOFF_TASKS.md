@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–23 October 2026)
 
+- Final checkpoint (23 October): all eight handoff tasks are complete. All 202 standalone reviews, eleven blocks, 59 older probes and 123 films are finished. The final package passes the standard publication build, existing Worker budgets, five framework suites, all 33 mobile sizing routes and prepared-runtime navigation/recovery checks. Production at public `b166c37d` / private `d8de14ce` passes eight throttled navigation visits, three recovery modes, eleven licence/cache checks and exact-byte delivery of all 246 approved movie/poster files. The existing translation coverage gap retains English fallback. See Task 8 and `test-results/handoff-final-small/final-release-proof.json` for the complete scope and evidence.
+
 - Tasks 1 to 7 checkpoint (23 October): all 202 standalone reviews, eleven block reviews, 59 older probes and 123 film refreshes are complete. The final audit confirms all 246 committed movie/poster files against their approved capture bytes, unchanged recording limits, native zero-drop playback and independent frame decoding. Mobile-only previews are also fixed and verified live across all 33 components. The final localization audit retains the existing 185,002 missing units with English fallback, and zero invalid placeholders or protected terms; this styling/demo work adds no display keys. Final package budgets, prepared-runtime checks and current production media delivery remain in Task 8. Evidence: `test-results/handoff-final-small/final-123-film-committed-byte-audit.json`, `test-results/handoff-final-small/final-site-i18n-audit.log` and `test-results/handoff-mobile-preview-sizing-20261022/`.
 
 - Task 1 (22 October): Layout Playground, Crop Workbench and Lens Dock now have reviewed 3.67s, 6.13s and 4.37s films. They resize and restore the complete booking card, save the 5,071 × 2,852 straightened crop, and visibly magnify dock icons before selecting Notes. Complete 1280px scenes retain their 1000px, 980px and 620px heights, demonstrated controls and inspected opening posters. The existing direct page-frame transport retains original JPEG 92 and every source, delivery, moving-frame, size and duration limit. Uninterrupted native playback and independent decoding agree on 220, 368 and 262 frames with zero drops. Twenty encoder-free preparation seconds and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Every earlier rejection remains archived and unapproved. No component, metadata, recorder or quality-limit change, or product latency improvement, is claimed. There are now 0 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/final-layout-crop-and-dock/` and the individual selected-take folders.
@@ -763,7 +765,7 @@ The complete inventory is `test-results/handoff-final-small/final-123-film-commi
 Individual capture, playback, visual-review and publication receipts remain under
 `test-results/handoff-films-20261022/<slug>/<selected-take>/`. No film slugs remain queued.
 
-Final prepared-package and production delivery verification continues in Task 8.
+Final prepared-package and production delivery verification is complete in Task 8.
 
 ## 2. Retake stale posters (complete)
 
@@ -896,11 +898,66 @@ Commerce completed its full review with this dependency; ten other blocks remain
 - **Smaller components** (#151–179) are reviewed.
 - **Blocks**, after their parts: all eleven published `block-*` components are reviewed with their rebuilt dependencies. Their source, workflow, integration and media evidence remains in the progress notes and `STATUS.md`. The earlier count of 12 was stale: both repositories and all published block metadata contain these eleven, with every declared dependency available.
 
-## 8. Final release checks
+## 8. Final release checks (complete)
 
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Final all-media checkpoint: 23 October 2026
+
+The final build and production checks use public `b166c37d` / private `d8de14ce`. All 123 reviewed films and
+their paired posters match the approved committed bytes in both the frozen package and actual production
+responses. The live build marker matches both intended commits and stays fixed through each production check.
+
+Strict registry validation, root/all-eleven-block TypeScript and all **1,136 tests in 54 files** pass with
+2,248 implementation inputs fixed. The standard `cf:build` completes all five publication-receipt stages,
+then `deploy-worker --dry-run` passes every original guard. No publication receipt or budget is bypassed.
+
+| Artifact | Measured bytes | Existing limit |
+| --- | ---: | ---: |
+| Public router | 2,928,301 | 4 MiB |
+| Runtime modules | 59,028,800 | 64 MiB |
+| Gzipped source maps | 4,903,284 | 15,000,000 |
+
+All 36 runtime files behind the three known copy diagnostics are present and byte-identical. The exact seven
+runtime modules and 14,694 assets are preserved in an ignored frozen snapshot. Its 246 approved media files
+match the committed-byte audit. The owned local server and its recorded children are stopped after verification.
+
+All five original framework suites pass against this package: preview CSS, component pages, block pages,
+demo scrolling and fashion workflows. The mobile sizing regression passes **33 routes and 42 cases**, with
+zero page errors. Mobile-only previews use a 390 × 844 phone viewport capped to narrower containers; web
+Desktop/Tablet/Mobile controls remain covered. The separately preserved production sizing sweep also passes.
+
+The earlier full 70-suite run passed 65 suites; unchanged focused checks cover its remaining five workflows.
+All 70 workflows therefore have passing results across runs, including 94 standalone and eleven block metadata
+replays. This is not a single 70/70 full-run result. Original failures and deadlines remain preserved.
+
+Prepared-runtime navigation passes all eight first/warm visits at the original 80ms/5Mbps/4xCPU settings,
+2.5s visible-preview budget, 200ms second-frame guard and 24-script limit. Maximum visible-preview time is
+1,531.6ms and second-frame time is 59.3ms. The deliberate 300ms blocking control fails all eight visits as
+required, without browser/server errors. Transient, persistent and stalled preview recovery all pass.
+
+Production passes the same eight normal visits and three recovery modes with no browser/server errors.
+Maximum visible-preview time is 2,468.1ms, second-frame time is 55.6ms and selected preview scripts peak at twelve.
+All eleven anonymous licence/cache checks pass, retaining locked Pro responses, private/no-store account and
+source boundaries, public page caching and immutable fingerprinted scripts. These scoped results do not establish
+uniform latency or elimination of the underlying Cloudflare incident; prior misses remain archived.
+
+The final localisation audit exits 1 for the existing **185,002 missing translation units**, with zero invalid
+placeholders or protected terms. English fallback remains permitted by `AGENTS.md`; this styling/demo work adds
+no display keys. Other agents' standing worktree edits are preserved and remain fixed within each check. The
+local package includes those edits, so these results do not assert a clean checkout or whole-binary equivalence
+with production. Committed media and the relevant live interaction boundaries are verified independently.
+
+Evidence: `test-results/handoff-final-small/final-release-proof.json`,
+`test-results/handoff-final-all-media-release-20261022/`,
+`test-results/handoff-final-all-media-browser-20261022/`,
+`test-results/handoff-final-all-media-runtime-20261022/`,
+`test-results/handoff-final-all-media-production-20261022/`,
+`test-results/handoff-final-production-media-20261023/first/` and
+`test-results/handoff-current70-browser-20261022/combined-coverage-proof.json`.
+No manual deployment was performed. No handoff component, block, probe or film remains queued.
 
 ### Current-source local checkpoint: 22 October 2026
 
