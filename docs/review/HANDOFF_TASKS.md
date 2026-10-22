@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Exchange Selector and Launch Calendar now have reviewed 4.98s and 4.78s films. They confirm an Oat S to Ink M exchange with the complete £10 receipt, then make Salt Light ready before recording Knitwear drop 2 transfers and retaining its 2-of-4-check state. Measured 1080px and 1060px source scenes preserve the complete controls, calendar and final text, with matching inspected opening posters. Native playback and independent decoding agree on 299 and 287 frames with zero drops. Both captures keep source inputs fixed and pass every original recording guard. Component and demo sources are unchanged. Wholesale Order receives no quiet window in the same batch and remains queued. There are now 60 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/fashion-exchange-and-launch/` and the individual selected-take folders.
+
 - Task 8 (22 October), current browser checkpoint: the complete 70-suite run passes 65 suites. The tooltip arrival sample, initial navigation alignment, footer process limit, first empty-data shard limit and Kanban in-flight sample failures are retained. The four unchanged timing suites then pass, including all 87 empty-data cases. The original data harness passes Kanban, Pivot Configurator and Query Builder through its supported filter; these three and the thirteen full-run passes exhaust its sixteen cases. Every registered workflow therefore has a passing result across the full and focused runs; the complete run remains 65 of 70. All 1,995 public and 1,560 private source/media files, both heads and working statuses stay fixed across every run. All 94 standalone and eleven block metadata replays pass, including the current demo fixes. The official Merchandising audit passes and all ten static captures are inspected; existing 320px axis-label crowding is recorded. No product or test patch is inferred from the reruns, and no assertion or deadline changes. The live marker reaches public `8be20c03` and private `26957988`. There are still 62 films pending; fresh Worker/budget checks, final media publication and production timings remain open. Evidence: `test-results/handoff-current70-browser-20261022/combined-coverage-proof.json`, `test-results/handoff-current70-original-timing-followup-20261022/`, `test-results/handoff-current70-data-tail-20261022/` and `test-results/handoff-merch-target-final-audit-20261022/`.
 
 - Task 1 (22 October), remaining film preparation: all 62 queued scenes now pass current-source native metadata replay and measured framing checks. All 64 inspected native endings cover those 62 scenes; these remain state/composition evidence, with movie capture, cadence, decoding, playback and paired-poster approval still separate. Assortment retains identical complete ending text and control geometry at 1440px and 1244px source widths. The recording plan makes both dimensions explicit, including the sitemap footer that otherwise defaults to 1024px instead of its measured 1440px. The latest ten-minute host check never reaches a quiet window: encoders remain active and CPU idle peaks below 49%. No new film is promoted, and all original recording guards remain. Evidence: `test-results/handoff-films-20261022/remaining62-current-player-explicit-framing-plan.json`, `current-player-framing-visual-inspections.json` and the individual source-bound framing receipts.
@@ -692,7 +694,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (62 components)
+## 1. Re-record demo videos (60 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -715,7 +717,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`fashion-assortment-planner`, `fashion-exchange-selector`, `fashion-launch-calendar`
+`fashion-assortment-planner`
 `fashion-wholesale-order`, `commerce-backorder-allocation`, `commerce-bundle-builder`
 `commerce-customer-timeline`, `commerce-shipping-estimator`, `layout-split-resizer`, `layout-workspace-shell`
 `scroll-background-wipe`, `scroll-chapter-stack`, `scroll-cinema-frame`, `bg-fluted-glass`

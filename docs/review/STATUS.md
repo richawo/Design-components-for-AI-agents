@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 62 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 60 films remain.
+
+Task 1 (22 October): Exchange Selector and Launch Calendar now have reviewed 4.98s and 4.78s films. They confirm an Oat S to Ink M exchange with the complete £10 receipt, then make Salt Light ready before recording Knitwear drop 2 transfers and retaining its 2-of-4-check state. Measured 1080px and 1060px source scenes preserve the complete controls, calendar and final text, with matching inspected opening posters. Native playback and independent decoding agree on 299 and 287 frames with zero drops. Both captures keep source inputs fixed and pass every original recording guard. Component and demo sources are unchanged. Wholesale Order receives no quiet window in the same batch and remains queued. There are now 60 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/fashion-exchange-and-launch/` and the individual selected-take folders.
 
 Task 8 (22 October), current browser checkpoint: the complete 70-suite run passes 65 suites. The tooltip arrival sample, initial navigation alignment, footer process limit, first empty-data shard limit and Kanban in-flight sample failures are retained. The four unchanged timing suites then pass, including all 87 empty-data cases. The original data harness passes Kanban, Pivot Configurator and Query Builder through its supported filter; these three and the thirteen full-run passes exhaust its sixteen cases. Every registered workflow therefore has a passing result across the full and focused runs; the complete run remains 65 of 70. All 1,995 public and 1,560 private source/media files, both heads and working statuses stay fixed across every run. All 94 standalone and eleven block metadata replays pass, including the current demo fixes. The official Merchandising audit passes and all ten static captures are inspected; existing 320px axis-label crowding is recorded. No product or test patch is inferred from the reruns, and no assertion or deadline changes. The live marker reaches public `8be20c03` and private `26957988`. There are still 62 films pending; fresh Worker/budget checks, final media publication and production timings remain open. Evidence: `test-results/handoff-current70-browser-20261022/combined-coverage-proof.json`, `test-results/handoff-current70-original-timing-followup-20261022/`, `test-results/handoff-current70-data-tail-20261022/` and `test-results/handoff-merch-target-final-audit-20261022/`.
 
@@ -481,8 +483,8 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
 | `fashion-assortment-planner` | new | current | rewritten, passes |
-| `fashion-exchange-selector` | new | current | rewritten, passes |
-| `fashion-launch-calendar` | new | current | rewritten, passes |
+| `fashion-exchange-selector` | current | current | rewritten, passes 22 October: a reviewed 4.98s film is current; prior rejected takes remain archived. |
+| `fashion-launch-calendar` | current | current | rewritten, passes 22 October: a reviewed 4.78s film is current; prior rejected takes remain archived. |
 | `fashion-preorder-planner` | new | current | source-fixture regression, demo, accessibility and responsive/state/entrance captures pass |
 | `fashion-collection-line-plan` | new | current | source-fixture regression/demo, both-theme accessibility, responsive/state/entrance captures and workspace draft/save checks pass |
 | `fashion-merchandising-dashboard` | new | current | source-fixture regression/demo, both-theme accessibility, responsive/state/entrance captures and workspace checks pass |
