@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 84 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 81 films remain.
+
+Task 1 (22 October): Matter Dashboard, Matter Intake and Obligation Tracker now have reviewed 4.62s, 4.30s and 4.97s films. They filter and expand a negotiation matter, add a party and expose conflict-review results, and record DOC-502 evidence with a Done stamp. Full-replay geometry supplies complete 1180px, measured 1120px and 1060px scenes, with matching inspected posters. All lower controls, paper summaries and final states remain visible. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 81 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/legal-matter-intake-obligations/` and the individual selected-take folders.
 
 Task 1 (22 October): Clause Library, Document Requests and Evidence Index now have reviewed 4.73s, 3.88s and 5.22s films. They compare and insert clause 7, receive the signed lease with a 3-of-5 completion count, and include exhibit C in an exported manifest while retaining its broken-chain warning. Full-replay geometry supplies complete 1220px and 920px scenes for the first two, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 84 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/legal-clause-documents-evidence/` and the individual selected-take folders.
 
@@ -407,9 +409,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `legal-clause-library` | current | current | rewritten, passes 22 October: a reviewed 4.73s film is current; prior rejected takes remain archived. |
 | `legal-document-requests` | current | current | rewritten, passes 22 October: a reviewed 3.88s film is current; prior rejected takes remain archived. |
 | `legal-evidence-index` | current | current | rewritten, passes (unverified chains and manifest flags fixed) 22 October: a reviewed 5.22s film is current; prior rejected takes remain archived. |
-| `legal-matter-dashboard` | new | current | rewritten, passes |
-| `legal-matter-intake` | new | current | rewritten, passes |
-| `legal-obligation-tracker` | new | current | rewritten, passes |
+| `legal-matter-dashboard` | current | current | rewritten, passes 22 October: a reviewed 4.62s film is current; prior rejected takes remain archived. |
+| `legal-matter-intake` | current | current | rewritten, passes 22 October: a reviewed 4.30s film is current; prior rejected takes remain archived. |
+| `legal-obligation-tracker` | current | current | rewritten, passes 22 October: a reviewed 4.97s film is current; prior rejected takes remain archived. |
 | `legal-renewal-planner` | new | current | rewritten, passes |
 | `legal-signature-request` | new | current | rewritten, passes |
 | `legal-version-history` | current | current | Rebuilt revision rail and numbered paper redline; 29-mount source review and Next keyboard/LCS/retry/copied-snapshot/pending/focus/revision regression pass. Added-line ink is corrected after a retained 4.26:1 contrast failure. Six widths, 16 accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,200px replay/poster pass. Strict registry, TypeScript and all 1,063 unit tests pass. Reviewed 4.3s redline/confirmation/new-current film and paired poster are current; all recording guards pass. |
