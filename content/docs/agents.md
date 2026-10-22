@@ -1,6 +1,6 @@
 ---
 title: AI agents & MCP
-description: Connect Claude Code, Cursor, VS Code and other agents to Design for AI through remote MCP, the CLI, JSON and Markdown.
+description: Connect Claude Code, Claude, ChatGPT, Cursor, VS Code, Codex and other agents to Design for AI through remote MCP with browser sign-in, the CLI, JSON and Markdown.
 order: 3
 section: For agents
 ---
@@ -9,7 +9,14 @@ Design for AI is built so an agent can find, read and install components without
 
 ## MCP server (remote)
 
-The site itself is an MCP server. Nothing to install or keep up to date: point your client at `https://design.yaps.ai/mcp` (Streamable HTTP). It gives your agent six tools:
+The site itself is an MCP server. Nothing to install or keep up to date. It has two addresses:
+
+| Address | Use it for |
+| --- | --- |
+| `https://design.yaps.ai/mcp/pro` | **Recommended.** Your agent signs in through your browser, so there's no key to copy into a config file. Pro components unlock when your account has a licence; otherwise you get every free component. |
+| `https://design.yaps.ai/mcp` | Free components with no sign-in. Also accepts a licence key header, for machines without a browser. |
+
+Both speak Streamable HTTP and give your agent six tools:
 
 | Tool | What it does |
 | --- | --- |
@@ -20,81 +27,94 @@ The site itself is an MCP server. Nothing to install or keep up to date: point y
 | `install_command` | The exact command to add a component to the current project |
 | `get_page` | Any page of this site as Markdown (pricing, docs, a category) |
 
+Signing in uses the MCP authorization standard (OAuth 2.1 with PKCE). Your agent opens a page on this site; you sign in with your email code and approve. Each agent gets its own access, which you can see and disconnect on [your account page](/account). Upgrades and renewals apply to connected agents automatically.
+
 ### Claude Code
 
 ```bash
-claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp
+claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp/pro
 ```
 
-With a Pro licence, add the header:
+Then run `/mcp` in Claude Code, choose `design-for-ai` and select Authenticate. Approve in the browser window that opens.
 
-```bash
-claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp \
-  --header "Authorization: Bearer $DESIGN_FOR_AI_LICENSE"
-```
+### Claude (web and desktop)
+
+Open Settings, then Connectors, and select Add custom connector. Name it Design for AI, paste `https://design.yaps.ai/mcp/pro`, then select Connect and approve in the browser. On Team and Enterprise plans an owner adds the connector for the organization first.
+
+### ChatGPT
+
+In ChatGPT settings, open Apps and Connectors, then Advanced settings, and turn on Developer mode. Create a connector with the URL `https://design.yaps.ai/mcp/pro` and OAuth authentication, then approve in the browser. ChatGPT can't send a licence key header, so signing in is how it gets Pro. Menu names change between plans and releases; follow the current labels if they differ.
 
 ### Cursor
 
-For a free connection, add this entry to `.cursor/mcp.json` in the project, or the user-level `~/.cursor/mcp.json`:
+Use **Add to Cursor** at the top of this page, or add this entry to `~/.cursor/mcp.json` (or the project's `.cursor/mcp.json`):
 
 ```json
 {
   "mcpServers": {
     "design-for-ai": {
-      "url": "https://design.yaps.ai/mcp"
+      "url": "https://design.yaps.ai/mcp/pro"
     }
   }
 }
 ```
 
-For licensed source, add a `headers` object inside the server entry. Cursor documents environment references using the `env:` prefix:
-
-```json
-{ "Authorization": "Bearer ${env:DESIGN_FOR_AI_LICENSE}" }
-```
-
-The variable must be available to the running client. Omit the header for free components; do not place a real key in a shared configuration.
+Cursor shows the server as needing login. Select it and approve in the browser.
 
 ### VS Code
 
-The VS Code format in `.vscode/mcp.json` uses `servers` and an explicit transport type:
+Use **Add to VS Code** at the top of this page, or add this to `.vscode/mcp.json`:
 
 ```json
 {
   "servers": {
     "design-for-ai": {
       "type": "http",
-      "url": "https://design.yaps.ai/mcp"
+      "url": "https://design.yaps.ai/mcp/pro"
     }
   }
 }
 ```
 
-VS Code also documents a separate portable Copilot format in workspace-root `.mcp.json`, which uses `mcpServers`. Match the format to the file and agent provider you are configuring. Use the client's supported secret or environment reference when adding the optional `Authorization` header for Pro source. Interactive input variables are not forwarded to every Copilot harness session.
+Start the server when VS Code asks, allow it to sign in, and approve in the browser.
 
-### Devin Desktop and legacy Windsurf
+### Codex
 
-The current official Windsurf MCP documentation redirects to Devin Desktop. It documents `~/.config/devin/mcp_config.json` on macOS/Linux, or the corresponding directory under `XDG_CONFIG_HOME`; Windows uses `%APPDATA%\devin\mcp_config.json`. Older Windsurf installations can have a different configuration location.
-
-The documented remote-server form supports `serverUrl`:
-
-```json
-{
-  "mcpServers": {
-    "design-for-ai": {
-      "serverUrl": "https://design.yaps.ai/mcp"
-    }
-  }
-}
+```bash
+codex mcp add design-for-ai --url https://design.yaps.ai/mcp/pro
+codex mcp login design-for-ai
 ```
 
-The current client supports `${env:DESIGN_FOR_AI_LICENSE}` in headers. For a free connection, leave the licence header out. Follow the settings location and supported configuration for the version you actually run.
+`codex mcp login` opens the browser to approve.
+
+### Any other agent
+
+Paste this into a coding agent that can change its own settings. It contains no secret:
+
+```text
+Connect the Design for AI MCP server to this agent. Add a remote (Streamable HTTP) MCP server named design-for-ai with the URL https://design.yaps.ai/mcp/pro, using this tool's own MCP command or configuration file. It signs me in through my browser with OAuth, so don't add an API key or Authorization header. Then start the sign-in (for example /mcp in Claude Code, or codex mcp login design-for-ai in Codex), and confirm the design-for-ai tools are available.
+```
+
+Any MCP client that supports OAuth can use `https://design.yaps.ai/mcp/pro` directly. Devin Desktop and Windsurf use `serverUrl` in `mcp_config.json`; if your version doesn't offer sign-in, use the licence key route below.
+
+### With a licence key instead
+
+For CI, remote machines and clients without browser sign-in, send your key to `https://design.yaps.ai/mcp`. Your [account page](/account) shows these commands with your key already filled in.
+
+```bash
+claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp \
+  --header "Authorization: Bearer $DESIGN_FOR_AI_LICENSE"
+```
+
+In Cursor, add `"headers": { "Authorization": "Bearer ${env:DESIGN_FOR_AI_LICENSE}" }` inside the server entry. VS Code and Devin Desktop support their own secret or environment references in headers. Never put a real key in a shared configuration.
+
+If the key doesn't arrive intact, the server says why instead of quietly serving free components: an empty header (the variable wasn't set when the server was added), a variable name the client didn't expand, or a key that is expired, revoked or invalid.
 
 ### Verify the result
 
-After connecting, list the six tools and request a free component such as `settings-panel`. Confirm that the response contains the source and brief you need. An anonymous Pro request returns a licence-access explanation without code; an HTTP 200 or ordinary text tool response alone does not establish source access.
+After connecting, list the six tools and request a free component such as `settings-panel`. Confirm that the response contains the source and brief you need. The `initialize` response says whether a Pro licence is active for the connection. An anonymous Pro request returns a licence-access explanation without code; an HTTP 200 or ordinary text tool response alone does not establish source access.
 
-Retrieving source is separate from writing a local file, installing packages and checking the running interface. The [MCP comparison guide](/blog/mcp-servers-for-ui-design) shows our observed HTTP and file-delivery checks. Configuration formats here were checked against the official Claude Code, Cursor, VS Code and Devin Desktop documentation on 20 October 2026.
+Retrieving source is separate from writing a local file, installing packages and checking the running interface. The [MCP comparison guide](/blog/mcp-servers-for-ui-design) shows our observed HTTP and file-delivery checks. Key-based configuration formats were checked against the official Claude Code, Cursor, VS Code and Devin Desktop documentation on 20 October 2026.
 
 ### Prefer a local server?
 

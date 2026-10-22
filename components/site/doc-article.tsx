@@ -21,7 +21,7 @@ function PageLink({ href, title, direction }: { href: string; title: string; dir
   );
 }
 
-export async function DocArticle({ locale = "en", meta, html, headings, prev, next }: { locale?: string; meta: DocMeta; html: string; headings: Heading[]; prev?: DocMeta; next?: DocMeta }) {
+export async function DocArticle({ locale = "en", meta, html, headings, prev, next, lead }: { locale?: string; meta: DocMeta; html: string; headings: Heading[]; prev?: DocMeta; next?: DocMeta; lead?: React.ReactNode }) {
   const { localize } = await serverI18n(locale);
 
   const href = (d: DocMeta) => (d.slug === "introduction" ? "/docs" : `/docs/${d.slug}`);
@@ -34,6 +34,7 @@ export async function DocArticle({ locale = "en", meta, html, headings, prev, ne
         </h1>
         <p className="site-in mt-4 max-w-[60ch] text-lg leading-relaxed text-site-fg-2 [--i:3]">{meta.description}</p>
         {headings.length > 1 && <details className="site-disclosure mt-6 rounded-xl border border-white/10 xl:hidden"><summary className="min-h-11 cursor-pointer px-4 py-3 text-sm text-site-fg-2">On this page</summary><ul className="border-t border-white/10 p-2">{headings.map((heading) => <li key={heading.id}><a className={`flex min-h-11 items-center rounded-lg px-3 py-2 text-sm text-site-fg-2 hover:bg-white/5 hover:text-site-fg ${heading.level === 3 ? "pl-6" : ""}`} href={`#${heading.id}`}>{heading.text}</a></li>)}</ul></details>}
+        {lead && <div className="site-in mt-10 [--i:4]">{lead}</div>}
         <ProseContent html={html} className="site-in mt-10 [--i:4]" />
         <nav className="site-reveal mt-16 grid gap-4 border-t border-white/[0.08] pt-8 sm:grid-cols-2" aria-label="Pagination">
           {prev ? <PageLink href={href(prev)} title={prev.title} direction="prev" /> : <span className="hidden sm:block" />}

@@ -13,6 +13,10 @@
   "remotes": [
     {
       "type": "streamable-http",
+      "url": "https://design.yaps.ai/mcp/pro"
+    },
+    {
+      "type": "streamable-http",
       "url": "https://design.yaps.ai/mcp",
       "headers": [
         {

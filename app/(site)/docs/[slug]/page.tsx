@@ -1,7 +1,10 @@
 import { siteAlternates } from "@/lib/i18n/metadata";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { AgentConnect } from "@/components/site/agent-connect";
 import { DocArticle } from "@/components/site/doc-article";
+import { SiteI18n } from "@/components/site/site-i18n";
+import { siteCopy } from "@/lib/i18n/server";
 import { allDocs, localizedDocs, getDoc } from "@/lib/content";
 
 export const dynamicParams = false;
@@ -25,5 +28,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
   if (!doc) notFound();
   const docs = await localizedDocs(locale);
   const i = docs.findIndex((d) => d.slug === slug);
-  return <DocArticle locale={locale} meta={doc.meta} html={doc.html} headings={doc.headings} prev={docs[i - 1]} next={docs[i + 1]} />;
+  // The agents guide opens with the interactive setup; the Markdown below remains the full reference.
+  const lead = slug === "agents" ? <SiteI18n inherit locale={locale} dictionary={await siteCopy(locale, "connect")}><AgentConnect /></SiteI18n> : undefined;
+  return <DocArticle locale={locale} meta={doc.meta} html={doc.html} headings={doc.headings} prev={docs[i - 1]} next={docs[i + 1]} lead={lead} />;
 }

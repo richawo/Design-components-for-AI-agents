@@ -15,7 +15,7 @@ Design for AI (https://design.yaps.ai) is a library of design components for AI 
 
 Use whichever of these is available, in this order:
 
-- **MCP tools** (if the `design-for-ai` server is connected; remote at `https://design.yaps.ai/mcp`): `search_components` → `get_component` → `install_command`. `get_page` reads any site page as Markdown.
+- **MCP tools** (if the `design-for-ai` server is connected; remote at `https://design.yaps.ai/mcp/pro` with browser sign-in, or `https://design.yaps.ai/mcp` for free components): `search_components` → `get_component` → `install_command`. `get_page` reads any site page as Markdown.
 - **CLI**: `npx design-for-ai search <query>`, `npx design-for-ai prompt <slug>` (the brief), `npx design-for-ai add <slug>` (writes the file and installs its dependencies).
 - **HTTP**: `curl https://design.yaps.ai/api/registry` for the index, then `curl https://design.yaps.ai/api/registry/<slug>` for code, prompt, JSON prompt, props and the install command.
 - **llms.txt**: `https://design.yaps.ai/llms-full.txt` has every free component's prompt and JSON prompt in one file.

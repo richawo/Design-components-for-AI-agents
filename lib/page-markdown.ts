@@ -55,10 +55,11 @@ const quickStart = () => [
   "npx https://design.yaps.ai/cli.tgz add chart-portfolio",
   "",
   "# Connect your agent over MCP (Claude Code shown; any MCP client works)",
-  `claude mcp add --transport http design-for-ai ${absoluteUrl("/mcp")}`,
+  "# It signs in through your browser: run /mcp in Claude Code and choose Authenticate",
+  `claude mcp add --transport http design-for-ai ${absoluteUrl("/mcp/pro")}`,
   "```",
   "",
-  `Pro components need a licence key: set \`DESIGN_FOR_AI_LICENSE\` (CLI, local MCP server) or send \`Authorization: Bearer <key>\` (API, remote MCP, shadcn registry). More in [Installation](${absoluteUrl("/docs/installation.md")}) and [AI agents & MCP](${absoluteUrl("/docs/agents.md")}).`,
+  `Pro components need a licence. Agents connected to \`${absoluteUrl("/mcp/pro")}\` sign in through the browser, so no key is copied. Elsewhere, set \`DESIGN_FOR_AI_LICENSE\` (CLI, local MCP server) or send \`Authorization: Bearer <key>\` (API, \`/mcp\`, shadcn registry). More in [Installation](${absoluteUrl("/docs/installation.md")}) and [AI agents & MCP](${absoluteUrl("/docs/agents.md")}).`,
   "",
 ];
 
@@ -207,7 +208,8 @@ async function account() {
     "",
     "- After checkout you land here with the licence active and the key shown. Copy it somewhere safe.",
     "- To use Pro on another device, open this page there and paste the key (it starts with `dfa_`).",
-    "- For agents and tools, set `DESIGN_FOR_AI_LICENSE` to the key, or send `Authorization: Bearer <key>`.",
+    `- To connect an agent without a key, add ${absoluteUrl("/mcp/pro")} as a remote MCP server and approve the browser sign-in. This page lists connected agents and can disconnect them.`,
+    "- For the CLI and other tools, set `DESIGN_FOR_AI_LICENSE` to the key, or send `Authorization: Bearer <key>`.",
     "",
     `No licence yet? See [pricing](${absoluteUrl("/pricing.md")}).`,
     "",

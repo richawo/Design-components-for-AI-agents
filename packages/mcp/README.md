@@ -4,11 +4,14 @@ An MCP server for [Design for AI](https://design.yaps.ai), the library of design
 
 ## Install
 
-The quickest route needs no install at all: Design for AI also runs as a remote MCP server.
+The quickest route needs no install at all: Design for AI also runs as a remote MCP server, and it signs you in through the browser, so no key goes into your configuration.
 
 ```bash
-claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp
+claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp/pro
+# then run /mcp in Claude Code and choose Authenticate
 ```
+
+Setup for the Claude app, ChatGPT, Cursor, VS Code and Codex: https://design.yaps.ai/docs/agents
 
 This package is the same tools over stdio, for clients or networks that prefer a local process:
 

@@ -125,13 +125,16 @@ These are recordings of the actual components. Open any preview to try its contr
 npx shadcn@latest add https://design.yaps.ai/r/chart-portfolio.json
 ```
 
-### MCP server (Claude Code, Cursor, Windsurf, VS Code)
+### MCP server (Claude Code, Claude, ChatGPT, Cursor, VS Code, Codex)
 
-The site is a remote MCP server; nothing to install:
+The site is a remote MCP server; nothing to install. Your agent signs in through the browser, so there's no key to copy:
 
 ```bash
-claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp
+claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp/pro
+# then run /mcp in Claude Code and choose Authenticate
 ```
+
+The [agents guide](https://design.yaps.ai/docs/agents) has one-click installs for Cursor and VS Code and steps for the Claude app, ChatGPT and Codex. Free components also work at `https://design.yaps.ai/mcp` with no sign-in.
 
 Then ask: *"Find a Design for AI chart component and add it to the dashboard."* Prefer a local process? `npx -y https://design.yaps.ai/mcp.tgz`.
 
@@ -171,7 +174,7 @@ registry/pro/_site/     Private blog source and localization dictionaries
 scripts/                Registry build, screenshots, Pro sync
 packages/mcp/           design-for-ai-mcp, the local (stdio) MCP server
 packages/cli/           design-for-ai, the CLI
-lib/mcp.ts, app/mcp/    the remote MCP server at /mcp
+lib/mcp.ts, app/mcp/    the remote MCP server at /mcp and /mcp/pro (OAuth: lib/commerce/oauth.ts)
 skills/design-for-ai/   Claude skill: find, adapt and review against the principles
 docs/COMPONENT_SPEC.md  The bar every component is held to
 ```
