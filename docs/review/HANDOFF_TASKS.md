@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Signal Workbench and Audio Transport now have reviewed 4.60s and 5.50s films. They switch Triangle, Square and Saw waveforms while retaining 220Hz and minus 6dB, then play, inspect, seek and pause Paper Lanterns at 2:18. Measured 900px and 760px scenes retain all demonstrated controls and settled endings, with matching inspected opening posters. Native playback and independent decoding agree on 276 and 330 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and all source/media/Git inputs remain fixed, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. Layout Playground remains queued after its preserved source-gap and native-delivery rejections. There are now 28 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/signal-workbench-and-audio-transport/` and the individual selected-take folders.
+
 - Task 1 (22 October): Integration Trace, Shortcut Theatre and Sitemap Atlas now have reviewed 6.58s, 5.63s and 4.23s films. They run the complete integration before inspecting its seven normalized fields, create and complete KES-150 through the shortcut controls, and locate API reference on the filtered sitemap before restoring all 24 places. Measured 1000px and 900px scenes retain the complete demonstrated controls and endings, with matching inspected opening posters; the sitemap uses its explicit measured 1440px width. Native playback and independent decoding agree on 395, 338 and 254 frames with zero drops. Every original recorder guard, twenty encoder-free preparation seconds and source/media/Git snapshot remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 30 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/integration-shortcuts-and-sitemap/` and the individual selected-take folders.
 
 - Task 1 (22 October): Background Wipe and Cinema Frame now have reviewed 4.68s and 4.18s films. They reveal the complete sunrise scene and adjust its sun/readouts through the real scroll action, then expand the monochrome Low Water frame into its settled full-scene view. Measured 900px scenes retain all required story, readouts and film captions, with matching inspected opening posters. Native playback and independent decoding agree on 281 and 251 frames with zero drops. Both pass twenty encoder-free preparation seconds, every original recording guard and unchanged source/media/Git snapshots, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. Workspace Shell remains queued after its preserved screenshot and native rejections. There are now 33 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/background-wipe-and-cinema-frame/` and the individual selected-take folders.
@@ -720,7 +722,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (30 components)
+## 1. Re-record demo videos (28 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -742,7 +744,7 @@ Slugs:
 `layout-workspace-shell`
 `scroll-chapter-stack`
 
-`hero-layout-playground`, `hero-signal-workbench`, `media-audio-transport`, `media-caption-styler`
+`hero-layout-playground`, `media-caption-styler`
 `media-compare-grid`, `media-crop-workbench`, `media-device-switcher`, `media-focus-lightbox`
 `media-image-contact-sheet`, `media-spatial-collection`, `media-track-list`, `media-transcript-player`
 `media-trim-timeline`, `navigation-context-rail`, `navigation-lens-dock`, `navigation-stacked-tabs`
