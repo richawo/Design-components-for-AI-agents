@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 87 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 84 films remain.
+
+Task 1 (22 October): Clause Library, Document Requests and Evidence Index now have reviewed 4.73s, 3.88s and 5.22s films. They compare and insert clause 7, receive the signed lease with a 3-of-5 completion count, and include exhibit C in an exported manifest while retaining its broken-chain warning. Full-replay geometry supplies complete 1220px and 920px scenes for the first two, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 84 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/legal-clause-documents-evidence/` and the individual selected-take folders.
 
 Task 1 (22 October): Support Triage, Usage Policy and Workspace Dashboard now have reviewed 4.73s, 5.10s and 4.90s films. They route support tickets and retain an owner receipt, save the API blocking policy with a 148,000-request cap, and change the dashboard period and metric before inspecting a real chart value. Full-replay geometry verifies complete 1000px, 1020px and measured 1360px scenes, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 87 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/triage-policy-workspace-overview/` and the individual selected-take folders.
 
@@ -402,9 +404,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `legal-clause-library` | new | current | rewritten, passes |
-| `legal-document-requests` | new | current | rewritten, passes |
-| `legal-evidence-index` | new | current | rewritten, passes (unverified chains and manifest flags fixed) |
+| `legal-clause-library` | current | current | rewritten, passes 22 October: a reviewed 4.73s film is current; prior rejected takes remain archived. |
+| `legal-document-requests` | current | current | rewritten, passes 22 October: a reviewed 3.88s film is current; prior rejected takes remain archived. |
+| `legal-evidence-index` | current | current | rewritten, passes (unverified chains and manifest flags fixed) 22 October: a reviewed 5.22s film is current; prior rejected takes remain archived. |
 | `legal-matter-dashboard` | new | current | rewritten, passes |
 | `legal-matter-intake` | new | current | rewritten, passes |
 | `legal-obligation-tracker` | new | current | rewritten, passes |
