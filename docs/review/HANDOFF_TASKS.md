@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Booking Slots now has a reviewed 5.63s, 72 KB film. It selects Monday 10:30, changes the visible day and accepts Tuesday 10:00 with the matching confirmation. Native playback and an independent 338-frame decode agree, with no dropped frames. Maximum source gap is 11ms, changed-source delivery is 14.47ms and moving-frame p95 is 17.61ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 119 films outstanding. Evidence: `test-results/handoff-films-20261022/date-booking-slots/first/`.
+
 - Task 1 (22 October): Allocation now has a reviewed 6.07s, 347 KB film. Real slice hover and Region/Sector/Asset class changes show its chart and table together, ending on a clear Asset class view. Native playback and an independent 364-frame decode agree, with no dropped frames. Maximum source gap is 15ms, changed-source delivery is 46.79ms and moving-frame p95 is 18.17ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 120 films outstanding. Evidence: `test-results/handoff-films-20261022/chart-allocation/first/`.
 
 - Task 1 (22 October): Footer Newsletter now has a reviewed 5.55s, 119 KB film. It types an email typo, accepts the correction, submits the corrected address and ends with a clear confirmation. Native playback and an independent 333-frame decode agree, with no dropped frames. Maximum source gap is 36ms, changed-source delivery is 25.82ms and moving-frame p95 is 18.56ms, with no stalls. The only two concurrent edits belong to an unimported publication tool and its test; all recording and component inputs stay fixed, and the original broad snapshot rejection is preserved. The sample-aspect diagnostic is also retained. Its current poster and all recording guards remain unchanged. There are now 121 films outstanding. Evidence: `test-results/handoff-films-20261022/footer-newsletter/first/`.
@@ -624,7 +626,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (120 components)
+## 1. Re-record demo videos (119 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -646,7 +648,7 @@ Slugs:
 `block-financial-report`
 `block-commerce-workspace`
 `block-music-workspace`
-`date-booking-slots`
+
 `onboarding-setup-checklist`
 `devtools-request-waterfall`
 `chart-bullet-targets`

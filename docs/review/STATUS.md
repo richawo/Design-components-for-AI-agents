@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 120 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 119 films remain.
+
+Task 1 (22 October): Booking Slots now has a reviewed 5.63s, 72 KB film. It selects Monday 10:30, changes the visible day and accepts Tuesday 10:00 with the matching confirmation. Native playback and an independent 338-frame decode agree, with no dropped frames. Maximum source gap is 11ms, changed-source delivery is 14.47ms and moving-frame p95 is 17.61ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 119 films outstanding. Evidence: `test-results/handoff-films-20261022/date-booking-slots/first/`.
 
 Task 1 (22 October): Allocation now has a reviewed 6.07s, 347 KB film. Real slice hover and Region/Sector/Asset class changes show its chart and table together, ending on a clear Asset class view. Native playback and an independent 364-frame decode agree, with no dropped frames. Maximum source gap is 15ms, changed-source delivery is 46.79ms and moving-frame p95 is 18.17ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 120 films outstanding. Evidence: `test-results/handoff-films-20261022/chart-allocation/first/`.
 
