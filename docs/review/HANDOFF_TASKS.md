@@ -4,7 +4,9 @@ Self-contained work items from the paused review of the October component additi
 and how to know it's done. Pick any of them up independently. Background, briefs and tooling are in `docs/review/`
 (start with `README.md`); per-component state is in `docs/review/STATUS.md`.
 
-## Follow-up progress (17–22 October 2026)
+## Follow-up progress (17–23 October 2026)
+
+- Tasks 1 to 7 checkpoint (23 October): all 202 standalone reviews, eleven block reviews, 59 older probes and 123 film refreshes are complete. The final audit confirms all 246 committed movie/poster files against their approved capture bytes, unchanged recording limits, native zero-drop playback and independent frame decoding. Mobile-only previews are also fixed and verified live across all 33 components. The final localization audit retains the existing 185,002 missing units with English fallback, and zero invalid placeholders or protected terms; this styling/demo work adds no display keys. Final package budgets, prepared-runtime checks and current production media delivery remain in Task 8. Evidence: `test-results/handoff-final-small/final-123-film-committed-byte-audit.json`, `test-results/handoff-final-small/final-site-i18n-audit.log` and `test-results/handoff-mobile-preview-sizing-20261022/`.
 
 - Task 1 (22 October): Layout Playground, Crop Workbench and Lens Dock now have reviewed 3.67s, 6.13s and 4.37s films. They resize and restore the complete booking card, save the 5,071 × 2,852 straightened crop, and visibly magnify dock icons before selecting Notes. Complete 1280px scenes retain their 1000px, 980px and 620px heights, demonstrated controls and inspected opening posters. The existing direct page-frame transport retains original JPEG 92 and every source, delivery, moving-frame, size and duration limit. Uninterrupted native playback and independent decoding agree on 220, 368 and 262 frames with zero drops. Twenty encoder-free preparation seconds and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Every earlier rejection remains archived and unapproved. No component, metadata, recorder or quality-limit change, or product latency improvement, is claimed. There are now 0 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/final-layout-crop-and-dock/` and the individual selected-take folders.
 
@@ -750,25 +752,18 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (0 components)
+## 1. Re-record demo videos (complete)
 
-The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
-version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
+All 123 queued films are refreshed, visually reviewed and pushed, with reviewed paired posters. The final committed-byte
+audit verifies every canonical movie and poster against its approved take. Native playback reports zero dropped frames,
+independent decoding confirms each exported frame count, and every original duration, size, source, delivery and
+moving-frame guard remains in force. Selected revisions retain their rejected predecessors and measured framing evidence.
 
-```sh
-node scripts/record-demos.mjs <slug> --isolated-source --base=http://localhost:3100 --sheet=test-results/demo-sheets
-```
+The complete inventory is `test-results/handoff-final-small/final-123-film-committed-byte-audit.json`.
+Individual capture, playback, visual-review and publication receipts remain under
+`test-results/handoff-films-20261022/<slug>/<selected-take>/`. No film slugs remain queued.
 
-Look at each contact sheet before committing: the film must be monochrome, show the component's idea within 3–8 s and
-end settled. If a demo misbehaves, fix `meta.json` `demo` rather than the recording. Commit the mp4 (one commit per
-slug or per small group). Notes:
-- `legal-renewal-planner` drags its as-of line; check the drag registers. `commerce-shipping-estimator` and
-  `commerce-customer-timeline` occasionally missed clicks under load; replay them.
-- `navigation-lens-dock`'s poster at rest doesn't show the magnification; the video should.
-- Demos that need a viewport bigger than the card can use `--frame-viewport` (see `docs/COMPONENT_QA.md`).
-
-Slugs:
-
+Final prepared-package and production delivery verification continues in Task 8.
 
 ## 2. Retake stale posters (complete)
 
