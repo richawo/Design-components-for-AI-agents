@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 41 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 38 films remain.
+
+Task 1 (22 October): Border Tracer, Ink Trail and Compare Lenses now have reviewed 4.10s, 3.82s and 3.87s films. They pause and resume the warehouse sync, draw a complete stroke and add a second seal, and traverse the comparison lens before returning to the complete receipts stage. Measured scenes preserve all required controls and settled states, with matching inspected opening posters. Native playback and independent decoding agree on 246, 229 and 232 frames with zero drops. External encoders have finished. Each first take starts after twenty encoder-free seconds and passes the unmodified recorder limits; ordinary CPU activity is recorded separately. The Border Tracer qualification retains a 13ms maximum source gap and 27ms maximum changed-frame delivery, demonstrating that the extra CPU-percentage proxy rejected a usable window. This is recording-quality evidence, not a product performance improvement. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 38 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/tracer-ink-and-comparison/` and the individual selected-take folders.
 
 Task 1 (22 October): Assortment Planner now has a reviewed 5.52s film. Its drag, Fill by grade and Publish actions end with allocation AL-2810, all 872 units assigned in 30 lines across six stores and the complete confirmation visible. The measured 1244×980 scene preserves the same complete matrix, control geometry and ending text as the larger scene, with a matching inspected opening poster. Native playback and independent decoding agree on 331 frames with zero drops. Every original recording guard and source input remains fixed. The original 34.6ms moving-frame rejection remains preserved and unapproved. Collection Line Plan receives no quiet window in the next bounded wait, so neither it nor Merchandising is captured in this batch. There are now 41 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/assortment-complete-allocation/` and the individual selected-take folders.
 
@@ -548,9 +550,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `collab-message-list` | current | current | Terminal punctuation and internal-dot mentions, unknown prefixes, exact reactions/replies and failed-message retry; shared Team checks pass. Film queued. 22 October: a reviewed 5.47s film is current; prior rejected takes remain archived. |
 | `content-interactive-spec` | current | current | Registered exact part selection, keyboard focus, imperial conversion, Escape and empty parts. Film queued. 22 October: a reviewed 4.82s film is current; prior rejected takes remain archived. |
 | `cta-project-brief` | current | current | Registered email validation, retained failed brief, exact retry payload/receipt and empty choices. Film queued. 22 October: a reviewed 6.12s film is current; prior rejected takes remain archived. |
-| `effect-border-tracer` | new | current |  |
-| `effect-ink-trail` | new | current |  |
-| `features-compare-lenses` | new | current | Registered keyboard lens/stage selection, exact events, controlled read-only and empty stages. Film queued. |
+| `effect-border-tracer` | current | current | 22 October: a reviewed 4.10s film is current; prior rejected takes remain archived. |
+| `effect-ink-trail` | current | current | 22 October: a reviewed 3.82s film is current; prior rejected takes remain archived. |
+| `features-compare-lenses` | current | current | Registered keyboard lens/stage selection, exact events, controlled read-only and empty stages. Film queued. 22 October: a reviewed 3.87s film is current; prior rejected takes remain archived. |
 | `features-integration-trace` | new | current | Registered keyboard stage selection, receipt reference and exact ordered offline replay; empty integrations. Film queued. |
 | `features-shortcut-theatre` | new | current | Registered supplied Create/Done keys, selected issue and semantic Done status; empty shortcuts/issues. Film queued. |
 | `footer-sitemap-atlas` | new | current | Registered accent-insensitive search, actual hash navigation, duplicate groups, clearing and empty links. Film queued. |
