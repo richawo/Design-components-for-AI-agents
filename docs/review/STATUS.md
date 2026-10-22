@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 99 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 96 films remain.
+
+Task 1 (22 October): Cron Builder, Detent Dial and Dual Range now have reviewed 4.75s, 3.93s and 4.28s films. They save a Monday-to-Saturday 07:15 schedule, settle the dial at minus 6 dB and adjust the interval to 200 to 430 dollars with 638 matching stays. Cron Builder uses a measured 1120px frame and matching inspected poster, keeping its chart, upcoming runs and footer complete. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 96 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/schedule-dial-range-controls/` and the individual selected-take folders.
 
 Task 1 (22 October): Branching Survey and Draft Rescue now have reviewed 5.73s and 4.88s films. The survey changes from the product route to the brand-identity branch, visibly retiring prior answers. Draft Rescue restores the two selected fields and retains the saved ticket and capacity values. Its measured 1280px source viewport and fixed card union keep the full initial comparison, footer and restored receipt visible, with a matching inspected poster. The clipped first take is retained. Native playback and independently decoded endings agree with zero dropped frames; all original recording guards and capture inputs stay fixed. Component and demo sources are unchanged. There are now 99 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/branching-and-draft-recovery/` and the individual selected-take folders.
 
@@ -358,9 +360,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `date-timezone-overlap` | current | current | Registered exact keyboard slots, participant selection, failed proposal/retry and invalid/empty inputs. Film queued. 22 October: a reviewed 5.93s film is current; prior rejected takes remain archived. |
 | `forms-branching-survey` | current | current | Registered branching, validation, retained failed submit and exact retry coverage. Film queued. 22 October: a reviewed 5.73s film is current; prior rejected takes remain archived. |
 | `forms-draft-rescue` | current | current | Registered draft comparison, accepted recovery, retry and read-only/empty-state coverage. Film queued. 22 October: a reviewed 4.88s film is current; prior rejected takes remain archived. |
-| `input-cron-builder` | new | current | Registered keyboard schedule edits, exact failed saves/retries, accepted Revert and invalid schedules. Film queued. |
-| `input-detent-dial` | new | current | Registered dial keys, accepted numeric commits, exact retries, retained invalid draft and read-only/invalid bounds. Film queued. |
-| `input-dual-range` | new | current | Registered constrained keyboard endpoints, native drag commit, exact reset and disabled/invalid ranges. Film queued. |
+| `input-cron-builder` | current | current | Registered keyboard schedule edits, exact failed saves/retries, accepted Revert and invalid schedules. Film queued. 22 October: a reviewed 4.75s film is current; prior rejected takes remain archived. |
+| `input-detent-dial` | current | current | Registered dial keys, accepted numeric commits, exact retries, retained invalid draft and read-only/invalid bounds. Film queued. 22 October: a reviewed 3.93s film is current; prior rejected takes remain archived. |
+| `input-dual-range` | current | current | Registered constrained keyboard endpoints, native drag commit, exact reset and disabled/invalid ranges. Film queued. 22 October: a reviewed 4.28s film is current; prior rejected takes remain archived. |
 | `input-expression-editor` | new | current | Registered formula results, exact failed saves/retries, Revert and settled autocomplete validation. Film queued. |
 | `input-unit-converter` | new | current | Registered affine unit conversion, controlled acceptance, retained invalid edits, keyboard ruler and invalid units. Film queued. |
 | `selects-tree-picker` | new | current | Registered locked-leaf preservation, exact ordered selections, keyboard search and loading retry/empty nodes. Film queued. |

@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Cron Builder, Detent Dial and Dual Range now have reviewed 4.75s, 3.93s and 4.28s films. They save a Monday-to-Saturday 07:15 schedule, settle the dial at minus 6 dB and adjust the interval to 200 to 430 dollars with 638 matching stays. Cron Builder uses a measured 1120px frame and matching inspected poster, keeping its chart, upcoming runs and footer complete. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 96 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/schedule-dial-range-controls/` and the individual selected-take folders.
+
 - Task 1 (22 October): Branching Survey and Draft Rescue now have reviewed 5.73s and 4.88s films. The survey changes from the product route to the brand-identity branch, visibly retiring prior answers. Draft Rescue restores the two selected fields and retains the saved ticket and capacity values. Its measured 1280px source viewport and fixed card union keep the full initial comparison, footer and restored receipt visible, with a matching inspected poster. The clipped first take is retained. Native playback and independently decoded endings agree with zero dropped frames; all original recording guards and capture inputs stay fixed. Component and demo sources are unchanged. There are now 99 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/branching-and-draft-recovery/` and the individual selected-take folders.
 
 - Task 1 (22 October): Range Calendar and Timezone Overlap now have reviewed 4.62s and 5.93s films. They show a cross-month date range followed by the two-night weekend at 392 pounds, and a moved meeting interval with participant inclusion ending at the demo invite receipt. Complete calendars, timezone rows, selected values and footer actions remain readable. Native playback and independently decoded endings agree with zero dropped frames. All original recording guards and capture inputs stay fixed; current posters and component/demo sources are retained. There are now 101 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/calendar-timezone-selection/` and the individual selected-take folders.
@@ -648,7 +650,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (99 components)
+## 1. Re-record demo videos (96 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -671,7 +673,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`
+`input-expression-editor`
 `input-unit-converter`, `selects-tree-picker`
 `saas-notification-inbox`, `saas-report-scheduler`, `saas-saved-views`
 `saas-support-triage`, `saas-usage-policy`, `saas-workspace-dashboard`, `legal-clause-library`
