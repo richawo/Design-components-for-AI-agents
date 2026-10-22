@@ -62,32 +62,43 @@ Markdown routes, including canonical provenance.
 
 ## Source-bound editorial publication
 
-The private hook workflow is now a manual fallback. Normal weekday publication
-uses the existing Cloudflare integration on the public repository, independently
-of GitHub Actions billing. No deployment secret enters the public signal.
+Normal weekday publication uses the existing public-repository Cloudflare
+integration, independently of GitHub Actions billing. The private hook is a
+manual fallback. The public request contains hashes and owner slugs only.
 
-Complete the private source and affected dictionaries, retain the full current
-checklist verdicts and five to ten substantive leading-page reviews per owner,
-and commit `_site/publication/approved-batch.json` with its source-bound review
-records. From the public root run `npm run publication:request`, then commit and
-push only `publication/content-request.json`. It contains the private revision,
-input and approval hashes, request identity and selected slugs. Cloudflare runs
-the normal required source/locales audit, registry generation, types, tests,
-production build and unchanged package guards.
+Complete private source, all affected dictionaries, original evidence, current
+editorial verdicts and five to ten substantive leading-page reviews per owner.
+Commit `_site/publication/approved-batch.json` with scope `prepublication` and
+source-bound reviews. A clean authenticated checkout runs
+`npm run publication:request`, then commits and pushes only
+`publication/content-request.json` to request the production pipeline.
 
-Registry generation rejects a changed source/dictionary/asset, stale rulebook,
-missing or pending rule, incomplete peer review set or a sixth new owner dated
-for the same London publication day. It writes the validated request identity
-into `/.well-known/design-build.json`. Match that identity and current content
-on production before marking a request published. An uncertain attempt resumes
-the same request. The routine counts previously published owners before writing
-another batch and preserves original publication dates.
+Version-2 requests fingerprint sorted publication paths and their Git blob
+identities with SHA-256. Hosted authors can derive the same value from a complete
+pinned private Git tree using `publicationInputsFromGitTree`. Cloudflare computes
+it from every actual blog, dictionary, asset and configuration file. Missing
+large binary payloads in the author shell do not require omitting source.
 
-A public source clone can fetch no private files without authorization. Hosted
-runs may use the connected GitHub snapshot procedure in
-`skills/design-yaps-articles/references/cloud-publishing.md`; it preserves Git
-blob identities without copying a token into the cloud shell. The actual
-Cloudflare build continues using its existing read-only private deploy key.
+Registry generation rejects changed inputs, stale approvals/rules, missing or
+failed verdicts, pending editorial checks, incomplete peer review sets and a
+sixth new owner dated on the same London day. Uncertain delivery resumes the same
+request. Preserve original publication dates and count already published owners.
+
+`cf:build` runs the source/locales audit, strict generation, types, tests and
+production build sequentially under Node 24. Only success writes a receipt bound
+to the exact sources, rulebook and request. `cf:deploy` refuses an editorial
+request without that matching receipt, then applies the unchanged package guards.
+Cloudflare's existing private read-only deploy key materializes the full source.
+
+R29 can await the explicit mandatory build phase. R30/R37 remain pending only in
+the delivery phase with a complete verification and failure plan. Those pending
+statuses are not completed checks. Other pending checks block release. Retain
+the immutable pre-publication review and a separate final delivery record.
+
+Match the request in `/.well-known/design-build.json` and verify actual editions,
+metadata, assets, links, discovery routes, MCP and licence boundaries before
+marking delivered. See the hosted procedure in
+`skills/design-yaps-articles/references/cloud-publishing.md`.
 
 `npm run cf:deploy` deploys the built Worker and submits indexable sitemap URLs
 to IndexNow after verifying the live build and public key file. `npm run

@@ -6,9 +6,11 @@ import { execFileSync } from "node:child_process";
 import { gzipSync } from "node:zlib";
 import { compactGeneratedSourceMap } from "./lib/source-map-budget.mjs";
 import { copyPreparedServerAssets } from "./lib/prepared-server-assets.mjs";
+import { assertPublicationBuildReceipt } from "./lib/publication-build.mjs";
 import { assertSinglePublicContentCopy } from "./lib/public-content-runtime.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+assertPublicationBuildReceipt(root);
 const directory = path.join(root, ".open-next", "deploy");
 const archive = path.join(root, ".open-next", "source-maps-full");
 const wrangler = path.join(root, "node_modules", ".bin", "wrangler");

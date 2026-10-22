@@ -16,7 +16,7 @@
     "test": "vitest run",
     "screenshots": "node scripts/screenshot.mjs",
     "pro:sync": "node scripts/sync-pro.mjs",
-    "cf:build": "opennextjs-cloudflare build",
+    "cf:build": "node scripts/build-publication.mjs",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "npm run pro:sync -- --require-source && opennextjs-cloudflare build && npm run cf:deploy",
     "cf:deploy": "node scripts/deploy-worker.mjs && npm run blog:index -- --all --wait-for-commit",
