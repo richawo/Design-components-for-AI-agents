@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 79 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 76 films remain.
+
+Task 1 (22 October): Compensation Review, Employee Onboarding and Interview Scorecard now have reviewed 3.58s, 4.28s and 5.13s films. They drag a salary proposal and expose its rationale requirement, complete access before opening the unlocked shadowing task, and submit all three interview ratings with a Yes recommendation. Full-replay geometry supplies complete measured 1100px, 960px and measured 1240px scenes with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 76 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/compensation-onboarding-interview/` and the individual selected-take folders.
 
 Task 1 (22 October): Renewal Planner and Signature Request now have reviewed 5.12s and 5.18s films. The actual renewal drag moves the as-of line from 17 October to 24 November before recording the renegotiation decision. The signature demo changes routing, sends its request and ends with Jordan signed and Maya next. Full-replay geometry supplies complete measured 1280px and 980px scenes with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames; every original recording guard and capture input stays fixed. Component and demo sources are unchanged. There are now 79 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/renewal-and-signature-routing/` and the individual selected-take folders.
 
@@ -423,9 +425,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
 | `hr-capacity-planner` | current | current | Rebuilt weekly capacity ledger and quarter-hour allocation inspector; 35-mount source review and Next keyboard/exact-snapshot/retry/pending/host-echo/replacement regression pass. Pending calendar inspection remains keyboard-scrollable, and acknowledged decimals become a clean baseline. Six widths, 24 state/default accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,200px replay/poster pass. The original demo ordering failure is retained; inspection now precedes the final saved receipt. Reviewed 4.5s allocation/inspection/save film and paired poster are current; measured 1,100px framing removes the first capture’s unused stage strip, and every timing guard passes. Strict registry, TypeScript and all 1,063 unit tests pass. |
-| `hr-compensation-review` | new | current | rewritten, passes |
-| `hr-employee-onboarding` | new | current | rewritten, passes |
-| `hr-interview-scorecard` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `hr-compensation-review` | current | current | rewritten, passes 22 October: a reviewed 3.58s film is current; prior rejected takes remain archived. |
+| `hr-employee-onboarding` | current | current | rewritten, passes 22 October: a reviewed 4.28s film is current; prior rejected takes remain archived. |
+| `hr-interview-scorecard` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 5.13s film is current; prior rejected takes remain archived. |
 | `hr-leave-approval` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `hr-org-explorer` | new | current | rewritten Next regression passes, including held-frame tree/search focus ownership; both-theme accessibility and successive keyboard navigation pass |
 | `hr-people-dashboard` | new | current | rewritten, passes on the Next-backed source-fixture runner |

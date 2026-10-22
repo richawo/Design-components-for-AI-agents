@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Compensation Review, Employee Onboarding and Interview Scorecard now have reviewed 3.58s, 4.28s and 5.13s films. They drag a salary proposal and expose its rationale requirement, complete access before opening the unlocked shadowing task, and submit all three interview ratings with a Yes recommendation. Full-replay geometry supplies complete measured 1100px, 960px and measured 1240px scenes with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 76 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/compensation-onboarding-interview/` and the individual selected-take folders.
+
 - Task 1 (22 October): Renewal Planner and Signature Request now have reviewed 5.12s and 5.18s films. The actual renewal drag moves the as-of line from 17 October to 24 November before recording the renegotiation decision. The signature demo changes routing, sends its request and ends with Jordan signed and Maya next. Full-replay geometry supplies complete measured 1280px and 980px scenes with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames; every original recording guard and capture input stays fixed. Component and demo sources are unchanged. There are now 79 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/renewal-and-signature-routing/` and the individual selected-take folders.
 
 - Task 1 (22 October): Matter Dashboard, Matter Intake and Obligation Tracker now have reviewed 4.62s, 4.30s and 4.97s films. They filter and expand a negotiation matter, add a party and expose conflict-review results, and record DOC-502 evidence with a Done stamp. Full-replay geometry supplies complete 1180px, measured 1120px and 1060px scenes, with matching inspected posters. All lower controls, paper summaries and final states remain visible. Native playback and independently decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 81 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/legal-matter-intake-obligations/` and the individual selected-take folders.
@@ -662,7 +664,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (79 components)
+## 1. Re-record demo videos (76 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -685,8 +687,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`hr-compensation-review`
-`hr-employee-onboarding`, `hr-interview-scorecard`, `hr-leave-approval`, `hr-org-explorer`, `hr-people-dashboard`
+`hr-leave-approval`, `hr-org-explorer`, `hr-people-dashboard`
 `hr-policy-acknowledgement`, `hr-shift-coverage`, `finance-close-checklist`, `finance-expense-review`
 `finance-invoice-composer`, `finance-payment-run`, `finance-receivables-aging`, `finance-reconciliation`
 `finance-scenario-forecast`, `fashion-assortment-planner`, `fashion-exchange-selector`, `fashion-launch-calendar`
