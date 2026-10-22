@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 121 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 120 films remain.
+
+Task 1 (22 October): Allocation now has a reviewed 6.07s, 347 KB film. Real slice hover and Region/Sector/Asset class changes show its chart and table together, ending on a clear Asset class view. Native playback and an independent 364-frame decode agree, with no dropped frames. Maximum source gap is 15ms, changed-source delivery is 46.79ms and moving-frame p95 is 18.17ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 120 films outstanding. Evidence: `test-results/handoff-films-20261022/chart-allocation/first/`.
 
 Task 1 (22 October): Footer Newsletter now has a reviewed 5.55s, 119 KB film. It types an email typo, accepts the correction, submits the corrected address and ends with a clear confirmation. Native playback and an independent 333-frame decode agree, with no dropped frames. Maximum source gap is 36ms, changed-source delivery is 25.82ms and moving-frame p95 is 18.56ms, with no stalls. The only two concurrent edits belong to an unimported publication tool and its test; all recording and component inputs stay fixed, and the original broad snapshot rejection is preserved. The sample-aspect diagnostic is also retained. Its current poster and all recording guards remain unchanged. There are now 121 films outstanding. Evidence: `test-results/handoff-films-20261022/footer-newsletter/first/`.
 
