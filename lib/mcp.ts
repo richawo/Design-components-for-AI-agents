@@ -16,7 +16,8 @@ import { absoluteUrl, site } from "./site";
 /**
  * A stateless MCP server (Streamable HTTP transport, JSON responses) served
  * from /mcp on the site itself. No install step: point any MCP client at the
- * URL. Pro components unlock with `Authorization: Bearer <licence>`.
+ * URL. Pro components unlock by signing in at /mcp/pro (OAuth, see
+ * lib/commerce/oauth.ts) or with `Authorization: Bearer <licence>`.
  *
  * The local stdio server (packages/mcp) offers the same tools over the API.
  */
@@ -28,7 +29,7 @@ export const SERVER_INFO = {
 };
 const VERSIONS = ["2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05"];
 
-export const INSTRUCTIONS = `Design for AI is a library of premium, hand-built React + Tailwind v4 (and React Native) components, each with a design prompt and a JSON prompt. Use search_components to find candidates, get_component for code, props and the design brief, and get_principles before building UI from scratch. Free components work without a licence; Pro components need the user's licence key as a Bearer token. Adapt colours and copy to the project, but keep the type scale, spacing, motion and states the brief specifies.`;
+export const INSTRUCTIONS = `Design for AI is a library of premium, hand-built React + Tailwind v4 (and React Native) components, each with a design prompt and a JSON prompt. Use search_components to find candidates, get_component for code, props and the design brief, and get_principles before building UI from scratch. Free components work without signing in; Pro components need the user's Pro licence, through browser sign-in at /mcp/pro or a licence key as a Bearer token. Adapt colours and copy to the project, but keep the type scale, spacing, motion and states the brief specifies.`;
 
 type JsonRpcId = string | number | null;
 type Req = {
@@ -41,7 +42,9 @@ type ToolResult = {
   content: { type: "text"; text: string }[];
   isError?: boolean;
 };
-type Ctx = { license: Verified };
+/** Why a credential sent to the open endpoint was not accepted. */
+export type KeyIssue = "empty" | "unexpanded" | "scheme" | "invalid" | "expired" | "revoked";
+export type Ctx = { license: Verified; account?: { email: string }; keyIssue?: KeyIssue };
 
 const text = (t: string, isError = false): ToolResult => ({
   content: [{ type: "text", text: t }],
@@ -51,8 +54,25 @@ const text = (t: string, isError = false): ToolResult => ({
 const line = (c: ReturnType<typeof allComponents>[number]) =>
   `- ${c.slug} · ${c.name} (${c.tier}${c.platform === "mobile" ? ", React Native" : ""}, ${c.category}): ${c.description}`;
 
-const proMessage = (slug: string) =>
-  `"${slug}" is a Pro component. Ask the user for their Design for AI licence key and connect with the header "Authorization: Bearer <key>" (get one at ${absoluteUrl("/pricing")}). Free alternatives: search_components with tier "free".`;
+const SIGN_IN = () => `To unlock Pro without handling a key, connect to ${absoluteUrl("/mcp/pro")} instead: the client opens a browser sign-in. Setup for each agent: ${absoluteUrl("/docs/agents")}.`;
+
+/** Explains a credential problem in terms the user can act on. */
+export function connectionNotice(ctx: Ctx): string | null {
+  if (ctx.license.ok) return null;
+  if (ctx.account) return `Signed in as ${ctx.account.email}, but this account has no active Pro licence. Free components still work. Plans: ${absoluteUrl("/pricing")}. If the licence belongs to another email, sign in with that address.`;
+  switch (ctx.keyIssue) {
+    case "empty": return `The Authorization header on this connection is empty, so the licence variable (usually DESIGN_FOR_AI_LICENSE) was probably unset when the server was added. ${SIGN_IN()}`;
+    case "unexpanded": return `The Authorization header contains a variable name rather than a licence key, so this client didn't expand it. Put the key in the client's supported secret or environment setting. ${SIGN_IN()}`;
+    case "scheme": return `The Authorization header must be "Bearer <licence key>". ${SIGN_IN()}`;
+    case "expired": return `The licence key on this connection has expired. Renew or check it at ${absoluteUrl("/account")}. ${SIGN_IN()}`;
+    case "revoked": return `The licence key on this connection is no longer active (refunded, removed from a team or replaced). Check ${absoluteUrl("/account")}. ${SIGN_IN()}`;
+    case "invalid": return `The licence key on this connection isn't valid. Copy it again from ${absoluteUrl("/account")}; it starts with dfa_. ${SIGN_IN()}`;
+    default: return null;
+  }
+}
+
+const proMessage = (slug: string, ctx: Ctx) =>
+  `"${slug}" is a Pro component. ${connectionNotice(ctx) ?? `Ask the user to connect their Design for AI account: ${SIGN_IN()} A licence key also works as the header "Authorization: Bearer <key>" (plans at ${absoluteUrl("/pricing")}).`} Free alternatives: search_components with tier "free".`;
 
 type Tool = {
   name: string;
@@ -222,7 +242,7 @@ export const TOOLS: Tool[] = [
         want.has("prompt") || want.has("json") || want.has("code");
       if (needsSource) {
         if (e.tier === "pro" && !ctx.license.ok) {
-          parts.push("", proMessage(slug));
+          parts.push("", proMessage(slug, ctx));
         } else {
           const src = await readSource(slug);
           if (!src)
@@ -368,11 +388,12 @@ export async function handleMessage(msg: Req, ctx: Ctx) {
         protocolVersion: VERSIONS.includes(asked) ? asked : VERSIONS[0],
         capabilities: { tools: { listChanged: false } },
         serverInfo: { ...SERVER_INFO, websiteUrl: site.url },
-        instructions:
-          INSTRUCTIONS +
-          (ctx.license.ok
-            ? " A Pro licence is active for this connection."
-            : ""),
+        instructions: [
+          INSTRUCTIONS,
+          ctx.license.ok
+            ? `A Pro licence is active for this connection${ctx.account ? ` (${ctx.account.email})` : ""}.`
+            : connectionNotice(ctx),
+        ].filter(Boolean).join(" "),
       });
     }
     case "ping":

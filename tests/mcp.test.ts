@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { handleMessage, TOOLS } from "@/lib/mcp";
+import { connectionNotice, handleMessage, TOOLS } from "@/lib/mcp";
+import { keyIssue, mcpGet, mcpPost } from "@/lib/mcp-http";
 import { allPosts } from "@/lib/content";
 
 const anon = { license: { ok: false as const, reason: "missing" as const } };
@@ -74,5 +75,47 @@ describe("remote MCP server", () => {
   it("flags unknown slugs as tool errors", async () => {
     const r = await call("get_component", { slug: "does-not-exist" });
     expect(r.result.isError).toBe(true);
+  });
+});
+
+describe("MCP connection notices", () => {
+  const rpc = (headers: Record<string, string> = {}) => new Request("https://design.example.invalid/mcp/pro", {
+    method: "POST", headers: { "Content-Type": "application/json", ...headers },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18" } }),
+  });
+
+  it("names the setup mistake instead of silently serving the free tier", () => {
+    expect(keyIssue(null)).toBeUndefined();
+    expect(keyIssue("Bearer")).toBe("empty");
+    expect(keyIssue("Bearer $DESIGN_FOR_AI_LICENSE")).toBe("unexpanded");
+    expect(keyIssue("Bearer ${env:DESIGN_FOR_AI_LICENSE}")).toBe("unexpanded");
+    expect(keyIssue("dfa_abc.def")).toBe("scheme");
+    expect(keyIssue("Bearer dfa_abc.def", "expired")).toBe("expired");
+    expect(keyIssue("Bearer dfa_abc.def", "signature")).toBe("invalid");
+    expect(connectionNotice({ ...anon, keyIssue: "empty" })).toContain("DESIGN_FOR_AI_LICENSE");
+    expect(connectionNotice({ ...anon, account: { email: "person@example.invalid" } })).toContain("no active Pro licence");
+    expect(connectionNotice(anon)).toBeNull();
+  });
+
+  it("explains a rejected key in the Pro gate and the initialize instructions", async () => {
+    const ctx = { ...anon, keyIssue: "invalid" as const };
+    const r = await call("get_component", { slug: "chart-candlestick" }, ctx);
+    expect(r.result.content[0].text).toContain("isn't valid");
+    expect(r.result.content[0].text).toContain("/mcp/pro");
+    expect(r.result.content[0].text).not.toContain("## Source");
+    const open = await mcpPost(rpc({ Authorization: "Bearer not-a-key" }), "open");
+    expect(open.status).toBe(200);
+    expect((await open.json()).result.instructions).toContain("isn't valid");
+  });
+
+  it("challenges the signed-in endpoint so clients start browser sign-in", async () => {
+    const missing = await mcpPost(rpc(), "signed-in");
+    expect(missing.status).toBe(401);
+    expect(missing.headers.get("WWW-Authenticate")).toContain('resource_metadata="https://design.example.invalid/.well-known/oauth-protected-resource/mcp/pro"');
+    const rejected = await mcpPost(rpc({ Authorization: "Bearer dfa_bad.key" }), "signed-in");
+    expect(rejected.status).toBe(401);
+    expect(rejected.headers.get("WWW-Authenticate")).toContain('error="invalid_token"');
+    expect((await mcpGet(new Request("https://design.example.invalid/mcp/pro"), "signed-in")).status).toBe(401);
+    expect((await mcpGet(new Request("https://design.example.invalid/mcp"), "open")).status).toBe(405);
   });
 });
