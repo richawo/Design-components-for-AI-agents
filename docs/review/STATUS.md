@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 118 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 117 films remain.
+
+Task 1 (22 October): Request Waterfall now has a reviewed 4.10s, 67 KB film. It selects the documents request, then the workspace request, with their actual timing details and a clear final HTTP 200 response. Native playback and an independent 246-frame decode agree, with no dropped frames. Maximum source gap is 10ms, changed-source delivery is 13.45ms and moving-frame p95 is 17.42ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 117 films outstanding. Evidence: `test-results/handoff-films-20261022/devtools-request-waterfall/first/`.
 
 Task 1 (22 October): Setup Checklist now has a reviewed 5.62s, 94 KB film. It completes Add your first source, opens the final task and ends at 3/3 with a readable completion receipt. Native playback and an independent 337-frame decode agree, with no dropped frames. Maximum source gap is 10ms, changed-source delivery is 54.66ms and moving-frame p95 is 17.06ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 118 films outstanding. Evidence: `test-results/handoff-films-20261022/onboarding-setup-checklist/first/`.
 

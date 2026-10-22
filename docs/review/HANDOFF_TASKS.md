@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Request Waterfall now has a reviewed 4.10s, 67 KB film. It selects the documents request, then the workspace request, with their actual timing details and a clear final HTTP 200 response. Native playback and an independent 246-frame decode agree, with no dropped frames. Maximum source gap is 10ms, changed-source delivery is 13.45ms and moving-frame p95 is 17.42ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 117 films outstanding. Evidence: `test-results/handoff-films-20261022/devtools-request-waterfall/first/`.
+
 - Task 1 (22 October): Setup Checklist now has a reviewed 5.62s, 94 KB film. It completes Add your first source, opens the final task and ends at 3/3 with a readable completion receipt. Native playback and an independent 337-frame decode agree, with no dropped frames. Maximum source gap is 10ms, changed-source delivery is 54.66ms and moving-frame p95 is 17.06ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 118 films outstanding. Evidence: `test-results/handoff-films-20261022/onboarding-setup-checklist/first/`.
 
 - Task 1 (22 October): Booking Slots now has a reviewed 5.63s, 72 KB film. It selects Monday 10:30, changes the visible day and accepts Tuesday 10:00 with the matching confirmation. Native playback and an independent 338-frame decode agree, with no dropped frames. Maximum source gap is 11ms, changed-source delivery is 14.47ms and moving-frame p95 is 17.61ms, with no stalls. All 3,406 source/media inputs stay fixed through capture. The current poster, source, demo metadata and recording guards remain unchanged. There are now 119 films outstanding. Evidence: `test-results/handoff-films-20261022/date-booking-slots/first/`.
@@ -628,7 +630,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (118 components)
+## 1. Re-record demo videos (117 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -651,7 +653,6 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`devtools-request-waterfall`
 `chart-bullet-targets`
 `chart-slope-comparison`
 `agents-budget-guard`, `agents-dependency-board`
