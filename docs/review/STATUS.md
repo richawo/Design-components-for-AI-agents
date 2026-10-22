@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 70 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 67 films remain.
+
+Task 1 (22 October): Expense Review, Invoice Composer and Payment Run now have reviewed 5.90s, 6.00s and 5.53s films. They approve and reject claims before the next receipt settles, send the eight-day Net 15 invoice for 16,473 pounds, and confirm three payments totalling 23,746.40 pounds. Measured framing retains the complete required content, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Expense uses the separately pushed terminal hold. All three captures keep their source inputs fixed and pass every original recording guard. The earlier blurred-ending and source/delivery/moving-frame rejections remain archived. There are now 67 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/finance-approval-invoice-payment/` and the individual selected-take folders.
 
 Task 8 (22 October), production checkpoint: The live marker reaches public `bc5c5727` and private `aabc29ce`, including the Settings native-motion correction, Expense Review terminal hold and Close Checklist film. The native stale-observer assertion settles ten permission entries per theme within the unchanged 45ms limit; actual retired-control focus attempts fail as required. Transient, persistent and stalled preview recovery pass, as do eleven anonymous cache/licence boundaries. The original missing-shim harness failure is retained; the subsequent scoped run passes without product changes. Visible policy/recovery diagnostics are inspected with clipping and early-capture limits recorded. The preceding production navigation replay passes seven of eight visits: first-visit Mobile Settings takes 3,038ms against the unchanged 2,500ms budget. All second frames stay below 109ms, previews request 11 or 12 scripts, and no browser errors or server failures occur. The same eight visits pass against the prepared local Worker under the current host load. Keep the production timing miss, remaining film queue and final media/build-marker verification open. Evidence: `test-results/handoff-production-20261022-current/`.
 
@@ -451,9 +453,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `finance-budget-variance` | new | current | rewritten, passes against Next; dark/light accessibility and responsive/state captures pass |
 | `finance-cashflow-dashboard` | new | current | rewritten, passes on Next; accessibility, responsive/state/entrance and selected-week list geometry pass |
 | `finance-close-checklist` | current | current | rewritten, passes 22 October: a reviewed 5.20s film is current; prior rejected takes remain archived. |
-| `finance-expense-review` | new | current | rewritten, passes |
-| `finance-invoice-composer` | new | current | rewritten, passes on the Next-backed source-fixture runner |
-| `finance-payment-run` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `finance-expense-review` | current | current | rewritten, passes 22 October: a reviewed 5.90s film is current; prior rejected takes remain archived. |
+| `finance-invoice-composer` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 6.00s film is current; prior rejected takes remain archived. |
+| `finance-payment-run` | current | current | rewritten, passes on the Next-backed source-fixture runner 22 October: a reviewed 5.53s film is current; prior rejected takes remain archived. |
 | `finance-receivables-aging` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `finance-reconciliation` | new | current | pro-industry and demo probes pass on Next; exact currency and matched selection fixed |
 | `finance-scenario-forecast` | new | current | rewritten, passes on the Next-backed source-fixture runner |

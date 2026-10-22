@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Expense Review, Invoice Composer and Payment Run now have reviewed 5.90s, 6.00s and 5.53s films. They approve and reject claims before the next receipt settles, send the eight-day Net 15 invoice for 16,473 pounds, and confirm three payments totalling 23,746.40 pounds. Measured framing retains the complete required content, with matching inspected posters. Native playback and independently decoded endings agree with zero dropped frames. Expense uses the separately pushed terminal hold. All three captures keep their source inputs fixed and pass every original recording guard. The earlier blurred-ending and source/delivery/moving-frame rejections remain archived. There are now 67 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/finance-approval-invoice-payment/` and the individual selected-take folders.
+
 - Task 8 (22 October), production checkpoint: The live marker reaches public `bc5c5727` and private `aabc29ce`, including the Settings native-motion correction, Expense Review terminal hold and Close Checklist film. The native stale-observer assertion settles ten permission entries per theme within the unchanged 45ms limit; actual retired-control focus attempts fail as required. Transient, persistent and stalled preview recovery pass, as do eleven anonymous cache/licence boundaries. The original missing-shim harness failure is retained; the subsequent scoped run passes without product changes. Visible policy/recovery diagnostics are inspected with clipping and early-capture limits recorded. The preceding production navigation replay passes seven of eight visits: first-visit Mobile Settings takes 3,038ms against the unchanged 2,500ms budget. All second frames stay below 109ms, previews request 11 or 12 scripts, and no browser errors or server failures occur. The same eight visits pass against the prepared local Worker under the current host load. Keep the production timing miss, remaining film queue and final media/build-marker verification open. Evidence: `test-results/handoff-production-20261022-current/`.
 
 - Task 1 (22 October): Close Checklist now has a reviewed 5.20s film. Both remaining tasks complete before sign-off ends with 12 of 12 done, Closed and the complete signed October paper receipt. The measured 1104 by 1100 source viewport preserves every card and control dimension, with a matching inspected poster. Native playback and the independently decoded ending agree with zero dropped frames. Every original recording guard passes; component and demo sources are unchanged. The original encoded-delivery rejection remains archived. There are now 70 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/close-checklist-signoff/` and the individual selected-take folders.
@@ -674,7 +676,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (70 components)
+## 1. Re-record demo videos (67 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -697,8 +699,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`finance-expense-review`
-`finance-invoice-composer`, `finance-payment-run`, `finance-receivables-aging`, `finance-reconciliation`
+`finance-receivables-aging`, `finance-reconciliation`
 `finance-scenario-forecast`, `fashion-assortment-planner`, `fashion-exchange-selector`, `fashion-launch-calendar`
 `fashion-wholesale-order`, `commerce-backorder-allocation`, `commerce-bundle-builder`
 `commerce-customer-timeline`, `commerce-shipping-estimator`, `layout-split-resizer`, `layout-workspace-shell`
