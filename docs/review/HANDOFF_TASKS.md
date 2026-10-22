@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Merchandising Dashboard and Split Resizer now have reviewed 4.42s and 5.53s films. They select the visible Merino roll neck summary and retain the complete three-style £41,400 pricing-review receipt, then resize, collapse and restore the query/results split. Measured 900px and 700px scenes retain the demonstrated chart, performer list, complete fixed receipt, query and bounded results, with matching inspected opening posters. Native playback and independent decoding agree on 265 and 332 frames with zero drops. Twenty encoder-free preparation seconds and every original recording guard remain; monitoring observes no external encoding during either owned job. Sources stay fixed. Collection Line Plan remains queued after its preserved first rejection at 103.28ms changed-frame delivery against the unchanged 100ms limit. There are now 36 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/merchandising-and-split-resizer/` and the individual selected-take folders.
+
 - Task 1 (22 October): Border Tracer, Ink Trail and Compare Lenses now have reviewed 4.10s, 3.82s and 3.87s films. They pause and resume the warehouse sync, draw a complete stroke and add a second seal, and traverse the comparison lens before returning to the complete receipts stage. Measured scenes preserve all required controls and settled states, with matching inspected opening posters. Native playback and independent decoding agree on 246, 229 and 232 frames with zero drops. External encoders have finished. Each first take starts after twenty encoder-free seconds and passes the unmodified recorder limits; ordinary CPU activity is recorded separately. The Border Tracer qualification retains a 13ms maximum source gap and 27ms maximum changed-frame delivery, demonstrating that the extra CPU-percentage proxy rejected a usable window. This is recording-quality evidence, not a product performance improvement. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 38 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/tracer-ink-and-comparison/` and the individual selected-take folders.
 
 - Task 1 (22 October): Assortment Planner now has a reviewed 5.52s film. Its drag, Fill by grade and Publish actions end with allocation AL-2810, all 872 units assigned in 30 lines across six stores and the complete confirmation visible. The measured 1244×980 scene preserves the same complete matrix, control geometry and ending text as the larger scene, with a matching inspected opening poster. Native playback and independent decoding agree on 331 frames with zero drops. Every original recording guard and source input remains fixed. The original 34.6ms moving-frame rejection remains preserved and unapproved. Collection Line Plan receives no quiet window in the next bounded wait, so neither it nor Merchandising is captured in this batch. There are now 41 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/assortment-complete-allocation/` and the individual selected-take folders.
@@ -712,7 +714,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (38 components)
+## 1. Re-record demo videos (36 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -731,7 +733,7 @@ slug or per small group). Notes:
 
 Slugs:
 
-`layout-split-resizer`, `layout-workspace-shell`
+`layout-workspace-shell`
 `scroll-background-wipe`, `scroll-chapter-stack`, `scroll-cinema-frame`
 
 `features-integration-trace`, `features-shortcut-theatre`, `footer-sitemap-atlas`
@@ -741,7 +743,7 @@ Slugs:
 `media-trim-timeline`, `navigation-context-rail`, `navigation-lens-dock`, `navigation-stacked-tabs`
 `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`, `pricing-usage-calculator`
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
-`text-path-typesetter`, `scroll-horizontal-showcase`, `scroll-expanding-mosaic`, `scroll-image-curtain`, `fashion-collection-line-plan`, `fashion-merchandising-dashboard`
+`text-path-typesetter`, `scroll-horizontal-showcase`, `scroll-expanding-mosaic`, `scroll-image-curtain`, `fashion-collection-line-plan`
 
 
 ## 2. Retake stale posters (complete)

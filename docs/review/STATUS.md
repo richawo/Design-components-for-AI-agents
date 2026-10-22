@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 38 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 36 films remain.
+
+Task 1 (22 October): Merchandising Dashboard and Split Resizer now have reviewed 4.42s and 5.53s films. They select the visible Merino roll neck summary and retain the complete three-style £41,400 pricing-review receipt, then resize, collapse and restore the query/results split. Measured 900px and 700px scenes retain the demonstrated chart, performer list, complete fixed receipt, query and bounded results, with matching inspected opening posters. Native playback and independent decoding agree on 265 and 332 frames with zero drops. Twenty encoder-free preparation seconds and every original recording guard remain; monitoring observes no external encoding during either owned job. Sources stay fixed. Collection Line Plan remains queued after its preserved first rejection at 103.28ms changed-frame delivery against the unchanged 100ms limit. There are now 36 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/merchandising-and-split-resizer/` and the individual selected-take folders.
 
 Task 1 (22 October): Border Tracer, Ink Trail and Compare Lenses now have reviewed 4.10s, 3.82s and 3.87s films. They pause and resume the warehouse sync, draw a complete stroke and add a second seal, and traverse the comparison lens before returning to the complete receipts stage. Measured scenes preserve all required controls and settled states, with matching inspected opening posters. Native playback and independent decoding agree on 246, 229 and 232 frames with zero drops. External encoders have finished. Each first take starts after twenty encoder-free seconds and passes the unmodified recorder limits; ordinary CPU activity is recorded separately. The Border Tracer qualification retains a 13ms maximum source gap and 27ms maximum changed-frame delivery, demonstrating that the extra CPU-percentage proxy rejected a usable window. This is recording-quality evidence, not a product performance improvement. Every original recording guard and source input remains fixed; component and demo sources are unchanged. There are now 38 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/tracer-ink-and-comparison/` and the individual selected-take folders.
 
@@ -505,7 +507,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `fashion-launch-calendar` | current | current | rewritten, passes 22 October: a reviewed 4.78s film is current; prior rejected takes remain archived. |
 | `fashion-preorder-planner` | current | current | source-fixture regression, demo, accessibility and responsive/state/entrance captures pass 22 October: a reviewed 5.08s film is current; prior rejected takes remain archived. |
 | `fashion-collection-line-plan` | new | current | source-fixture regression/demo, both-theme accessibility, responsive/state/entrance captures and workspace draft/save checks pass |
-| `fashion-merchandising-dashboard` | new | current | source-fixture regression/demo, both-theme accessibility, responsive/state/entrance captures and workspace checks pass |
+| `fashion-merchandising-dashboard` | current | current | source-fixture regression/demo, both-theme accessibility, responsive/state/entrance captures and workspace checks pass 22 October: a reviewed 4.42s film is current; prior rejected takes remain archived. |
 | `fashion-size-guide` | current | current | source-fixture regression/demo, native palettes, both-theme accessibility and responsive/state/entrance captures pass 22 October: a reviewed 4.33s film is current; prior rejected takes remain archived. |
 | `fashion-wholesale-order` | current | current | rewritten, passes 22 October: a reviewed 5.08s film is current; prior rejected takes remain archived. |
 
@@ -529,7 +531,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `layout-split-resizer` | new | current | Registered keyboard, native snapped/free dragging, collapse/restore, reset and disabled separators. Film queued. |
+| `layout-split-resizer` | current | current | Registered keyboard, native snapped/free dragging, collapse/restore, reset and disabled separators. Film queued. 22 October: a reviewed 5.53s film is current; prior rejected takes remain archived. |
 | `layout-workspace-shell` | new | current | all eight block workflows and retained-panel/focus checks pass; header menus stay above embedded drawers |
 | `scroll-background-wipe` | new | current | complete Next-backed scroll suite passes, including exact reversal and reduced motion |
 | `scroll-chapter-stack` | new | current | complete pro-scroll-probe passes; first-frame resize release, before/after/negative replay and both-theme accessibility verified |
