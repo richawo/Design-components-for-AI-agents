@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Branching Survey and Draft Rescue now have reviewed 5.73s and 4.88s films. The survey changes from the product route to the brand-identity branch, visibly retiring prior answers. Draft Rescue restores the two selected fields and retains the saved ticket and capacity values. Its measured 1280px source viewport and fixed card union keep the full initial comparison, footer and restored receipt visible, with a matching inspected poster. The clipped first take is retained. Native playback and independently decoded endings agree with zero dropped frames; all original recording guards and capture inputs stay fixed. Component and demo sources are unchanged. There are now 99 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/branching-and-draft-recovery/` and the individual selected-take folders.
+
 - Task 1 (22 October): Range Calendar and Timezone Overlap now have reviewed 4.62s and 5.93s films. They show a cross-month date range followed by the two-night weekend at 392 pounds, and a moved meeting interval with participant inclusion ending at the demo invite receipt. Complete calendars, timezone rows, selected values and footer actions remain readable. Native playback and independently decoded endings agree with zero dropped frames. All original recording guards and capture inputs stay fixed; current posters and component/demo sources are retained. There are now 101 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/calendar-timezone-selection/` and the individual selected-take folders.
 
 - Task 1 (22 October): Request Replay and Schema Migration now have reviewed 4.60s and 6.80s films. The request edits reach a second 201 Created response beside the original conflict and timing comparison. The migration demo completes its four-step dry run and application, ending with Applied and Committed receipts. Request Replay retains its complete validated 1080px scene and matching inspected poster. Native playback and independently decoded endings agree with zero dropped frames, and every original guard and capture input stays fixed. Component and demo sources are unchanged. There are now 103 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/request-replay-migration/` and the individual selected-take folders.
@@ -646,7 +648,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (101 components)
+## 1. Re-record demo videos (99 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -669,8 +671,7 @@ Slugs:
 `block-commerce-workspace`
 `block-music-workspace`
 
-`forms-branching-survey`
-`forms-draft-rescue`, `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`
+`input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`
 `input-unit-converter`, `selects-tree-picker`
 `saas-notification-inbox`, `saas-report-scheduler`, `saas-saved-views`
 `saas-support-triage`, `saas-usage-policy`, `saas-workspace-dashboard`, `legal-clause-library`
