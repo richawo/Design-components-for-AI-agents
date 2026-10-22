@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Assortment Planner now has a reviewed 5.52s film. Its drag, Fill by grade and Publish actions end with allocation AL-2810, all 872 units assigned in 30 lines across six stores and the complete confirmation visible. The measured 1244×980 scene preserves the same complete matrix, control geometry and ending text as the larger scene, with a matching inspected opening poster. Native playback and independent decoding agree on 331 frames with zero drops. Every original recording guard and source input remains fixed. The original 34.6ms moving-frame rejection remains preserved and unapproved. Collection Line Plan receives no quiet window in the next bounded wait, so neither it nor Merchandising is captured in this batch. There are now 41 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/assortment-complete-allocation/` and the individual selected-take folders.
+
 - Task 1 (22 October): Prismatic Folder, Meeting Call Stage and Team Message List now have reviewed 4.42s, 5.37s and 5.47s films. They expand the complete six-file list and JSON preview, spotlight Mara before returning to the four-person grid with two raised hands, and retain the accepted exact ship-time message plus follow-up. The measured scenes preserve all required controls and settled results, with matching inspected opening posters. Native playback and independent decoding agree on 265, 322 and 328 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. The message recording starts only after its original quiet gate passes. There are now 42 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/folder-call-and-team-messages/` and the individual selected-take folders.
 
 - Task 1 (22 October): Financial Report, Commerce Workspace and Music Workspace now have reviewed 5.57s, 4.90s and 4.47s films. They export the September report after reviewing its complete cost table, record a £125 Merino crew return request and retain the complete three-track queue with Paper Lanterns paused. Their measured 940px scenes retain the fixed workspace controls, bounded content and settled final results, with matching inspected opening posters. Native playback and independent decoding agree on 334, 294 and 268 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. All eleven composed blocks now have reviewed current films. There are now 45 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/financial-commerce-and-music-blocks/` and the individual selected-take folders.
@@ -708,7 +710,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (42 components)
+## 1. Re-record demo videos (41 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -726,8 +728,6 @@ slug or per small group). Notes:
 - Demos that need a viewport bigger than the card can use `--frame-viewport` (see `docs/COMPONENT_QA.md`).
 
 Slugs:
-
-`fashion-assortment-planner`
 
 `layout-split-resizer`, `layout-workspace-shell`
 `scroll-background-wipe`, `scroll-chapter-stack`, `scroll-cinema-frame`

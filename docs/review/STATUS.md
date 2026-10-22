@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 42 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 41 films remain.
+
+Task 1 (22 October): Assortment Planner now has a reviewed 5.52s film. Its drag, Fill by grade and Publish actions end with allocation AL-2810, all 872 units assigned in 30 lines across six stores and the complete confirmation visible. The measured 1244×980 scene preserves the same complete matrix, control geometry and ending text as the larger scene, with a matching inspected opening poster. Native playback and independent decoding agree on 331 frames with zero drops. Every original recording guard and source input remains fixed. The original 34.6ms moving-frame rejection remains preserved and unapproved. Collection Line Plan receives no quiet window in the next bounded wait, so neither it nor Merchandising is captured in this batch. There are now 41 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/assortment-complete-allocation/` and the individual selected-take folders.
 
 Task 1 (22 October): Prismatic Folder, Meeting Call Stage and Team Message List now have reviewed 4.42s, 5.37s and 5.47s films. They expand the complete six-file list and JSON preview, spotlight Mara before returning to the four-person grid with two raised hands, and retain the accepted exact ship-time message plus follow-up. The measured scenes preserve all required controls and settled results, with matching inspected opening posters. Native playback and independent decoding agree on 265, 322 and 328 frames with zero drops. Every original recording guard and source input remains fixed; component and demo sources are unchanged. The message recording starts only after its original quiet gate passes. There are now 42 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/folder-call-and-team-messages/` and the individual selected-take folders.
 
@@ -496,7 +498,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `fashion-assortment-planner` | new | current | rewritten, passes |
+| `fashion-assortment-planner` | current | current | rewritten, passes 22 October: a reviewed 5.52s film is current; prior rejected takes remain archived. |
 | `fashion-exchange-selector` | current | current | rewritten, passes 22 October: a reviewed 4.98s film is current; prior rejected takes remain archived. |
 | `fashion-launch-calendar` | current | current | rewritten, passes 22 October: a reviewed 4.78s film is current; prior rejected takes remain archived. |
 | `fashion-preorder-planner` | current | current | source-fixture regression, demo, accessibility and responsive/state/entrance captures pass 22 October: a reviewed 5.08s film is current; prior rejected takes remain archived. |
