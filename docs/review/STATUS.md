@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 105 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 103 films remain.
+
+Task 1 (22 October): Request Replay and Schema Migration now have reviewed 4.60s and 6.80s films. The request edits reach a second 201 Created response beside the original conflict and timing comparison. The migration demo completes its four-step dry run and application, ending with Applied and Committed receipts. Request Replay retains its complete validated 1080px scene and matching inspected poster. Native playback and independently decoded endings agree with zero dropped frames, and every original guard and capture input stays fixed. Component and demo sources are unchanged. There are now 103 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/request-replay-migration/` and the individual selected-take folders.
 
 Task 1 (22 October): Icon Workbench, Incident Timeline and Release Compare now have reviewed 5.72s, 5.78s and 5.17s films. They show Compass anatomy and JSX, real incident replay followed by the pool-saturation details, and required-file review ending in a requested promotion. Icon Workbench and Release Compare retain complete validated 1000px and 1180px scenes with matching inspected posters. Native playback and independent decoded endings agree with zero dropped frames. Every original recording guard and capture input stays fixed; component and demo sources are unchanged. There are now 105 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/developer-inspection-tools/` and the individual selected-take folders.
 
@@ -341,8 +343,8 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `devtools-icon-workbench` | current | current | Dedicated native and registered interaction regression passes; keyboard paths, host notifications and empty states are covered. Product source unchanged. See the 21 October Task 5 evidence in HANDOFF_TASKS.md. 22 October: a reviewed 5.72s film is current; prior rejected takes remain archived. |
 | `devtools-incident-timeline` | current | current | Invalid-time, empty Replay and detached seek guards; readable states, exact-time stacked mouse/touch targets, registered regression and current poster. Film queued. 22 October: a reviewed 5.78s film is current; prior rejected takes remain archived. |
 | `devtools-release-compare` | current | current | Missing-writer and detached deployment guards; review gates, retained exact retries and keyboard rollback regression. Film queued. 22 October: a reviewed 5.17s film is current; prior rejected takes remain archived. |
-| `devtools-request-replay` | new | current | Immediate local cancellation, retired replies and detached requests/responses; exact retries, keyboard paths and invalid-body regression. Film queued. |
-| `devtools-schema-migration` | new | current | Detached plans/results, validated reports and empty-plan gates; readable table/skipped states, visible keyboard SQL focus and 15-fixture regression. Poster current; film queued. |
+| `devtools-request-replay` | current | current | Immediate local cancellation, retired replies and detached requests/responses; exact retries, keyboard paths and invalid-body regression. Film queued. 22 October: a reviewed 4.60s film is current; prior rejected takes remain archived. |
+| `devtools-schema-migration` | current | current | Detached plans/results, validated reports and empty-plan gates; readable table/skipped states, visible keyboard SQL focus and 15-fixture regression. Poster current; film queued. 22 October: a reviewed 6.80s film is current; prior rejected takes remain archived. |
 
 ## Inputs, forms, dates and selects (14)
 
