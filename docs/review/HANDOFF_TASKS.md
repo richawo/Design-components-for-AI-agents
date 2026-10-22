@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Layout Playground, Crop Workbench and Lens Dock now have reviewed 3.67s, 6.13s and 4.37s films. They resize and restore the complete booking card, save the 5,071 × 2,852 straightened crop, and visibly magnify dock icons before selecting Notes. Complete 1280px scenes retain their 1000px, 980px and 620px heights, demonstrated controls and inspected opening posters. The existing direct page-frame transport retains original JPEG 92 and every source, delivery, moving-frame, size and duration limit. Uninterrupted native playback and independent decoding agree on 220, 368 and 262 frames with zero drops. Twenty encoder-free preparation seconds and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Every earlier rejection remains archived and unapproved. No component, metadata, recorder or quality-limit change, or product latency improvement, is claimed. There are now 0 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/final-layout-crop-and-dock/` and the individual selected-take folders.
+
 - Task 1 (22 October): Workspace Shell now has a reviewed 4.27s film. Overview, the complete five-project table and all four Activity events fit the measured 1280 × 880 scene, including the full workspace footer and inspected opening poster. The existing direct page-frame transport at original JPEG 92 passes all unchanged recording limits: source gap 19ms, changed-source delivery 33ms and moving p95 of 18ms. Uninterrupted native playback and independent decoding agree on 256 frames with zero drops. Primary-video JSON counting repairs a preserved trailing-comma verification failure; midpoint screenshots are taken after the playthrough, with the earlier two-drop observation retained. Combined capture and completed playback monitoring remain explicit and retain twenty encoder-free preparation seconds, unchanged movie bytes and no external encoding. Both earlier rejected takes remain preserved. No component, metadata, recorder or quality-limit change, or product latency improvement, is claimed. There are now 3 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/workspace-shell-direct-page/` and the individual selected-take folders.
 
 - Task 1 (22 October): Expanding Mosaic and Image Curtain now have reviewed 4.17s and 4.27s films. They expand the centre dune from the nine-image mosaic and part the neutral editorial cover to reveal the desert scene. The measured 900px views retain the complete final image, figure, captions and demonstrated controls, with inspected opening posters. Native playback and independent decoding agree on 250 and 256 frames with zero drops. Twenty encoder-free preparation seconds, every original recording guard and fixed source/media/Git snapshots remain intact, with no overlapping external encoder observed. Component, metadata and recorder sources are unchanged. There are now 4 films outstanding. Evidence: `test-results/handoff-films-20261022/groups/expanding-mosaic-and-image-curtain/` and the individual selected-take folders.
@@ -748,7 +750,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (3 components)
+## 1. Re-record demo videos (0 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -766,11 +768,6 @@ slug or per small group). Notes:
 - Demos that need a viewport bigger than the card can use `--frame-viewport` (see `docs/COMPONENT_QA.md`).
 
 Slugs:
-
-`hero-layout-playground`
-`media-crop-workbench`
-
-`navigation-lens-dock`
 
 
 ## 2. Retake stale posters (complete)
