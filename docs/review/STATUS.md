@@ -1,6 +1,8 @@
 # Review status
 
-Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 123 films remain.
+Current inventory (22 October): all 202 standalone reviews, all eleven block reviews and all 59 older interaction probes are complete; 122 films remain.
+
+Task 1 (22 October): Hero Blur Statement now has a reviewed 3.22s, 101 KB film. Client names move from Meridian through Parcel to a clear Northwind ending; actual native playback and an independent 193-frame decode agree. Maximum source gap is 10ms, changed-source delivery is 55.37ms and moving-frame p95 is 17.89ms, with no stalls. All recording guards and 3,386 source/media inputs remain fixed. Its current poster is retained. No source or demo metadata changes are included. There are now 122 films outstanding. Evidence: `test-results/handoff-films-20261022/hero-blur-statement/first/`.
 
 Accessibility checkpoint (22 October): all sixteen changed older components have passing official audits across the original and focused runs. Seven source corrections, their registered interactions and thirty native Team mounts pass. All 158 selected current audit/state captures are inspected, with settled calendar and full coarse footer supplements. Five changed default posters are refreshed; all 123 films remain queued. Strict registry, root/all-eleven-block types and all 1,112 current unit tests pass with 2,220 implementation inputs fixed. The new response-region label is covered in all 29 non-English editions; the wider 185,290-unit translation backlog retains English fallback and zero invalid protected terms. Prepared Worker checks remain open. Evidence uses `test-results/handoff-accessibility-*` and `test-results/handoff-older-probes/accessibility-after-upstream-core-frozen.json`.
 

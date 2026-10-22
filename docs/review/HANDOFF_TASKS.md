@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–22 October 2026)
 
+- Task 1 (22 October): Hero Blur Statement now has a reviewed 3.22s, 101 KB film. Client names move from Meridian through Parcel to a clear Northwind ending; actual native playback and an independent 193-frame decode agree. Maximum source gap is 10ms, changed-source delivery is 55.37ms and moving-frame p95 is 17.89ms, with no stalls. All recording guards and 3,386 source/media inputs remain fixed. Its current poster is retained. No source or demo metadata changes are included. There are now 122 films outstanding. Evidence: `test-results/handoff-films-20261022/hero-blur-statement/first/`.
+
 - Task 8 (22 October): all sixteen changed older components now pass the official audit across the original and focused runs. Seven source follow-ups correct light warning/change contrast, calendar weekday and selected-price contrast, Message List separator structure and label contrast, keyboard response scrolling, and readable Optical Weight/Path Typesetter metadata. The path canvas exposes its interactive handles as a labelled group. All seven registered interaction regressions and thirty native Team mounts pass. The selected 158 current audit/state captures are inspected; complete coarse Budget Guard footers and clear calendar layouts with final values supplement the original crops and in-flight frames. Five default posters are refreshed and inspected; their original assets remain archived. Strict registry, root/all-eleven-block types and all 1,112 current unit tests pass with 2,220 implementation inputs fixed. The new response-region label is present in all 29 non-English editions; the whole-site audit retains the wider 185,290 missing-unit backlog and zero invalid protected terms. Original audit failures, the rejected separator candidate and diagnostic-fixture failures remain preserved. All 123 films and final prepared Worker checks remain open. Evidence: `test-results/handoff-accessibility-audit-20261021/`, `test-results/handoff-accessibility-message-list-20261021/`, `test-results/handoff-accessibility-posters-20261022/` and `test-results/handoff-older-probes/accessibility-after-upstream-core-frozen.json`.
 
 - Task 8 (21 October): the fresh production build passes with all 3,376 source/media files unchanged. The full browser run passes 68 of 69 suites, including all 94 exact standalone metadata replays and all eleven block replays. The remaining Outline Fill assertion sampled its button before the scheduled reading-state commit. Software and native traces preserve that ordering; blocking the real return action still fails at the original 30-second deadline in both renderers. The probe now waits for the actual disabled state after its unchanged exact scroll-position check. Its complete thirty-case registered suite passes, giving every suite a passing result across the two runs. Strict registry, root/all-eleven-block types and all 1,099 unit tests pass with 2,213 fixed implementation inputs. No product or media changes are included. Fresh component audits, prepared Worker runtime verification and all 123 films remain open. Evidence: `test-results/handoff-after-older-probes-20261021/` and `test-results/handoff-older-probes/outline-final-complete-registered/`.
@@ -618,7 +620,7 @@ translations across 29 editions and zero invalid protected terms. The repository
 applies; no translation-completeness or deployment pass is claimed. Evidence is in
 `test-results/handoff-blocks/landing-parts-upstream-proof.json`.
 
-## 1. Re-record demo videos (123 components)
+## 1. Re-record demo videos (122 components)
 
 The original rebuilt components' posters are current, while their catalogue films (`public/previews/<slug>.mp4`) still show the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -637,7 +639,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`hero-blur-statement`
 `footer-newsletter`
 `chart-allocation`
 `block-financial-report`
@@ -675,6 +676,7 @@ Slugs:
 `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`, `pricing-usage-calculator`
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
 `text-path-typesetter`, `scroll-horizontal-showcase`, `scroll-expanding-mosaic`, `scroll-image-curtain`, `finance-budget-variance`, `finance-cashflow-dashboard`, `fashion-preorder-planner`, `fashion-collection-line-plan`, `fashion-merchandising-dashboard`, `fashion-size-guide`
+
 
 ## 2. Retake stale posters (complete)
 
