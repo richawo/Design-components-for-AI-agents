@@ -1,12 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-10-22-blog-video-shadcnblocks",
-  "mode": "manual",
-  "requestedAt": "2026-10-22T21:13:47.944Z",
-  "privateContentCommit": "3c43bf8823e2852fa08577c26a5c75de52a9f8ff",
-  "sourceInputsSha256": "3d9ac0ee413a174c61ceca9e8142a861a9a92c123f504bc7d4a5f821f3472d84",
-  "approvalSha256": "0f58d48fe146ca414bcf007a0645a309cf5d4ed1ef915908b75406997b8aca80",
+  "requestId": "2026-10-23-weekday-five",
+  "mode": "weekday",
+  "requestedAt": "2026-10-23T07:25:25.138711+00:00",
+  "privateContentCommit": "fc3c2968dd7cfe8cd93278703dd7eeb31225276f",
+  "sourceInputsSha256": "2b7655c375b5196d299098a032f8c10e2e0e83decf6d223e8512791b0dc089fd",
+  "approvalSha256": "645a7bb6580b1a949aa75a3f4d15cba796599f2a41fa64d371e38da98f1adc05",
   "articleSlugs": [
-    "shadcnblocks-alternatives"
+    "react-hr-dashboard-templates",
+    "react-finance-dashboard-components",
+    "react-legal-case-management-ui",
+    "untitled-ui-react-alternatives",
+    "shadcn-studio-alternatives"
   ]
 }
