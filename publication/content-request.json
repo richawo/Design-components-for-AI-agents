@@ -1,16 +1,13 @@
 {
   "version": 2,
-  "requestId": "2026-10-23-weekday-five",
-  "mode": "weekday",
-  "requestedAt": "2026-10-23T07:25:25.138711+00:00",
-  "privateContentCommit": "fc3c2968dd7cfe8cd93278703dd7eeb31225276f",
-  "sourceInputsSha256": "2b7655c375b5196d299098a032f8c10e2e0e83decf6d223e8512791b0dc089fd",
-  "approvalSha256": "645a7bb6580b1a949aa75a3f4d15cba796599f2a41fa64d371e38da98f1adc05",
+  "requestId": "2026-10-23-blog-video-source-briefs",
+  "mode": "manual",
+  "requestedAt": "2026-10-23T21:15:19.329Z",
+  "privateContentCommit": "f00420dd7c03d6e201432feff849e6ae04f4f3a0",
+  "sourceInputsSha256": "6832f266bed9907df931569cc44793dee031cab13e8cd61ca956f9c1a75d4e76",
+  "approvalSha256": "9d694fe04d2b8e385933b4f36153dadd9f21e6318d5069c3d4905c55e378b494",
   "articleSlugs": [
-    "react-hr-dashboard-templates",
-    "react-finance-dashboard-components",
-    "react-legal-case-management-ui",
-    "untitled-ui-react-alternatives",
-    "shadcn-studio-alternatives"
+    "shadcn-studio-alternatives",
+    "untitled-ui-react-alternatives"
   ]
 }
