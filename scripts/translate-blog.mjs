@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { LOCALES } from "../lib/blog/locales.mjs";
 import { loadBlogSource, corpusUnits, readJson, stableSlugs } from "./lib/blog-source.mjs";
 import { encode, SEPARATOR, splitBatch } from "./lib/translation-tokens.mjs";
-import { isUntouched, protectedIntact } from "./lib/translation-quality.mjs";
+import { isUntouched, protectedIntact, translationMarkupIntact } from "./lib/translation-quality.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const source = loadBlogSource(root);
@@ -55,17 +55,17 @@ async function request(locale, text) {
 async function translatedUnit(locale, key, reply) {
   const encoded = encode(key);
   let restored = reply ? encoded.restore(reply) : null;
-  if (!restored || isUntouched(key, restored) || !protectedIntact(key, restored)) {
+  if (!restored || isUntouched(key, restored) || (!protectedIntact(key, restored) || !translationMarkupIntact(key, restored))) {
     restored = encoded.restore(await request(locale, encoded.text));
   }
-  if (!restored || isUntouched(key, restored) || !protectedIntact(key, restored)) {
+  if (!restored || isUntouched(key, restored) || (!protectedIntact(key, restored) || !translationMarkupIntact(key, restored))) {
     // Markup never leaves in this fallback, so the provider cannot lose tags.
     const runs = encoded.runs();
     const texts = [];
     for (const text of runs.texts) texts.push(/\p{L}{2,}/u.test(text.replace(/\[\[\[[^\]]+\]\]\]/g, "")) ? await request(locale, text) : text);
     restored = runs.rebuild(texts);
   }
-  if (!restored || isUntouched(key, restored) || !protectedIntact(key, restored) || /\[\[\[|\]\]\]/.test(restored)) throw new Error(`Invalid translation (${locale.code}): ${key.slice(0, 80)}`);
+  if (!restored || isUntouched(key, restored) || (!protectedIntact(key, restored) || !translationMarkupIntact(key, restored)) || /\[\[\[|\]\]\]/.test(restored)) throw new Error(`Invalid translation (${locale.code}): ${key.slice(0, 80)}`);
   return houseStyle(restored);
 }
 
@@ -76,7 +76,7 @@ async function translateLocale(locale) {
   const strings = {};
   for (const key of keys) {
     const saved = old[key] ?? seed[key];
-    if (saved && !isUntouched(key, saved) && protectedIntact(key, saved)) strings[key] = houseStyle(saved);
+    if (saved && !isUntouched(key, saved) && protectedIntact(key, saved) && translationMarkupIntact(key, saved)) strings[key] = houseStyle(saved);
   }
   const missing = keys.filter((key) => !strings[key]);
   console.log(`${locale.code}: ${missing.length} of ${keys.length} units need translation`);

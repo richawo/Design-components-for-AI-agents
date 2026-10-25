@@ -68,6 +68,9 @@ manual fallback. The public request contains hashes and owner slugs only.
 
 Complete private source, all affected dictionaries, original evidence, current
 editorial verdicts and five to ten substantive leading-page reviews per owner.
+Target five distinct new owners per daily run. Replace duplicate or unsuitable
+topics from the verified queue; five remains the ceiling and checks remain mandatory.
+Record the reason and unresolved gate when fewer than five can pass.
 Commit `_site/publication/approved-batch.json` with scope `prepublication` and
 source-bound reviews. A clean authenticated checkout runs
 `npm run publication:request`, then commits and pushes only
@@ -85,6 +88,26 @@ sixth new owner dated on the same London day. Uncertain delivery resumes the sam
 request. Preserve original publication dates and count already published owners.
 New scheduled requests use `mode: daily`. Legacy `weekday` requests remain valid
 on every day for compatibility; their identities and dates must stay unchanged.
+
+Current R39 approvals also require complete linguistic review of all 29 additional
+language editions per selected owner. Read every title, description, paragraph,
+heading, list, table cell, FAQ, source note and technical explanation against the
+English source. Correct meaning, grammar, naturalness and domain terminology, then
+reread each complete corrected edition. Token checks and samples do not replace
+the reading. Describe AI review accurately; it is not native professional review.
+
+Each private article review supplies `translationReviews`, one reference per
+current non-English locale, with `locale`, private `review` path and `reviewSha256`.
+The version-1 `complete-translation-text` receipt records `slug`, `locale`, exact
+English `sourceSha256`, complete bundled `translatedTextSha256`, reviewer, review
+date, `nativeProfessionalReview`, `fullTextRead`, `completeCorrectedEditionReread`,
+semantic findings and status `pass`. `coverage` includes every field exported by
+`FULL_TRANSLATION_COVERAGE` in `scripts/lib/translation-review.mjs`. `unitReviews`
+contains a passing source-unit hash and current target hash for every `postUnits`
+entry. Retain findings and resolved corrections privately. Missing, duplicated,
+partial, damaged or stale receipts block strict generation. Unchanged full-edition
+reviews can be reused only with identical English and translated-text hashes.
+Historical pinned rulebooks retain their original publication contract.
 
 `cf:build` runs the source/locales audit, strict generation, types, tests and
 production build sequentially under Node 24. Only success writes a receipt bound

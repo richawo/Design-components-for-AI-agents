@@ -2,6 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { gitBlobSha } from "./connected-pro-snapshot.mjs";
+import { bundleBlog, loadBlogSource } from "./blog-source.mjs";
+import { verifyFullTranslationReviews } from "./translation-review.mjs";
 const sha = bytes => createHash("sha256").update(bytes).digest("hex");
 const read = file => fs.readFileSync(file);
 const json = file => JSON.parse(read(file));
@@ -68,6 +70,9 @@ export function verifyPublicationRequest(root,posts,providedRequest) {
   if(!ids.length||new Set(ids).size!==ids.length)throw new Error("Invalid current rulebook IDs");
   const day=assertPublicationDay(request,posts);
   if(!Array.isArray(approval.articles)||approval.articles.length!==request.articleSlugs.length)throw new Error("Missing article approvals");
+  // Historical pinned rulebooks retain their contract. Every R39 approval must
+  // supply complete source-bound linguistic receipts, beyond a rule checkbox.
+  const localizedBlog=ids.includes("DFA-R39")?bundleBlog(loadBlogSource(root)).localizedBlog:null;
   for(const slug of request.articleSlugs){
     const post=posts.find(p=>p.data.slug===slug&&!p.data.draft),entry=approval.articles.find(a=>a.slug===slug);
     if(!post||!entry||entry.sourceSha256!==sha(Buffer.from(post.raw)))throw new Error("Article source changed after approval: "+slug);
@@ -80,6 +85,7 @@ export function verifyPublicationRequest(root,posts,providedRequest) {
     const passes=r=>r.reason?.trim()&&r.evidence&&(["pass","not applicable"].includes(r.verdict)||(r.verdict==="pending"&&r.phase==="delivery"&&["DFA-R30","DFA-R37"].includes(r.id)&&planned)||(r.verdict==="pending"&&r.id==="DFA-R29"&&r.phase==="build"&&building));
     if(!Array.isArray(review.rules)||review.rules.length!==ids.length||new Set(review.rules.map(r=>r.id)).size!==ids.length||ids.some(id=>!review.rules.some(r=>r.id===id&&passes(r))))throw new Error("Missing, failed or pending current rule: "+slug);
     if(!Array.isArray(review.resultReviews)||review.resultReviews.length<5||review.resultReviews.length>10||new Set(review.resultReviews.map(r=>r.url)).size!==review.resultReviews.length||review.resultReviews.some(r=>!/^https:\/\//.test(r.url)||!r.analysis?.trim()||!r.readOn))throw new Error("Five to ten substantive result reviews are required: "+slug);
+    if(localizedBlog)verifyFullTranslationReviews({base,post,translationReviews:review.translationReviews,localizedBlog});
   }
   return {requestId:request.requestId,sourceInputsSha256:inputs.sha256,privateContentCommit:request.privateContentCommit,...day,articleSlugs:request.articleSlugs};
 }

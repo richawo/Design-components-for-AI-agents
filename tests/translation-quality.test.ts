@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isUntouched } from "../scripts/lib/translation-quality.mjs";
+import { isUntouched, protectedIntact, translationMarkupIntact } from "../scripts/lib/translation-quality.mjs";
 
 describe("unchanged translation detection", () => {
   it("rejects an unchanged sentence even when the source has escaped punctuation", () => {
@@ -20,5 +20,19 @@ describe("unchanged translation detection", () => {
   it("keeps literal code and translated prose out of the partial-sentence check", () => {
     const source = "Inspect the result. <code>Existing owners should review their actual needs before migrating working code.</code>";
     expect(isUntouched(source, "Vérifiez le résultat. <code>Existing owners should review their actual needs before migrating working code.</code>")).toBe(false);
+  });
+});
+
+describe("translation structure", () => {
+  it("requires every repeated protected product name", () => {
+    expect(protectedIntact("React uses React.", "React utilise cette bibliothèque.")).toBe(false);
+    expect(protectedIntact("React uses React.", "React utilise React.")).toBe(true);
+  });
+  it("preserves exact code markers, link destinations and nonempty anchor text", () => {
+    const source = 'Inspect <a href="/docs">the guide</a> and {{0}}.';
+    expect(translationMarkupIntact(source, 'Consultez <a href="/docs">le guide</a> et {{0}}.')).toBe(true);
+    expect(translationMarkupIntact(source, 'Consultez <a href="/docs"></a> le guide et {{0}}.')).toBe(false);
+    expect(translationMarkupIntact(source, 'Consultez <a href="/wrong">le guide</a> et {{0}}.')).toBe(false);
+    expect(translationMarkupIntact(source, 'Consultez <a href="/docs">le guide</a> et {{1}}.')).toBe(false);
   });
 });

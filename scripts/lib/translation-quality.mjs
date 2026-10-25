@@ -48,5 +48,17 @@ export function isUntouched(source        , translated        )          {
 export function protectedIntact(source        , translated        )          {
   const text = (html        ) => decodeEntities(html.replace(/<[^>]*>/g, " "));
   const reply = text(translated);
-  return [...text(source).matchAll(PROTECTED)].every((match) => reply.includes(match[0]));
+  const original = text(source);
+  return [...new Set([...original.matchAll(PROTECTED)].map(match => match[0]))]
+    .every(token => reply.split(token).length >= original.split(token).length);
+}
+
+/** Preserve code placeholders, link destinations and meaningful anchor labels. */
+export function translationMarkupIntact(source, translated) {
+  const markers = value => value.match(/\{\{\d+\}\}/g) ?? [];
+  const hrefs = value => [...value.matchAll(/href="([^"]*)"/g)].map(match => match[1]);
+  const same = (left, right) => JSON.stringify(left.sort()) === JSON.stringify(right.sort());
+  if (!same(markers(source), markers(translated)) || !same(hrefs(source), hrefs(translated))) return false;
+  return [...translated.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)]
+    .every(match => decodeEntities(match[1].replace(/<[^>]*>/g, " ")).trim());
 }
