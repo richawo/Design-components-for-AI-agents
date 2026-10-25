@@ -1,13 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-10-23-blog-video-source-briefs",
-  "mode": "manual",
-  "requestedAt": "2026-10-23T21:15:19.329Z",
-  "privateContentCommit": "115b5d11db0d1d5fe2d545b4be229ce76aed6122",
-  "sourceInputsSha256": "6832f266bed9907df931569cc44793dee031cab13e8cd61ca956f9c1a75d4e76",
-  "approvalSha256": "2a90f7bb68ac25eafa4ba88831f15df1c1e44e0cb7b3f1b321a8b94e5ab8b71c",
+  "requestId": "2026-10-25-daily",
+  "mode": "daily",
+  "requestedAt": "2026-10-25T07:10:42.430187+00:00",
+  "privateContentCommit": "62a938693a6820fccd117b64cc7381a99d72dc86",
+  "sourceInputsSha256": "cea2a319c61236cda4162826c2f4de6e1c448bd5ae4ea621d8d3ab81ae878e62",
+  "approvalSha256": "c7b3a5a2748e50d02f254b5da0ba7d168912a38cacde718b25c8aef754c34336",
   "articleSlugs": [
-    "shadcn-studio-alternatives",
-    "untitled-ui-react-alternatives"
+    "react-bits-alternatives",
+    "tailark-alternatives",
+    "react-fashion-merchandising-dashboard",
+    "private-shadcn-registry-authentication",
+    "shadcnblocks-alternatives"
   ]
 }
