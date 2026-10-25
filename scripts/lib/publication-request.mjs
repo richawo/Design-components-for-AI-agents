@@ -40,9 +40,10 @@ export function londonDay(iso) {
   return new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"}).format(date);
 }
 export function assertPublicationDay({requestedAt,mode,articleSlugs},posts) {
-  const day=londonDay(requestedAt),weekday=new Intl.DateTimeFormat("en-US",{timeZone:"Europe/London",weekday:"short"}).format(new Date(requestedAt));
-  if(!["weekday","manual"].includes(mode))throw new Error("Unknown publication mode");
-  if(mode==="weekday"&&["Sat","Sun"].includes(weekday))throw new Error("Weekday publication cannot run at the weekend");
+  const day=londonDay(requestedAt);
+  // The routine now runs seven days a week. Keep the old mode name valid for
+  // historical requests and retries without restoring a weekend restriction.
+  if(!["daily","weekday","manual"].includes(mode))throw new Error("Unknown publication mode");
   if(!Array.isArray(articleSlugs)||!articleSlugs.length||articleSlugs.length>5||new Set(articleSlugs).size!==articleSlugs.length)throw new Error("Publication needs one to five distinct owners");
   const dateOf=value=>value instanceof Date?value.toISOString().slice(0,10):String(value).slice(0,10);
   const today=posts.filter(p=>!p.data.draft&&dateOf(p.data.date)===day);

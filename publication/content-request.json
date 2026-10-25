@@ -3,9 +3,9 @@
   "requestId": "2026-10-23-blog-video-source-briefs",
   "mode": "manual",
   "requestedAt": "2026-10-23T21:15:19.329Z",
-  "privateContentCommit": "f00420dd7c03d6e201432feff849e6ae04f4f3a0",
+  "privateContentCommit": "115b5d11db0d1d5fe2d545b4be229ce76aed6122",
   "sourceInputsSha256": "6832f266bed9907df931569cc44793dee031cab13e8cd61ca956f9c1a75d4e76",
-  "approvalSha256": "9d694fe04d2b8e385933b4f36153dadd9f21e6318d5069c3d4905c55e378b494",
+  "approvalSha256": "2a90f7bb68ac25eafa4ba88831f15df1c1e44e0cb7b3f1b321a8b94e5ab8b71c",
   "articleSlugs": [
     "shadcn-studio-alternatives",
     "untitled-ui-react-alternatives"

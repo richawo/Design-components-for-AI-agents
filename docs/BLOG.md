@@ -62,8 +62,8 @@ Markdown routes, including canonical provenance.
 
 ## Source-bound editorial publication
 
-Normal weekday publication uses the existing public-repository Cloudflare
-integration, independently of GitHub Actions billing. The private hook is a
+Normal daily publication, including weekends, uses the existing public-repository
+Cloudflare integration, independently of GitHub Actions billing. The private hook is a
 manual fallback. The public request contains hashes and owner slugs only.
 
 Complete private source, all affected dictionaries, original evidence, current
@@ -83,6 +83,8 @@ Registry generation rejects changed inputs, stale approvals/rules, missing or
 failed verdicts, pending editorial checks, incomplete peer review sets and a
 sixth new owner dated on the same London day. Uncertain delivery resumes the same
 request. Preserve original publication dates and count already published owners.
+New scheduled requests use `mode: daily`. Legacy `weekday` requests remain valid
+on every day for compatibility; their identities and dates must stay unchanged.
 
 `cf:build` runs the source/locales audit, strict generation, types, tests and
 production build sequentially under Node 24. Only success writes a receipt bound
