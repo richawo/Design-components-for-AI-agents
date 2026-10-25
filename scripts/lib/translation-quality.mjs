@@ -8,10 +8,10 @@ const plainText = (html        ) =>
 const words = (html        ) => plainText(html).toLowerCase().match(/\p{L}{4,}/gu) ?? [];
 
 /** Any three consecutive English words that survive verbatim. */
-function sharesEnglishRun(source        , translated        )          {
+function sharesEnglishRun(source        , translated        , minimumWords = 3)          {
   const english = plainText(source).toLowerCase().match(/\p{L}{2,}/gu) ?? [];
   const reply = ` ${(plainText(translated).toLowerCase().match(/\p{L}{2,}/gu) ?? []).join(" ")} `;
-  for (let at = 0; at + 3 <= english.length; at++) if (reply.includes(` ${english.slice(at, at + 3).join(" ")} `)) return true;
+  for (let at = 0; at + minimumWords <= english.length; at++) if (reply.includes(` ${english.slice(at, at + minimumWords).join(" ")} `)) return true;
   return false;
 }
 
@@ -42,6 +42,12 @@ export function isUntouched(source        , translated        )          {
     if (sentence.split(" ").length >= 8 && reply.includes(` ${sentence} `)) return true;
   }
   return false;
+}
+
+/** Catch long English clauses inside an otherwise translated sentence. */
+export function hasUntranslatedClause(source, translated) {
+  const prose = value => value.replace(/<code\b[^>]*>[\s\S]*?<\/code>/gi, " ").replace(PROTECTED, " ");
+  return sharesEnglishRun(prose(source), prose(translated), 8);
 }
 
 /** Every name, URL, path and identifier in the source survives verbatim in the reply. */

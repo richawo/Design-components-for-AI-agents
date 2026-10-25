@@ -3,7 +3,7 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { LOCALES } from "../../lib/blog/locales.mjs";
 import { postUnits } from "./blog-source.mjs";
-import { isUntouched, protectedIntact, translationMarkupIntact } from "./translation-quality.mjs";
+import { isUntouched, hasUntranslatedClause, protectedIntact, translationMarkupIntact } from "./translation-quality.mjs";
 
 const hash = value => createHash("sha256").update(value).digest("hex");
 export const FULL_TRANSLATION_COVERAGE = ["title", "description", "seoTitle", "seoDescription", "excerpt", "heroImageAlt", "keywords", "headings", "all-paragraphs", "lists", "all-table-cells", "faqs", "sources-checked", "technical-explanations"];
@@ -28,7 +28,7 @@ export function verifyFullTranslationReviews({ base, post, translationReviews, l
     const dictionary = JSON.parse(fs.readFileSync(path.join(base, "i18n/strings", locale + ".json")));
     for (const source of units) {
       const target = dictionary[source], receipt = reviewed.find(unit => unit.sourceUnitSha256 === hash(source));
-      if (typeof target !== "string" || !target.trim() || target.includes("\u2014") || isUntouched(source, target) || !protectedIntact(source, target) || !translationMarkupIntact(source, target)) throw new Error("Damaged reviewed translation: " + locale + "/" + post.data.slug);
+      if (typeof target !== "string" || !target.trim() || target.includes("\u2014") || isUntouched(source, target) || hasUntranslatedClause(source, target) || !protectedIntact(source, target) || !translationMarkupIntact(source, target)) throw new Error("Damaged reviewed translation: " + locale + "/" + post.data.slug);
       if (!receipt || receipt.verdict !== "pass" || receipt.targetSha256 !== hash(target)) throw new Error("Unreviewed or changed translation unit: " + locale + "/" + post.data.slug);
     }
   }

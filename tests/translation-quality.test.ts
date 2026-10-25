@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isUntouched, protectedIntact, translationMarkupIntact } from "../scripts/lib/translation-quality.mjs";
+import { isUntouched, hasUntranslatedClause, protectedIntact, translationMarkupIntact } from "../scripts/lib/translation-quality.mjs";
 
 describe("unchanged translation detection", () => {
   it("rejects an unchanged sentence even when the source has escaped punctuation", () => {
@@ -24,6 +24,19 @@ describe("unchanged translation detection", () => {
 });
 
 describe("translation structure", () => {
+  it("detects an English clause before a semicolon after a translated opening", () => {
+    const source = 'Our web stack is React. The shared font roles are described in <a href="/docs">installation</a>; colours remain part of each design.';
+    const target = 'Unser Webstack nutzt React. The shared font roles are described in <a href="/docs">installation</a>; Farben bleiben Teil jedes Designs.';
+    expect(isUntouched(source, target)).toBe(false);
+    expect(hasUntranslatedClause(source, target)).toBe(true);
+  });
+  it("excludes literal code and protected product sequences from clause checks", () => {
+    const source = 'Inspect <code>the shared font roles are described in the installation guide</code>. React Bits, Motion Primitives, Magic UI and Aceternity UI supply choices.';
+    expect(hasUntranslatedClause(source, 'Prüfen Sie <code>the shared font roles are described in the installation guide</code>. React Bits, Motion Primitives, Magic UI und Aceternity UI bieten Optionen.')).toBe(false);
+  });
+  it("accepts a fully translated clause with the same owned link", () => {
+    expect(hasUntranslatedClause('The shared font roles are described in <a href="/docs">installation</a>; colours remain part of each design.', 'Die gemeinsamen Schriftrollen beschreibt die <a href="/docs">Installationsanleitung</a>; Farben gehören zum jeweiligen Design.')).toBe(false);
+  });
   it("requires every repeated protected product name", () => {
     expect(protectedIntact("React uses React.", "React utilise cette bibliothèque.")).toBe(false);
     expect(protectedIntact("React uses React.", "React utilise React.")).toBe(true);

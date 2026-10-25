@@ -93,7 +93,7 @@ Current R39 approvals also require complete linguistic review of all 29 addition
 language editions per selected owner. Read every title, description, paragraph,
 heading, list, table cell, FAQ, source note and technical explanation against the
 English source. Correct meaning, grammar, naturalness and domain terminology, then
-reread each complete corrected edition. Token checks and samples do not replace
+reread each complete corrected edition. Reject substantial English clauses as well as whole sentences. Token checks and samples do not replace
 the reading. Describe AI review accurately; it is not native professional review.
 
 Each private article review supplies `translationReviews`, one reference per
