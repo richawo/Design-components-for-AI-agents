@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -42,6 +42,68 @@ if (!env.TEST_MISSING_BLOG) {
 afterEach(() => { for (const dir of scratch.splice(0)) fs.rmSync(dir, { recursive: true, force: true }); });
 
 describe("production Pro sync", () => {
+  function pinnedFixture() {
+    const f = fixture(), source = path.join(f.dir, "source"), dest = path.join(f.dir, "registry/pro");
+    fs.mkdirSync(source);
+    const git = (...args: string[]) => execFileSync("git", ["-C", source, ...args], {encoding: "utf8", stdio: ["ignore", "pipe", "pipe"]}).trim();
+    git("init", "-b", "main");
+    fs.mkdirSync(path.join(source, "demo"));
+    fs.mkdirSync(path.join(source, "_site/blog"), {recursive:true});
+    fs.writeFileSync(path.join(source, "demo/demo.tsx"), "export function Demo() {}");
+    fs.writeFileSync(path.join(source, "_site/blog/fixture.md"), "Approved article");
+    git("add", ".");
+    git("-c", "user.name=Publication QA", "-c", "user.email=qa@example.test", "commit", "-m", "approved source");
+    const approved = git("rev-parse", "HEAD");
+    fs.writeFileSync(path.join(source, "_site/blog/fixture.md"), "Unapproved newer article");
+    git("add", ".");
+    git("-c", "user.name=Publication QA", "-c", "user.email=qa@example.test", "commit", "-m", "later private changes");
+    const latest = git("rev-parse", "HEAD");
+    fs.mkdirSync(path.join(f.dir, "publication"));
+    const request = (revision: string) => fs.writeFileSync(path.join(f.dir, "publication/content-request.json"), JSON.stringify({version:2,privateContentCommit:revision}));
+    request(approved);
+    const run = () => spawnSync(process.execPath, [path.join(f.dir, "scripts/sync-pro.mjs"), "--require-source"], {
+      encoding:"utf8", env:{...process.env, TMPDIR:path.join(f.dir,"tmp"), PRO_REPO_TOKEN:"local-fixture-only", PRO_REPO_SSH_KEY:"",
+        GIT_CONFIG_COUNT:"1", GIT_CONFIG_KEY_0:`url.file://${source}.insteadOf`, GIT_CONFIG_VALUE_0:"https://github.com/richawo/Design-for-AI.git"},
+    });
+    return {...f,source,dest,approved,latest,request,run};
+  }
+
+  it("materializes the approved private commit even when remote main has newer content", () => {
+    const f = pinnedFixture(), result = f.run();
+    expect(result.status, result.stderr).toBe(0);
+    expect(execFileSync("git",["-C",f.dest,"rev-parse","HEAD"],{encoding:"utf8"}).trim()).toBe(f.approved);
+    expect(fs.readFileSync(path.join(f.dest,"_site/blog/fixture.md"),"utf8")).toBe("Approved article");
+    expect(f.run().status).toBe(0);
+  });
+
+  it("does not fall back to remote main when the pinned commit is unavailable", () => {
+    const f = pinnedFixture();f.request("a".repeat(40));
+    expect(f.run().status).toBe(1);
+    expect(fs.existsSync(f.dest)).toBe(false);
+  });
+
+  it("preserves an existing main checkout that differs from the requested commit", () => {
+    const f = pinnedFixture();execFileSync("git",["clone",f.source,f.dest],{stdio:"ignore"});
+    const result = f.run();expect(result.status).toBe(1);
+    expect(result.stderr).toContain("differs from the publication commit");
+    expect(execFileSync("git",["-C",f.dest,"branch","--show-current"],{encoding:"utf8"}).trim()).toBe("main");
+    expect(fs.readFileSync(path.join(f.dest,"_site/blog/fixture.md"),"utf8")).toBe("Unapproved newer article");
+  });
+
+  it.each(["tracked", "untracked"])("preserves %s work in a checkout at the requested commit", kind => {
+    const f = pinnedFixture();expect(f.run().status).toBe(0);
+    const file=path.join(f.dest,kind==="tracked"?"_site/blog/fixture.md":"local-note.md");
+    fs.writeFileSync(file,"Keep this unfinished work");
+    const result=f.run();expect(result.status).toBe(1);expect(result.stderr).toContain("clean checkout");
+    expect(fs.readFileSync(file,"utf8")).toBe("Keep this unfinished work");
+  });
+
+  it("rejects a malformed publication revision before cloning", () => {
+    const f=pinnedFixture();f.request("main");const result=f.run();
+    expect(result.status).toBe(1);expect(result.stderr).toContain("complete private Git commit");
+    expect(fs.existsSync(f.dest)).toBe(false);
+  });
+
   it("fails without source credentials while keeping source optional for local development", () => {
     const f = fixture();
     expect(f.run().status).toBe(1);

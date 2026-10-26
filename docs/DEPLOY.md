@@ -168,6 +168,13 @@ and use the manual fallback workflow in the Pro repo. Normal editorial batches
 use the source-bound public publication signal described in `docs/BLOG.md`,
 which triggers the existing Cloudflare integration without an Actions job.
 
+When that signal is present, Pro sync fetches its exact `privateContentCommit`
+and checks out that immutable source in the fresh build clone. It must not use
+the latest private `main`, which may contain later unapproved edits. An existing
+checkout must be clean and already match the requested commit. Sync refuses to
+move a developer's branch or overwrite local work; use a fresh build checkout
+when verifying another pinned publication.
+
 ## Check a deployment
 
 - `/components` lists the published components, free and Pro. Each card shows its

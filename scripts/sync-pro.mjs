@@ -21,6 +21,12 @@ let authDir;
 
 function sync() {
   if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) throw new Error("PRO_REPO must be a GitHub owner/repository name");
+  const requestFile = path.join(root, "publication", "content-request.json");
+  const request = fs.existsSync(requestFile) ? JSON.parse(fs.readFileSync(requestFile, "utf8")) : null;
+  const revision = request?.privateContentCommit;
+  if (request && (request.version !== 2 || !/^[a-f0-9]{40}$/.test(revision ?? ""))) {
+    throw new Error("Publication request must pin a complete private Git commit");
+  }
   if (!checkout && !token && !sshKey) {
     if (required) throw new Error("Pro source is required. Set PRO_REPO_SSH_KEY or PRO_REPO_TOKEN.");
     console.log("pro: no credentials set, building without Pro source (locked previews)");
@@ -48,13 +54,27 @@ function sync() {
     }
   }
 
-  if (checkout) {
+  if (checkout && revision) {
+    // Preserve developer branches and unfinished work. Workers Builds starts
+    // from a fresh clone, where the requested immutable source is materialized.
+    const head = execFileSync("git", ["-C", dest, "rev-parse", "HEAD"], { env, encoding: "utf8" }).trim();
+    const dirty = execFileSync("git", ["-C", dest, "status", "--porcelain"], { env, encoding: "utf8" }).trim();
+    if (dirty) throw new Error("Pinned Pro source requires a clean checkout; preserve local work and use a fresh build checkout");
+    if (head !== revision) throw new Error("Pro checkout differs from the publication commit; use a fresh build checkout");
+    console.log(`pro: using pinned publication commit ${revision}`);
+  } else if (checkout) {
     console.log("pro: already a git checkout, pulling");
     execFileSync("git", [...gitArgs, "-C", dest, "pull", "--ff-only", ...(sshKey || token ? [remote] : [])], { env, stdio: "inherit" });
   } else {
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     try {
-      execFileSync("git", [...gitArgs, "clone", "--depth", "1", remote, dest], { env, stdio: "inherit" });
+      execFileSync("git", [...gitArgs, "clone", "--depth", "1", ...(revision ? ["--no-checkout"] : []), remote, dest], { env, stdio: "inherit" });
+      if (revision) {
+        execFileSync("git", [...gitArgs, "-C", dest, "fetch", "--depth", "1", remote, revision], { env, stdio: "inherit" });
+        execFileSync("git", ["-C", dest, "checkout", "--detach", revision], { env, stdio: "inherit" });
+        const head = execFileSync("git", ["-C", dest, "rev-parse", "HEAD"], { env, encoding: "utf8" }).trim();
+        if (head !== revision) throw new Error("Pro sync did not materialize the pinned publication commit");
+      }
     } catch (error) {
       fs.rmSync(dest, { recursive: true, force: true });
       throw error;
