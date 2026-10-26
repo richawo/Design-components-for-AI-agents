@@ -131,6 +131,8 @@ blog:index -- --all --dry-run` previews the URL count. The public repository's
 manual IndexNow workflow can retry a failed submission. IndexNow receipt
 confirms notification, not inclusion in a search index.
 
+For rendered translation review, inspect 375px phone layouts as well as desktop and affected RTL editions. Compare each heading’s own scroll width with its text column, even if the page width fits. Keep correct compound words and permit emergency wrapping; verify actual table scrolling.
+
 Run `npm run blog:audit -- --require-source --require-locales` before a production
 deployment. Errors cover missing metadata, invalid publication dates, unknown
 authors or topics, duplicate titles and slugs, extra H1s and broken article links.

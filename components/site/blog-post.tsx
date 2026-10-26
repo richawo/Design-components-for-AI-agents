@@ -31,7 +31,7 @@ export default async function BlogPost({ slug, locale = "en" }: { slug: string; 
           </Link>{" "}
           / <Link href={hubPath({ locale, category: meta.categoryKey })}>{meta.category}</Link>
         </nav>
-        <h1 className="site-in mt-6 text-balance text-[clamp(2.4rem,1.4rem+4vw,5rem)] font-semibold leading-[0.95] tracking-[-0.05em] [--i:1]">
+        <h1 className="site-in mt-6 text-balance [overflow-wrap:anywhere] text-[clamp(2.4rem,1.4rem+4vw,5rem)] font-semibold leading-[0.95] tracking-[-0.05em] [--i:1]">
           <span className="site-silver-text">{meta.title}</span>
         </h1>
         <p className="site-in mt-6 max-w-[60ch] text-[clamp(1.1rem,1rem+0.4vw,1.3rem)] leading-relaxed text-site-fg-2 [--i:2]">{meta.description}</p>
