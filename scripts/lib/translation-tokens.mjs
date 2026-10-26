@@ -9,6 +9,9 @@ export const PROTECTED = new RegExp(
     String.raw`(?<![\p{L}\p{N}])[a-z][a-z0-9]*(?:_[a-z0-9]+)+(?![\p{L}\p{N}])`,
     String.raw`[\w.+-]+@[\w-]+(?:\.[\w-]+)+`,
     String.raw`(?<![\p{L}\p{N}/.])\/[a-z0-9_.][\w./-]*[\w/]`,
+    // The short product name also occurs in prose as "Radix-based". The
+    // general glossary boundary excludes hyphenated package-name fragments.
+    String.raw`(?<![\p{L}\p{N}])Radix(?=-based\b)`,
     GLOSSARY_PATTERN.source,
   ].join("|"),
   "gu",

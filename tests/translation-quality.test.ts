@@ -41,6 +41,13 @@ describe("translation structure", () => {
     expect(protectedIntact("React uses React.", "React utilise cette bibliothèque.")).toBe(false);
     expect(protectedIntact("React uses React.", "React utilise React.")).toBe(true);
   });
+  it("preserves Radix as a product, including Radix-based wrappers", () => {
+    const source = "Radix-based wrappers can differ from Radix components.";
+    expect(protectedIntact(source, "基数ベースのラッパーは基数コンポーネントと異なる場合があります。")).toBe(false);
+    expect(protectedIntact(source, "基数ベースのラッパーは Radix コンポーネントと異なる場合があります。")).toBe(false);
+    expect(protectedIntact(source, "Radix ベースのラッパーは Radix コンポーネントと異なる場合があります。")).toBe(true);
+    expect(protectedIntact("Compare Radix components.", "Võrrelge Radixi komponente.")).toBe(true);
+  });
   it("preserves exact code markers, link destinations and nonempty anchor text", () => {
     const source = 'Inspect <a href="/docs">the guide</a> and {{0}}.';
     expect(translationMarkupIntact(source, 'Consultez <a href="/docs">le guide</a> et {{0}}.')).toBe(true);
