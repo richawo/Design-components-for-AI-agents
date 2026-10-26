@@ -1,16 +1,15 @@
 {
   "version": 2,
-  "requestId": "2026-10-25-daily",
-  "mode": "daily",
-  "requestedAt": "2026-10-25T07:10:42.430187+00:00",
-  "privateContentCommit": "62a938693a6820fccd117b64cc7381a99d72dc86",
-  "sourceInputsSha256": "cea2a319c61236cda4162826c2f4de6e1c448bd5ae4ea621d8d3ab81ae878e62",
-  "approvalSha256": "c7b3a5a2748e50d02f254b5da0ba7d168912a38cacde718b25c8aef754c34336",
+  "requestId": "2026-10-26-four-guide-translation-repair",
+  "mode": "manual",
+  "requestedAt": "2026-10-26T02:10:36.260707+00:00",
+  "privateContentCommit": "8492b2e54c308ca8fc5d3957ef0188e59f6faaf8",
+  "sourceInputsSha256": "f77d409346c34a49d3a28690a9278929a2a87df9c6336c6f1ce8bb68ac5f10b0",
+  "approvalSha256": "d2673c9913a05ba4fda6edcb14e3ff871a41626ebc35d39c3a0506a950fea82c",
   "articleSlugs": [
     "react-bits-alternatives",
     "tailark-alternatives",
     "react-fashion-merchandising-dashboard",
-    "private-shadcn-registry-authentication",
-    "shadcnblocks-alternatives"
+    "private-shadcn-registry-authentication"
   ]
 }
