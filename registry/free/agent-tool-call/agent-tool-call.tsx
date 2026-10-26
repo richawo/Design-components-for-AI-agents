@@ -35,9 +35,9 @@ export type AgentToolCallProps = {
   /** The one accent: the arc while running, and the tint behind arguments. */
   accent?: string;
   /**
-   * Runs on Retry. Return a promise: it resolves to done and rejects to failed. Without it, an
-   * uncontrolled call reruns for 1.1 s; a controlled call (`status` set) hides Retry, because only
-   * the host can move its status.
+   * Required to show Retry. When uncontrolled, a returned promise resolves to done and rejects
+   * to failed, so resolve only after the operation succeeds. With a controlled status, the host
+   * must update that status itself; settling this callback does not change it.
    */
   onRetry?: () => void | Promise<unknown>;
   /** Label on the retry button. */

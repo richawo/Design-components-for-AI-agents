@@ -20,7 +20,7 @@
   ],
   "theme": "dark",
   "previewHeight": 760,
-  "usage": "import { AgentToolCall } from \"@/components/design-for-ai/agent-tool-call\";\n\n<AgentToolCall\n  seq={3}\n  tool=\"web.search\"\n  args={{ query: \"stripe proration rules\", limit: 5 }}\n  status={run.status}\n  durationMs={run.durationMs}\n  result={run.output}\n  stderr={run.stderr}\n  onRetry={() => agent.retry(run.id)} // return a promise: resolves to done, rejects to failed\n/>\n\n// Uncontrolled: omit status and let Retry drive it (defaultStatus=\"failed\" starts it failed).\n<AgentToolCall tool=\"sql.query\" defaultStatus=\"failed\" stderr={sqlError} />",
+  "usage": "import { AgentToolCall } from \"@/components/design-for-ai/agent-tool-call\";\n\n<AgentToolCall\n  seq={3}\n  tool=\"web.search\"\n  args={{ query: \"stripe proration rules\", limit: 5 }}\n  status={run.status}\n  durationMs={run.durationMs}\n  result={run.output}\n  stderr={run.stderr}\n  onRetry={() => agent.retry(run.id)} // the host also updates run.status\n/>\n\n// Uncontrolled: retryQuery resolves only after success and rejects on failure.\n<AgentToolCall tool=\"sql.query\" defaultStatus=\"failed\" stderr={sqlError} onRetry={retryQuery} />",
   "props": [
     {
       "name": "seq",
@@ -98,7 +98,7 @@
     {
       "name": "onRetry",
       "type": "() => void | Promise<unknown>",
-      "description": "Required to show Retry. An acknowledged retry resolves to done when uncontrolled and rejects to failed; live hosts should control status themselves."
+      "description": "Required to show Retry. When uncontrolled, resolve only after the operation succeeds and reject on failure. With a controlled status, the host must update it; settling this callback does not change controlled status."
     },
     {
       "name": "retryLabel",
