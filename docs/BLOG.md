@@ -128,8 +128,15 @@ marking delivered. See the hosted procedure in
 `npm run cf:deploy` deploys the built Worker and submits indexable sitemap URLs
 to IndexNow after verifying the live build and public key file. `npm run
 blog:index -- --all --dry-run` previews the URL count. The public repository's
-manual IndexNow workflow can retry a failed submission. IndexNow receipt
-confirms notification, not inclusion in a search index.
+manual IndexNow workflow can retry a failed submission. Requests retry transient
+network, timeout, 429 and server failures at most three times, respecting bounded
+Retry-After guidance. Post-deploy mode first requires the exact public commit and
+private request marker. A transient notification outage then records a deferred
+receipt in `.open-next/indexnow-notification.json` without failing an already
+confirmed Worker deployment. Retry only `blog:index`, never the deployment for
+that purpose. A wrong or unavailable serving marker, invalid key, malformed
+sitemap or permanent rejection still fails. Ordinary manual `blog:index` remains
+strict. IndexNow receipt confirms notification, not inclusion in a search index.
 
 For rendered translation review, inspect 375px phone layouts as well as desktop and affected RTL editions. Compare each heading’s own scroll width with its text column, even if the page width fits. Keep correct compound words and permit emergency wrapping; verify actual table scrolling.
 
