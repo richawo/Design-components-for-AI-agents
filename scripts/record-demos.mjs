@@ -14,6 +14,7 @@
 //        [--page-frames] requests actual page images when tab capture omits a tween
 //        [--extend-stage-edges] extends verified empty stage edges into crop padding
 //        [--report=dir] retains metrics and rejected encoded/source inputs before cleanup
+//        [--visual-style=crayon] records the licensed style with DESIGN_FOR_AI_LICENSE
 //
 // With no slugs it records every component that has a demo. Drives the
 // preview with real input (so CSS :hover shows) and draws the same branded
@@ -36,6 +37,7 @@ import { startPageFrameRecording, stopPageFrameRecording, discardPageFrameRecord
 import { startChangedSourceScreenshots } from "./lib/source-screenshots.mjs";
 import { preserveRejectedCapture } from "./lib/rejected-capture.mjs";
 import { createRecordTargetResolver } from "./lib/record-target.mjs";
+import { waitForPreview } from "./lib/preview-ready.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
 
@@ -46,7 +48,13 @@ const flag = (name, dflt) => {
   return hit ? hit.split("=").slice(1).join("=") : dflt;
 };
 const base = flag("base", process.env.PREVIEW_BASE || "http://localhost:3100");
-const out = path.resolve(root, flag("out", "public/previews"));
+const visualStyle = flag("visual-style", "original");
+const styled = visualStyle !== "original";
+const catalogue = JSON.parse(fs.readFileSync(path.join(root, "registry/__generated__/index.json"), "utf8"));
+if (!["original", ...new Set(catalogue.flatMap(entry => entry.visualStyles ?? []))].includes(visualStyle)) throw new Error("Unknown visual style");
+const license = styled ? process.env.DESIGN_FOR_AI_LICENSE : null;
+if (styled && !license) throw new Error("Set DESIGN_FOR_AI_LICENSE to record licensed style previews. The key is scoped to the selected base URL.");
+const out = path.resolve(root, flag("out", styled ? `public/style-previews/${visualStyle}` : "public/previews"));
 const sheetDir = flag("sheet", "");
 const reportDir = flag("report", "");
 const gallery = !args.includes("--original-timing");
@@ -56,6 +64,7 @@ const refreshPoster = args.includes("--refresh-poster");
 const pagePath = flag("page-path", "");
 const isolatedSource = args.includes("--isolated-source");
 if (isolatedSource && pagePath) throw new Error("--isolated-source records a component demo; omit --page-path");
+if (styled && (isolatedSource || pagePath)) throw new Error("Licensed styles must record their authorized live preview; omit --isolated-source and --page-path");
 const tabCapture = args.includes("--tab-capture");
 const pageFrames = args.includes("--page-frames");
 if (tabCapture && pageFrames) throw new Error("Choose --tab-capture or --page-frames, not both");
@@ -172,7 +181,8 @@ async function phoneMask(file, vw, vh) {
 
 async function record(browser, slug) {
   const meta = readMeta(slug);
-  if (!meta?.demo) throw new Error("no demo in meta.json");
+  if (!meta || (!meta.demo && !ambientMs)) throw new Error("no demo in meta.json; use --ambient-ms for an ambient component");
+  if (styled && !catalogue.some(entry => entry.slug === slug && entry.visualStyles?.includes(visualStyle))) throw new Error("Component does not support the selected visual style");
   const parsed = parseSteps(ambientMs ? [`wait:${ambientMs}`] : meta.demo.steps);
   const steps = gallery ? gallerySteps(parsed) : parsed;
   const setupScroll = skipLeadScroll && steps[0]?.cmd === "scroll" ? steps.shift().px : 0;
@@ -191,6 +201,7 @@ async function record(browser, slug) {
   let sourceScreenshots;
 
   const context = await browser.newContext({ viewport: { width: vw, height: vh }, deviceScaleFactor: dpr, reducedMotion: "no-preference" });
+  if (license) await context.addCookies([{ name: "dfa_license", value: license, url: base, httpOnly: true, sameSite: "Lax", secure: new URL(base).protocol === "https:" }]);
   const page = await context.newPage();
   page.on("pageerror", (e) => problems.push(`page error: ${e.message}`));
   page.on("console", (m) => m.type() === "error" && problems.push(`console error: ${m.text()}`));
@@ -210,7 +221,10 @@ async function record(browser, slug) {
         else process.env.PREVIEW_BASE = previousBase;
       }
     } else {
-      await page.goto(`${base}${pagePath || `/preview/${slug}`}`, { waitUntil: "load", timeout: 120000 });
+      const response = await page.goto(`${base}${pagePath || `/preview/${slug}${styled ? `?visualStyle=${visualStyle}` : ""}`}`, { waitUntil: "load", timeout: 120000 });
+      if (!response?.ok()) throw new Error(`Preview returned HTTP ${response?.status()}`);
+      if (!pagePath) await waitForPreview(page, slug);
+      if (styled) await page.locator("[data-licensed-visual-style]").waitFor({ state: "attached", timeout: 15000 });
     }
     await page.waitForTimeout(meta.category === "three-d" || meta.dependencies?.includes("three") ? 6000 : 3200);
 
@@ -500,10 +514,10 @@ async function record(browser, slug) {
     }
 
     const poster = path.join(out, `${slug}.webp`);
-    if (!fs.existsSync(poster) || frameViewport || refreshPoster) {
+    if (!fs.existsSync(poster) || frameViewport || refreshPoster || styled) {
       const png = path.join(tmp, "poster.png");
       execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", mp4Tmp, "-frames:v", "1", png]);
-      await sharp(png).webp({ quality: 82 }).toFile(poster);
+      await (styled ? sharp(png).resize(768, 480) : sharp(png)).webp({ quality: 82 }).toFile(poster);
       written.push(`${poster}  (poster from the first frame)`);
     }
 
