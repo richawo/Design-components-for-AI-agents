@@ -13,7 +13,7 @@ const commands=[
  ["npm",["run","blog:audit","--","--require-source","--require-locales"]],
  [process.execPath,["scripts/build-registry.mjs","--strict"]],
  ["npm",["run","typecheck"]],
- ["npm",["test"]],
+ ["npm",["test","--","--maxWorkers=1"]],
  [path.join(root,"node_modules/.bin/opennextjs-cloudflare"),["build"]],
 ];
 const identity=publicationBuildIdentity(root),checks=[];

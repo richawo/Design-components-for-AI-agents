@@ -71,6 +71,10 @@ sync uses `--require-source`, so missing credentials or incomplete Pro source
 fail the build and leave the previous deployment active. `LICENSE_SECRET`
 remains configured separately as a runtime secret.
 
+The source-bound publication build runs the complete test suite with one worker.
+This keeps image, source-pack and multilingual checks from competing for build-host
+resources. Test coverage, assertions and timeouts remain unchanged.
+
 Email-code accounts, hosted Stripe Checkout, signed billing events, licence
 recovery, Team seats and a dedicated billing portal are configured. Commerce
 uses its own D1 database, `design-yaps-commerce`, through `COMMERCE_DB`. See
