@@ -8,7 +8,7 @@ vi.mock("@/registry/__generated__/index.json", () => ({ default: [] }));
 vi.mock("@/registry/__generated__/server-data", async () => ({
   sourceLoaders: { example: async () => ({ default: (await import("../scripts/lib/content-pack.mjs")).packContent(fixture.source) }) },
   proItemLoaders: { example: async () => ({ default: fixture.item }), missing: async () => ({ default: fixture.item }) },
-  thumbnails: new Set(), videos: new Set(),
+  thumbnails: new Set(), videos: new Set(), styleThumbnails: {},
 }));
 import { readProItem } from "@/lib/registry";
 

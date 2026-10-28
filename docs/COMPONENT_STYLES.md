@@ -5,7 +5,16 @@ default. A paid selection is remembered in this browser and follows navigation.
 Original browsing does not request account state. Opening the style menu or restoring a paid selection checks Pro access. This keeps public cache hits from initializing the licensed server just to display the header.
 
 The public menu contains a small illustrative sample, without serving licensed
-component material. Catalogue recordings retain Original for comparison.
+component material. Catalogue cards use a rendered poster for the selected style.
+Original recordings play only when Original is selected, so an old walkthrough
+never covers a Crayon poster. Cards load no live component code or style source.
+
+Capture every supported style poster with `scripts/screenshot.mjs --visual-style=crayon`
+and an existing Pro key in `DESIGN_FOR_AI_LICENSE`. Set `--base=` to the intended
+site or local test server. The key is never stored in the output. Posters are
+public pixels; CSS, source, briefs and installation remain protected. Strict
+registry generation rejects missing styled posters. Their URLs include a pixel
+hash, so switching styles or refreshing after a release cannot reuse old pixels.
 
 The current catalogue offers Original and Crayon. Register future options in
 `lib/visual-styles.ts`, with a name, licence tier and short description. The

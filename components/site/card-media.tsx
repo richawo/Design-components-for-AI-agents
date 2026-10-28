@@ -3,6 +3,27 @@ import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useEffect, useRef, useState } from "react";
 import { registerCard, videoAllowed } from "./card-playback";
+import { useComponentStyle } from "./component-style";
+import { cardStyleMedia, type CardStylePreviews } from "@/lib/card-style-media";
+
+type CardMediaProps = {
+  name: string;
+  thumb: string | null;
+  srcSet?: string;
+  sizes?: string;
+  video: { mp4: string; webm: string | null } | null;
+  platform: "web" | "mobile";
+  priority: boolean;
+  compact?: boolean;
+  stylePreviews?: CardStylePreviews;
+};
+
+export function CardMedia(props: CardMediaProps) {
+  const { visualStyle } = useComponentStyle();
+  const selected = cardStyleMedia(props, props.stylePreviews, visualStyle);
+  // Changing material retires the old decoder and its asynchronous events.
+  return <RecordedCardMedia key={visualStyle} {...props} {...selected} />;
+}
 
 function restoreOriginalPoster(image: HTMLImageElement) {
   const original = image.getAttribute("src");
@@ -21,7 +42,7 @@ function restoreOriginalPoster(image: HTMLImageElement) {
  * or focusing a card keeps it playing. Reduced motion and Save-Data get the
  * poster only.
  */
-export function CardMedia({
+function RecordedCardMedia({
   name,
   thumb,
   srcSet,
@@ -30,16 +51,7 @@ export function CardMedia({
   platform,
   priority,
   compact = false,
-}: {
-  name: string;
-  thumb: string | null;
-  srcSet?: string;
-  sizes?: string;
-  video: { mp4: string; webm: string | null } | null;
-  platform: "web" | "mobile";
-  priority: boolean;
-  compact?: boolean;
-}) {
+}: CardMediaProps) {
   const { localize } = useSiteI18n();
 
   const posterRef = useRef<HTMLImageElement>(null);

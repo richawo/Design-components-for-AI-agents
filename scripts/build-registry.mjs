@@ -43,6 +43,7 @@ import { packStyleSource } from "./lib/style-delta.mjs";
 import { loadStylePack, styleSourceIdentity } from "./lib/style-source.mjs";
 import { writePublicContentRuntime } from "./lib/public-content-runtime.mjs";
 import { verifyPublicationRequest } from "./lib/publication-request.mjs";
+import { stylePreviewManifest } from "./lib/style-previews.mjs";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const registryDir = path.join(root, "registry");
@@ -483,6 +484,7 @@ const previewsDir = path.join(root, "public", "previews");
 const previewFiles = fs.existsSync(previewsDir) ? fs.readdirSync(previewsDir).sort() : [];
 const thumbs = previewFiles.filter((f) => f.endsWith(".webp"));
 const cardThumbnails = await buildCardImages(root, thumbs);
+const styleThumbnails = stylePreviewManifest(root, publishedStyles, { required: STRICT && styleSourceAvailable });
 // Hover videos recorded by scripts/record-demos.mjs from meta.demo.
 const videos = previewFiles.filter((f) => f.endsWith(".mp4") || f.endsWith(".webm"));
 const conveyorVideos = conveyorVideoManifest(root, showcaseCollections.flatMap(c => c.slugs));
@@ -510,6 +512,8 @@ ${proItemLoaders}
 export const thumbnails: ReadonlySet<string> = new Set(${JSON.stringify(thumbs)});
 
 export const cardThumbnails: Readonly<Record<string, string>> = ${JSON.stringify(cardThumbnails)};
+
+export const styleThumbnails: Readonly<Record<string, Record<string, string>>> = ${JSON.stringify(styleThumbnails)};
 
 export const videos: ReadonlySet<string> = new Set(${JSON.stringify(videos)});
 
