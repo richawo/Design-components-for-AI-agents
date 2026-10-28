@@ -370,6 +370,15 @@ const entries = [
   ...proMetas.map((m) => ({ ...m, hasSource: hasProSource })),
 ].sort((a, b) => rank(a.slug) - rank(b.slug) || a.name.localeCompare(b.name));
 
+// Style deltas and runtime source must share the exact installed representation.
+// Blocks rewrite their local imports for installation before either is packed.
+const componentSources = new Map([...free, ...pro].map(c => [c.meta.slug, {
+  slug: c.meta.slug,
+  code: installedBlockSource(c.meta, c.code),
+  prompt: c.prompt,
+  promptJson: c.promptJson,
+}]));
+
 // Licensed visual styles are generated only into server-side content packs.
 // Public metadata advertises availability; no material CSS reaches public/r.
 const styleManifestPath = path.join(registryDir, "style-manifest.json");
@@ -381,7 +390,7 @@ if (styleSourceAvailable) {
   const publishedSlugs = new Set(entries.map(entry => entry.slug));
   for (const c of [...free, ...pro]) {
     if (!publishedSlugs.has(c.meta.slug)) continue;
-    const source = { slug: c.meta.slug, code: c.code, prompt: c.prompt, promptJson: c.promptJson };
+    const source = componentSources.get(c.meta.slug);
     const variant = makeStyledSource(c.meta, source, material);
     if (variant) styled.set(c.meta.slug, packStyleSource(source, variant));
   }
@@ -411,12 +420,7 @@ prune(path.join(outDir, "source-packs"), new Set([...free, ...pro].map((c) => `$
 prune(path.join(outDir, "r-pro"), new Set(pro.map((c) => `${c.meta.slug}.json`)));
 
 for (const c of [...free, ...pro]) {
-  const source = {
-    slug: c.meta.slug,
-    code: installedBlockSource(c.meta, c.code),
-    prompt: c.prompt,
-    promptJson: c.promptJson,
-  };
+  const source = componentSources.get(c.meta.slug);
   writeJson(path.join(outDir, "sources", `${c.meta.slug}.json`), source);
   // Keep source text out of the runtime's JavaScript parser until requested.
   // This is the same lossless format as the editorial bundle, per component.
