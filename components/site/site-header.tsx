@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./logo";
 import { site } from "@/lib/site";
+import { SiteStyleSelector } from "./component-style";
 import { LanguageSwitcher } from "./language-switcher";
 import { unlocalizePath, localizePath } from "@/lib/i18n/routing";
 
@@ -52,7 +53,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
     menu.current?.querySelector<HTMLAnchorElement>("a[href]")?.focus({ preventScroll: true });
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        if (scope.current?.querySelector('[data-language-switcher] button[aria-expanded="true"]')) return;
+        if (scope.current?.querySelector('[data-language-switcher] button[aria-expanded="true"], [data-style-selector] button[aria-expanded="true"]')) return;
         event.preventDefault();
         event.stopPropagation();
         setOpen(false);
@@ -134,6 +135,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
             </nav>
           </div>
           <div className="ml-auto flex items-center gap-2">
+          <SiteStyleSelector />
           <LanguageSwitcher />
           <div className="hidden items-center gap-2 xl:flex">
             <a

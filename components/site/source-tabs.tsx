@@ -1,4 +1,6 @@
 "use client";
+import { useComponentStyle } from "./component-style";
+import { styleInstallText } from "@/lib/visual-styles";
 import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
@@ -23,6 +25,7 @@ const TABS: { key: Tab; label: string; hint: string }[] = [
 
 export function SourceTabs({
   slug,
+  platform = "web",
   name,
   tier,
   fileName,
@@ -31,6 +34,7 @@ export function SourceTabs({
   installHtml,
 }: {
   slug: string;
+  platform?: "web"|"mobile";
   name: string;
   tier: "free" | "pro";
   fileName: string;
@@ -40,6 +44,9 @@ export function SourceTabs({
 }) {
   const { localize } = useSiteI18n();
 
+  const { visualStyle } = useComponentStyle();
+  const effectiveTier = visualStyle === "crayon" ? "pro" : tier;
+  const selectedInstall = visualStyle === "crayon" ? styleInstallText({slug,platform}) : installText;
   const reduce = useReducedMotion();
   const uid = useId();
   const container = useRef<HTMLDivElement>(null);
@@ -47,7 +54,9 @@ export function SourceTabs({
   const [visited, setVisited] = useState<Set<Tab>>(() => new Set(["code"]));
   const selectTab = (next: Tab) => { setTab(next); setVisited(current => current.has(next) ? current : new Set([...current, next])); };
   const [tab, setTab] = useState<Tab>("code");
-  const [source, setSource] = useState<SourcePayload | null>(initial);
+  const [loadedSource, setSource] = useState<SourcePayload | null>(initial);
+  const [sourceStyle,setSourceStyle] = useState(visualStyle);
+  const source = sourceStyle === visualStyle ? loadedSource : null;
   const [status, setStatus] = useState<"ready" | "loading" | "locked" | "error">(initial ? "ready" : "loading");
   const [attempt, setAttempt] = useState(0);
 
@@ -62,22 +71,23 @@ export function SourceTabs({
   }, []);
 
   useEffect(() => {
-    if (initial || !near) return;
+    if (initial && visualStyle === "original" || !near) return;
     let live = true;
     setStatus("loading");
-    (tier === "free" ? fetchFreeSource(slug) : fetchProSource(slug)).then((data) => {
+    (effectiveTier === "free" ? fetchFreeSource(slug) : fetchProSource(slug, visualStyle)).then((data) => {
       if (!live) return;
       if (!data) return setStatus("locked");
       setSource(data);
+      setSourceStyle(visualStyle);
       setStatus("ready");
     }).catch(() => { if (live) setStatus("error"); });
     return () => {
       live = false;
     };
-  }, [initial, slug, tier, near, attempt]);
+  }, [initial, slug, effectiveTier, visualStyle, near, attempt]);
 
   const agentBrief = source
-    ? `Add the "${name}" component from Design for AI to this project.\n\n## Install\n${installText}\n\n## Design brief\n${source.prompt.trim()}\n\n## Source (${fileName})\n\`\`\`tsx\n${source.code.trim()}\n\`\`\`\n`
+    ? `Add the "${name}" component from Design for AI to this project.\n\n## Install\n${selectedInstall}\n\n## Design brief\n${source.prompt.trim()}\n\n## Source (${fileName})\n\`\`\`tsx\n${source.code.trim()}\n\`\`\`\n`
     : "";
 
   return (
@@ -128,7 +138,7 @@ export function SourceTabs({
                 label={tab === "code" ? "Copy code" : tab === "prompt" ? "Copy prompt" : "Copy JSON"}
               />
             )}
-            {tab === "install" && <CopyButton text={installText} label="Copy command" />}
+            {tab === "install" && <CopyButton text={selectedInstall} label="Copy command" />}
           </SourceActionSlot>}
           {status === "ready" && source && <SourceActionSlot label="Copy for agent">
             {status === "ready" && source && <CopyButton text={agentBrief} label="Copy for agent" variant="accent" />}
@@ -137,12 +147,12 @@ export function SourceTabs({
       </div>
 
       <p className="px-4 pt-3 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3 sm:px-5">
-        {tab === "code" ? fileName : TABS.find((t) => t.key === tab)!.hint}
+        {visualStyle === "crayon" ? "Crayon · Pro · " : ""}{tab === "code" ? fileName : TABS.find((t) => t.key === tab)!.hint}
       </p>
 
       {TABS.map((item) => <div key={item.key} role="tabpanel" id={`${uid}-panel-${item.key}`} aria-labelledby={`${uid}-tab-${item.key}`} hidden={tab !== item.key} tabIndex={tab === item.key ? 0 : -1} className="relative">
         {!visited.has(item.key) ? null : item.key === "install" ? (
-          <Scroll html={installHtml} />
+          visualStyle === "original" ? <Scroll html={installHtml} /> : <pre className="overflow-auto p-5 font-mono text-xs leading-relaxed">{selectedInstall}</pre>
         ) : status === "loading" ? (
           <div className="flex h-64 items-center justify-center">
             <span role="status" className="size-5 animate-spin rounded-full border-2 border-white/10 border-t-white/50" aria-label="Loading source" />

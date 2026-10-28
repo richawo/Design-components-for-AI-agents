@@ -1,4 +1,5 @@
 "use client";
+import type { VisualStyle } from "./visual-styles";
 
 export type SourcePayload = {
   code: string;
@@ -19,19 +20,19 @@ const cache = new Map<string, Promise<SourcePayload | null>>();
  * no licence. The server checks the licence (/api/pro/source); this only makes
  * sure the page asks once, however many panels need it.
  */
-export function fetchProSource(slug: string): Promise<SourcePayload | null> {
-  return fetchSource(slug, "pro");
+export function fetchProSource(slug: string, visualStyle: VisualStyle = "original"): Promise<SourcePayload | null> {
+  return fetchSource(slug, "pro", visualStyle);
 }
 
 export function fetchFreeSource(slug: string): Promise<SourcePayload | null> {
   return fetchSource(slug, "free");
 }
 
-function fetchSource(slug: string, tier: "free" | "pro"): Promise<SourcePayload | null> {
-  const key = `${tier}:${slug}`;
+function fetchSource(slug: string, tier: "free" | "pro", visualStyle: VisualStyle = "original"): Promise<SourcePayload | null> {
+  const key = `${tier}:${slug}:${visualStyle}`;
   let p = cache.get(key);
   if (!p) {
-    p = fetch(tier === "free" ? `/api/source/${slug}` : `/api/pro/source/${slug}`, { credentials: "same-origin" })
+    p = fetch(tier === "free" ? `/api/source/${slug}` : `/api/pro/source/${slug}${visualStyle === "crayon" ? "?visualStyle=crayon" : ""}`, { credentials: "same-origin", ...(tier === "pro" ? { cache: "no-store" as const } : {}) })
       .then(async (r) => {
         if (r.status === 401 || r.status === 403) return null;
         if (!r.ok) throw new SourceLoadError();
@@ -45,7 +46,7 @@ function fetchSource(slug: string, tier: "free" | "pro"): Promise<SourcePayload 
     // A failure shouldn't stick for the life of the page.
     const request = p;
     const clear = () => { if (cache.get(key) === request) cache.delete(key); };
-    p.then((v) => { if (v === null) clear(); }, clear);
+    p.then((v) => { if (v === null || visualStyle !== "original") clear(); }, clear);
   }
   return p;
 }

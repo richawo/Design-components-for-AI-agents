@@ -175,6 +175,23 @@ checkout must be clean and already match the requested commit. Sync refuses to
 move a developer's branch or overwrite local work; use a fresh build checkout
 when verifying another pinned publication.
 
+### Private visual-style source
+
+`registry/style-source.json` independently pins the three private Crayon material
+files by Git commit and SHA-256. Pro sync fetches that commit and materializes only
+those blobs under ignored `registry/__generated__/style-inputs/`. It does not move
+the editorial checkout or include later blog edits. Changing a style requires a
+reviewed private commit followed by a new public pin. The generator rejects a
+hash mismatch before building styled component packs.
+
+The live marker also reports `visualStyleSource.commit`, `pinSha256` and
+`available`. Production must match the public pin and report `available: true`.
+A public clone without private credentials can still build with locked styles.
+Styled packs stay server-only and lazy. Preview material, code, prompts and
+`/r/styles/crayon/*.json` all require a live Pro entitlement and use private,
+no-store responses, including when the original component is free. Discovery
+metadata and selector labels remain public.
+
 ## Check a deployment
 
 - `/components` lists the published components, free and Pro. Each card shows its

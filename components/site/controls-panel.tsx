@@ -1,4 +1,6 @@
 "use client";
+import { useComponentStyle } from "./component-style";
+import { styleInstallText } from "@/lib/visual-styles";
 import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
@@ -19,6 +21,7 @@ const SPRING_UI = { type: "spring", stiffness: 500, damping: 40 } as const;
 
 export type ControlsPanelProps = {
   slug: string;
+  platform?: "web"|"mobile";
   name: string;
   tier: "free" | "pro";
   controls: ComponentControl[];
@@ -40,6 +43,8 @@ export type ControlsPanelProps = {
  */
 export function ControlsPanel(p: ControlsPanelProps) {
   const { localize } = useSiteI18n();
+  const { visualStyle } = useComponentStyle();
+  const effectiveTier = visualStyle === "crayon" ? "pro" : p.tier;
 
   const uid = useId();
   const container = useRef<HTMLElement>(null);
@@ -51,22 +56,25 @@ export function ControlsPanel(p: ControlsPanelProps) {
     observer.observe(node);return () => observer.disconnect();
   }, []);
   const [proPrompt, setProPrompt] = useState<string | null>(null);
+  const [promptStyle,setPromptStyle] = useState(visualStyle);
   const [promptError, setPromptError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (p.tier !== "pro" || p.prompt || !near) return;
+    if (effectiveTier !== "pro" || visualStyle === "original" && p.prompt || !near) return;
     let live = true;
     setPromptError(false);
     setProPrompt(null);
-    fetchProSource(p.slug).then((s) => live && setProPrompt(s ? s.prompt : "locked")).catch(() => { if (live) setPromptError(true); });
+    fetchProSource(p.slug, visualStyle).then((s) => {if(live){setProPrompt(s ? s.prompt : "locked");setPromptStyle(visualStyle);}}).catch(() => { if (live) setPromptError(true); });
     return () => {
       live = false;
     };
-  }, [p.tier, p.prompt, p.slug, attempt, near]);
+  }, [effectiveTier, visualStyle, p.prompt, p.slug, attempt, near]);
 
-  const prompt = p.prompt ?? (typeof proPrompt === "string" && proPrompt !== "locked" ? proPrompt : null);
+  const prompt = (visualStyle === "original" ? p.prompt : null) ?? (promptStyle === visualStyle && typeof proPrompt === "string" && proPrompt !== "locked" ? proPrompt : null);
   const tuned = Object.keys(diffValues(p.controls, p.values)).length;
-  const groups = groupControls(p.controls);
+  const groups = groupControls(visualStyle === "crayon" ? p.controls.filter(c => c.prop !== "theme") : p.controls);
+  const snippet = configuredSnippet(p.usage, p.controls, p.values, p.props);
+  const selectedSnippet = visualStyle === "crayon" ? styleInstallText({slug:p.slug,platform:p.platform}).split("\n").map(line => "// " + line).join("\n") + "\n\n" + snippet : snippet;
 
   return (
     localize(<section ref={container} aria-labelledby={`${uid}-h`} className="border-t border-white/[0.06] px-3 pb-4 pt-3.5 sm:px-4 sm:pb-5">
@@ -94,14 +102,14 @@ export function ControlsPanel(p: ControlsPanelProps) {
             <span className="hidden sm:inline">Reset</span>
           </button>
           <ControlActionSlot label="Copy configured" shortLabel="Copy failed">
-            <CopyButton text={configuredSnippet(p.usage, p.controls, p.values, p.props)} label="Copy configured" shortLabel="Copy code" />
+            <CopyButton text={selectedSnippet} label="Copy configured" shortLabel="Copy code" />
           </ControlActionSlot>
-          {(p.tier === "pro" || prompt) && <ControlActionSlot label="Copy configured prompt" shortLabel="Configured prompt">
+          {(effectiveTier === "pro" || prompt) && <ControlActionSlot label="Copy configured prompt" shortLabel="Configured prompt">
           {prompt ? (
             <CopyButton text={configuredPrompt(prompt, p.name, p.controls, p.values)} label="Copy configured prompt" shortLabel="Copy prompt" />
           ) : promptError ? (
             <button type="button" className="site-btn site-btn-secondary min-h-11 px-3 text-xs" onClick={() => setAttempt((value) => value + 1)}>Retry prompt</button>
-          ) : p.tier === "pro" && proPrompt === "locked" ? (
+          ) : effectiveTier === "pro" && proPrompt === "locked" ? (
             <Link href="/pricing" className="site-btn site-btn-secondary h-8 gap-1.5 px-3.5 text-xs font-semibold" title="The configured prompt needs a Pro licence">
               <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
                 <rect x="3.5" y="7" width="9" height="6.5" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
@@ -114,7 +122,7 @@ export function ControlsPanel(p: ControlsPanelProps) {
         </div>
       </div>
 
-      {p.tier === "pro" && <div className="mt-3 grid text-sm text-site-fg-2">
+      {effectiveTier === "pro" && <div className="mt-3 grid text-sm text-site-fg-2">
         <p aria-hidden="true" className="invisible col-start-1 row-start-1">The configured prompt couldn't be loaded. Please try again.</p>
         <p role="status" className="col-start-1 row-start-1">{promptError ? "The configured prompt couldn't be loaded. Please try again." : "Copied code reflects the settings below."}</p>
       </div>}

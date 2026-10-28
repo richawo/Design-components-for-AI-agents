@@ -42,7 +42,7 @@ async function index() {
 const text = (t) => ({ content: [{ type: "text", text: t }] });
 
 function line(c) {
-  return `- ${c.slug} · ${c.name} (${c.tier}${c.platform === "mobile" ? ", React Native" : ""}, ${c.category}): ${c.description}`;
+  return `- ${c.slug} · ${c.name} (${c.tier}${c.platform === "mobile" ? ", React Native" : ""}, ${c.category}): ${c.description}${c.visualStyles?.includes("crayon") ? " · Styles: Original, Crayon (Pro)" : ""}`;
 }
 
 // Mirrors lib/demo/describe.ts on the site.
@@ -66,24 +66,25 @@ const controlsSection = (controls) =>
 const proMessage = (slug) =>
   `"${slug}" is a Pro component. Set DESIGN_FOR_AI_LICENSE in this MCP server's environment to unlock it (get a licence at ${BASE}/pricing). The free components work without one; use search_components with tier "free" to find alternatives.`;
 
-const server = new McpServer({ name: "design-for-ai", version: "0.2.0" });
+const server = new McpServer({ name: "design-for-ai", version: "0.3.0" });
 
 server.tool(
   "search_components",
   "Search Design for AI's design components by keyword, category, tier or platform. Returns slugs to pass to get_component.",
   {
     query: z.string().optional().describe("Keywords, e.g. 'pricing', 'chart', 'bottom sheet', 'three.js'"),
+    visualStyle: z.enum(["original", "crayon"]).optional().describe("Crayon is a Pro style, including for free components."),
     category: z.string().optional().describe("Category key, e.g. hero, pricing, charts, three-d, pixel, ai, app, mobile"),
     kind: z.enum(["component", "block"]).optional(),
     tier: z.enum(["free", "pro"]).optional(),
     platform: z.enum(["web", "mobile"]).optional(),
     limit: z.number().int().min(1).max(50).optional(),
   },
-  async ({ query, category, kind, tier, platform, limit = 12 }) => {
+  async ({ query, category, kind, tier, platform, visualStyle, limit = 12 }) => {
     const all = await index();
     const words = (query ?? "").toLowerCase().split(/\s+/).filter(Boolean);
     const scored = all
-      .filter((c) => (!kind || (c.kind ?? "component") === kind) && (!category || c.category === category) && (!tier || c.tier === tier) && (!platform || c.platform === platform))
+      .filter((c) => (!kind || (c.kind ?? "component") === kind) && (!category || c.category === category) && (!tier || c.tier === tier) && (!platform || c.platform === platform) && (!visualStyle || visualStyle === "original" || c.visualStyles?.includes(visualStyle)))
       .map((c) => {
         const hay = [c.name, c.slug, c.description, c.category, ...(c.tags ?? [])].join(" ").toLowerCase();
         const score = words.reduce((s, w) => s + (hay.includes(w) ? (c.name.toLowerCase().includes(w) ? 3 : 1) : 0), 0);
@@ -104,13 +105,14 @@ server.tool(
   "Get one component: install command, usage, props, tunable controls, the design prompt, the JSON prompt and the full source file.",
   {
     slug: z.string().describe("Component slug from search_components"),
+    visualStyle: z.enum(["original", "crayon"]).optional().describe("Crayon requires Pro, even when the base component is free."),
     include: z.array(z.enum(["code", "prompt", "json", "props", "controls", "install"])).optional().describe("Sections to include (default: all)"),
   },
-  async ({ slug, include }) => {
+  async ({ slug, include, visualStyle }) => {
     const want = new Set(include ?? ["code", "prompt", "json", "props", "controls", "install"]);
     try {
-      const c = await api(`/api/registry/${encodeURIComponent(slug)}`);
-      const parts = [`# ${c.name} (${c.slug})`, "", c.description, "", `Tier: ${c.tier} · Platform: ${c.platform} · File: ${c.file}${c.dependencies?.length ? ` · Dependencies: ${c.dependencies.join(", ")}` : ""}`];
+      const c = await api(`/api/registry/${encodeURIComponent(slug)}${visualStyle === "crayon" ? "?visualStyle=crayon" : ""}`);
+      const parts = [`# ${c.name} (${c.slug})`, "", c.description, "", `Tier: ${c.tier} · Visual style: ${c.visualStyle ?? "original"}${c.visualStyle === "crayon" ? " (Pro)" : ""} · Platform: ${c.platform} · File: ${c.file}${c.dependencies?.length ? ` · Dependencies: ${c.dependencies.join(", ")}` : ""}`];
       if (want.has("install")) parts.push("", "## Install", "```bash", c.install, "```", "", "## Usage", "```tsx", c.usage, "```");
       if (want.has("props") && c.props?.length) parts.push("", "## Props", ...c.props.map((p) => `- \`${p.name}\`: ${p.type}${p.default ? ` (default ${p.default})` : ""}. ${p.description}`));
       if (want.has("controls") || want.has("props")) parts.push(...controlsSection(c.controls));
@@ -122,7 +124,7 @@ server.tool(
       if (e.code === "PRO") {
         // Controls are public metadata, so show them even without a licence.
         const meta = (await index()).find((x) => x.slug === slug);
-        return text([proMessage(slug), ...controlsSection(meta?.controls)].join("\n"));
+        return text([visualStyle === "crayon" ? "Crayon is a Pro style, including on free components. Connect your paid Design for AI account or set DESIGN_FOR_AI_LICENSE." : proMessage(slug), ...controlsSection(meta?.controls)].join("\n"));
       }
       throw e;
     }
@@ -154,13 +156,13 @@ server.tool(
 server.tool(
   "install_command",
   "The exact command that adds a component to the current project (shadcn CLI for web, curl for React Native).",
-  { slug: z.string() },
-  async ({ slug }) => {
+  { slug: z.string(), visualStyle: z.enum(["original", "crayon"]).optional() },
+  async ({ slug, visualStyle }) => {
     try {
-      const c = await api(`/api/registry/${encodeURIComponent(slug)}`);
+      const c = await api(`/api/registry/${encodeURIComponent(slug)}${visualStyle === "crayon" ? "?visualStyle=crayon" : ""}`);
       return text(c.install);
     } catch (e) {
-      if (e.code === "PRO") return text(proMessage(slug));
+      if (e.code === "PRO") return text(visualStyle === "crayon" ? "Crayon is a Pro style, including on free components. Connect your paid Design for AI account or set DESIGN_FOR_AI_LICENSE." : proMessage(slug));
       throw e;
     }
   },

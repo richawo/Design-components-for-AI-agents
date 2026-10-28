@@ -1,3 +1,4 @@
+import { ComponentStyleProvider } from "./component-style";
 import { siteAlternates } from "@/lib/i18n/metadata";
 import { SiteLink as Link } from "@/components/site/site-link";
 import type { Metadata } from "next";
@@ -103,7 +104,7 @@ export async function ComponentDetail({ locale = "en", entry: e }: { entry: Regi
   const thumb = thumbnailFor(slug);
 
   return (
-    localize(<SiteI18n locale={locale} inherit dictionary={{ ...await siteCopy(locale, "detail", [e.name, ...related.map(entry => entry.name), ...(e.components ?? []).flatMap(slug => { const entry = getComponent(slug); return entry ? [entry.name] : []; })]), ...Object.fromEntries((e.controls ?? []).flatMap((control) => [control.label, control.group, ...(control.options ?? []).map((option) => typeof option === "object" ? option.label : typeof option === "string" ? option : undefined)]).filter((key): key is string => !!key).map((key) => [key, selectedCopy[key] ?? key])) }}><div className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
+    localize(<SiteI18n locale={locale} inherit dictionary={{ ...await siteCopy(locale, "detail", [e.name, ...related.map(entry => entry.name), ...(e.components ?? []).flatMap(slug => { const entry = getComponent(slug); return entry ? [entry.name] : []; })]), ...Object.fromEntries((e.controls ?? []).flatMap((control) => [control.label, control.group, ...(control.options ?? []).map((option) => typeof option === "object" ? option.label : typeof option === "string" ? option : undefined)]).filter((key): key is string => !!key).map((key) => [key, selectedCopy[key] ?? key])) }}><ComponentStyleProvider slug={slug} styles={e.visualStyles}><div className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
       <JsonLd
         data={[
           {
@@ -442,6 +443,7 @@ export async function ComponentDetail({ locale = "en", entry: e }: { entry: Regi
             </p>
             <div className="mt-5">
               <SourceTabs
+                platform={e.platform}
                 slug={slug}
                 name={e.name}
                 tier={e.tier}
@@ -538,7 +540,7 @@ export async function ComponentDetail({ locale = "en", entry: e }: { entry: Regi
           </div>
         </aside>
       </div>
-    </div></SiteI18n>)
+    </div></ComponentStyleProvider></SiteI18n>)
   );
 }
 

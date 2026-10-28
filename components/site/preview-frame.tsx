@@ -1,4 +1,6 @@
 "use client";
+import { ComponentStyleSelector, useComponentStyle } from "./component-style";
+import { visualStyleQuery } from "@/lib/visual-styles";
 import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
@@ -53,6 +55,7 @@ export function PreviewFrame({
   const { localize, href, locale } = useSiteI18n();
   const controls = useMemo(() => previewControls(suppliedControls, locale), [suppliedControls, locale]);
 
+  const { visualStyle } = useComponentStyle();
   const reduce = useReducedMotion();
   const [vp, setVp] = useState<(typeof VIEWPORTS)[number]["key"]>("desktop");
   const [key, setKey] = useState(0);
@@ -215,6 +218,8 @@ export function PreviewFrame({
     setPlaying(false);
     setKey(current => current + 1);
   }, []);
+  const lastStyle = useRef(visualStyle);
+  useEffect(() => { if(lastStyle.current !== visualStyle){lastStyle.current=visualStyle;reload();}},[visualStyle,reload]);
   const retry = () => {
     if (retryTimer.current) clearTimeout(retryTimer.current);
     automaticRetries.current = 0;
@@ -344,7 +349,7 @@ export function PreviewFrame({
             </svg>
           </button>
           <a
-            href={`/preview/${slug}`}
+            href={`${href(`/preview/${slug}`)}${visualStyleQuery(visualStyle)}`}
             target="_blank"
             rel="noreferrer"
             aria-label="Open preview in a new tab"
@@ -358,6 +363,7 @@ export function PreviewFrame({
           <AccentPicker defaultColor={parseAccent(controls.find(c => c.prop === accentProp)?.default) ?? undefined} />
         </div>
       </div>
+      <ComponentStyleSelector />
       <div ref={box} aria-busy={!loaded && !loadError} className={`site-dots relative flex justify-center overflow-hidden bg-site-sunken ${controls.length ? "" : "rounded-b-[19px]"}`}>
         {!loaded && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-6 text-center" role={loadError ? "status" : undefined}>
@@ -370,7 +376,7 @@ export function PreviewFrame({
         <iframe
           key={key}
           ref={ref}
-          src={href(`/preview/${slug}`)}
+          src={`${href(`/preview/${slug}`)}${visualStyleQuery(visualStyle)}`}
           title={`${name} live preview`}
           allow="microphone; clipboard-write"
           onLoad={onFrameLoad}
@@ -382,6 +388,7 @@ export function PreviewFrame({
       </div>
       {controls.length > 0 && (
         <ControlsPanel
+          platform={platform}
           key={slug}
           slug={slug}
           name={name}

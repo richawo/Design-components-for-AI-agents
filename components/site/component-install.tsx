@@ -1,4 +1,6 @@
 "use client";
+import { useComponentStyle } from "./component-style";
+import { styleInstallText } from "@/lib/visual-styles";
 import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useReducedMotion } from "@/lib/use-reduced-motion";
@@ -33,13 +35,16 @@ export function ComponentInstall({
   kind?: "component" | "block";
 }) {
   const { localize } = useSiteI18n();
+  const { visualStyle } = useComponentStyle();
+  const effectiveTier = visualStyle === "crayon" ? "pro" : tier;
+  const install = visualStyle === "crayon" ? styleInstallText({slug,platform,dependencies}) : text;
 
   const [access, setAccess] = useState<
     "checking" | "active" | "locked" | "error"
   >("checking");
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (tier !== "pro") return;
+    if (effectiveTier !== "pro") return;
     let live = true;
     setAccess("checking");
     fetchProAccess()
@@ -52,10 +57,10 @@ export function ComponentInstall({
     return () => {
       live = false;
     };
-  }, [slug, tier, attempt]);
+  }, [slug, effectiveTier, attempt]);
   return (
     localize(<div>
-      {tier === "pro" && (
+      {effectiveTier === "pro" && (
         <AccessPanel access={access}>
           <AnimatePresence mode="wait" initial={false}>
             <AccessScene key={access === "checking" ? "locked" : access}>
@@ -113,7 +118,7 @@ export function ComponentInstall({
           : kind === "block"
             ? "Install the block and its component dependencies together with shadcn or the Design for AI CLI."
             : "Add the component with shadcn, or use the Design for AI CLI and your connected agent."}{" "}
-        {tier === "pro" &&
+        {effectiveTier === "pro" &&
           "The registry checks your licence before returning source."}
       </p>
       <div className="mt-5 overflow-hidden rounded-2xl border border-site-line bg-site-raised">
@@ -121,15 +126,15 @@ export function ComponentInstall({
           <span className="font-mono text-xs text-site-fg-3">
             {platform === "mobile" ? "React Native" : "Terminal"}
           </span>
-          <CopyButton text={text} label="Copy install command" />
+          <CopyButton text={install} label="Copy install command" />
         </div>
-        <div
+        {visualStyle === "original" ? <div
           tabIndex={0}
           role="region"
           aria-label={`${name} install command`}
           className="max-h-[480px] overflow-auto p-4 text-[12px] leading-[1.8] sm:p-5 [&_pre]:!bg-transparent"
           dangerouslySetInnerHTML={{ __html: html }}
-        />
+        /> : <pre tabIndex={0} className="max-h-[480px] overflow-auto p-5 font-mono text-xs leading-relaxed">{install}</pre>}
       </div>
       <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-site-fg-2">
         <Link

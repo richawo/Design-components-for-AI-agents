@@ -38,6 +38,8 @@ import { conveyorVideoManifest } from "./lib/conveyor-videos.mjs";
 import { showcaseCollections } from "../lib/showcase-collections.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 import { packContent } from "./lib/content-pack.mjs";
+import { makeStyledSource } from "./lib/component-styles.mjs";
+import { loadStylePack, styleSourceIdentity } from "./lib/style-source.mjs";
 import { writePublicContentRuntime } from "./lib/public-content-runtime.mjs";
 import { verifyPublicationRequest } from "./lib/publication-request.mjs";
 
@@ -367,6 +369,33 @@ const entries = [
   ...proMetas.map((m) => ({ ...m, hasSource: hasProSource })),
 ].sort((a, b) => rank(a.slug) - rank(b.slug) || a.name.localeCompare(b.name));
 
+// Licensed visual styles are generated only into server-side content packs.
+// Public metadata advertises availability; no material CSS reaches public/r.
+const styleManifestPath = path.join(registryDir, "style-manifest.json");
+const styled = new Map();
+const styleMaterial = loadStylePack(root);
+const styleSourceAvailable = Boolean(styleMaterial);
+if (styleSourceAvailable) {
+  const material = styleMaterial;
+  const publishedSlugs = new Set(entries.map(entry => entry.slug));
+  for (const c of [...free, ...pro]) {
+    if (!publishedSlugs.has(c.meta.slug)) continue;
+    const source = { slug: c.meta.slug, code: c.code, prompt: c.prompt, promptJson: c.promptJson };
+    const variant = makeStyledSource(c.meta, source, material);
+    if (variant) styled.set(c.meta.slug, variant);
+  }
+  writeJson(styleManifestPath, { crayon: [...styled.keys()].sort() });
+}
+const publishedStyles = styleSourceAvailable
+  ? { crayon: [...styled.keys()] }
+  : fs.existsSync(styleManifestPath) ? JSON.parse(fs.readFileSync(styleManifestPath, "utf8")) : { crayon: [] };
+for (const entry of entries) entry.visualStyles = publishedStyles.crayon.includes(entry.slug) ? ["original", "crayon"] : ["original"];
+const stylePacksDir = path.join(outDir, "style-packs");
+fs.mkdirSync(stylePacksDir, { recursive: true });
+prune(stylePacksDir, new Set([...styled.keys()].map(slug => `${slug}.json`)));
+for (const [slug, variant] of styled) writeJson(path.join(stylePacksDir, `${slug}.json`), packContent(variant));
+writeAtomic(path.join(outDir, "visual-styles.ts"), `// Generated. Server-only licensed style source.\nimport "server-only";\nexport const styledLoaders: Record<string, () => Promise<{ default: unknown }>> = {\n${[...styled.keys()].map(slug => `  ${JSON.stringify(slug)}: () => import(${JSON.stringify(`./style-packs/${slug}.json`)}),`).join("\n")}\n};\n`);
+
 // Write in place (several agents may run this while a dev server is compiling)
 // and prune files for components that no longer exist.
 function prune(dir, keep) {
@@ -437,6 +466,7 @@ const packedPublicContent = packContent(siteContent);
 writeJson(path.join(outDir, "content-packed.json"), packedPublicContent);
 writePublicContentRuntime(root, packedPublicContent);
 writeJson(path.join(root, "public", ".well-known", "design-build.json"), {
+  visualStyleSource: styleSourceIdentity(root),
   publicCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
   privateContentCommit: editorial.posts.length && fs.existsSync(path.join(root, "registry", "pro", ".git"))
     ? execFileSync("git", ["rev-parse", "HEAD"], { cwd: path.join(root, "registry", "pro"), encoding: "utf8" }).trim() : null,

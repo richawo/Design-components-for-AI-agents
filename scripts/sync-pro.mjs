@@ -8,6 +8,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { styleSourcePin, materializeStyleSource } from "./lib/style-source.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dest = path.join(root, "registry", "pro");
@@ -79,6 +80,14 @@ function sync() {
       fs.rmSync(dest, { recursive: true, force: true });
       throw error;
     }
+  }
+
+  const stylePin = styleSourcePin(root);
+  if (stylePin) {
+    try { execFileSync("git", ["-C", dest, "cat-file", "-e", stylePin.commit + "^{commit}"], { env, stdio: "ignore" }); }
+    catch { execFileSync("git", [...gitArgs, "-C", dest, "fetch", "--depth", "1", remote, stylePin.commit], { env, stdio: "inherit" }); }
+    materializeStyleSource(root, dest, stylePin);
+    console.log(`pro: pinned visual style ${stylePin.commit}`);
   }
 
   if (required) {

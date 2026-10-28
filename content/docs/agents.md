@@ -29,6 +29,24 @@ Both speak Streamable HTTP and give your agent six tools:
 
 Signing in uses the MCP authorization standard (OAuth 2.1 with PKCE). Your agent opens a page on this site; you sign in with your email code and approve. Each agent gets its own access, which you can see and disconnect on [your account page](/account). Upgrades and renewals apply to connected agents automatically.
 
+### Crayon visual style
+
+Crayon gives components a paper palette, hand-drawn headings and irregular edges while keeping their props and interactions. React Native downloads retain native views, gestures and platform font fallbacks. Everyone can discover the style. Selecting it, downloading its code and retrieving its design prompts requires Pro, including when the original component is free.
+
+Ask your agent: “Find a pricing component in the Crayon style and add it to my project.” The same optional `visualStyle` parameter works on the remote and local MCP servers:
+
+```json
+{"name":"search_components","arguments":{"query":"pricing","visualStyle":"crayon"}}
+```
+
+Use a slug from those results:
+
+```json
+{"name":"get_component","arguments":{"slug":"pricing-three-tier","visualStyle":"crayon"}}
+```
+
+`install_command` accepts the same parameter. Omitting it returns the original design. Available styles are listed on every result. Your existing Pro sign-in or licence key unlocks the style without another credential.
+
 ### Claude Code
 
 ```bash

@@ -1,7 +1,7 @@
 "use client";
 import { useSiteI18n } from "@/components/site/site-i18n";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect, type ComponentType } from "react";
 import { useAccent } from "@/lib/accent-client";
 import { accentInk, parseAccent } from "@/lib/accent";
 import type { PreviewAccent } from "@/lib/preview-accent";
@@ -11,6 +11,7 @@ import { DemoAborted, DemoPlayer, whenSmooth, type CursorHandle } from "@/lib/de
 import { PREVIEW_CHANNEL, parseToPreview, type Body, type FromPreview } from "@/lib/demo/protocol";
 import { parseSteps } from "@/lib/demo/schema.mjs";
 import type { ControlValue, DemoScript } from "@/lib/registry-types";
+import { applyNativePreviewStyle } from "@/lib/preview-native-style";
 import { DemoCursor } from "./demo-cursor";
 
 /** Pause between loops of a looping demo. */
@@ -34,10 +35,31 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
   const { localize, locale } = useSiteI18n();
 
   const accent = useAccent();
+  const [styleMaterial,setStyleMaterial] = useState<{css:string;palette:Record<string,string>;font:string}|null>(null);
+  const [styleStatus,setStyleStatus] = useState<"original"|"loading"|"active"|"locked"|"error">("original");
+  const [styleAttempt,setStyleAttempt] = useState(0);
+  useEffect(()=>{
+    if(new URLSearchParams(window.location.search).get("visualStyle")!=="crayon")return;
+    const controller=new AbortController();let live=true;setStyleStatus("loading");
+    const timeout=window.setTimeout(()=>{if(live){live=false;setStyleStatus("error");controller.abort();}},8000);
+    fetch(`/api/styles/${encodeURIComponent(slug)}`,{credentials:"same-origin",cache:"no-store",signal:controller.signal}).then(async response=>{
+      if(response.status===401||response.status===403)return null;
+      if(!response.ok)throw new Error("Style could not be loaded");
+      const data=await response.json();if(data.locked===true)return null;
+      if(data.visualStyle!=="crayon"||typeof data.css!=="string"||typeof data.font?.family!=="string"||typeof data.font?.url!=="string")throw new Error("Invalid style material");
+      const fontUrl=new URL(new URL(data.font.url).pathname,window.location.origin).href;
+      const font=new FontFace(data.font.family,`url("${fontUrl}")`,{weight:data.font.weight});
+      await font.load();document.fonts.add(font);
+      return {css:data.css.replaceAll(data.font.url,fontUrl),palette:data.palette,font:data.font.family};
+    }).then(material=>{if(!live)return;window.clearTimeout(timeout);if(!material){setStyleStatus("locked");return;}setStyleMaterial(material);setStyleStatus("active");}).catch(error=>{if(live&&error.name!=="AbortError"){window.clearTimeout(timeout);setStyleStatus("error");}});
+    return()=>{live=false;window.clearTimeout(timeout);controller.abort();};
+  },[slug,styleAttempt]);
   const [Comp, setComp] = useState<AnyComponent | null>(null);
   const [overrides, setOverrides] = useState<Record<string, ControlValue>>({});
   const [mount, setMount] = useState(0);
   const cursor = useRef<CursorHandle>(null);
+  const nativeStyleRoot = useRef<HTMLDivElement>(null);
+  useLayoutEffect(()=>{if(platform!=="mobile"||!styleMaterial||!Comp||!nativeStyleRoot.current)return;return applyNativePreviewStyle(nativeStyleRoot.current,styleMaterial.palette,styleMaterial.font);},[platform,styleMaterial,Comp,mount]);
   const run = useRef<AbortController | null>(null);
   const steps = useMemo(() => (demo ? parseSteps(demo.steps) : null), [demo]);
 
@@ -65,7 +87,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
 
   const play = useCallback(
     async (fresh: boolean) => {
-      if (!Comp || !steps || !cursor.current) return;
+      if (!Comp || styleStatus === "loading" || !steps || !cursor.current) return;
       run.current?.abort();
       const ctl = new AbortController();
       run.current = ctl;
@@ -93,7 +115,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
         if (!(e instanceof DemoAborted)) throw e;
       }
     },
-    [Comp, steps, demo?.loop, post],
+    [Comp, styleStatus, steps, demo?.loop, post],
   );
 
   // Messages from the component page.
@@ -105,7 +127,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
       const msg = parseToPreview(e.data);
       if (!msg) return;
       if (msg.type === "hello") {
-        if (Comp) post({ type: "ready", hasDemo: !!steps });
+        if (Comp && styleStatus !== "loading") post({ type: "ready", hasDemo: !!steps });
       }
       else if (msg.type === "props") {
         setOverrides(msg.props);
@@ -117,14 +139,14 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
       } else void play(true);
     };
     window.addEventListener("message", onMessage);
-    if (Comp) post({ type: "ready", hasDemo: !!steps });
+    if (Comp && styleStatus !== "loading") post({ type: "ready", hasDemo: !!steps });
     const motionPreference = () => { if (reduce.matches) stop("stopped"); };
     reduce.addEventListener("change", motionPreference);
     return () => {
       window.removeEventListener("message", onMessage);
       reduce.removeEventListener("change", motionPreference);
     };
-  }, [Comp, play, stop, post, steps]);
+  }, [Comp, styleStatus, play, stop, post, steps]);
 
   // Any real input hands control back to the visitor at once. Capture phase,
   // so the demo has stopped before the component sees the event.
@@ -149,8 +171,13 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
     `[style*="${token}"]{${token}:${effectiveAccent}!important;${token === "--accent" ? `--on:${accentInk(effectiveAccent)}!important;` : ""}}` +
     `[class~="bg-(${token})"],[class~="bg-[var(${token})]"]{color:${accentInk(effectiveAccent)}!important;}`
   ).join("\n") : "";
-  const node = <>{accentCss && <style data-preview-accent>{accentCss}</style>}{Comp ? <Comp key={mount} locale={initialLocale ?? formatLocale(locale === "en" ? "en-US" : locale)} {...accentProps} {...overrides} /> : null}</>;
+  const node = <>{styleMaterial && <style data-licensed-visual-style>{styleMaterial.css}</style>}{accentCss && <style data-preview-accent>{accentCss}</style>}{Comp ? <Comp key={mount} locale={initialLocale ?? formatLocale(locale === "en" ? "en-US" : locale)} {...accentProps} {...overrides} {...(styleMaterial ? {theme:"light"} : {})} /> : null}</>;
 
+  if(styleStatus === "locked" || styleStatus === "error" || styleStatus === "loading") {
+    return localize(<div data-preview-slug={slug} data-preview-ready={styleStatus!=="loading"} className="flex min-h-dvh items-center justify-center bg-black p-8 text-white"><div className="max-w-md text-center">
+      {styleStatus==="loading"?<p role="status" className="text-sm text-white/60">Loading Crayon</p>:styleStatus==="locked"?<><p className="text-xl font-medium">Crayon is a Pro style.</p><p className="mt-3 text-sm leading-relaxed text-white/60">Sign in with an active Pro licence to use this style.</p><a href="/account" target="_top" className="mt-5 inline-flex min-h-11 items-center rounded-full bg-white px-5 text-sm text-black">Sign in</a></>:<><p role="status" className="text-sm text-white/70">We couldn't load Crayon. Please try again.</p><button type="button" onClick={()=>setStyleAttempt(n=>n+1)} className="mt-5 min-h-11 rounded-full border border-white/20 px-5 text-sm">Retry Crayon</button></>}
+    </div></div>);
+  }
   if (platform === "mobile") {
     return (
       localize(<div data-preview-slug={slug} data-preview-ready={!!Comp} className="flex min-h-dvh items-center justify-center bg-black p-0 sm:p-8">
@@ -160,7 +187,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
           // Registry utilities use a later CSS layer; keep the device bounds independent of them.
           style={{ maxWidth: 390, height: "min(844px, 100dvh)" }}
         >
-          <div className="flex h-full w-full flex-col">{node}</div>
+          <div ref={nativeStyleRoot} data-dfa-style={styleMaterial ? "crayon" : undefined} data-dfa-native="true" className="flex h-full w-full flex-col">{node}</div>
           <div className="pointer-events-none absolute left-1/2 top-[11px] hidden h-[34px] w-[122px] -translate-x-1/2 rounded-full bg-black sm:block" />
         </div>
         {steps && <DemoCursor ref={cursor} />}
@@ -169,7 +196,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
   }
 
   return (
-    localize(<div data-preview-slug={slug} data-preview-ready={!!Comp} className={theme === "dark" ? "min-h-dvh bg-black" : "min-h-dvh bg-white"}>
+    localize(<div data-preview-slug={slug} data-preview-ready={!!Comp} data-dfa-style={styleMaterial ? "crayon" : undefined} className={theme === "dark" ? "min-h-dvh bg-black" : "min-h-dvh bg-white"}>
       {node}
       {steps && <DemoCursor ref={cursor} />}
     </div>)

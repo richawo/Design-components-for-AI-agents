@@ -57,6 +57,31 @@ The registry's `theme` item adds them to your CSS. To do it by hand in Tailwind 
 
 Swap the families for your brand's and every component follows. That's the whole theming system, on purpose: colours belong to each component's design, and the prompts tell your agent how to change them.
 
+## Crayon style (Pro)
+
+The site header and component pages have an Original / Crayon selector. Your selection follows you across the catalogue. Crayon is visible to everyone and requires a Pro licence to activate, including on free components. Select it to preview the paper palette and hand-drawn typography, then copy its styled source or install command. The named component, props and callbacks stay the same.
+
+For shadcn, add a separate authenticated registry to your `components.json`:
+
+```json
+{
+  "registries": {
+    "@design-for-ai-crayon": {
+      "url": "https://design.yaps.ai/r/styles/crayon/{name}.json",
+      "headers": { "Authorization": "Bearer ${DESIGN_FOR_AI_LICENSE}" }
+    }
+  }
+}
+```
+
+Set `DESIGN_FOR_AI_LICENSE` in your local environment, then install a component:
+
+```bash
+npx shadcn@latest add @design-for-ai-crayon/pricing-three-tier
+```
+
+Web downloads include scoped styling and a Crayon font declaration. React Native downloads keep native primitives, adapt the paper palette and use handwritten heading font fallbacks. Their component page and MCP install instructions use an authenticated download with the original dependencies. It uses the same file target as the original component; review the replacement if you already customized that file. Connected agents can request `visualStyle: "crayon"` through MCP to retrieve the matching code, design brief and install instructions.
+
 ## Pro components
 
 Pro components are served from an authenticated registry namespace. Add it to `components.json` once:

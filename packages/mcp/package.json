@@ -1,6 +1,6 @@
 {
   "name": "design-for-ai-mcp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "MCP server for Design for AI: search, read and install design components (code, prompt and JSON prompt) from Claude Code, Cursor, Windsurf and other agents.",
   "type": "module",
   "bin": {

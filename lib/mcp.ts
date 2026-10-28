@@ -1,3 +1,5 @@
+import { VISUAL_STYLE_IDS, parseVisualStyle, supportsVisualStyle, styleInstallText } from "./visual-styles";
+import { readVisualSource } from "./visual-style-source";
 import "server-only";
 import { cataloguePath } from "./catalogue-path";
 import { getDoc } from "./content";
@@ -9,7 +11,6 @@ import {
   allComponents,
   categoriesWithCounts,
   getComponent,
-  readSource,
 } from "./registry";
 import { absoluteUrl, site } from "./site";
 
@@ -25,11 +26,11 @@ import { absoluteUrl, site } from "./site";
 export const SERVER_INFO = {
   name: "design-for-ai",
   title: "Design for AI",
-  version: "0.2.0",
+  version: "0.3.0",
 };
 const VERSIONS = ["2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05"];
 
-export const INSTRUCTIONS = `Design for AI is a library of premium, hand-built React + Tailwind v4 (and React Native) components, each with a design prompt and a JSON prompt. Use search_components to find candidates, get_component for code, props and the design brief, and get_principles before building UI from scratch. Free components work without signing in; Pro components need the user's Pro licence, through browser sign-in at /mcp/pro or a licence key as a Bearer token. Adapt colours and copy to the project, but keep the type scale, spacing, motion and states the brief specifies.`;
+export const INSTRUCTIONS = `Design for AI is a library of premium, hand-built React + Tailwind v4 (and React Native) components, each with a design prompt and a JSON prompt. Use search_components to find candidates, get_component for code, props and the design brief, and get_principles before building UI from scratch. Free components work without signing in; Pro components need the user's Pro licence, through browser sign-in at /mcp/pro or a licence key as a Bearer token. Crayon is an optional Pro visual style, including on free components. Discover it with search_components visualStyle "crayon", then request get_component with the same visualStyle. Adapt colours and copy to the project, but keep the type scale, spacing, motion and states the brief specifies.`;
 
 type JsonRpcId = string | number | null;
 type Req = {
@@ -52,7 +53,7 @@ const text = (t: string, isError = false): ToolResult => ({
 });
 
 const line = (c: ReturnType<typeof allComponents>[number]) =>
-  `- ${c.slug} · ${c.name} (${c.tier}${c.platform === "mobile" ? ", React Native" : ""}, ${c.category}): ${c.description}`;
+  `- ${c.slug} · ${c.name} (${c.tier}${c.platform === "mobile" ? ", React Native" : ""}, ${c.category}): ${c.description}${c.visualStyles?.includes("crayon") ? " · Styles: Original, Crayon (Pro)" : ""}`;
 
 const SIGN_IN = () => `To unlock Pro without handling a key, connect to ${absoluteUrl("/mcp/pro")} instead: the client opens a browser sign-in. Setup for each agent: ${absoluteUrl("/docs/agents")}.`;
 
@@ -110,6 +111,7 @@ export const TOOLS: Tool[] = [
         kind: { type: "string", enum: ["component", "block"] },
         tier: { type: "string", enum: ["free", "pro"] },
         platform: { type: "string", enum: ["web", "mobile"] },
+        visualStyle: { type: "string", enum: VISUAL_STYLE_IDS, description: "Optional visual style. Crayon requires Pro, including for free components." },
         limit: { type: "integer", minimum: 1, maximum: 50, default: 12 },
       },
       additionalProperties: false,
@@ -127,7 +129,8 @@ export const TOOLS: Tool[] = [
             (!a.kind || (c.kind ?? "component") === a.kind) &&
             (!a.category || c.category === a.category) &&
             (!a.tier || c.tier === a.tier) &&
-            (!a.platform || c.platform === a.platform),
+            (!a.platform || c.platform === a.platform) &&
+            (!a.visualStyle || c.visualStyles?.some(style => style === a.visualStyle) || a.visualStyle === "original"),
         )
         .map((c) => {
           const hay = [c.name, c.slug, c.description, c.category, ...c.tags]
@@ -174,6 +177,7 @@ export const TOOLS: Tool[] = [
           type: "string",
           description: "Component slug from search_components",
         },
+        visualStyle: { type: "string", enum: VISUAL_STYLE_IDS, description: "Crayon source and prompts require a paid Pro licence even when the base is free." },
         include: {
           type: "array",
           items: {
@@ -195,6 +199,9 @@ export const TOOLS: Tool[] = [
           `No component "${slug}". Use search_components to find slugs.`,
           true,
         );
+      const visualStyle = parseVisualStyle(a.visualStyle);
+      if (!visualStyle || !supportsVisualStyle(e, visualStyle)) return text(`That visual style is not available for "${slug}". Search with visualStyle "crayon" to find supported components.`, true);
+      if (visualStyle === "crayon" && !ctx.license.ok) return text(`Crayon is a Pro style, including on free components. ${connectionNotice(ctx) ?? SIGN_IN()} Plans: ${absoluteUrl("/pricing")}.`, true);
       const want = new Set(
         (a.include as string[] | undefined) ?? [
           "install",
@@ -212,13 +219,15 @@ export const TOOLS: Tool[] = [
         "",
         `Tier: ${e.tier} · Platform: ${e.platform} · Category: ${e.category} · File: ${fileNameFor(e)}${e.dependencies.length ? ` · Dependencies: ${e.dependencies.join(", ")}` : ""}`,
         `Page: ${absoluteUrl(cataloguePath(e))}`,
+        `Visual style: ${visualStyle}${visualStyle === "crayon" ? " · Style licence: Pro" : ""}`,
+        `Available styles: ${(e.visualStyles ?? ["original"]).join(", ")}${e.visualStyles?.includes("crayon") ? " (Crayon requires Pro)" : ""}`,
       ];
       if (want.has("install"))
         parts.push(
           "",
           "## Install",
           "```bash",
-          installText(e),
+          visualStyle === "crayon" ? styleInstallText(e) : installText(e),
           "```",
           "",
           "## Usage",
@@ -244,7 +253,7 @@ export const TOOLS: Tool[] = [
         if (e.tier === "pro" && !ctx.license.ok) {
           parts.push("", proMessage(slug, ctx));
         } else {
-          const src = await readSource(slug);
+          const src = await readVisualSource(slug, visualStyle);
           if (!src)
             parts.push("", "Source isn't available in this deployment.");
           else {
@@ -322,16 +331,17 @@ export const TOOLS: Tool[] = [
       "The exact command that adds a component to the current project (shadcn CLI for web, curl for React Native).",
     inputSchema: {
       type: "object",
-      properties: { slug: { type: "string" } },
+      properties: { slug: { type: "string" }, visualStyle: { type: "string", enum: VISUAL_STYLE_IDS } },
       required: ["slug"],
       additionalProperties: false,
     },
     annotations: readOnly,
     async run(a) {
       const e = getComponent(String(a.slug ?? ""));
-      return e
-        ? text(installText(e))
-        : text(`No component "${String(a.slug)}".`, true);
+      if (!e) return text(`No component "${String(a.slug)}".`, true);
+      const style = parseVisualStyle(a.visualStyle);
+      if (!style || !supportsVisualStyle(e,style)) return text("That visual style is not available for this component.",true);
+      return text(style === "crayon" ? styleInstallText(e) : installText(e));
     },
   },
   {

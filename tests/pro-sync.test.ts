@@ -13,6 +13,8 @@ function fixture() {
   for (const file of ["sync-pro.mjs", "github-known-hosts"]) {
     fs.copyFileSync(path.join(import.meta.dirname, "../scripts", file), path.join(dir, "scripts", file));
   }
+  fs.mkdirSync(path.join(dir, "scripts/lib"), { recursive: true });
+  fs.copyFileSync(path.join(import.meta.dirname, "../scripts/lib/style-source.mjs"), path.join(dir, "scripts/lib/style-source.mjs"));
   fs.writeFileSync(path.join(dir, "registry/pro-manifest.json"), JSON.stringify([{ slug: "demo" }]));
   // Stand in for git so tests can inspect credentials without sending them.
   fs.writeFileSync(path.join(dir, "bin/git"), `#!/usr/bin/env node

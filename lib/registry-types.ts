@@ -1,4 +1,5 @@
 export type Tier = "free" | "pro";
+import type { VisualStyle } from "./visual-styles";
 import type { BlockType } from "./block-types.mjs";
 export type { BlockType } from "./block-types.mjs";
 export type Platform = "web" | "mobile";
@@ -158,6 +159,8 @@ export interface JsonPrompt {
 }
 
 export interface RegistryEntry extends ComponentMeta {
+  /** Licensed appearance variants, independent of the component tier. */
+  visualStyles?: VisualStyle[];
   /** True when the component source is available to this build. */
   hasSource: boolean;
 }
