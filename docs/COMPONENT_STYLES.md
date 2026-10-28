@@ -29,7 +29,7 @@ The base component keeps its existing licence. All styled source, prompts and
 install files require Pro, even for a free base component. The browser selection
 is a preference, never authorization. Every material request rechecks the
 existing commerce entitlement. Responses are private and no-store. Generated
-packs stay server-only, compressed and lazy; public registry files and client
+packs store source-bound edits, retain a hash of the original code, and restore only the requested variant. They stay server-only, compressed and lazy; public registry files and client
 bundles contain neither the licensed material nor styled component source.
 
 Verify guest discovery, paid selection across navigation, deep links, source and

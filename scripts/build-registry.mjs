@@ -39,6 +39,7 @@ import { showcaseCollections } from "../lib/showcase-collections.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 import { packContent } from "./lib/content-pack.mjs";
 import { makeStyledSource } from "./lib/component-styles.mjs";
+import { packStyleSource } from "./lib/style-delta.mjs";
 import { loadStylePack, styleSourceIdentity } from "./lib/style-source.mjs";
 import { writePublicContentRuntime } from "./lib/public-content-runtime.mjs";
 import { verifyPublicationRequest } from "./lib/publication-request.mjs";
@@ -382,7 +383,7 @@ if (styleSourceAvailable) {
     if (!publishedSlugs.has(c.meta.slug)) continue;
     const source = { slug: c.meta.slug, code: c.code, prompt: c.prompt, promptJson: c.promptJson };
     const variant = makeStyledSource(c.meta, source, material);
-    if (variant) styled.set(c.meta.slug, variant);
+    if (variant) styled.set(c.meta.slug, packStyleSource(source, variant));
   }
   writeJson(styleManifestPath, { crayon: [...styled.keys()].sort() });
 }

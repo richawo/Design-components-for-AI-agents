@@ -97,11 +97,13 @@ export function makeStyledSource(meta,source,pack){
   }
   edits.sort((a,b)=>b.at-a.at);
   let code=source.code;for(const edit of edits)code=code.slice(0,edit.at)+edit.text+code.slice(edit.at);
-  code+='\n\n// Crayon visual style: Design for AI Pro licence. The base component keeps its original licence.\nconst DFA_LICENSED_VISUAL_CSS = '+JSON.stringify(css)+';\n';
+  const ending='\n\n// Crayon visual style: Design for AI Pro licence. The base component keeps its original licence.\nconst DFA_LICENSED_VISUAL_CSS = '+JSON.stringify(css)+';\n';
+  code+=ending;
+  const codeEdits=[{at:source.code.length,end:source.code.length,text:ending},...edits.map(edit=>({...edit,end:edit.at}))];
   parse(code,{sourceType:'module',plugins:['typescript','jsx']});
   const brief=source.prompt.trim()+'\n\n## Crayon visual style (Pro)\n\n'+pack.prompt.trim();
   const json=JSON.parse(source.promptJson);
-  return{...source,code,prompt:brief,promptJson:JSON.stringify({...json,visualStyle:{id:'crayon',tier:'pro',appearance:pack.appearance,typography:pack.font,palette:pack.palette,preserve:'Component API, callbacks, content, semantic controls and reduced motion.'}},null,2),visualStyle:'crayon',styleCss:css,font:pack.font};
+  return{...source,code,codeEdits,prompt:brief,promptJson:JSON.stringify({...json,visualStyle:{id:'crayon',tier:'pro',appearance:pack.appearance,typography:pack.font,palette:pack.palette,preserve:'Component API, callbacks, content, semantic controls and reduced motion.'}},null,2),visualStyle:'crayon',styleCss:css,font:pack.font};
 }
 
 // React Native variants keep native primitives and callbacks. No DOM wrappers,
@@ -139,8 +141,9 @@ function makeNativeStyledSource(meta,source,pack){
  };
  walk(ast.program);edits.sort((a,b)=>b.at-a.at);let code=source.code;
  for(const e of edits)code=code.slice(0,e.at)+e.text+code.slice(e.end);
- code+='\n\n// Crayon visual style: Design for AI Pro. Native primitives and component API are preserved.\nimport {Platform as DFAStylePlatform} from "react-native";\n';
+ const ending='\n\n// Crayon visual style: Design for AI Pro. Native primitives and component API are preserved.\nimport {Platform as DFAStylePlatform} from "react-native";\n';
+ code+=ending;const codeEdits=[{at:source.code.length,end:source.code.length,text:ending},...edits];
  parse(code,{sourceType:'module',plugins:['typescript','jsx']});
  const nativeBrief=pack.prompt+'\n\nReact Native: retain native views, gestures and callbacks. Use the paper palette. Heading fallbacks use Chalkboard SE on iOS and casual on Android. Load the included Caveat font as DFA Crayon for identical custom typography if the host app supports custom fonts.';
- return{...source,code,prompt:source.prompt.trim()+'\n\n## Crayon visual style (Pro)\n\n'+nativeBrief,promptJson:JSON.stringify({...JSON.parse(source.promptJson),visualStyle:{id:'crayon',tier:'pro',platform:'mobile',palette:pack.palette,typography:pack.font}},null,2),visualStyle:'crayon',styleCss:materialCss(source.code,pack),font:pack.font};
+ return{...source,code,codeEdits,prompt:source.prompt.trim()+'\n\n## Crayon visual style (Pro)\n\n'+nativeBrief,promptJson:JSON.stringify({...JSON.parse(source.promptJson),visualStyle:{id:'crayon',tier:'pro',platform:'mobile',palette:pack.palette,typography:pack.font}},null,2),visualStyle:'crayon',styleCss:materialCss(source.code,pack),font:pack.font};
 }

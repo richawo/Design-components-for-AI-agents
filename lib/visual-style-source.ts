@@ -1,4 +1,5 @@
 import "server-only";
+import {restoreStyleSource,type StyleDelta} from "@/scripts/lib/style-delta.mjs";
 import { unpackContent, type PackedContent } from "@/scripts/lib/content-pack.mjs";
 import { styledLoaders } from "@/registry/__generated__/visual-styles";
 import type { ComponentSource, RegistryEntry } from "./registry-types";
@@ -15,7 +16,10 @@ export type StyledSource = ComponentSource & {
 export async function readVisualSource(slug: string, style: VisualStyle): Promise<ComponentSource | StyledSource | null> {
   if (style === "original") return readSource(slug);
   const load = Object.hasOwn(styledLoaders, slug) ? styledLoaders[slug] : undefined;
-  return load ? unpackContent((await load()).default as PackedContent) as StyledSource : null;
+  if(!load)return null;
+  const packed=unpackContent((await load()).default as PackedContent) as StyleDelta|StyledSource;
+  if("format" in packed && packed.format === "dfa-style-delta-v1"){const base=await readSource(slug);return base?restoreStyleSource(base,packed) as StyledSource:null;}
+  return packed as StyledSource;
 }
 export function styleRegistryItem(entry: RegistryEntry, source: ComponentSource) {
   return {
