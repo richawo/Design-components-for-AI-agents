@@ -1,16 +1,21 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
-export const conveyorVideoHash = bytes => createHash("sha256").update("conveyor-960-crf23-v1").update(bytes).digest("hex").slice(0, 16);
+export const conveyorVideoHash = (bytes, { visualStyle = "original" } = {}) => createHash("sha256").update(visualStyle === "original" ? "conveyor-960-crf23-v1" : "conveyor-960-bounded-crf23-v1").update(bytes).digest("hex").slice(0, 16);
 /** Build hosts need no FFmpeg. Only reference a locally prepared derivative
  * when its fingerprint agrees with the published full-size recording. */
-export function conveyorVideoManifest(root, slugs) {
+export function conveyorVideoManifest(root, slugs, { visualStyle = "original" } = {}) {
+  if (!/^[a-z][a-z0-9-]*$/.test(visualStyle)) throw new Error("Invalid conveyor visual style");
+  const styled = visualStyle !== "original";
+  const sourceDir = path.join(root, "public", styled ? `style-previews/${visualStyle}` : "previews");
+  const relative = styled ? `/style-previews/${visualStyle}/conveyor` : "/conveyor-previews";
   const result = {};
+  if (!fs.existsSync(path.join(root, "public", relative))) return result;
   for (const slug of slugs.filter(s => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s))) {
-    const original = path.join(root, "public/previews", `${slug}.mp4`);
+    const original = path.join(sourceDir, `${slug}.mp4`);
     if (!fs.existsSync(original)) continue;
-    const name = `${slug}.${conveyorVideoHash(fs.readFileSync(original))}.mp4`;
-    if (fs.existsSync(path.join(root, "public/conveyor-previews", name))) result[slug] = `/conveyor-previews/${name}`;
+    const name = `${slug}.${conveyorVideoHash(fs.readFileSync(original), { visualStyle })}.mp4`;
+    if (fs.existsSync(path.join(root, "public", relative, name))) result[slug] = `${relative}/${name}`;
   }
   return result;
 }

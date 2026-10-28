@@ -15,8 +15,9 @@
 //        [--extend-stage-edges] extends verified empty stage edges into crop padding
 //        [--report=dir] retains metrics and rejected encoded/source inputs before cleanup
 //        [--visual-style=crayon] records the licensed style with DESIGN_FOR_AI_LICENSE
+//        [--steps-file=path.json] uses a reviewed input script for one named specimen
 //
-// With no slugs it records every component that has a demo. Drives the
+// With no slugs it records every component with a demo or reviewed style recipe. Drives the
 // preview with real input (so CSS :hover shows) and draws the same branded
 // cursor as the live player. Writes a poster from the first frame only when
 // the component has no WebP yet.
@@ -50,14 +51,15 @@ const flag = (name, dflt) => {
 const base = flag("base", process.env.PREVIEW_BASE || "http://localhost:3100");
 const visualStyle = flag("visual-style", "original");
 const styled = visualStyle !== "original";
-const catalogue = JSON.parse(fs.readFileSync(path.join(root, "registry/__generated__/index.json"), "utf8"));
-if (!["original", ...new Set(catalogue.flatMap(entry => entry.visualStyles ?? []))].includes(visualStyle)) throw new Error("Unknown visual style");
+const catalogue = styled ? JSON.parse(fs.readFileSync(path.join(root, "registry/__generated__/index.json"), "utf8")) : [];
+if (styled && !catalogue.some(entry => entry.visualStyles?.includes(visualStyle))) throw new Error("Unknown visual style");
 const license = styled ? process.env.DESIGN_FOR_AI_LICENSE : null;
 if (styled && !license) throw new Error("Set DESIGN_FOR_AI_LICENSE to record licensed style previews. The key is scoped to the selected base URL.");
 const out = path.resolve(root, flag("out", styled ? `public/style-previews/${visualStyle}` : "public/previews"));
 const sheetDir = flag("sheet", "");
 const reportDir = flag("report", "");
 const gallery = !args.includes("--original-timing");
+const scenePlans = styled && gallery ? JSON.parse(fs.readFileSync(path.join(root, "scripts/recording-recipes.json"), "utf8"))[visualStyle] ?? {} : {};
 const skipLeadScroll = args.includes("--skip-lead-scroll");
 const refreshPoster = args.includes("--refresh-poster");
 // Also usable as a temporal quality probe for the page that presents the clips.
@@ -95,6 +97,10 @@ for (const [name, value, min, max] of [["web-width", webWidthFlag, 320, 1920], [
 }
 const maxBytes = Number(flag("max-kb", "600")) * 1024;
 const only = args.filter((a) => !a.startsWith("--"));
+const stepsFile = flag("steps-file", "");
+if (stepsFile && (only.length !== 1 || ambientMs)) throw new Error("--steps-file requires one named specimen and cannot be combined with --ambient-ms");
+const inputSteps = stepsFile ? JSON.parse(fs.readFileSync(path.resolve(root, stepsFile), "utf8")) : null;
+if (inputSteps && !Array.isArray(inputSteps)) throw new Error("--steps-file must contain a JSON array of demo steps");
 
 const OUT_W = 1280;
 const OUT_H = 800;
@@ -126,7 +132,7 @@ function allSlugsWithDemo() {
     if (!fs.existsSync(dir)) continue;
     for (const d of fs.readdirSync(dir)) {
       const m = fs.existsSync(path.join(dir, d, "meta.json")) ? JSON.parse(fs.readFileSync(path.join(dir, d, "meta.json"), "utf8")) : null;
-      if (m?.demo && m.status !== "draft") slugs.push(d);
+      if (m && (m.demo || scenePlans[d]?.steps || scenePlans[d]?.ambientMs) && m.status !== "draft") slugs.push(d);
     }
   }
   return slugs.sort();
@@ -181,9 +187,12 @@ async function phoneMask(file, vw, vh) {
 
 async function record(browser, slug) {
   const meta = readMeta(slug);
-  if (!meta || (!meta.demo && !ambientMs)) throw new Error("no demo in meta.json; use --ambient-ms for an ambient component");
+  const plan = scenePlans[slug] ?? {};
+  const sceneAmbientMs = ambientMs || (!inputSteps ? plan.ambientMs ?? 0 : 0);
+  const sceneSteps = inputSteps ?? plan.steps ?? meta?.demo?.steps;
+  if (!meta || (!sceneSteps && !sceneAmbientMs)) throw new Error("no demo in meta.json; supply --steps-file or use --ambient-ms for an ambient component");
   if (styled && !catalogue.some(entry => entry.slug === slug && entry.visualStyles?.includes(visualStyle))) throw new Error("Component does not support the selected visual style");
-  const parsed = parseSteps(ambientMs ? [`wait:${ambientMs}`] : meta.demo.steps);
+  const parsed = parseSteps(sceneAmbientMs ? [`wait:${sceneAmbientMs}`] : sceneSteps);
   const steps = gallery ? gallerySteps(parsed) : parsed;
   const setupScroll = skipLeadScroll && steps[0]?.cmd === "scroll" ? steps.shift().px : 0;
   const mobile = meta.platform === "mobile";
@@ -192,9 +201,9 @@ async function record(browser, slug) {
   if (mobile && webScaleFlag !== undefined) throw new Error("--web-scale is for web demos; mobile keeps its complete 2x phone mask");
   const strip = meta.category === "headers" || meta.category === "footers";
   if (mobile && (webWidthFlag !== undefined || webHeightFlag !== undefined)) throw new Error("--web-width/height are for web demos; mobile keeps its complete phone geometry");
-  const vw = mobile ? 390 : webWidthFlag !== undefined ? Number(webWidthFlag) : strip ? 1024 : 1440;
+  const vw = mobile ? 390 : webWidthFlag !== undefined ? Number(webWidthFlag) : plan.viewport?.width ?? (strip ? 1024 : 1440);
   // Expanded workspace recordings honour the validated preview height.
-  const vh = mobile ? 844 : webHeightFlag !== undefined ? Number(webHeightFlag) : frameViewport ? Math.max(900, Math.min(1600, Number(meta.previewHeight) || 900)) : strip ? 640 : 900;
+  const vh = mobile ? 844 : webHeightFlag !== undefined ? Number(webHeightFlag) : frameViewport ? Math.max(900, Math.min(1600, Number(meta.previewHeight) || 900)) : plan.viewport?.height ?? (strip ? 640 : 900);
   const dpr = mobile ? 2 : webScale;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), `dfa-rec-${slug}-`));
   const problems = [];
@@ -250,10 +259,10 @@ async function record(browser, slug) {
         addEventListener("pointerup", () => (c.dataset.down = "0"), true);
         window.__dfaCursor = c;
       },
-      { html: CURSOR_HTML, start: ambientMs ? [0, 0] : CURSOR_START },
+      { html: CURSOR_HTML, start: sceneAmbientMs ? [0, 0] : CURSOR_START },
     );
-    let px = ambientMs ? 0 : vw * CURSOR_START[0];
-    let py = ambientMs ? 0 : vh * CURSOR_START[1];
+    let px = sceneAmbientMs ? 0 : vw * CURSOR_START[0];
+    let py = sceneAmbientMs ? 0 : vh * CURSOR_START[1];
     await page.mouse.move(px, py);
 
     if (setupScroll) {
@@ -327,7 +336,7 @@ async function record(browser, slug) {
     }) : null;
     const t0 = nativeStart?.startTime ?? Date.now() / 1000;
     if (cdp) await cdp.send("Page.startScreencast", { format: "jpeg", quality: captureJpegQuality, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
-    await page.evaluate((ambient) => (window.__dfaCursor.dataset.on = ambient ? "0" : "1"), !!ambientMs);
+    await page.evaluate((ambient) => (window.__dfaCursor.dataset.on = ambient ? "0" : "1"), !!sceneAmbientMs);
     // A screencast can wait for compositor damage before emitting its first
     // frame. Do not let the first action become that damage: otherwise a clip
     // begins halfway through its first change and its poster misses the demo's
