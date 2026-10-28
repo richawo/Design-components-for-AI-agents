@@ -7,10 +7,13 @@ import { conveyorVideoHash } from "./lib/conveyor-videos.mjs";
 const root = path.resolve(new URL("..", import.meta.url).pathname);
 const visualStyle = process.argv.find(arg => arg.startsWith("--visual-style="))?.slice("--visual-style=".length) ?? "original";
 const styled = visualStyle !== "original";
+const theme = process.argv.find(arg=>arg.startsWith("--theme="))?.slice("--theme=".length) ?? "light";
+if (!["light","dark"].includes(theme) || !styled && theme!=="light") throw new Error("Invalid conveyor theme");
+const suffix = styled && theme === "dark" ? "/dark" : "";
 const catalogue = styled ? JSON.parse(fs.readFileSync(path.join(root, "registry/__generated__/index.json"), "utf8")) : [];
 if (styled && !catalogue.some(entry => entry.visualStyles?.includes(visualStyle))) throw new Error("Unknown visual style");
-const sourceDir = path.join(root, "public", styled ? `style-previews/${visualStyle}` : "previews");
-const output = path.join(root, "public", styled ? `style-previews/${visualStyle}/conveyor` : "conveyor-previews");
+const sourceDir = path.join(root, "public", styled ? `style-previews/${visualStyle}${suffix}` : "previews");
+const output = path.join(root, "public", styled ? `style-previews/${visualStyle}${suffix}/conveyor` : "conveyor-previews");
 fs.mkdirSync(output, { recursive: true });
 const keep = new Set();
 for (const slug of new Set(showcaseCollections.flatMap(c => c.slugs))) {

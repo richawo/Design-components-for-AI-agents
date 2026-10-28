@@ -36,3 +36,15 @@ it("keeps styled conveyor pixels separate and requires the matching full-size ta
     expect(() => conveyorVideoManifest(root, ["example"], { visualStyle: "../secret" })).toThrow("Invalid conveyor visual style");
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
+
+it("fingerprints each Crayon theme against its own master",()=>{
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),"dark-conveyor-"));
+ try{
+  const directory=path.join(root,"public/style-previews/crayon/dark");fs.mkdirSync(path.join(directory,"conveyor"),{recursive:true});
+  const bytes=Buffer.from("dark recording");fs.writeFileSync(path.join(directory,"example.mp4"),bytes);
+  const name=`example.${conveyorVideoHash(bytes,{visualStyle:"crayon"})}.mp4`;fs.writeFileSync(path.join(directory,"conveyor",name),"dark derivative");
+  expect(conveyorVideoManifest(root,["example"],{visualStyle:"crayon",theme:"dark"})).toEqual({example:`/style-previews/crayon/dark/conveyor/${name}`});
+  expect(conveyorVideoManifest(root,["example"],{visualStyle:"crayon",theme:"light"})).toEqual({});
+  fs.writeFileSync(path.join(directory,"example.mp4"),"new dark recording");expect(conveyorVideoManifest(root,["example"],{visualStyle:"crayon",theme:"dark"})).toEqual({});
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});

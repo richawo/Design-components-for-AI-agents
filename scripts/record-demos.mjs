@@ -235,7 +235,10 @@ async function record(browser, slug) {
       const response = await page.goto(`${base}${pagePath || `/preview/${slug}${styled ? `?visualStyle=${visualStyle}&theme=${styleTheme}` : ""}`}`, { waitUntil: "load", timeout: 120000 });
       if (!response?.ok()) throw new Error(`Preview returned HTTP ${response?.status()}`);
       if (!pagePath) await waitForPreview(page, slug);
-      if (styled) await page.locator("[data-licensed-visual-style]").waitFor({ state: "attached", timeout: 15000 });
+      if (styled) {
+        await page.locator("[data-licensed-visual-style]").waitFor({ state: "attached", timeout: 15000 });
+        await page.waitForFunction(({style,theme})=>[...document.querySelectorAll("[data-dfa-style]")].some(node=>node.getAttribute("data-dfa-style")===style&&node.getAttribute("data-dfa-theme")===theme),{style:visualStyle,theme:styleTheme},{timeout:15000});
+      }
     }
     await page.waitForTimeout(meta.category === "three-d" || meta.dependencies?.includes("three") ? 6000 : 3200);
 
@@ -458,7 +461,7 @@ async function record(browser, slug) {
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(sourceEvidence ? { captureTransport: nativeEnd ? pageFrames ? "owned-page-screenshots" : "owned-browser-tab" : sourceScreenshotEvidence?.captures.length ? "page-screencast+owned-screenshots" : "page-screencast", nativeSourceQuality, nativeChangeQuality, native: sourceEvidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, ...(styled ? {visualStyle,theme:styleTheme} : {}), renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(sourceEvidence ? { captureTransport: nativeEnd ? pageFrames ? "owned-page-screenshots" : "owned-browser-tab" : sourceScreenshotEvidence?.captures.length ? "page-screencast+owned-screenshots" : "page-screencast", nativeSourceQuality, nativeChangeQuality, native: sourceEvidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
       if (nativeEnd) fs.copyFileSync(nativeEnd.file, path.join(directory, `${slug}-raw.${nativeEnd.extension}`));
     }
     // Each frame holds until the next one; the last holds to the end.
