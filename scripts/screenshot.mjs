@@ -14,7 +14,11 @@ const base = (args.find((a) => a.startsWith("--base=")) ?? "--base=http://localh
 const only = args.filter((a) => !a.startsWith("--"));
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const index = JSON.parse(fs.readFileSync(path.join(root, "registry/__generated__/index.json"), "utf8"));
-const out = path.join(root, "public", "previews");
+const style = (args.find(a => a.startsWith("--visual-style=")) ?? "--visual-style=original").split("=")[1];
+if (!["original", ...new Set(index.flatMap(entry => entry.visualStyles ?? []))].includes(style)) throw new Error("Unknown visual style");
+const license = style === "original" ? null : process.env.DESIGN_FOR_AI_LICENSE;
+if (style !== "original" && !license) throw new Error("Set DESIGN_FOR_AI_LICENSE to capture licensed style previews. The key is sent only to the selected base URL.");
+const out = path.join(root, "public", ...(style === "original" ? ["previews"] : ["style-previews", style]));
 fs.mkdirSync(out, { recursive: true });
 
 const browser = await launchChromium();
@@ -25,12 +29,15 @@ for (const e of targets) {
   // Headers and footers are thin strips at 1440; a narrower viewport (same 16:10)
   // lets them fill more of the card.
   const strip = e.category === "headers" || e.category === "footers";
-  const page = await browser.newPage({ viewport: mobile ? { width: 390, height: 844 } : strip ? { width: 1024, height: 640 } : { width: 1440, height: 900 }, deviceScaleFactor: mobile ? 2 : 1, reducedMotion: args.includes("--reduced-motion") ? "reduce" : "no-preference" });
+  const context = await browser.newContext({ viewport: mobile ? { width: 390, height: 844 } : strip ? { width: 1024, height: 640 } : { width: 1440, height: 900 }, deviceScaleFactor: mobile ? 2 : 1, reducedMotion: args.includes("--reduced-motion") ? "reduce" : "no-preference" });
+  if (license) await context.addCookies([{ name: "dfa_license", value: license, url: base, httpOnly: true, sameSite: "Lax", secure: new URL(base).protocol === "https:" }]);
+  const page = await context.newPage();
   try {
     // Source can load after navigation; live components need not become network-idle.
-    const response = await page.goto(`${base}/preview/${e.slug}`, { waitUntil: "domcontentloaded", timeout: 120000 });
+    const response = await page.goto(`${base}/preview/${e.slug}${style === "original" ? "" : `?visualStyle=${style}`}`, { waitUntil: "domcontentloaded", timeout: 120000 });
     if (!response?.ok()) throw new Error(`Preview ${e.slug} returned HTTP ${response?.status()}`);
     await waitForPreview(page, e.slug);
+    if (style !== "original") await page.locator("[data-licensed-visual-style]").waitFor({ state: "attached", timeout: 15000 });
     // WebGL scenes render through software GL here; give them longer to settle.
     await page.waitForTimeout(e.category === "three-d" || e.dependencies.includes("three") ? 6000 : 3200);
     const png = await page.screenshot({ type: "png" });
@@ -55,12 +62,13 @@ for (const e of targets) {
         img = sharp(png).resize(1280, 800);
       }
     }
+    if (style !== "original") img = sharp(await img.png().toBuffer()).resize(768, 480);
     await img.webp({ quality: 82 }).toFile(path.join(out, `${e.slug}.webp`));
     console.log(`✓ ${e.slug}`);
   } catch (err) {
     console.log(`✗ ${e.slug}: ${err.message}`);
     process.exitCode = 1;
   }
-  await page.close();
+  await context.close();
 }
 await browser.close();
