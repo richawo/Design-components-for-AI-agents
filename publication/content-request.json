@@ -1,15 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-10-26-four-guide-translation-repair",
-  "mode": "manual",
-  "requestedAt": "2026-10-26T02:10:36.260707+00:00",
-  "privateContentCommit": "8492b2e54c308ca8fc5d3957ef0188e59f6faaf8",
-  "sourceInputsSha256": "f77d409346c34a49d3a28690a9278929a2a87df9c6336c6f1ce8bb68ac5f10b0",
-  "approvalSha256": "d2673c9913a05ba4fda6edcb14e3ff871a41626ebc35d39c3a0506a950fea82c",
+  "requestId": "2026-10-28-five-design-guides",
+  "mode": "daily",
+  "requestedAt": "2026-10-28T15:55:08.703Z",
+  "privateContentCommit": "94ef5200ce490d75919c732e0eadba40049269ae",
+  "sourceInputsSha256": "d223266ceb5ad17284efb0cd3b16b3e914e66e4598171d50c891a78dfe28fc95",
+  "approvalSha256": "cd5bb692e61a5cb87fc7696106c710aa5ada5583a557eac24b474dafb7fe69c0",
   "articleSlugs": [
-    "react-bits-alternatives",
-    "tailark-alternatives",
-    "react-fashion-merchandising-dashboard",
-    "private-shadcn-registry-authentication"
+    "base-ui-vs-radix-shadcn",
+    "react-components-existing-design-system",
+    "update-customized-shadcn-components",
+    "react-streaming-chat-scroll",
+    "react-tool-call-ui"
   ]
 }
