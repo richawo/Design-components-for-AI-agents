@@ -14,9 +14,9 @@ import {
   cardThumbnails,
   videos,
   conveyorVideos,
-  styleThumbnails,
+  stylePreviews,
 } from "@/registry/__generated__/server-data";
-import type { CardStylePreviews } from "./card-style-media";
+import type { CardStylePreviews, CardStylePosters } from "./card-style-media";
 
 const entries = index as RegistryEntry[];
 
@@ -118,12 +118,14 @@ export type CardData = Pick<
 > & {
   thumb: string | null;
   thumbSrcSet?: string;
-  stylePreviews?: CardStylePreviews;
+  stylePreviews?: CardStylePosters;
+  styleMedia?: CardStylePreviews;
   video: { mp4: string; webm: string | null } | null;
   conveyorVideo?: { mp4: string; webm: null } | null;
 };
 
 export function toCard(e: RegistryEntry): CardData {
+  const media = stylePreviews[e.slug];
   return {
     slug: e.slug,
     kind: e.kind,
@@ -138,7 +140,9 @@ export function toCard(e: RegistryEntry): CardData {
     added: e.added,
     thumb: thumbnailFor(e.slug),
     thumbSrcSet: cardThumbnails[`${e.slug}.webp`],
-    stylePreviews: styleThumbnails[e.slug],
+    // Keep poster URLs usable by a card loaded before this deployment.
+    stylePreviews: media ? Object.fromEntries(Object.entries(media).map(([id, preview]) => [id, preview.thumb])) : undefined,
+    styleMedia: media,
     video: videoFor(e.slug),
     conveyorVideo: conveyorVideos[e.slug] ? { mp4: conveyorVideos[e.slug], webm: null } : null,
   };

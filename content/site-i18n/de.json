@@ -23598,5 +23598,6 @@
   "That visual style is not available for this component.": "Dieser visuelle Stil ist für diese Komponente nicht verfügbar.",
   "Crayon": "Buntstift",
   "# Once per project, add this licensed registry to components.json:": "# Fügen Sie diese lizenzierte Registrierung einmal pro Projekt zu components.json hinzu:",
-  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Oder fragen Sie Ihren verbundenen Agenten nach dem visuellen Stil: „crayon“."
+  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Oder fragen Sie Ihren verbundenen Agenten nach dem visuellen Stil: „crayon“.",
+  "Gallery cards and live previews follow your selection.": "Galeriekarten und Live-Vorschauen folgen Ihrer Auswahl."
 }

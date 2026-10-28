@@ -23598,5 +23598,6 @@
   "That visual style is not available for this component.": "Questo stile di visualizzazione non è disponibile per questo componente.",
   "Crayon": "Pastello",
   "# Once per project, add this licensed registry to components.json:": "# Una volta per progetto, aggiungi questo registro con licenza a components.json:",
-  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Oppure chiedi al tuo agente connesso visualStyle: \"crayon\"."
+  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Oppure chiedi al tuo agente connesso visualStyle: \"crayon\".",
+  "Gallery cards and live previews follow your selection.": "Le schede della Galleria e le anteprime dal vivo seguono la tua selezione."
 }

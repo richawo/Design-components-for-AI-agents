@@ -23598,5 +23598,6 @@
   "That visual style is not available for this component.": "このビジュアル スタイルは、このコンポーネントでは使用できません。",
   "Crayon": "クレヨン",
   "# Once per project, add this licensed registry to components.json:": "# プロジェクトごとに 1 回、このライセンスを取得したレジストリを components.json に追加します。",
-  "# Or ask your connected agent for visualStyle: \"crayon\".": "# または、接続されているエージェントに VisualStyle: \"crayon\" を尋ねます。"
+  "# Or ask your connected agent for visualStyle: \"crayon\".": "# または、接続されているエージェントに VisualStyle: \"crayon\" を尋ねます。",
+  "Gallery cards and live previews follow your selection.": "ギャラリー カードとライブ プレビューは選択に従います。"
 }

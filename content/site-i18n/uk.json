@@ -23570,5 +23570,6 @@
   "Words after the rotating word, at 38% ink in dark and 50% in light. A newline breaks the line on wide containers.": "Слова після слова, що обертається, 38% чорнила в темному та 50% у світлому. Перехід на рядок розриває рядок на широких контейнерах.",
   "Words that take turns in the sentence, with a short note beside the counter. Reduced motion stops automatic rotation; the control advances manually.": "Слова, які чергуються в реченні, з короткою запискою біля фішки. Зменшення руху зупиняє автоматичне обертання; керування просувається вручну.",
   "{{0}} opens the browser to approve.": "{{0}} відкриває браузер для підтвердження.",
-  "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3"
+  "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
+  "Gallery cards and live previews follow your selection.": "Картки галереї та попередній перегляд слідують за вашим вибором."
 }

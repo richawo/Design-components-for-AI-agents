@@ -23597,5 +23597,6 @@
   "That visual style is not available for this component.": "Acest stil vizual nu este disponibil pentru această componentă.",
   "Crayon": "creion",
   "# Once per project, add this licensed registry to components.json:": "# O dată pe proiect, adăugați acest registru licențiat la components.json:",
-  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Sau cereți agentului dvs. conectat VisualStyle: „creion”."
+  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Sau cereți agentului dvs. conectat VisualStyle: „creion”.",
+  "Gallery cards and live previews follow your selection.": "Cardurile de galerie și previzualizările live urmează selecția dvs."
 }

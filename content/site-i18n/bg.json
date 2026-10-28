@@ -23570,5 +23570,6 @@
   "Words after the rotating word, at 38% ink in dark and 50% in light. A newline breaks the line on wide containers.": "Думи след въртящата се дума, при 38% мастило на тъмно и 50% на светло. Нов ред прекъсва реда при широки контейнери.",
   "Words that take turns in the sentence, with a short note beside the counter. Reduced motion stops automatic rotation; the control advances manually.": "Думи, които се редуват в изречението, с кратка бележка до брояча. Намаленото движение спира автоматичното въртене; управлението напредва ръчно.",
   "{{0}} opens the browser to approve.": "{{0}} отваря браузъра за одобрение.",
-  "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3"
+  "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
+  "Gallery cards and live previews follow your selection.": "Картите на галерията и визуализациите на живо следват вашия избор."
 }

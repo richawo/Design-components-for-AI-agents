@@ -11,23 +11,35 @@ function fixture() {
   roots.push(root);
   const directory = path.join(root, "public/style-previews/crayon");
   fs.mkdirSync(directory, { recursive: true });
-  return { root, file: path.join(directory, "example.webp") };
+  return { root, file: path.join(directory, "example.webp"), recording: path.join(directory, "example.mp4") };
 }
 
-it("publishes source-free, pixel-versioned poster paths only for supported components", () => {
-  const { root, file } = fixture(); fs.writeFileSync(file, "pixel-fixture");
+it("publishes matched, independently versioned posters and recordings only for supported components", () => {
+  const { root, file, recording } = fixture(); fs.writeFileSync(file, "pixel-fixture");
+  fs.writeFileSync(recording, "recording-fixture");
   fs.writeFileSync(path.join(path.dirname(file), "unpublished.webp"), "draft");
   const first = stylePreviewManifest(root, { crayon: ["example"] }, { required: true });
   expect(Object.keys(first)).toEqual(["example"]);
-  expect(first.example.crayon).toMatch(/^\/style-previews\/crayon\/example.webp\?v=[a-f0-9]{16}$/);
+  expect(first.example.crayon.thumb).toMatch(/^\/style-previews\/crayon\/example.webp\?v=[a-f0-9]{16}$/);
+  expect(first.example.crayon.video?.mp4).toMatch(/^\/style-previews\/crayon\/example.mp4\?v=[a-f0-9]{16}$/);
   fs.writeFileSync(file, "new-pixel-fixture");
-  expect(stylePreviewManifest(root, { crayon: ["example"] })).not.toEqual(first);
+  const second = stylePreviewManifest(root, { crayon: ["example"] });
+  expect(second.example.crayon.thumb).not.toEqual(first.example.crayon.thumb);
+  expect(second.example.crayon.video).toEqual(first.example.crayon.video);
+  fs.writeFileSync(recording, "new-recording-fixture");
+  const third = stylePreviewManifest(root, { crayon: ["example"] });
+  expect(third.example.crayon.thumb).toEqual(second.example.crayon.thumb);
+  expect(third.example.crayon.video).not.toEqual(second.example.crayon.video);
 });
 
 it("rejects incomplete production coverage, empty files and paths outside the style directory", () => {
-  const { root, file } = fixture();
-  expect(() => stylePreviewManifest(root, { crayon: ["example"] }, { required: true })).toThrow("Missing style posters");
+  const { root, file, recording } = fixture();
+  expect(() => stylePreviewManifest(root, { crayon: ["example"] }, { required: true })).toThrow("Missing style preview media");
   expect(stylePreviewManifest(root, { crayon: ["example"] })).toEqual({});
+  fs.writeFileSync(file, "pixel-fixture");
+  expect(() => stylePreviewManifest(root, { crayon: ["example"] }, { required: true })).toThrow("crayon/example.mp4");
+  fs.writeFileSync(recording, "");
+  expect(() => stylePreviewManifest(root, { crayon: ["example"] })).toThrow("Empty style preview: crayon/example.mp4");
   fs.writeFileSync(file, "");
   expect(() => stylePreviewManifest(root, { crayon: ["example"] })).toThrow("Empty style preview");
   expect(() => stylePreviewManifest(root, { "../secret": ["example"] })).toThrow("Invalid preview style");

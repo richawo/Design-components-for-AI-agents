@@ -23591,5 +23591,6 @@
   "That visual style is not available for this component.": "Den visuella stilen är inte tillgänglig för den här komponenten.",
   "Crayon": "Krita",
   "# Once per project, add this licensed registry to components.json:": "# En gång per projekt, lägg till detta licensierade register till components.json:",
-  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Eller be din anslutna agent om visualStyle: \"krita\"."
+  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Eller be din anslutna agent om visualStyle: \"krita\".",
+  "Gallery cards and live previews follow your selection.": "Gallerikort och liveförhandsvisningar följer ditt val."
 }

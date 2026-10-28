@@ -2536,5 +2536,6 @@
   "The run report is incomplete or invalid.": "Käitamisaruanne on puudulik või vigane.",
   "Database state is unconfirmed. Check it before retrying.": "Andmebaasi olek on kinnitamata. Kontrolli seda enne uuesti proovimist.",
   "Response content": "Vastuse sisu",
-  "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3"
+  "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
+  "Gallery cards and live previews follow your selection.": "Galeriikaardid ja reaalajas eelvaated järgivad teie valikut."
 }

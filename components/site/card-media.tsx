@@ -4,7 +4,7 @@ import { useSiteI18n } from "@/components/site/site-i18n";
 import { useEffect, useRef, useState } from "react";
 import { registerCard, videoAllowed } from "./card-playback";
 import { useComponentStyle } from "./component-style";
-import { cardStyleMedia, type CardStylePreviews } from "@/lib/card-style-media";
+import { cardStyleMedia, type CardStylePreviews, type CardStylePosters } from "@/lib/card-style-media";
 
 type CardMediaProps = {
   name: string;
@@ -15,14 +15,16 @@ type CardMediaProps = {
   platform: "web" | "mobile";
   priority: boolean;
   compact?: boolean;
-  stylePreviews?: CardStylePreviews;
+  playback?: boolean;
+  stylePreviews?: CardStylePosters;
+  styleMedia?: CardStylePreviews;
 };
 
 export function CardMedia(props: CardMediaProps) {
   const { visualStyle } = useComponentStyle();
-  const selected = cardStyleMedia(props, props.stylePreviews, visualStyle);
+  const selected = cardStyleMedia(props, props.styleMedia ?? props.stylePreviews, visualStyle);
   // Changing material retires the old decoder and its asynchronous events.
-  return <RecordedCardMedia key={visualStyle} {...props} {...selected} />;
+  return <RecordedCardMedia key={visualStyle} {...props} {...selected} video={props.playback === false ? null : selected.video} />;
 }
 
 function restoreOriginalPoster(image: HTMLImageElement) {

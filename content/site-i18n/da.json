@@ -23592,5 +23592,6 @@
   "That visual style is not available for this component.": "Den visuelle stil er ikke tilgængelig for denne komponent.",
   "Crayon": "Farveblyant",
   "# Once per project, add this licensed registry to components.json:": "# En gang pr. projekt skal du tilføje dette licenserede register til components.json:",
-  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Eller spørg din tilsluttede agent om visualStyle: \"farvet farveblyant\"."
+  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Eller spørg din tilsluttede agent om visualStyle: \"farvet farveblyant\".",
+  "Gallery cards and live previews follow your selection.": "Gallerikort og live-forhåndsvisninger følger dit valg."
 }

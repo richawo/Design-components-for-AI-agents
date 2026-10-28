@@ -5,16 +5,33 @@ default. A paid selection is remembered in this browser and follows navigation.
 Original browsing does not request account state. Opening the style menu or restoring a paid selection checks Pro access. This keeps public cache hits from initializing the licensed server just to display the header.
 
 The public menu contains a small illustrative sample, without serving licensed
-component material. Catalogue cards use a rendered poster for the selected style.
-Original recordings play only when Original is selected, so an old walkthrough
-never covers a Crayon poster. Cards load no live component code or style source.
+component material. Catalogue cards use a matched recording and first-frame
+poster for the selected style. Both Original and Crayon play their actual
+component interactions. The existing viewport scheduler limits active decoders,
+unloads offscreen clips and respects reduced motion and Save-Data. Cards load no
+live component code or style source.
 
-Capture every supported style poster with `scripts/screenshot.mjs --visual-style=crayon`
+Capture supported style recordings with `scripts/record-demos.mjs --visual-style=crayon`
 and an existing Pro key in `DESIGN_FOR_AI_LICENSE`. Set `--base=` to the intended
-site or local test server. The key is never stored in the output. Posters are
-public pixels; CSS, source, briefs and installation remain protected. Strict
-registry generation rejects missing styled posters. Their URLs include a pixel
-hash, so switching styles or refreshing after a release cannot reuse old pixels.
+site or local test server. Recording also refreshes the matching first-frame
+poster. Use `--ambient-ms=4000` for an ambient specimen without an input script,
+or `--steps-file=path.json` with one named specimen and a reviewed JSON array of
+demo steps. Neither option changes the shipped component metadata.
+Reviewed gallery recipes in `scripts/recording-recipes.json` make the full Crayon
+pass repeatable, including ambient components and demos without metadata scripts.
+Explicit capture flags and `--steps-file` take precedence.
+The key is scoped to that origin and is never stored in the output. Recordings
+and posters are public pixels; CSS, source, briefs and installation remain
+protected. Strict registry generation rejects missing styled recordings or
+posters. Each URL includes its own content hash, so refreshing after a release
+cannot reuse an older take. `scripts/screenshot.mjs --visual-style=crayon` remains
+available for still-image reviews; refresh the recording afterwards before publishing.
+
+Run `node scripts/build-conveyor-videos.mjs --visual-style=crayon` after recording
+to prepare the homepage's smaller takes. Their fingerprints bind them to the
+full-size recordings. The shared player uses the smaller decoder budget only
+for an available matching derivative, and the homepage Pause control disables
+playback in either style.
 
 The current catalogue offers Original and Crayon. Register future options in
 `lib/visual-styles.ts`, with a name, licence tier and short description. The

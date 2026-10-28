@@ -1,1 +1,1 @@
-export function stylePreviewManifest(root: string, variants: Record<string, string[]>, options?: { required?: boolean }): Record<string, Record<string, string>>;
+export function stylePreviewManifest(root: string, variants: Record<string, string[]>, options?: { required?: boolean }): Record<string, Record<string, { thumb: string; video: { mp4: string; webm: null } | null; conveyorVideo?: { mp4: string; webm: null } }>>;

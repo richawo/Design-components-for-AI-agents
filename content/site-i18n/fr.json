@@ -23598,5 +23598,6 @@
   "That visual style is not available for this component.": "Ce style visuel n'est pas disponible pour ce composant.",
   "Crayon": "Crayon",
   "# Once per project, add this licensed registry to components.json:": "# Une fois par projet, ajoutez ce registre sous licence à components.json :",
-  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Ou demandez à votre agent connecté visualStyle : \"crayon\"."
+  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Ou demandez à votre agent connecté visualStyle : \"crayon\".",
+  "Gallery cards and live previews follow your selection.": "Les cartes de galerie et les aperçus en direct suivent votre sélection."
 }

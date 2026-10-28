@@ -23598,5 +23598,6 @@
   "That visual style is not available for this component.": "Этот визуальный стиль недоступен для этого компонента.",
   "Crayon": "Мелок",
   "# Once per project, add this licensed registry to components.json:": "# Один раз для каждого проекта добавьте этот лицензионный реестр в components.json:",
-  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Или попросите у подключенного агента VisualStyle: \"crayon\"."
+  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Или попросите у подключенного агента VisualStyle: \"crayon\".",
+  "Gallery cards and live previews follow your selection.": "Карточки галереи и предварительный просмотр в реальном времени следуют за вашим выбором."
 }

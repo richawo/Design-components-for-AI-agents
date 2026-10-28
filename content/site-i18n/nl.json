@@ -23598,5 +23598,6 @@
   "That visual style is not available for this component.": "Die visuele stijl is niet beschikbaar voor dit onderdeel.",
   "Crayon": "Krijt",
   "# Once per project, add this licensed registry to components.json:": "# Voeg dit gelicentieerde register eenmaal per project toe aan components.json:",
-  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Of vraag uw aangesloten agent om visualStyle: \"krijt\"."
+  "# Or ask your connected agent for visualStyle: \"crayon\".": "# Of vraag uw aangesloten agent om visualStyle: \"krijt\".",
+  "Gallery cards and live previews follow your selection.": "Galerijkaarten en live previews volgen uw selectie."
 }
