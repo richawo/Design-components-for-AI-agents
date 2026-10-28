@@ -18,7 +18,9 @@ const style = (args.find(a => a.startsWith("--visual-style=")) ?? "--visual-styl
 if (!["original", ...new Set(index.flatMap(entry => entry.visualStyles ?? []))].includes(style)) throw new Error("Unknown visual style");
 const license = style === "original" ? null : process.env.DESIGN_FOR_AI_LICENSE;
 if (style !== "original" && !license) throw new Error("Set DESIGN_FOR_AI_LICENSE to capture licensed style previews. The key is sent only to the selected base URL.");
-const out = path.join(root, "public", ...(style === "original" ? ["previews"] : ["style-previews", style]));
+const theme = (args.find(a=>a.startsWith("--theme="))??"--theme=light").split("=")[1];
+if (!["light","dark"].includes(theme) || style === "original" && theme !== "light") throw new Error("Invalid visual style theme");
+const out = path.join(root, "public", ...(style === "original" ? ["previews"] : ["style-previews", style, ...(theme==="dark"?["dark"]:[])]));
 fs.mkdirSync(out, { recursive: true });
 
 const browser = await launchChromium();
@@ -34,7 +36,7 @@ for (const e of targets) {
   const page = await context.newPage();
   try {
     // Source can load after navigation; live components need not become network-idle.
-    const response = await page.goto(`${base}/preview/${e.slug}${style === "original" ? "" : `?visualStyle=${style}`}`, { waitUntil: "domcontentloaded", timeout: 120000 });
+    const response = await page.goto(`${base}/preview/${e.slug}${style === "original" ? "" : `?visualStyle=${style}&theme=${theme}`}`, { waitUntil: "domcontentloaded", timeout: 120000 });
     if (!response?.ok()) throw new Error(`Preview ${e.slug} returned HTTP ${response?.status()}`);
     await waitForPreview(page, e.slug);
     if (style !== "original") await page.locator("[data-licensed-visual-style]").waitFor({ state: "attached", timeout: 15000 });

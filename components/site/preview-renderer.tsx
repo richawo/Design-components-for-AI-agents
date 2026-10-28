@@ -12,6 +12,7 @@ import { PREVIEW_CHANNEL, parseToPreview, type Body, type FromPreview } from "@/
 import { parseSteps } from "@/lib/demo/schema.mjs";
 import type { ControlValue, DemoScript } from "@/lib/registry-types";
 import { applyNativePreviewStyle } from "@/lib/preview-native-style";
+import { parseStyleTheme, type StyleTheme } from "@/lib/visual-styles";
 import { DemoCursor } from "./demo-cursor";
 
 /** Pause between loops of a looping demo. */
@@ -35,11 +36,14 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
   const { localize, locale } = useSiteI18n();
 
   const accent = useAccent();
-  const [styleMaterial,setStyleMaterial] = useState<{css:string;palette:Record<string,string>;font:string}|null>(null);
+  const [styleMaterial,setStyleMaterial] = useState<{css:string;palette:Record<string,string>;themes?:Record<StyleTheme,Record<string,string>>;font:string}|null>(null);
+  const [styleTheme,setStyleTheme] = useState<StyleTheme>("light");
   const [styleStatus,setStyleStatus] = useState<"original"|"loading"|"active"|"locked"|"error">("original");
   const [styleAttempt,setStyleAttempt] = useState(0);
   useEffect(()=>{
-    if(new URLSearchParams(window.location.search).get("visualStyle")!=="crayon")return;
+    const params=new URLSearchParams(window.location.search);
+    if(params.get("visualStyle")!=="crayon")return;
+    setStyleTheme(parseStyleTheme(params.get("theme"))??"light");
     const controller=new AbortController();let live=true;setStyleStatus("loading");
     const timeout=window.setTimeout(()=>{if(live){live=false;setStyleStatus("error");controller.abort();}},8000);
     fetch(`/api/styles/${encodeURIComponent(slug)}`,{credentials:"same-origin",cache:"no-store",signal:controller.signal}).then(async response=>{
@@ -50,7 +54,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
       const fontUrl=new URL(new URL(data.font.url).pathname,window.location.origin).href;
       const font=new FontFace(data.font.family,`url("${fontUrl}")`,{weight:data.font.weight});
       await font.load();document.fonts.add(font);
-      return {css:data.css.replaceAll(data.font.url,fontUrl),palette:data.palette,font:data.font.family};
+      return {css:data.css.replaceAll(data.font.url,fontUrl),palette:data.palette,themes:data.themes,font:data.font.family};
     }).then(material=>{if(!live)return;window.clearTimeout(timeout);if(!material){setStyleStatus("locked");return;}setStyleMaterial(material);setStyleStatus("active");}).catch(error=>{if(live&&error.name!=="AbortError"){window.clearTimeout(timeout);setStyleStatus("error");}});
     return()=>{live=false;window.clearTimeout(timeout);controller.abort();};
   },[slug,styleAttempt]);
@@ -59,7 +63,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
   const [mount, setMount] = useState(0);
   const cursor = useRef<CursorHandle>(null);
   const nativeStyleRoot = useRef<HTMLDivElement>(null);
-  useLayoutEffect(()=>{if(platform!=="mobile"||!styleMaterial||!Comp||!nativeStyleRoot.current)return;return applyNativePreviewStyle(nativeStyleRoot.current,styleMaterial.palette,styleMaterial.font);},[platform,styleMaterial,Comp,mount]);
+  useLayoutEffect(()=>{if(platform!=="mobile"||!styleMaterial||!Comp||!nativeStyleRoot.current)return;return applyNativePreviewStyle(nativeStyleRoot.current,styleMaterial.themes?.[styleTheme]??styleMaterial.palette,styleMaterial.font);},[platform,styleMaterial,styleTheme,Comp,mount]);
   const run = useRef<AbortController | null>(null);
   const steps = useMemo(() => (demo ? parseSteps(demo.steps) : null), [demo]);
 
@@ -171,7 +175,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
     `[style*="${token}"]{${token}:${effectiveAccent}!important;${token === "--accent" ? `--on:${accentInk(effectiveAccent)}!important;` : ""}}` +
     `[class~="bg-(${token})"],[class~="bg-[var(${token})]"]{color:${accentInk(effectiveAccent)}!important;}`
   ).join("\n") : "";
-  const node = <>{styleMaterial && <style data-licensed-visual-style>{styleMaterial.css}</style>}{accentCss && <style data-preview-accent>{accentCss}</style>}{Comp ? <Comp key={mount} locale={initialLocale ?? formatLocale(locale === "en" ? "en-US" : locale)} {...accentProps} {...overrides} {...(styleMaterial ? {theme:"light"} : {})} /> : null}</>;
+  const node = <>{styleMaterial && <style data-licensed-visual-style>{styleMaterial.css}</style>}{accentCss && <style data-preview-accent>{accentCss}</style>}{Comp ? <Comp key={mount} locale={initialLocale ?? formatLocale(locale === "en" ? "en-US" : locale)} {...accentProps} {...overrides} {...(styleMaterial ? {theme:styleTheme} : {})} /> : null}</>;
 
   if(styleStatus === "locked" || styleStatus === "error" || styleStatus === "loading") {
     return localize(<div data-preview-slug={slug} data-preview-ready={styleStatus!=="loading"} className="flex min-h-dvh items-center justify-center bg-black p-8 text-white"><div className="max-w-md text-center">
@@ -187,7 +191,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
           // Registry utilities use a later CSS layer; keep the device bounds independent of them.
           style={{ maxWidth: 390, height: "min(844px, 100dvh)" }}
         >
-          <div ref={nativeStyleRoot} data-dfa-style={styleMaterial ? "crayon" : undefined} data-dfa-native="true" className="flex h-full w-full flex-col">{node}</div>
+          <div ref={nativeStyleRoot} data-dfa-style={styleMaterial ? "crayon" : undefined} data-dfa-theme={styleMaterial?styleTheme:undefined} data-dfa-native="true" className="flex h-full w-full flex-col">{node}</div>
           <div className="pointer-events-none absolute left-1/2 top-[11px] hidden h-[34px] w-[122px] -translate-x-1/2 rounded-full bg-black sm:block" />
         </div>
         {steps && <DemoCursor ref={cursor} />}
@@ -196,7 +200,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
   }
 
   return (
-    localize(<div data-preview-slug={slug} data-preview-ready={!!Comp} data-dfa-style={styleMaterial ? "crayon" : undefined} className={theme === "dark" ? "min-h-dvh bg-black" : "min-h-dvh bg-white"}>
+    localize(<div data-preview-slug={slug} data-preview-ready={!!Comp} data-dfa-style={styleMaterial ? "crayon" : undefined} data-dfa-theme={styleMaterial?styleTheme:undefined} className={theme === "dark" ? "min-h-dvh bg-black" : "min-h-dvh bg-white"}>
       {node}
       {steps && <DemoCursor ref={cursor} />}
     </div>)

@@ -29,6 +29,7 @@ export function loadStylePack(root){
  if(pin)for(const file of pin.files)if(sha(fs.readFileSync(path.join(base,path.basename(file.path))))!==file.sha256)throw Error('Visual-style inputs differ from their committed pin');
  const manifest=JSON.parse(fs.readFileSync(path.join(base,'manifest.json'),'utf8'));
  if(manifest.id!=='crayon'||manifest.tier!=='pro'||manifest.appearance!=='light')throw Error('Invalid licensed visual-style material');
+ if(manifest.version>=2&&(!manifest.themes||['light','dark'].some(theme=>!manifest.themes[theme]||Object.keys(manifest.palette).some(role=>!/^#[a-f0-9]{6}$/i.test(manifest.themes[theme][role]??'')))))throw Error('Licensed visual style requires complete light and dark palettes');
  return {...manifest,css:fs.readFileSync(path.join(base,'style.css'),'utf8'),prompt:fs.readFileSync(path.join(base,'prompt.md'),'utf8')};
 }
 export function styleSourceIdentity(root){

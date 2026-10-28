@@ -1,4 +1,4 @@
-import { VISUAL_STYLE_IDS, parseVisualStyle, supportsVisualStyle, styleInstallText } from "./visual-styles";
+import { VISUAL_STYLE_IDS, parseStyleTheme, parseVisualStyle, supportsVisualStyle, styleInstallText } from "./visual-styles";
 import { readVisualSource } from "./visual-style-source";
 import "server-only";
 import { cataloguePath } from "./catalogue-path";
@@ -178,6 +178,7 @@ export const TOOLS: Tool[] = [
           description: "Component slug from search_components",
         },
         visualStyle: { type: "string", enum: VISUAL_STYLE_IDS, description: "Crayon source and prompts require a paid Pro licence even when the base is free." },
+        theme: { type: "string", enum: ["light", "dark"], description: "Crayon installation theme. Both themes are included in the source; defaults to light." },
         include: {
           type: "array",
           items: {
@@ -202,6 +203,8 @@ export const TOOLS: Tool[] = [
       const visualStyle = parseVisualStyle(a.visualStyle);
       if (!visualStyle || !supportsVisualStyle(e, visualStyle)) return text(`That visual style is not available for "${slug}". Search with visualStyle "crayon" to find supported components.`, true);
       if (visualStyle === "crayon" && !ctx.license.ok) return text(`Crayon is a Pro style, including on free components. ${connectionNotice(ctx) ?? SIGN_IN()} Plans: ${absoluteUrl("/pricing")}.`, true);
+      const theme = parseStyleTheme(a.theme);
+      if (!theme) return text("Choose a light or dark Crayon theme.", true);
       const want = new Set(
         (a.include as string[] | undefined) ?? [
           "install",
@@ -227,7 +230,7 @@ export const TOOLS: Tool[] = [
           "",
           "## Install",
           "```bash",
-          visualStyle === "crayon" ? styleInstallText(e) : installText(e),
+          visualStyle === "crayon" ? styleInstallText(e,theme) : installText(e),
           "```",
           "",
           "## Usage",
@@ -253,7 +256,7 @@ export const TOOLS: Tool[] = [
         if (e.tier === "pro" && !ctx.license.ok) {
           parts.push("", proMessage(slug, ctx));
         } else {
-          const src = await readVisualSource(slug, visualStyle);
+          const src = await readVisualSource(slug, visualStyle, theme);
           if (!src)
             parts.push("", "Source isn't available in this deployment.");
           else {
@@ -331,7 +334,7 @@ export const TOOLS: Tool[] = [
       "The exact command that adds a component to the current project (shadcn CLI for web, curl for React Native).",
     inputSchema: {
       type: "object",
-      properties: { slug: { type: "string" }, visualStyle: { type: "string", enum: VISUAL_STYLE_IDS } },
+      properties: { slug: { type: "string" }, visualStyle: { type: "string", enum: VISUAL_STYLE_IDS }, theme: { type: "string", enum: ["light", "dark"] } },
       required: ["slug"],
       additionalProperties: false,
     },
@@ -341,7 +344,9 @@ export const TOOLS: Tool[] = [
       if (!e) return text(`No component "${String(a.slug)}".`, true);
       const style = parseVisualStyle(a.visualStyle);
       if (!style || !supportsVisualStyle(e,style)) return text("That visual style is not available for this component.",true);
-      return text(style === "crayon" ? styleInstallText(e) : installText(e));
+      const theme = parseStyleTheme(a.theme);
+      if (!theme) return text("Choose a light or dark Crayon theme.",true);
+      return text(style === "crayon" ? styleInstallText(e,theme) : installText(e));
     },
   },
   {

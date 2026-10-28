@@ -106,12 +106,13 @@ server.tool(
   {
     slug: z.string().describe("Component slug from search_components"),
     visualStyle: z.enum(["original", "crayon"]).optional().describe("Crayon requires Pro, even when the base component is free."),
+    theme: z.enum(["light", "dark"]).optional().describe("Crayon installation theme; both themes are included."),
     include: z.array(z.enum(["code", "prompt", "json", "props", "controls", "install"])).optional().describe("Sections to include (default: all)"),
   },
-  async ({ slug, include, visualStyle }) => {
+  async ({ slug, include, visualStyle, theme }) => {
     const want = new Set(include ?? ["code", "prompt", "json", "props", "controls", "install"]);
     try {
-      const c = await api(`/api/registry/${encodeURIComponent(slug)}${visualStyle === "crayon" ? "?visualStyle=crayon" : ""}`);
+      const c = await api(`/api/registry/${encodeURIComponent(slug)}${visualStyle === "crayon" ? `?visualStyle=crayon${theme === "dark" ? "&theme=dark" : ""}` : ""}`);
       const parts = [`# ${c.name} (${c.slug})`, "", c.description, "", `Tier: ${c.tier} · Visual style: ${c.visualStyle ?? "original"}${c.visualStyle === "crayon" ? " (Pro)" : ""} · Platform: ${c.platform} · File: ${c.file}${c.dependencies?.length ? ` · Dependencies: ${c.dependencies.join(", ")}` : ""}`];
       if (want.has("install")) parts.push("", "## Install", "```bash", c.install, "```", "", "## Usage", "```tsx", c.usage, "```");
       if (want.has("props") && c.props?.length) parts.push("", "## Props", ...c.props.map((p) => `- \`${p.name}\`: ${p.type}${p.default ? ` (default ${p.default})` : ""}. ${p.description}`));
@@ -156,10 +157,10 @@ server.tool(
 server.tool(
   "install_command",
   "The exact command that adds a component to the current project (shadcn CLI for web, curl for React Native).",
-  { slug: z.string(), visualStyle: z.enum(["original", "crayon"]).optional() },
-  async ({ slug, visualStyle }) => {
+  { slug: z.string(), visualStyle: z.enum(["original", "crayon"]).optional(), theme: z.enum(["light", "dark"]).optional() },
+  async ({ slug, visualStyle, theme }) => {
     try {
-      const c = await api(`/api/registry/${encodeURIComponent(slug)}${visualStyle === "crayon" ? "?visualStyle=crayon" : ""}`);
+      const c = await api(`/api/registry/${encodeURIComponent(slug)}${visualStyle === "crayon" ? `?visualStyle=crayon${theme === "dark" ? "&theme=dark" : ""}` : ""}`);
       return text(c.install);
     } catch (e) {
       if (e.code === "PRO") return text(visualStyle === "crayon" ? "Crayon is a Pro style, including on free components. Connect your paid Design for AI account or set DESIGN_FOR_AI_LICENSE." : proMessage(slug));

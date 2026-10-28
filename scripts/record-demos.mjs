@@ -14,7 +14,7 @@
 //        [--page-frames] requests actual page images when tab capture omits a tween
 //        [--extend-stage-edges] extends verified empty stage edges into crop padding
 //        [--report=dir] retains metrics and rejected encoded/source inputs before cleanup
-//        [--visual-style=crayon] records the licensed style with DESIGN_FOR_AI_LICENSE
+//        [--visual-style=crayon] [--theme=light|dark] records the licensed style with DESIGN_FOR_AI_LICENSE
 //        [--steps-file=path.json] uses a reviewed input script for one named specimen
 //
 // With no slugs it records every component with a demo or reviewed style recipe. Drives the
@@ -51,11 +51,13 @@ const flag = (name, dflt) => {
 const base = flag("base", process.env.PREVIEW_BASE || "http://localhost:3100");
 const visualStyle = flag("visual-style", "original");
 const styled = visualStyle !== "original";
+const styleTheme = flag("theme", "light");
+if (!["light", "dark"].includes(styleTheme) || !styled && styleTheme !== "light") throw new Error("--theme supports light or dark for licensed styles");
 const catalogue = styled ? JSON.parse(fs.readFileSync(path.join(root, "registry/__generated__/index.json"), "utf8")) : [];
 if (styled && !catalogue.some(entry => entry.visualStyles?.includes(visualStyle))) throw new Error("Unknown visual style");
 const license = styled ? process.env.DESIGN_FOR_AI_LICENSE : null;
 if (styled && !license) throw new Error("Set DESIGN_FOR_AI_LICENSE to record licensed style previews. The key is scoped to the selected base URL.");
-const out = path.resolve(root, flag("out", styled ? `public/style-previews/${visualStyle}` : "public/previews"));
+const out = path.resolve(root, flag("out", styled ? `public/style-previews/${visualStyle}${styleTheme === "dark" ? "/dark" : ""}` : "public/previews"));
 const sheetDir = flag("sheet", "");
 const reportDir = flag("report", "");
 const gallery = !args.includes("--original-timing");
@@ -230,7 +232,7 @@ async function record(browser, slug) {
         else process.env.PREVIEW_BASE = previousBase;
       }
     } else {
-      const response = await page.goto(`${base}${pagePath || `/preview/${slug}${styled ? `?visualStyle=${visualStyle}` : ""}`}`, { waitUntil: "load", timeout: 120000 });
+      const response = await page.goto(`${base}${pagePath || `/preview/${slug}${styled ? `?visualStyle=${visualStyle}&theme=${styleTheme}` : ""}`}`, { waitUntil: "load", timeout: 120000 });
       if (!response?.ok()) throw new Error(`Preview returned HTTP ${response?.status()}`);
       if (!pagePath) await waitForPreview(page, slug);
       if (styled) await page.locator("[data-licensed-visual-style]").waitFor({ state: "attached", timeout: 15000 });

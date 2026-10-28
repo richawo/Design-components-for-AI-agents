@@ -6,6 +6,8 @@ import type { ComponentSource, RegistryEntry } from "./registry-types";
 import { readSource } from "./registry";
 import { fileNameFor } from "./install";
 import type { VisualStyle } from "./visual-styles";
+import type { StyleTheme } from "./visual-styles";
+import { selectStyleTheme } from "@/scripts/lib/style-theme.mjs";
 
 export type StyledSource = ComponentSource & {
   visualStyle: "crayon";
@@ -13,13 +15,13 @@ export type StyledSource = ComponentSource & {
   font: { family: string; url: string; weight: string };
 };
 /** Call only after checking paid entitlement for every non-original style. */
-export async function readVisualSource(slug: string, style: VisualStyle): Promise<ComponentSource | StyledSource | null> {
+export async function readVisualSource(slug: string, style: VisualStyle, theme: StyleTheme = "light"): Promise<ComponentSource | StyledSource | null> {
   if (style === "original") return readSource(slug);
   const load = Object.hasOwn(styledLoaders, slug) ? styledLoaders[slug] : undefined;
   if(!load)return null;
   const packed=unpackContent((await load()).default as PackedContent) as StyleDelta|StyledSource;
-  if("format" in packed && packed.format === "dfa-style-delta-v1"){const base=await readSource(slug);return base?restoreStyleSource(base,packed) as StyledSource:null;}
-  return packed as StyledSource;
+  if("format" in packed && packed.format === "dfa-style-delta-v1"){const base=await readSource(slug);return base?selectStyleTheme(restoreStyleSource(base,packed) as StyledSource,theme):null;}
+  return selectStyleTheme(packed as StyledSource,theme);
 }
 export function styleRegistryItem(entry: RegistryEntry, source: ComponentSource) {
   return {

@@ -39,6 +39,19 @@ selector renders this collection rather than a fixed pair of controls. Remote
 MCP schemas derive their style IDs from the same collection; update the packaged
 stdio schema alongside it when adding an option.
 
+Crayon includes light paper and dark charcoal palettes, with the same component
+contracts and interactions. Scoped web material follows the host `.light` /
+`.dark` class or `data-theme` attribute; `data-dfa-theme` on a component root
+overrides that host. MCP `get_component` and `install_command`, source APIs and
+the licensed registry accept `theme: "light" | "dark"` (a `theme` query string
+for HTTP). Both palettes remain in the returned source. Native source keeps its
+primitives and chooses its installation default with `DFA_CRAYON_THEME`.
+Preview URLs accept the same theme query. Record the dark catalogue with
+`scripts/record-demos.mjs --visual-style=crayon --theme=dark`, and its smaller
+homepage takes with `scripts/build-conveyor-videos.mjs --visual-style=crayon --theme=dark`.
+Dark media lives under `public/style-previews/crayon/dark/`; light URLs remain
+stable. Neither theme bypasses Pro authorization.
+
 Each paid option also needs its own private art direction, font assets and
 component material, an immutable source pin, a build compiler and protected
 preview/source/install handlers. Do not publish an active option before those

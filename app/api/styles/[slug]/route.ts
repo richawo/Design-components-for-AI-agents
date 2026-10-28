@@ -13,5 +13,5 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   if (!access.ok) return Response.json({ locked: true, reason: access.reason }, { headers });
   const source = await readVisualSource(slug, "crayon") as StyledSource | null;
   if (!source) return Response.json({ error: "Style not available in this build" }, { status: 404, headers });
-  return Response.json({ visualStyle: "crayon", css: source.styleCss, font: source.font, palette: JSON.parse(source.promptJson).visualStyle?.palette ?? {} }, { headers });
+  return Response.json({ visualStyle: "crayon", css: source.styleCss, font: source.font, palette: JSON.parse(source.promptJson).visualStyle?.palette ?? {}, themes: JSON.parse(source.promptJson).visualStyle?.themes }, { headers });
 }
