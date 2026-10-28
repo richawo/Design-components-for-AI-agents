@@ -190,6 +190,7 @@ async function phoneMask(file, vw, vh) {
 async function record(browser, slug) {
   const meta = readMeta(slug);
   const plan = scenePlans[slug] ?? {};
+  const fullViewport = frameViewport || plan.frameViewport === true;
   const sceneAmbientMs = ambientMs || (!inputSteps ? plan.ambientMs ?? 0 : 0);
   const sceneSteps = inputSteps ?? plan.steps ?? meta?.demo?.steps;
   if (!meta || (!sceneSteps && !sceneAmbientMs)) throw new Error("no demo in meta.json; supply --steps-file or use --ambient-ms for an ambient component");
@@ -205,7 +206,7 @@ async function record(browser, slug) {
   if (mobile && (webWidthFlag !== undefined || webHeightFlag !== undefined)) throw new Error("--web-width/height are for web demos; mobile keeps its complete phone geometry");
   const vw = mobile ? 390 : webWidthFlag !== undefined ? Number(webWidthFlag) : plan.viewport?.width ?? (strip ? 1024 : 1440);
   // Expanded workspace recordings honour the validated preview height.
-  const vh = mobile ? 844 : webHeightFlag !== undefined ? Number(webHeightFlag) : frameViewport ? Math.max(900, Math.min(1600, Number(meta.previewHeight) || 900)) : plan.viewport?.height ?? (strip ? 640 : 900);
+  const vh = mobile ? 844 : webHeightFlag !== undefined ? Number(webHeightFlag) : plan.viewport?.height ?? (fullViewport ? Math.max(900, Math.min(1600, Number(meta.previewHeight) || 900)) : (strip ? 640 : 900));
   const dpr = mobile ? 2 : webScale;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), `dfa-rec-${slug}-`));
   const problems = [];
@@ -291,7 +292,7 @@ async function record(browser, slug) {
     const initialFrame = mobile ? null : await framing(framingImage, vw, vh);
     const frame = frameUnionSelector !== undefined
       ? await fixedUnionFrame(page, frameUnionSelector, frameUnionPadding, initialFrame.bg)
-      : initialFrame && frameViewport ? fitViewportFrame(vw, vh, initialFrame.bg, OUT_W, OUT_H) : initialFrame;
+      : initialFrame && fullViewport ? fitViewportFrame(vw, vh, initialFrame.bg, OUT_W, OUT_H) : initialFrame;
 
     // Frames: Chrome's screencast, with timestamps, at full quality.
     const cdp = tabCapture || pageFrames ? null : await context.newCDPSession(page);
@@ -528,7 +529,7 @@ async function record(browser, slug) {
     }
 
     const poster = path.join(out, `${slug}.webp`);
-    if (!fs.existsSync(poster) || frameViewport || refreshPoster || styled) {
+    if (!fs.existsSync(poster) || fullViewport || refreshPoster || styled) {
       const png = path.join(tmp, "poster.png");
       execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", mp4Tmp, "-frames:v", "1", png]);
       await (styled ? sharp(png).resize(768, 480) : sharp(png)).webp({ quality: 82 }).toFile(poster);

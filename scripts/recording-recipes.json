@@ -3,6 +3,7 @@
     "auth-passkey": { "steps": ["click:@passkey-button", "wait:3900"] },
     "mobile-onboarding": { "steps": ["click:@next", "wait:1700", "click:@skip", "wait:1000", "click:@next", "wait:1400"] },
     "three-wave-field": { "ambientMs": 4000 },
+    "three-particle-sphere": { "steps": ["hover:@sphere:0.42,0.42", "click", "wait:700", "hover:@sphere:0.6,0.58", "click", "wait:750"], "viewport": { "width": 1280, "height": 800 }, "frameViewport": true },
     "three-contour-terrain": { "steps": ["click:@terrain:0.52,0.56", "wait:1500", "click:@clear", "wait:300"] },
     "toast-promise": { "steps": ["click:@archive", "wait:950", "hover:@toast", "wait:300", "click:@undo", "wait:1300"] },
     "ai-thinking-states": {

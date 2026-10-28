@@ -9,7 +9,7 @@ it("keeps reviewed style recipes replayable against registered components and va
   const recipes = JSON.parse(fs.readFileSync("scripts/recording-recipes.json", "utf8"));
   for (const [style, scenes] of Object.entries(recipes)) {
     expect(VISUAL_STYLE_IDS).toContain(style);
-    for (const [slug, scene] of Object.entries(scenes as Record<string, { steps?: string[]; ambientMs?: number; viewport?: { width: number; height: number } }>)) {
+    for (const [slug, scene] of Object.entries(scenes as Record<string, { steps?: string[]; ambientMs?: number; viewport?: { width: number; height: number }; frameViewport?: boolean }>)) {
       expect(catalogue.some((entry: { slug: string }) => entry.slug === slug)).toBe(true);
       expect(Boolean(scene.steps) !== Boolean(scene.ambientMs)).toBe(true);
       if (scene.steps) expect(demoDuration(gallerySteps(parseSteps(scene.steps)))).toBeLessThan(9500);
@@ -18,6 +18,7 @@ it("keeps reviewed style recipes replayable against registered components and va
         expect(scene.viewport.width).toBeGreaterThanOrEqual(320); expect(scene.viewport.width).toBeLessThanOrEqual(1920);
         expect(scene.viewport.height).toBeGreaterThanOrEqual(360); expect(scene.viewport.height).toBeLessThanOrEqual(1600);
       }
+      if(scene.frameViewport!==undefined)expect(scene.frameViewport).toBe(true);
     }
   }
 });
