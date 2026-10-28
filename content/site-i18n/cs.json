@@ -23578,7 +23578,7 @@
   "Checking Pro access": "Kontrola přístupu Pro",
   "Style could not be loaded": "Styl nelze načíst",
   "Invalid style material": "Neplatný stylový materiál",
-  "Loading Crayon": "Načítání pastelky",
+  "Loading Crayon": "Načítání Crayon",
   "Crayon is a Pro style.": "Crayon je styl Pro.",
   "Sign in with an active Pro licence to use this style.": "Chcete-li používat tento styl, přihlaste se pomocí aktivní licence Pro.",
   "We couldn't load Crayon. Please try again.": "Nemohli jsme načíst Crayon. Zkuste to prosím znovu.",
@@ -23591,8 +23591,10 @@
   "· Style licence: Pro": "· Licence stylu: Pro",
   "Available styles: {{0}}{{1}}": "Dostupné styly: {{0}}{{1}}",
   "That visual style is not available for this component.": "Tento vizuální styl není pro tuto komponentu k dispozici.",
-  "Crayon": "Pastelka",
+  "Crayon": "Crayon",
   "# Once per project, add this licensed registry to components.json:": "# Jednou za projekt přidejte tento licencovaný registr do components.json:",
   "# Or ask your connected agent for visualStyle: \"crayon\".": "# Nebo požádejte svého připojeného agenta o visualStyle: \"pastel\".",
-  "Gallery cards and live previews follow your selection.": "Karty galerie a živé náhledy následují podle vašeho výběru."
+  "Gallery cards and live previews follow your selection.": "Karty galerie a živé náhledy následují podle vašeho výběru.",
+  "Theme not available": "Téma není k dispozici",
+  "Choose a light or dark Crayon theme.": "Vyberte světlé nebo tmavé Crayon téma."
 }

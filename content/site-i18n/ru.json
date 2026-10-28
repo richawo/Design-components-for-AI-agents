@@ -23583,11 +23583,11 @@
   "Checking Pro access": "Проверка доступа Pro",
   "Style could not be loaded": "Не удалось загрузить стиль.",
   "Invalid style material": "Неверный материал стиля.",
-  "Loading Crayon": "Загрузка карандаша",
+  "Loading Crayon": "Загрузка Crayon",
   "Crayon is a Pro style.": "Crayon — это стиль Pro.",
   "Sign in with an active Pro licence to use this style.": "Чтобы использовать этот стиль, войдите в систему с активной лицензией Pro.",
   "We couldn't load Crayon. Please try again.": "Мы не смогли загрузить Crayon. Пожалуйста, попробуйте еще раз.",
-  "Retry Crayon": "Повторить попытку",
+  "Retry Crayon": "Повторить Crayon",
   "Optional visual style. Crayon requires Pro, including for free components.": "Необязательный визуальный стиль. Crayon требует Pro, в том числе для бесплатных компонентов.",
   "Crayon source and prompts require a paid Pro licence even when the base is free.": "Исходный код Crayon и подсказки требуют платной лицензии Pro, даже если база бесплатна.",
   "That visual style is not available for \"{{0}}\". Search with visualStyle \"crayon\" to find supported components.": "Этот визуальный стиль недоступен для «{{0}}». Выполните поиск с помощью VisualStyle «crayon», чтобы найти поддерживаемые компоненты.",
@@ -23596,8 +23596,10 @@
   "· Style licence: Pro": "· Лицензия на стиль: Pro",
   "Available styles: {{0}}{{1}}": "Доступные стили: {{0}}{{1}}",
   "That visual style is not available for this component.": "Этот визуальный стиль недоступен для этого компонента.",
-  "Crayon": "Мелок",
+  "Crayon": "Crayon",
   "# Once per project, add this licensed registry to components.json:": "# Один раз для каждого проекта добавьте этот лицензионный реестр в components.json:",
   "# Or ask your connected agent for visualStyle: \"crayon\".": "# Или попросите у подключенного агента VisualStyle: \"crayon\".",
-  "Gallery cards and live previews follow your selection.": "Карточки галереи и предварительный просмотр в реальном времени следуют за вашим выбором."
+  "Gallery cards and live previews follow your selection.": "Карточки галереи и предварительный просмотр в реальном времени следуют за вашим выбором.",
+  "Theme not available": "Тема недоступна",
+  "Choose a light or dark Crayon theme.": "Выберите светлую или темную тему Crayon."
 }

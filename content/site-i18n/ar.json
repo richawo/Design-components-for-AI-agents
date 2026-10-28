@@ -1945,5 +1945,14 @@
   "Database state is unconfirmed. Check it before retrying.": "حالة قاعدة البيانات غير مؤكدة. تحقق منها قبل إعادة المحاولة.",
   "Response content": "محتوى الاستجابة",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "تتبع بطاقات المعرض والمعاينات المباشرة اختيارك."
+  "Gallery cards and live previews follow your selection.": "تتبع بطاقات المعرض والمعاينات المباشرة اختيارك.",
+  "Theme": "السمة",
+  "Light": "فاتح",
+  "Theme not available": "الموضوع غير متوفر",
+  "Choose a light or dark Crayon theme.": "اختر سمة Crayon فاتحة أو داكنة.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "جاري التحميل Crayon",
+  "Retry Crayon": "إعادة المحاولة Crayon",
+  "Crayon is a Pro style.": "Crayon هو أسلوب احترافي.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon يتطلب المصدر والمطالبات ترخيص Pro مدفوعًا حتى عندما تكون القاعدة مجانية."
 }

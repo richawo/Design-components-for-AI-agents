@@ -45,3 +45,15 @@ it("rejects incomplete production coverage, empty files and paths outside the st
   expect(() => stylePreviewManifest(root, { "../secret": ["example"] })).toThrow("Invalid preview style");
   expect(() => stylePreviewManifest(root, { crayon: ["../secret"] })).toThrow("Invalid preview slug");
 });
+
+it("keeps both themes versioned independently and requires complete dark recordings before publication",()=>{
+ const{root,file,recording}=fixture();fs.writeFileSync(file,"light-pixels");fs.writeFileSync(recording,"light-movie");
+ expect(()=>stylePreviewManifest(root,{crayon:["example"]},{required:true,themes:["light","dark"]})).toThrow('crayon/dark/example.mp4');
+ const dark=path.join(path.dirname(file),"dark");fs.mkdirSync(dark);fs.writeFileSync(path.join(dark,"example.webp"),"dark-pixels");fs.writeFileSync(path.join(dark,"example.mp4"),"dark-movie");
+ const media=stylePreviewManifest(root,{crayon:["example"]},{required:true,themes:["light","dark"]}).example.crayon;
+ expect(media.themes?.dark?.video?.mp4).toMatch(/^\/style-previews\/crayon\/dark\/example.mp4\?v=[a-f0-9]{16}$/);
+ expect(media.thumb).not.toContain('/dark/');
+ fs.writeFileSync(path.join(dark,"example.mp4"),"new-dark-movie");
+ const updated=stylePreviewManifest(root,{crayon:["example"]},{required:true,themes:["light","dark"]}).example.crayon;
+ expect(updated.video).toEqual(media.video);expect(updated.themes?.dark?.thumb).toEqual(media.themes?.dark?.thumb);expect(updated.themes?.dark?.video).not.toEqual(media.themes?.dark?.video);
+});

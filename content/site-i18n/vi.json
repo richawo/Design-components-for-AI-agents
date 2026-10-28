@@ -1945,5 +1945,14 @@
   "Database state is unconfirmed. Check it before retrying.": "Trạng thái cơ sở dữ liệu chưa được xác nhận. Hãy kiểm tra trước khi thử lại.",
   "Response content": "Nội dung phản hồi",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "Thẻ thư viện và bản xem trước trực tiếp sẽ tuân theo lựa chọn của bạn."
+  "Gallery cards and live previews follow your selection.": "Thẻ thư viện và bản xem trước trực tiếp sẽ tuân theo lựa chọn của bạn.",
+  "Theme": "Giao diện",
+  "Light": "Sáng",
+  "Theme not available": "Chủ đề không có sẵn",
+  "Choose a light or dark Crayon theme.": "Chọn chủ đề Crayon sáng hoặc tối.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "Đang tải Crayon",
+  "Retry Crayon": "Thử lại Crayon",
+  "Crayon is a Pro style.": "Crayon là phong cách Pro.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Mã nguồn và câu lệnh Crayon yêu cầu giấy phép Pro trả phí, ngay cả khi thành phần gốc miễn phí."
 }

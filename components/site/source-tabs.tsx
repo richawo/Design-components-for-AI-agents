@@ -44,9 +44,9 @@ export function SourceTabs({
 }) {
   const { localize } = useSiteI18n();
 
-  const { visualStyle } = useComponentStyle();
+  const { visualStyle,styleTheme } = useComponentStyle();
   const effectiveTier = visualStyle === "crayon" ? "pro" : tier;
-  const selectedInstall = visualStyle === "crayon" ? styleInstallText({slug,platform}) : installText;
+  const selectedInstall = visualStyle === "crayon" ? styleInstallText({slug,platform},styleTheme) : installText;
   const reduce = useReducedMotion();
   const uid = useId();
   const container = useRef<HTMLDivElement>(null);
@@ -55,8 +55,9 @@ export function SourceTabs({
   const selectTab = (next: Tab) => { setTab(next); setVisited(current => current.has(next) ? current : new Set([...current, next])); };
   const [tab, setTab] = useState<Tab>("code");
   const [loadedSource, setSource] = useState<SourcePayload | null>(initial);
-  const [sourceStyle,setSourceStyle] = useState(visualStyle);
-  const source = sourceStyle === visualStyle ? loadedSource : null;
+  const selection=`${visualStyle}:${visualStyle==="crayon"?styleTheme:""}`;
+  const [sourceStyle,setSourceStyle] = useState(selection);
+  const source = sourceStyle === selection ? loadedSource : null;
   const [status, setStatus] = useState<"ready" | "loading" | "locked" | "error">(initial ? "ready" : "loading");
   const [attempt, setAttempt] = useState(0);
 
@@ -74,17 +75,17 @@ export function SourceTabs({
     if (initial && visualStyle === "original" || !near) return;
     let live = true;
     setStatus("loading");
-    (effectiveTier === "free" ? fetchFreeSource(slug) : fetchProSource(slug, visualStyle)).then((data) => {
+    (effectiveTier === "free" ? fetchFreeSource(slug) : fetchProSource(slug, visualStyle,styleTheme)).then((data) => {
       if (!live) return;
       if (!data) return setStatus("locked");
       setSource(data);
-      setSourceStyle(visualStyle);
+      setSourceStyle(selection);
       setStatus("ready");
     }).catch(() => { if (live) setStatus("error"); });
     return () => {
       live = false;
     };
-  }, [initial, slug, effectiveTier, visualStyle, near, attempt]);
+  }, [initial, slug, effectiveTier, visualStyle,styleTheme,selection, near, attempt]);
 
   const agentBrief = source
     ? `Add the "${name}" component from Design for AI to this project.\n\n## Install\n${selectedInstall}\n\n## Design brief\n${source.prompt.trim()}\n\n## Source (${fileName})\n\`\`\`tsx\n${source.code.trim()}\n\`\`\`\n`

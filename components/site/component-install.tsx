@@ -35,9 +35,9 @@ export function ComponentInstall({
   kind?: "component" | "block";
 }) {
   const { localize } = useSiteI18n();
-  const { visualStyle } = useComponentStyle();
+  const { visualStyle,styleTheme } = useComponentStyle();
   const effectiveTier = visualStyle === "crayon" ? "pro" : tier;
-  const install = visualStyle === "crayon" ? styleInstallText({slug,platform,dependencies}) : text;
+  const install = visualStyle === "crayon" ? styleInstallText({slug,platform,dependencies},styleTheme) : text;
 
   const [access, setAccess] = useState<
     "checking" | "active" | "locked" | "error"

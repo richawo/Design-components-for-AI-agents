@@ -2018,5 +2018,14 @@
   "Database state is unconfirmed. Check it before retrying.": "Duomenų bazės būsena nepatvirtinta. Prieš bandydami dar kartą, ją patikrinkite.",
   "Response content": "Atsakymo turinys",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "Galerijos kortelės ir tiesioginės peržiūros rodomos pagal jūsų pasirinkimą."
+  "Gallery cards and live previews follow your selection.": "Galerijos kortelės ir tiesioginės peržiūros rodomos pagal jūsų pasirinkimą.",
+  "Theme": "Tema",
+  "Light": "Šviesi",
+  "Theme not available": "Tema nepasiekiama",
+  "Choose a light or dark Crayon theme.": "Pasirinkite šviesią arba tamsią Crayon temą.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "Įkeliama Crayon",
+  "Retry Crayon": "Bandykite dar kartą Crayon",
+  "Crayon is a Pro style.": "Crayon yra profesionalus stilius.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon šaltiniui ir raginimams reikalinga mokama Pro licencija, net jei bazė yra nemokama."
 }

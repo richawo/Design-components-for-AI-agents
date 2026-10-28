@@ -23583,7 +23583,7 @@
   "Checking Pro access": "Pro-Zugriff wird überprüft",
   "Style could not be loaded": "Stil konnte nicht geladen werden",
   "Invalid style material": "Ungültiges Stilmaterial",
-  "Loading Crayon": "Buntstift wird geladen",
+  "Loading Crayon": "Laden Crayon",
   "Crayon is a Pro style.": "Crayon ist ein Pro-Stil.",
   "Sign in with an active Pro licence to use this style.": "Melden Sie sich mit einer aktiven Pro-Lizenz an, um diesen Stil zu verwenden.",
   "We couldn't load Crayon. Please try again.": "Wir konnten Crayon nicht laden. Bitte versuchen Sie es erneut.",
@@ -23596,8 +23596,10 @@
   "· Style licence: Pro": "· Stillizenz: Pro",
   "Available styles: {{0}}{{1}}": "Verfügbare Stile: {{0}}{{1}}",
   "That visual style is not available for this component.": "Dieser visuelle Stil ist für diese Komponente nicht verfügbar.",
-  "Crayon": "Buntstift",
+  "Crayon": "Crayon",
   "# Once per project, add this licensed registry to components.json:": "# Fügen Sie diese lizenzierte Registrierung einmal pro Projekt zu components.json hinzu:",
   "# Or ask your connected agent for visualStyle: \"crayon\".": "# Oder fragen Sie Ihren verbundenen Agenten nach dem visuellen Stil: „crayon“.",
-  "Gallery cards and live previews follow your selection.": "Galeriekarten und Live-Vorschauen folgen Ihrer Auswahl."
+  "Gallery cards and live previews follow your selection.": "Galeriekarten und Live-Vorschauen folgen Ihrer Auswahl.",
+  "Theme not available": "Thema nicht verfügbar",
+  "Choose a light or dark Crayon theme.": "Wählen Sie ein helles oder dunkles Crayon-Thema."
 }

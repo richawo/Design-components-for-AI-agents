@@ -23594,5 +23594,7 @@
   "Crayon": "Crayon",
   "# Once per project, add this licensed registry to components.json:": "# Lisää tämä lisensoitu rekisteri kerran projektia kohden components.json:",
   "# Or ask your connected agent for visualStyle: \"crayon\".": "# Tai kysy yhdistetyltä edustajalta visualStyle: \"Crayon\".",
-  "Gallery cards and live previews follow your selection.": "Galleriakortit ja live-esikatselut seuraavat valintaasi."
+  "Gallery cards and live previews follow your selection.": "Galleriakortit ja live-esikatselut seuraavat valintaasi.",
+  "Theme not available": "Teema ei ole käytettävissä",
+  "Choose a light or dark Crayon theme.": "Valitse vaalea tai tumma Crayon-teema."
 }

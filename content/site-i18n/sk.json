@@ -23571,5 +23571,12 @@
   "Words that take turns in the sentence, with a short note beside the counter. Reduced motion stops automatic rotation; the control advances manually.": "Slová, ktoré sa vo vete striedajú, s krátkou poznámkou vedľa pultu. Znížený pohyb zastaví automatické otáčanie; ovládanie sa posúva manuálne.",
   "{{0}} opens the browser to approve.": "{{0}} otvorí prehliadač na schválenie.",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "Karty galérie a živé ukážky nasledujú podľa vášho výberu."
+  "Gallery cards and live previews follow your selection.": "Karty galérie a živé ukážky nasledujú podľa vášho výberu.",
+  "Theme not available": "Téma nie je k dispozícii",
+  "Choose a light or dark Crayon theme.": "Vyberte si svetlý alebo tmavý Crayon motív.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "Načítava sa Crayon",
+  "Retry Crayon": "Skúsiť znova Crayon",
+  "Crayon is a Pro style.": "Crayon je štýl Pro.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Zdroj Crayon a výzvy vyžadujú platenú Pro licenciu, aj keď je základňa bezplatná."
 }

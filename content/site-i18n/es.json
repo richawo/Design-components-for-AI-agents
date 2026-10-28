@@ -23583,11 +23583,11 @@
   "Checking Pro access": "Comprobando el acceso Pro",
   "Style could not be loaded": "No se pudo cargar el estilo",
   "Invalid style material": "Material de estilo no válido",
-  "Loading Crayon": "Cargando crayón",
+  "Loading Crayon": "Cargando Crayon",
   "Crayon is a Pro style.": "Crayon es un estilo Pro.",
   "Sign in with an active Pro licence to use this style.": "Inicie sesión con una licencia Pro activa para utilizar este estilo.",
   "We couldn't load Crayon. Please try again.": "No pudimos cargar Crayon. Por favor inténtalo de nuevo.",
-  "Retry Crayon": "Reintentar crayón",
+  "Retry Crayon": "Reintentar Crayon",
   "Optional visual style. Crayon requires Pro, including for free components.": "Estilo visual opcional. Crayon requiere Pro, incluidos componentes gratuitos.",
   "Crayon source and prompts require a paid Pro licence even when the base is free.": "La fuente y las indicaciones de Crayon requieren una licencia Pro paga incluso cuando la base es gratuita.",
   "That visual style is not available for \"{{0}}\". Search with visualStyle \"crayon\" to find supported components.": "Ese estilo visual no está disponible para \"{{0}}\". Busque con visualStyle \"crayon\" para encontrar componentes compatibles.",
@@ -23596,8 +23596,10 @@
   "· Style licence: Pro": "· Licencia de estilo: Pro",
   "Available styles: {{0}}{{1}}": "Estilos disponibles: {{0}}{{1}}",
   "That visual style is not available for this component.": "Ese estilo visual no está disponible para este componente.",
-  "Crayon": "crayón",
+  "Crayon": "Crayon",
   "# Once per project, add this licensed registry to components.json:": "# Una vez por proyecto, agregue este registro con licencia a components.json:",
   "# Or ask your connected agent for visualStyle: \"crayon\".": "# O pregúntele a su agente conectado visualStyle: \"crayon\".",
-  "Gallery cards and live previews follow your selection.": "Las tarjetas de galería y las vistas previas en vivo siguen su selección."
+  "Gallery cards and live previews follow your selection.": "Las tarjetas de galería y las vistas previas en vivo siguen su selección.",
+  "Theme not available": "Tema no disponible",
+  "Choose a light or dark Crayon theme.": "Elija un tema Crayon claro u oscuro."
 }

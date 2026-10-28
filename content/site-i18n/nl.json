@@ -23583,11 +23583,11 @@
   "Checking Pro access": "Pro-toegang controleren",
   "Style could not be loaded": "Stijl kan niet worden geladen",
   "Invalid style material": "Ongeldig stijlmateriaal",
-  "Loading Crayon": "Krijt laden",
+  "Loading Crayon": "Laden Crayon",
   "Crayon is a Pro style.": "Crayon is een Pro-stijl.",
   "Sign in with an active Pro licence to use this style.": "Meld u aan met een actieve Pro-licentie om deze stijl te gebruiken.",
   "We couldn't load Crayon. Please try again.": "We konden Crayon niet laden. Probeer het opnieuw.",
-  "Retry Crayon": "Probeer krijt opnieuw",
+  "Retry Crayon": "Opnieuw proberen Crayon",
   "Optional visual style. Crayon requires Pro, including for free components.": "Optionele visuele stijl. Crayon vereist Pro, inclusief gratis componenten.",
   "Crayon source and prompts require a paid Pro licence even when the base is free.": "Voor de Crayon-bron en -prompts is een betaalde Pro-licentie vereist, zelfs als de basis gratis is.",
   "That visual style is not available for \"{{0}}\". Search with visualStyle \"crayon\" to find supported components.": "Die visuele stijl is niet beschikbaar voor \"{{0}}\". Zoek met visualStyle \"krijt\" om ondersteunde componenten te vinden.",
@@ -23596,8 +23596,10 @@
   "· Style licence: Pro": "· Stijllicentie: Pro",
   "Available styles: {{0}}{{1}}": "Beschikbare stijlen: {{0}}{{1}}",
   "That visual style is not available for this component.": "Die visuele stijl is niet beschikbaar voor dit onderdeel.",
-  "Crayon": "Krijt",
+  "Crayon": "Crayon",
   "# Once per project, add this licensed registry to components.json:": "# Voeg dit gelicentieerde register eenmaal per project toe aan components.json:",
   "# Or ask your connected agent for visualStyle: \"crayon\".": "# Of vraag uw aangesloten agent om visualStyle: \"krijt\".",
-  "Gallery cards and live previews follow your selection.": "Galerijkaarten en live previews volgen uw selectie."
+  "Gallery cards and live previews follow your selection.": "Galerijkaarten en live previews volgen uw selectie.",
+  "Theme not available": "Thema niet beschikbaar",
+  "Choose a light or dark Crayon theme.": "Kies een licht of donker Crayon-thema."
 }

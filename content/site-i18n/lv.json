@@ -2018,5 +2018,14 @@
   "Database state is unconfirmed. Check it before retrying.": "Datubāzes stāvoklis nav apstiprināts. Pirms mēģināt vēlreiz, pārbaudiet to.",
   "Response content": "Atbildes saturs",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "Galerijas kartītes un tiešraides priekšskatījumi seko jūsu atlasei."
+  "Gallery cards and live previews follow your selection.": "Galerijas kartītes un tiešraides priekšskatījumi seko jūsu atlasei.",
+  "Theme": "Motīvs",
+  "Light": "Gaišs",
+  "Theme not available": "Motīvs nav pieejams",
+  "Choose a light or dark Crayon theme.": "Izvēlieties gaišu vai tumšu Crayon motīvu.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "Notiek Crayon ielāde",
+  "Retry Crayon": "Mēģināt Crayon vēlreiz",
+  "Crayon is a Pro style.": "Crayon ir Pro stils.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon pirmkodam un uzvednēm ir nepieciešama maksas Pro licence, pat ja pamata komponents ir bez maksas."
 }

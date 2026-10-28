@@ -10910,5 +10910,12 @@
   "Database state is unconfirmed. Check it before retrying.": "Η κατάσταση της βάσης δεδομένων δεν έχει επιβεβαιωθεί. Ελέγξτε την πριν δοκιμάσετε ξανά.",
   "Response content": "Περιεχόμενο απόκρισης",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "Οι κάρτες συλλογής και οι ζωντανές προεπισκοπήσεις ακολουθούν την επιλογή σας."
+  "Gallery cards and live previews follow your selection.": "Οι κάρτες συλλογής και οι ζωντανές προεπισκοπήσεις ακολουθούν την επιλογή σας.",
+  "Theme not available": "Το θέμα δεν είναι διαθέσιμο",
+  "Choose a light or dark Crayon theme.": "Επιλέξτε ένα ανοιχτό ή σκούρο θέμα Crayon.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "Φόρτωση Crayon",
+  "Retry Crayon": "Επανάληψη Crayon",
+  "Crayon is a Pro style.": "Το Crayon είναι ένα στυλ Pro.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Η πηγή Crayon και τα μηνύματα προτροπής απαιτούν πληρωμένη άδεια Pro ακόμη και όταν η βάση είναι δωρεάν."
 }

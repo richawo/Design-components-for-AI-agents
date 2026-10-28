@@ -484,7 +484,7 @@ const previewsDir = path.join(root, "public", "previews");
 const previewFiles = fs.existsSync(previewsDir) ? fs.readdirSync(previewsDir).sort() : [];
 const thumbs = previewFiles.filter((f) => f.endsWith(".webp"));
 const cardThumbnails = await buildCardImages(root, thumbs);
-const stylePreviews = stylePreviewManifest(root, publishedStyles, { required: STRICT && styleSourceAvailable });
+const stylePreviews = stylePreviewManifest(root, publishedStyles, { required: STRICT && styleSourceAvailable, themes: styleMaterial?.themes ? ["light", "dark"] : ["light"] });
 // Hover videos recorded by scripts/record-demos.mjs from meta.demo.
 const videos = previewFiles.filter((f) => f.endsWith(".mp4") || f.endsWith(".webm"));
 const conveyorVideos = conveyorVideoManifest(root, showcaseCollections.flatMap(c => c.slugs));
@@ -513,7 +513,7 @@ export const thumbnails: ReadonlySet<string> = new Set(${JSON.stringify(thumbs)}
 
 export const cardThumbnails: Readonly<Record<string, string>> = ${JSON.stringify(cardThumbnails)};
 
-export const stylePreviews: Readonly<Record<string, Record<string, { thumb: string; video: { mp4: string; webm: null } | null; conveyorVideo?: { mp4: string; webm: null } }>>> = ${JSON.stringify(stylePreviews)};
+export const stylePreviews: Readonly<Record<string, Record<string, import("@/lib/card-style-media").ThemedStyleMedia & {thumb:string}>>> = ${JSON.stringify(stylePreviews)};
 
 export const videos: ReadonlySet<string> = new Set(${JSON.stringify(videos)});
 

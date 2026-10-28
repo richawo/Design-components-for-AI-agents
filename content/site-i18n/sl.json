@@ -23572,5 +23572,12 @@
   "Words that take turns in the sentence, with a short note beside the counter. Reduced motion stops automatic rotation; the control advances manually.": "Besede, ki se izmenjujejo v stavku, s kratko opombo poleg števca. Zmanjšano gibanje ustavi samodejno vrtenje; krmiljenje napreduje ročno.",
   "{{0}} opens the browser to approve.": "{{0}} odpre brskalnik za odobritev.",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "Kartice galerije in predogledi v živo sledijo vaši izbiri."
+  "Gallery cards and live previews follow your selection.": "Kartice galerije in predogledi v živo sledijo vaši izbiri.",
+  "Theme not available": "Tema ni na voljo",
+  "Choose a light or dark Crayon theme.": "Izberite svetlo ali temno Crayon temo.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "Nalaganje Crayon",
+  "Retry Crayon": "Poskusi znova Crayon",
+  "Crayon is a Pro style.": "Crayon je stil Pro.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon vir in pozivi zahtevajo plačljivo licenco Pro, tudi če je osnova brezplačna."
 }

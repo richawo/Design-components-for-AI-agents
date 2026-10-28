@@ -21,10 +21,10 @@ type CardMediaProps = {
 };
 
 export function CardMedia(props: CardMediaProps) {
-  const { visualStyle } = useComponentStyle();
-  const selected = cardStyleMedia(props, props.styleMedia ?? props.stylePreviews, visualStyle);
+  const { visualStyle,styleTheme } = useComponentStyle();
+  const selected = cardStyleMedia(props, props.styleMedia ?? props.stylePreviews, visualStyle,styleTheme);
   // Changing material retires the old decoder and its asynchronous events.
-  return <RecordedCardMedia key={visualStyle} {...props} {...selected} video={props.playback === false ? null : selected.video} />;
+  return <RecordedCardMedia key={visualStyle==="original"?visualStyle:`${visualStyle}:${styleTheme}`} {...props} {...selected} video={props.playback === false ? null : selected.video} />;
 }
 
 function restoreOriginalPoster(image: HTMLImageElement) {

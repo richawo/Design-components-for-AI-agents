@@ -37,3 +37,13 @@ it("uses the smaller styled take in a conveyor and accounts full-size fallbacks 
   });
   expect(cardStyleMedia(original, { crayon: { ...crayon, conveyorVideo } }, "crayon").video).toBe(crayon.video);
 });
+
+it("switches a Crayon theme's movie, poster and decoder cost together",()=>{
+ const dark={thumb:"/style-previews/crayon/dark/example.webp?v=dark",video:{mp4:"/style-previews/crayon/dark/example.mp4?v=dark",webm:null}};
+ const styles={crayon:{...crayon,themes:{dark}}};
+ expect(cardStyleMedia(original,styles,"crayon","dark")).toEqual({...dark,srcSet:undefined,compact:false});
+ expect(cardStyleMedia(original,styles,"crayon","light").video).toBe(crayon.video);
+ expect(cardStyleMedia(original,styles,"original","dark")).toBe(original);
+ const conveyorVideo={mp4:"/style-previews/crayon/dark/conveyor/example.hash.mp4",webm:null};
+ expect(cardStyleMedia({...original,compact:true},{crayon:{...crayon,themes:{dark:{...dark,conveyorVideo}}}},"crayon","dark")).toEqual({thumb:dark.thumb,video:conveyorVideo,srcSet:undefined,compact:true});
+});

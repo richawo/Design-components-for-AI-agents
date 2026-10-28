@@ -23583,11 +23583,11 @@
   "Checking Pro access": "プロアクセスの確認",
   "Style could not be loaded": "スタイルを読み込めませんでした",
   "Invalid style material": "無効なスタイルマテリアルです",
-  "Loading Crayon": "クレヨンをロード中",
-  "Crayon is a Pro style.": "クレヨンはプロスタイルです。",
+  "Loading Crayon": "Crayonを読み込み中",
+  "Crayon is a Pro style.": "Crayon はプロ スタイルです。",
   "Sign in with an active Pro licence to use this style.": "このスタイルを使用するには、アクティブな Pro ライセンスでサインインします。",
   "We couldn't load Crayon. Please try again.": "Crayon を読み込めませんでした。もう一度試してください。",
-  "Retry Crayon": "リトライクレヨン",
+  "Retry Crayon": "再試行 Crayon",
   "Optional visual style. Crayon requires Pro, including for free components.": "オプションのビジュアルスタイル。 Crayon には、無料コンポーネントを含めて Pro が必要です。",
   "Crayon source and prompts require a paid Pro licence even when the base is free.": "基本が無料であっても、Crayon ソースとプロンプトには有料の Pro ライセンスが必要です。",
   "That visual style is not available for \"{{0}}\". Search with visualStyle \"crayon\" to find supported components.": "その視覚スタイルは「{{0}}」では使用できません。 VisualStyle「crayon」で検索して、サポートされているコンポーネントを見つけます。",
@@ -23596,8 +23596,10 @@
   "· Style licence: Pro": "・スタイルライセンス：Pro",
   "Available styles: {{0}}{{1}}": "利用可能なスタイル: {{0}}{{1}}",
   "That visual style is not available for this component.": "このビジュアル スタイルは、このコンポーネントでは使用できません。",
-  "Crayon": "クレヨン",
+  "Crayon": "Crayon",
   "# Once per project, add this licensed registry to components.json:": "# プロジェクトごとに 1 回、このライセンスを取得したレジストリを components.json に追加します。",
   "# Or ask your connected agent for visualStyle: \"crayon\".": "# または、接続されているエージェントに VisualStyle: \"crayon\" を尋ねます。",
-  "Gallery cards and live previews follow your selection.": "ギャラリー カードとライブ プレビューは選択に従います。"
+  "Gallery cards and live previews follow your selection.": "ギャラリー カードとライブ プレビューは選択に従います。",
+  "Theme not available": "テーマが利用できません",
+  "Choose a light or dark Crayon theme.": "明るいまたは暗い Crayon テーマを選択します。"
 }

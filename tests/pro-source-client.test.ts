@@ -24,3 +24,15 @@ it("coalesces panel requests and does not cache a malformed response as licensed
   await expect(a).rejects.toBeInstanceOf(SourceLoadError);
   expect(request).toHaveBeenCalledTimes(1);
 });
+
+it("never coalesces a dark installation with the light source request",async()=>{
+ const request=vi.fn().mockImplementation(async(url:string)=>new Response(JSON.stringify({code:url.includes('theme=dark')?'dark':'light',codeHtml:'code',prompt:'brief',promptJson:'{}',promptJsonHtml:'{}'})));
+ vi.stubGlobal('fetch',request);
+ const light=fetchProSource('theme-cache-fixture','crayon','light');
+ expect(fetchProSource('theme-cache-fixture','crayon','light')).toBe(light);
+ const dark=fetchProSource('theme-cache-fixture','crayon','dark');
+ expect(dark).not.toBe(light);
+ expect(await light).toHaveProperty('code','light');expect(await dark).toHaveProperty('code','dark');
+ expect(request).toHaveBeenCalledTimes(2);
+ for(const[,options]of request.mock.calls)expect(options).toMatchObject({credentials:'same-origin',cache:'no-store'});
+});

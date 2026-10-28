@@ -1945,5 +1945,14 @@
   "Database state is unconfirmed. Check it before retrying.": "L-istat tal-bażi tad-data mhuwiex ikkonfermat. Iċċekkjah qabel terġa’ tipprova.",
   "Response content": "Kontenut tat-tweġiba",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "Karti tal-gallarija u previews live isegwu l-għażla tiegħek."
+  "Gallery cards and live previews follow your selection.": "Karti tal-gallarija u previews live isegwu l-għażla tiegħek.",
+  "Theme": "Tema",
+  "Light": "Ċara",
+  "Theme not available": "Tema mhux disponibbli",
+  "Choose a light or dark Crayon theme.": "Agħżel tema Crayon ċara jew skura.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "Tagħbija Crayon",
+  "Retry Crayon": "Erġa' pprova Crayon",
+  "Crayon is a Pro style.": "Crayon huwa stil Pro.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon sors u prompts jeħtieġu liċenzja Pro mħallsa anke meta l-bażi tkun ħielsa."
 }

@@ -12,7 +12,12 @@
     "Chat Thread",
     "Commerce Operations Workspace",
     "Return Desk",
-    "Variant Stock Matrix"
+    "Variant Stock Matrix",
+    "# Crayon headings use native handwritten font fallbacks. Load Caveat as DFA Crayon to use the same custom font as the web preview. # Both themes are included. DFA_CRAYON_THEME selects the installation default.",
+    "# Both themes are included. DFA_CRAYON_THEME selects the installation default.",
+    "# Or ask your connected agent for visualStyle: \"crayon\", theme: \"{{0}}\".",
+    "# Both themes are included. Follow the host .dark/.light class or data-theme attribute.",
+    "Crayon"
   ],
   "_preserveInPreviews": {
     "hero-blur-statement": [

@@ -20,6 +20,12 @@ async function choose(page, name) {
   await page.getByRole("button", { name: "Choose component style", exact: true }).click();
   await page.getByRole("region", { name: "Component styles", exact: true }).getByRole("button", { name: new RegExp(`^${name}`) }).click();
 }
+async function chooseTheme(page,theme){
+  await page.getByRole("button",{name:"Choose component style",exact:true}).click();
+  await page.getByRole("region",{name:"Component styles",exact:true}).getByRole("button",{name:theme,exact:true}).click();
+  await page.getByRole("button",{name:"Choose component style",exact:true}).click();
+  await page.waitForFunction(dark=>[...document.querySelectorAll(".component-card img")].every(img=>img.src.includes("/crayon/dark/")===dark),theme==="Dark");
+}
 async function waitForStyle(page, styled) {
   await page.waitForFunction(styled => {
     const images = [...document.querySelectorAll(".component-card img")];
@@ -75,6 +81,10 @@ try {
   assert.ok(active > 0 && active <= 6, `unbounded decoder count: ${active}`);
   assert.ok(!requests.some(req => /^\/preview\/|^\/api\/styles\//.test(req.url)), "gallery initialized a live component or fetched licensed source");
   await page.screenshot({ path: `${out}/crayon-playing.png` });
+  await chooseTheme(page,"Dark");
+  report.darkCrayon=await movingCard(page,"/style-previews/crayon/dark/");
+  assert.equal(await page.locator('.component-card source[src^="/style-previews/crayon/"]:not([src*="/dark/"])').count(),0,"Light recordings survived the dark theme selection");
+  await page.screenshot({path:`${out}/crayon-dark-playing.png`});
 
   const oldCard = await page.locator(".component-card video").first().elementHandle();
   await page.mouse.move(8, 8);
@@ -93,14 +103,23 @@ try {
   await page.waitForURL(url => url.pathname === destination);
   await page.frameLocator("#preview iframe").locator('[data-licensed-visual-style]').waitFor({ state: "attached", timeout: 30000 });
   assert.equal(new URL(page.url()).searchParams.get("visualStyle"), "crayon");
+  assert.equal(new URL(page.url()).searchParams.get("theme"),"dark");
+  const preview=page.frameLocator("#preview iframe");
+  await preview.locator('[data-dfa-theme="dark"]').waitFor({state:"attached"});
+  await page.getByRole("group",{name:"Theme",exact:true}).getByRole("button",{name:"Light",exact:true}).click();
+  await preview.locator('[data-dfa-theme="light"]').waitFor({state:"attached"});
+  assert.equal(new URL(page.url()).searchParams.get("theme"),"light");
+  await page.getByRole("group",{name:"Theme",exact:true}).getByRole("button",{name:"Dark",exact:true}).click();
+  await preview.locator('[data-dfa-theme="dark"]').waitFor({state:"attached"});
+  report.navigationPreservedTheme=true;
   await page.goBack(); await waitForStyle(page, true);
   report.navigationPreservedStyle = true;
 
   await page.goto(base);
   await page.mouse.move(8, 8);
   await page.locator('[data-conveyor-row="0"]').scrollIntoViewIfNeeded();
-  await page.waitForFunction(() => [...document.querySelectorAll("[data-conveyor-row] video")].some(video => !video.paused && video.readyState >= 2 && video.videoWidth === 960 && video.currentSrc.includes("/style-previews/crayon/conveyor/")));
-  report.conveyor = await page.locator("[data-conveyor-row] video").evaluateAll(videos => ({ active: videos.filter(v => !v.paused && v.readyState >= 2).length, decoderCost: videos.filter(v => !v.paused && v.readyState >= 2).reduce((sum, v) => sum + (v.videoWidth <= 960 ? .5 : 1), 0), loaded: videos.filter(v => v.currentSrc).map(v => ({ source: v.currentSrc, width: v.videoWidth })) }));
+  await page.waitForFunction(() => [...document.querySelectorAll("[data-conveyor-row] video")].some(video => !video.paused && video.readyState >= 2 && video.videoWidth === 960 && video.currentSrc.includes("/style-previews/crayon/dark/conveyor/")));
+  report.conveyor = await page.locator("[data-conveyor-row] video").evaluateAll(videos => ({ active: videos.filter(v => !v.paused && v.readyState >= 2).length, decoderCost: videos.filter(v => !v.paused && v.readyState >= 2).reduce((sum, v) => sum + (v.currentSrc.includes("/conveyor/") ? .5 : 1), 0), loaded: videos.filter(v => v.currentSrc).map(v => ({ source: v.currentSrc, width: v.videoWidth })) }));
   assert.ok(report.conveyor.active > 0 && report.conveyor.active <= 12);
   assert.ok(report.conveyor.decoderCost <= 6);
   assert.ok(report.conveyor.loaded.every(v => v.source.includes("/style-previews/crayon/")));
@@ -109,8 +128,22 @@ try {
   await page.getByRole("button", { name: "Resume conveyor", exact: true }).click();
   await page.waitForFunction(() => [...document.querySelectorAll("[data-conveyor-row] video")].some(video => !video.paused && video.readyState >= 2));
   report.conveyor.pauseResume = true;
+  await chooseTheme(page,"Light");
+  await page.waitForFunction(()=>[...document.querySelectorAll("[data-conveyor-row] video")].some(video=>!video.paused&&video.readyState>=2&&video.currentSrc.includes("/style-previews/crayon/conveyor/")));
+  report.conveyor.lightAndDark=true;
   assert.deepEqual(errors, []);
   await ctx.close();
+
+  const shared=await context();
+  await shared.addInitScript(()=>{if(window===window.top&&!localStorage.getItem("dfa-component-style-v1")){localStorage.setItem("dfa-component-style-v1","crayon");localStorage.setItem("dfa-component-theme-v1","dark");}});
+  const sharedPage=await shared.newPage();
+  await sharedPage.goto(`${base}/components/agent-approval-gate?visualStyle=crayon&theme=light`);
+  await sharedPage.frameLocator("#preview iframe").locator('[data-dfa-theme="light"]').waitFor({state:"attached"});
+  assert.equal(await sharedPage.evaluate(()=>localStorage.getItem("dfa-component-theme-v1")),"light");
+  await sharedPage.goto(`${base}/components`);await waitForStyle(sharedPage,true);
+  assert.equal(await sharedPage.locator('.component-card img[src*="/crayon/dark/"]').count(),0,"Fresh navigation lost the shared link's light theme");
+  await shared.close();
+  report.sharedLinkTheme=true;
 
   for (const preference of ["reduced-motion", "save-data"]) {
     const ctx = await context(preference === "reduced-motion" ? { reducedMotion: "reduce" } : {});
@@ -119,7 +152,7 @@ try {
     });
     const page = await ctx.newPage(), mediaRequests = [];
     page.on("request", req => { if (req.resourceType() === "media") mediaRequests.push(req.url()); });
-    await page.goto(`${base}/components`); await choose(page, "Crayon"); await waitForStyle(page, true);
+    await page.goto(`${base}/components`); await choose(page, "Crayon"); await waitForStyle(page, true); await chooseTheme(page,"Dark");
     await page.locator(".component-card").first().scrollIntoViewIfNeeded(); await page.waitForTimeout(1200);
     assert.equal(await page.locator(".component-card source").count(), 0);
     assert.deepEqual(mediaRequests, [], `${preference} still downloaded recordings`);

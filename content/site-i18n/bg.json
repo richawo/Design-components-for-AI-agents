@@ -23571,5 +23571,12 @@
   "Words that take turns in the sentence, with a short note beside the counter. Reduced motion stops automatic rotation; the control advances manually.": "Думи, които се редуват в изречението, с кратка бележка до брояча. Намаленото движение спира автоматичното въртене; управлението напредва ръчно.",
   "{{0}} opens the browser to approve.": "{{0}} отваря браузъра за одобрение.",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "Картите на галерията и визуализациите на живо следват вашия избор."
+  "Gallery cards and live previews follow your selection.": "Картите на галерията и визуализациите на живо следват вашия избор.",
+  "Theme not available": "Темата не е налична",
+  "Choose a light or dark Crayon theme.": "Изберете светла или тъмна Crayon тема.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "Зареждане Crayon",
+  "Retry Crayon": "Опитайте отново Crayon",
+  "Crayon is a Pro style.": "Crayon е професионален стил.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon източникът и подканите изискват платен Pro лиценз дори когато базата е безплатна."
 }

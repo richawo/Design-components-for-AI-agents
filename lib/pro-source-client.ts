@@ -1,5 +1,5 @@
 "use client";
-import type { VisualStyle } from "./visual-styles";
+import {visualStyleQuery,type StyleTheme,type VisualStyle} from "./visual-styles";
 
 export type SourcePayload = {
   code: string;
@@ -20,19 +20,19 @@ const cache = new Map<string, Promise<SourcePayload | null>>();
  * no licence. The server checks the licence (/api/pro/source); this only makes
  * sure the page asks once, however many panels need it.
  */
-export function fetchProSource(slug: string, visualStyle: VisualStyle = "original"): Promise<SourcePayload | null> {
-  return fetchSource(slug, "pro", visualStyle);
+export function fetchProSource(slug: string, visualStyle: VisualStyle = "original",theme:StyleTheme="light"): Promise<SourcePayload | null> {
+  return fetchSource(slug, "pro", visualStyle,theme);
 }
 
 export function fetchFreeSource(slug: string): Promise<SourcePayload | null> {
   return fetchSource(slug, "free");
 }
 
-function fetchSource(slug: string, tier: "free" | "pro", visualStyle: VisualStyle = "original"): Promise<SourcePayload | null> {
-  const key = `${tier}:${slug}:${visualStyle}`;
+function fetchSource(slug: string, tier: "free" | "pro", visualStyle: VisualStyle = "original",theme:StyleTheme="light"): Promise<SourcePayload | null> {
+  const key = `${tier}:${slug}:${visualStyle}:${visualStyle==="crayon"?theme:""}`;
   let p = cache.get(key);
   if (!p) {
-    p = fetch(tier === "free" ? `/api/source/${slug}` : `/api/pro/source/${slug}${visualStyle === "crayon" ? "?visualStyle=crayon" : ""}`, { credentials: "same-origin", ...(tier === "pro" ? { cache: "no-store" as const } : {}) })
+    p = fetch(tier === "free" ? `/api/source/${slug}` : `/api/pro/source/${slug}${visualStyleQuery(visualStyle,theme)}`, { credentials: "same-origin", ...(tier === "pro" ? { cache: "no-store" as const } : {}) })
       .then(async (r) => {
         if (r.status === 401 || r.status === 403) return null;
         if (!r.ok) throw new SourceLoadError();

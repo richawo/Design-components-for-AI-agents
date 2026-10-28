@@ -55,7 +55,7 @@ export function PreviewFrame({
   const { localize, href, locale } = useSiteI18n();
   const controls = useMemo(() => previewControls(suppliedControls, locale), [suppliedControls, locale]);
 
-  const { visualStyle } = useComponentStyle();
+  const { visualStyle,styleTheme } = useComponentStyle();
   const reduce = useReducedMotion();
   const [vp, setVp] = useState<(typeof VIEWPORTS)[number]["key"]>("desktop");
   const [key, setKey] = useState(0);
@@ -218,8 +218,9 @@ export function PreviewFrame({
     setPlaying(false);
     setKey(current => current + 1);
   }, []);
-  const lastStyle = useRef(visualStyle);
-  useEffect(() => { if(lastStyle.current !== visualStyle){lastStyle.current=visualStyle;reload();}},[visualStyle,reload]);
+  const selection = `${visualStyle}:${styleTheme}`;
+  const lastStyle = useRef(selection);
+  useEffect(() => { if(lastStyle.current !== selection){lastStyle.current=selection;reload();}},[selection,reload]);
   const retry = () => {
     if (retryTimer.current) clearTimeout(retryTimer.current);
     automaticRetries.current = 0;
@@ -349,7 +350,7 @@ export function PreviewFrame({
             </svg>
           </button>
           <a
-            href={`${href(`/preview/${slug}`)}${visualStyleQuery(visualStyle)}`}
+            href={`${href(`/preview/${slug}`)}${visualStyleQuery(visualStyle,styleTheme)}`}
             target="_blank"
             rel="noreferrer"
             aria-label="Open preview in a new tab"
@@ -376,7 +377,7 @@ export function PreviewFrame({
         <iframe
           key={key}
           ref={ref}
-          src={`${href(`/preview/${slug}`)}${visualStyleQuery(visualStyle)}`}
+          src={`${href(`/preview/${slug}`)}${visualStyleQuery(visualStyle,styleTheme)}`}
           title={`${name} live preview`}
           allow="microphone; clipboard-write"
           onLoad={onFrameLoad}

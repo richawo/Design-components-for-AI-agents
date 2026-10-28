@@ -23582,15 +23582,17 @@
   "We couldn't load Crayon. Please try again.": "Vi kunde inte ladda Crayon. Försök igen.",
   "Retry Crayon": "Försök med Crayon igen",
   "Optional visual style. Crayon requires Pro, including for free components.": "Valfri visuell stil. Crayon kräver Pro, inklusive gratis komponenter.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Kritakälla och uppmaningar kräver en betald Pro-licens även när basen är gratis.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon källa och uppmaningar kräver en betald Pro-licens även när basen är gratis.",
   "That visual style is not available for \"{{0}}\". Search with visualStyle \"crayon\" to find supported components.": "Den visuella stilen är inte tillgänglig för \"{{0}}\". Sök med visualStyle \"crayon\" för att hitta komponenter som stöds.",
   "Crayon is a Pro style, including on free components. {{0}} Plans: {{1}}.": "Crayon är en Pro-stil, inklusive på gratis komponenter. {{0}} Planer: {{1}}.",
   "Visual style: {{0}}{{1}}": "Visuell stil: {{0}}{{1}}",
   "· Style licence: Pro": "· Stillicens: Pro",
   "Available styles: {{0}}{{1}}": "Tillgängliga stilar: {{0}}{{1}}",
   "That visual style is not available for this component.": "Den visuella stilen är inte tillgänglig för den här komponenten.",
-  "Crayon": "Krita",
+  "Crayon": "Crayon",
   "# Once per project, add this licensed registry to components.json:": "# En gång per projekt, lägg till detta licensierade register till components.json:",
   "# Or ask your connected agent for visualStyle: \"crayon\".": "# Eller be din anslutna agent om visualStyle: \"krita\".",
-  "Gallery cards and live previews follow your selection.": "Gallerikort och liveförhandsvisningar följer ditt val."
+  "Gallery cards and live previews follow your selection.": "Gallerikort och liveförhandsvisningar följer ditt val.",
+  "Theme not available": "Tema inte tillgängligt",
+  "Choose a light or dark Crayon theme.": "Välj ett ljust eller mörkt Crayon-tema."
 }

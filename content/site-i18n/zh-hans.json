@@ -1945,5 +1945,14 @@
   "Database state is unconfirmed. Check it before retrying.": "数据库状态尚未确认。请检查后再重试。",
   "Response content": "响应内容",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "图库卡和实时预览将遵循您的选择。"
+  "Gallery cards and live previews follow your selection.": "图库卡和实时预览将遵循您的选择。",
+  "Theme": "主题",
+  "Light": "浅色",
+  "Theme not available": "主题不可用",
+  "Choose a light or dark Crayon theme.": "选择浅色或深色 Crayon 主题。",
+  "Crayon": "Crayon",
+  "Loading Crayon": "正在加载 Crayon",
+  "Retry Crayon": "重试 Crayon",
+  "Crayon is a Pro style.": "Crayon 是 Pro 风格。",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "即使基础组件免费，Crayon 源码和提示词仍需付费 Pro 许可证。"
 }

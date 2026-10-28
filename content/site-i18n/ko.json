@@ -1945,5 +1945,14 @@
   "Database state is unconfirmed. Check it before retrying.": "데이터베이스 상태가 확인되지 않았습니다. 다시 시도하기 전에 확인하세요.",
   "Response content": "응답 내용",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "선택한 내용에 따라 갤러리 카드와 실시간 미리보기가 표시됩니다."
+  "Gallery cards and live previews follow your selection.": "선택한 내용에 따라 갤러리 카드와 실시간 미리보기가 표시됩니다.",
+  "Theme": "테마",
+  "Light": "라이트",
+  "Theme not available": "테마를 사용할 수 없습니다.",
+  "Choose a light or dark Crayon theme.": "밝거나 어두운 Crayon 테마를 선택하세요.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "Crayon 불러오는 중",
+  "Retry Crayon": "Crayon 다시 시도",
+  "Crayon is a Pro style.": "Crayon은 Pro 스타일입니다.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "기본 컴포넌트가 무료여도 Crayon 소스와 프롬프트를 사용하려면 유료 Pro 라이선스가 필요합니다."
 }

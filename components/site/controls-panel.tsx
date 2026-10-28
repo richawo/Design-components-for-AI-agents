@@ -43,7 +43,7 @@ export type ControlsPanelProps = {
  */
 export function ControlsPanel(p: ControlsPanelProps) {
   const { localize } = useSiteI18n();
-  const { visualStyle } = useComponentStyle();
+  const { visualStyle,styleTheme } = useComponentStyle();
   const effectiveTier = visualStyle === "crayon" ? "pro" : p.tier;
 
   const uid = useId();
@@ -56,7 +56,8 @@ export function ControlsPanel(p: ControlsPanelProps) {
     observer.observe(node);return () => observer.disconnect();
   }, []);
   const [proPrompt, setProPrompt] = useState<string | null>(null);
-  const [promptStyle,setPromptStyle] = useState(visualStyle);
+  const selection=`${visualStyle}:${visualStyle==="crayon"?styleTheme:""}`;
+  const [promptStyle,setPromptStyle] = useState(selection);
   const [promptError, setPromptError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
@@ -64,17 +65,18 @@ export function ControlsPanel(p: ControlsPanelProps) {
     let live = true;
     setPromptError(false);
     setProPrompt(null);
-    fetchProSource(p.slug, visualStyle).then((s) => {if(live){setProPrompt(s ? s.prompt : "locked");setPromptStyle(visualStyle);}}).catch(() => { if (live) setPromptError(true); });
+    fetchProSource(p.slug, visualStyle,styleTheme).then((s) => {if(live){setProPrompt(s ? s.prompt : "locked");setPromptStyle(selection);}}).catch(() => { if (live) setPromptError(true); });
     return () => {
       live = false;
     };
-  }, [effectiveTier, visualStyle, p.prompt, p.slug, attempt, near]);
+  }, [effectiveTier, visualStyle,styleTheme,selection, p.prompt, p.slug, attempt, near]);
 
-  const prompt = (visualStyle === "original" ? p.prompt : null) ?? (promptStyle === visualStyle && typeof proPrompt === "string" && proPrompt !== "locked" ? proPrompt : null);
+  const prompt = (visualStyle === "original" ? p.prompt : null) ?? (promptStyle === selection && typeof proPrompt === "string" && proPrompt !== "locked" ? proPrompt : null);
   const tuned = Object.keys(diffValues(p.controls, p.values)).length;
   const groups = groupControls(visualStyle === "crayon" ? p.controls.filter(c => c.prop !== "theme") : p.controls);
-  const snippet = configuredSnippet(p.usage, p.controls, p.values, p.props);
-  const selectedSnippet = visualStyle === "crayon" ? styleInstallText({slug:p.slug,platform:p.platform}).split("\n").map(line => "// " + line).join("\n") + "\n\n" + snippet : snippet;
+  const themeValues = visualStyle === "crayon" && p.controls.some(c=>c.prop==="theme") ? {...p.values,theme:styleTheme} : p.values;
+  const snippet = configuredSnippet(p.usage, p.controls, themeValues, p.props);
+  const selectedSnippet = visualStyle === "crayon" ? styleInstallText({slug:p.slug,platform:p.platform},styleTheme).split("\n").map(line => "// " + line).join("\n") + "\n\n" + snippet : snippet;
 
   return (
     localize(<section ref={container} aria-labelledby={`${uid}-h`} className="border-t border-white/[0.06] px-3 pb-4 pt-3.5 sm:px-4 sm:pb-5">
@@ -106,7 +108,7 @@ export function ControlsPanel(p: ControlsPanelProps) {
           </ControlActionSlot>
           {(effectiveTier === "pro" || prompt) && <ControlActionSlot label="Copy configured prompt" shortLabel="Configured prompt">
           {prompt ? (
-            <CopyButton text={configuredPrompt(prompt, p.name, p.controls, p.values)} label="Copy configured prompt" shortLabel="Copy prompt" />
+            <CopyButton text={configuredPrompt(prompt, p.name, p.controls, themeValues)} label="Copy configured prompt" shortLabel="Copy prompt" />
           ) : promptError ? (
             <button type="button" className="site-btn site-btn-secondary min-h-11 px-3 text-xs" onClick={() => setAttempt((value) => value + 1)}>Retry prompt</button>
           ) : effectiveTier === "pro" && proPrompt === "locked" ? (

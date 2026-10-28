@@ -23572,5 +23572,12 @@
   "Words that take turns in the sentence, with a short note beside the counter. Reduced motion stops automatic rotation; the control advances manually.": "A mondatban váltakozó szavak, a pult mellett egy rövid megjegyzéssel. A csökkentett mozgás leállítja az automatikus forgást; a vezérlés manuálisan halad előre.",
   "{{0}} opens the browser to approve.": "{{0}} megnyitja a böngészőt a jóváhagyáshoz.",
   "M5 7V4a3 3 0 0 1 6 0v3": "M5 7V4a3 3 0 0 1 6 0v3",
-  "Gallery cards and live previews follow your selection.": "Galériakártyák és élő előnézetek követik a választást."
+  "Gallery cards and live previews follow your selection.": "Galériakártyák és élő előnézetek követik a választást.",
+  "Theme not available": "A téma nem elérhető",
+  "Choose a light or dark Crayon theme.": "Válasszon világos vagy sötét Crayon témát.",
+  "Crayon": "Crayon",
+  "Loading Crayon": "Betöltés Crayon",
+  "Retry Crayon": "Próbáld újra Crayon",
+  "Crayon is a Pro style.": "A Crayon egy profi stílus.",
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "A Crayon forrás és promptok fizetős Pro licencet igényelnek még akkor is, ha az alap ingyenes."
 }
