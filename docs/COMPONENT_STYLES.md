@@ -2,6 +2,8 @@
 
 The header selector and component toolbar share one selection. Original is the
 default. A paid selection is remembered in this browser and follows navigation.
+Original browsing does not request account state. Opening the style menu or restoring a paid selection checks Pro access. This keeps public cache hits from initializing the licensed server just to display the header.
+
 The public menu contains a small illustrative sample, without serving licensed
 component material. Catalogue recordings retain Original for comparison.
 
