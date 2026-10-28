@@ -18,7 +18,19 @@ export function supportsVisualStyle(entry: Pick<RegistryEntry, "visualStyles">, 
   return style === "original" || Boolean(entry.visualStyles?.includes(style));
 }
 export function visualStyleQuery(style: VisualStyle, theme: StyleTheme = "light") {
-  return style === "original" ? "" : "?visualStyle=" + style + (theme === "dark" ? "&theme=dark" : "");
+  return style === "original" ? "" : "?visualStyle=" + style + "&theme=" + theme;
+}
+
+/** Source clients must describe the selected installation, including an exposed theme prop. */
+export function withStyleTheme(entry: RegistryEntry, theme: StyleTheme): RegistryEntry {
+  const hasThemeControl = entry.controls?.some(control => control.prop === "theme" && ["select", "segmented"].includes(control.kind) && ["light", "dark"].every(value => control.options?.some(option => (typeof option === "object" ? option.value : option) === value)));
+  return {
+    ...entry,
+    theme,
+    usage: entry.usage.replace(/\btheme\s*=\s*(["'])(?:light|dark)\1/g, `theme="${theme}"`).replace(/\btheme\s*=\s*\{(["'])(?:light|dark)\1\}/g, `theme="${theme}"`),
+    props: entry.props.map(prop => prop.name === "theme" && (hasThemeControl || prop.type.includes("light") && prop.type.includes("dark")) ? {...prop, default:JSON.stringify(theme)} : prop),
+    ...(entry.controls ? {controls: entry.controls.map(control => control.prop === "theme" && hasThemeControl ? {...control, default:theme} : control)} : {}),
+  };
 }
 
 export function styleInstallText(entry: Pick<RegistryEntry,"slug"> & Partial<Pick<RegistryEntry,"platform"|"dependencies">>, theme:StyleTheme="light"): string {

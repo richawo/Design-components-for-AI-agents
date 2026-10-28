@@ -15,6 +15,7 @@ export function selectStyleTheme(source, theme) {
     const marker = "const DFA_LICENSED_VISUAL_CSS = " + JSON.stringify(source.styleCss) + ";";
     if (!code.includes(marker)) throw new Error("Web style is missing its scoped material");
     code = code.replace(marker, "const DFA_LICENSED_VISUAL_CSS = " + JSON.stringify(css) + ";");
+    code = code.replace('const DFA_CRAYON_THEME = "light" as "light" | "dark";', 'const DFA_CRAYON_THEME = "dark" as "light" | "dark";');
   }
   return {...source, code, styleCss:css, prompt:source.prompt + `\n\nSelected Crayon theme: ${theme}. Both themes remain available; preserve host theme overrides.`, promptJson:JSON.stringify({...json,visualStyle:{...style,appearance:theme,palette}},null,2)};
 }

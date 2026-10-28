@@ -45,7 +45,10 @@ contracts and interactions. Scoped web material follows the host `.light` /
 overrides that host. MCP `get_component` and `install_command`, source APIs and
 the licensed registry accept `theme: "light" | "dark"` (a `theme` query string
 for HTTP). Both palettes remain in the returned source. Native source keeps its
-primitives and chooses its installation default with `DFA_CRAYON_THEME`.
+primitives and chooses its installation default with `DFA_CRAYON_THEME`. Existing
+native theme props keep separate light and dark palettes and remain reactive.
+Source metadata, controls and explicit theme values in usage examples describe
+the selected installation.
 Preview URLs accept the same theme query. Record the dark catalogue with
 `scripts/record-demos.mjs --visual-style=crayon --theme=dark`, and its smaller
 homepage takes with `scripts/build-conveyor-videos.mjs --visual-style=crayon --theme=dark`.

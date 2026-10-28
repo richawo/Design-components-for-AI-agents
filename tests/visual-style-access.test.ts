@@ -1,6 +1,6 @@
 import { beforeEach,describe,expect,it,vi } from "vitest";
 const f=vi.hoisted(()=>({license:vi.fn(),source:vi.fn()}));
-vi.mock('@/lib/registry',()=>({getComponent:(slug:string)=>slug==='missing'?undefined:{slug,name:'Example',tier:slug==='paid'?'pro':'free',platform:'web',dependencies:[],visualStyles:slug==='unsupported'?['original']:['original','crayon']}}));
+vi.mock('@/lib/registry',()=>({getComponent:(slug:string)=>slug==='missing'?undefined:{slug,name:'Example',theme:'light',props:[],controls:[],usage:'<Example/>',tier:slug==='paid'?'pro':'free',platform:'web',dependencies:[],visualStyles:slug==='unsupported'?['original']:['original','crayon']}}));
 vi.mock('@/lib/commerce/licences',()=>({requireCommerceLicense:f.license}));
 vi.mock('@/lib/visual-style-source',()=>({readVisualSource:f.source,styleRegistryItem:(_e:unknown,s:unknown)=>({source:s})}));
 vi.mock('@/lib/highlight',()=>({highlight:async(s:string)=>s}));
@@ -28,6 +28,7 @@ describe('style entitlement is separate from component tier',()=>{
    f.license.mockResolvedValue({ok:true});
    const response=await handler(req(path),p);expect(response.status).toBe(200);expect(response.headers.get('Cache-Control')).toBe('private, no-store');
    expect(f.source).toHaveBeenLastCalledWith('free','crayon','dark');
+   if(path.startsWith('/api/registry/'))expect((await response.json()).theme).toBe('dark');
    f.source.mockClear();f.license.mockResolvedValue({ok:false,reason:'missing'});
   }
   expect((await registry(req('/api/registry/free?visualStyle=crayon&theme=unexpected'),params())).status).toBe(400);

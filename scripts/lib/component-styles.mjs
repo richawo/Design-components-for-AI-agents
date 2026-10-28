@@ -32,9 +32,15 @@ function returnedRoots(fn){
   }
   return roots;
 }
-export function styleRoots(meta,code){
-  if(meta.platform!=='web')return [];
-  const ast=parse(code,{sourceType:'module',plugins:['typescript','jsx']});
+function themeDefaultEdits(ast){
+ const edits=[];
+ const walk=node=>{
+  if(!node||typeof node!=='object')return;
+  if(node.type==='AssignmentPattern'&&node.left?.name==='theme'&&node.right?.type==='StringLiteral'&&['light','dark'].includes(node.right.value))edits.push({at:node.right.start,end:node.right.end,text:'DFA_CRAYON_THEME'});
+  for(const[key,value]of Object.entries(node))if(!['loc','extra','comments'].includes(key)){if(Array.isArray(value))value.forEach(walk);else if(value&&typeof value==='object')walk(value);}
+ };for(const fn of exportedComponentFunctions(ast))fn.params.forEach(walk);return edits;
+}
+function exportedComponentFunctions(ast){
   const exported=new Set(),definitions=new Map();
   for(const statement of ast.program.body){
     const d=statement.declaration??statement;
@@ -51,13 +57,18 @@ export function styleRoots(meta,code){
       else definitions.set('__demo',d),exported.add('__demo');
     }
   }
-  const roots=[];
+  const functions=[];
   for(const name of exported){
     if(!/^[A-Z]/.test(name)&&name!=='__demo')continue;
     const node=definitions.get(name);if(!node)continue;
-    const functions=['FunctionDeclaration','FunctionExpression','ArrowFunctionExpression'].includes(node.type)?[node]:node.type==='CallExpression'?node.arguments.filter(a=>['FunctionExpression','ArrowFunctionExpression'].includes(a.type)):[];
-    for(const fn of functions)roots.push(...returnedRoots(fn));
+    functions.push(...(['FunctionDeclaration','FunctionExpression','ArrowFunctionExpression'].includes(node.type)?[node]:node.type==='CallExpression'?node.arguments.filter(a=>['FunctionExpression','ArrowFunctionExpression'].includes(a.type)):[]));
   }
+  return functions;
+}
+export function styleRoots(meta,code){
+  if(meta.platform!=='web')return [];
+  const ast=parse(code,{sourceType:'module',plugins:['typescript','jsx']});
+  const roots=exportedComponentFunctions(ast).flatMap(returnedRoots);
   return [...new Map(roots.map(r=>[r.start,r])).values()];
 }
 
@@ -87,6 +98,10 @@ export function makeStyledSource(meta,source,pack){
   if(meta.platform==='mobile')return makeNativeStyledSource(meta,source,pack);
   const roots=styleRoots(meta,source.code);if(!roots.length)return null;
   const css=materialCss(source.code,pack),edits=[];
+  const themeAst=pack.themes?parse(source.code,{sourceType:'module',plugins:['typescript','jsx']}):null;
+  const defaults=themeAst?themeDefaultEdits(themeAst):[];
+  edits.push(...defaults);
+  if(defaults.length)edits.push({at:themeAst.program.directives.at(-1)?.end??0,text:'\nconst DFA_CRAYON_THEME = "light" as "light" | "dark";\n'});
   for(const root of roots){
     const open=root.openingElement;
     if(open.attributes.some(a=>a.name?.name==='data-dfa-style'))throw Error(meta.slug+': existing visual style root');
@@ -96,10 +111,10 @@ export function makeStyledSource(meta,source,pack){
     if(direct)edits.push({at:open.end-(open.selfClosing?2:1),text:' data-dfa-style="crayon"'});
   }
   edits.sort((a,b)=>b.at-a.at);
-  let code=source.code;for(const edit of edits)code=code.slice(0,edit.at)+edit.text+code.slice(edit.at);
+  let code=source.code;for(const edit of edits)code=code.slice(0,edit.at)+edit.text+code.slice(edit.end??edit.at);
   const ending='\n\n// Crayon visual style: Design for AI Pro licence. The base component keeps its original licence.\nconst DFA_LICENSED_VISUAL_CSS = '+JSON.stringify(css)+';\n';
   code+=ending;
-  const codeEdits=[{at:source.code.length,end:source.code.length,text:ending},...edits.map(edit=>({...edit,end:edit.at}))];
+  const codeEdits=[{at:source.code.length,end:source.code.length,text:ending},...edits.map(edit=>({...edit,end:edit.end??edit.at}))];
   parse(code,{sourceType:'module',plugins:['typescript','jsx']});
   const brief=source.prompt.trim()+'\n\n## Crayon visual style (Pro)\n\n'+pack.prompt.trim();
   const json=JSON.parse(source.promptJson);
@@ -110,6 +125,7 @@ export function makeStyledSource(meta,source,pack){
 // CSS tags or web-only dependencies are introduced into downloadable source.
 function makeNativeStyledSource(meta,source,pack){
  const ast=parse(source.code,{sourceType:'module',plugins:['typescript','jsx']}),edits=[];
+ if(pack.themes)edits.push(...themeDefaultEdits(ast));
  const neutral=value=>{
   let rgb;
   if(/^#[a-f0-9]{3,8}$/i.test(value)){let hex=value.slice(1);if(hex.length===3||hex.length===4)hex=hex.split('').map(c=>c+c).join('');rgb=[0,2,4].map(at=>parseInt(hex.slice(at,at+2),16));}
@@ -117,16 +133,18 @@ function makeNativeStyledSource(meta,source,pack){
   return rgb?.length===3&&Math.max(...rgb)-Math.min(...rgb)<22;
  };
  const font='DFAStylePlatform.select({ios:"Chalkboard SE",android:"casual",default:"DFA Crayon"}) ?? "System"';
- const paint=role=>pack.themes?`DFA_CRAYON_COLORS.${role}`:JSON.stringify(pack.palette[role]);
- const walk=node=>{
+ const paint=(role,hint)=>pack.themes?`${hint?'DFA_CRAYON_PALETTES.'+hint:'DFA_CRAYON_COLORS'}.${role}`:JSON.stringify(pack.palette[role]);
+ const walk=(node,hint=null,inThemePalette=false)=>{
   if(!node||typeof node!=='object')return;
+  if(node.type==='VariableDeclarator'&&/(?:^|_)(?:palettes?|themes?)(?:_|$)/i.test(node.id?.name??''))inThemePalette=true;
   if(node.type==='ObjectProperty'){
    const key=node.key?.name??node.key?.value,value=node.value;
+   if(inThemePalette&&['light','dark'].includes(key))hint=key;
    if(['colors','image','art'].includes(key))return;
-   if(['card','chip','control'].includes(key)&&value?.type==='ArrayExpression')for(const item of value.elements)if(item?.type==='StringLiteral'&&neutral(item.value))edits.push({at:item.start,end:item.end,text:paint('surface')});
+   if(['card','chip','control'].includes(key)&&value?.type==='ArrayExpression')for(const item of value.elements)if(item?.type==='StringLiteral'&&neutral(item.value))edits.push({at:item.start,end:item.end,text:paint('surface',hint)});
    if(typeof key==='string'&&value?.type==='StringLiteral'&&neutral(value.value)){
     const role=key==='backgroundColor'?'surface':key==='ground'?'page':key==='soft'?'muted':key==='borderColor'?'line':key==='color'?'ink':roleFor('--'+key);
-    if(role&&role!=='accent'&&key!=='shadowColor'&&pack.palette[role])edits.push({at:value.start,end:value.end,text:paint(role)});
+    if(role&&role!=='accent'&&key!=='shadowColor'&&pack.palette[role])edits.push({at:value.start,end:value.end,text:paint(role,hint)});
    }
   }
   if(node.type==='ObjectExpression'){
@@ -138,10 +156,10 @@ function makeNativeStyledSource(meta,source,pack){
     else if(!family){const comma=source.code.slice(node.start,node.end-1).trimEnd().endsWith(',')?'':',';edits.push({at:node.end-1,end:node.end-1,text:comma+'fontFamily: '+font});}
    }
   }
-  for(const[key,value]of Object.entries(node))if(!['loc','extra','comments'].includes(key)){if(Array.isArray(value))value.forEach(walk);else if(value&&typeof value==='object')walk(value);}
+  for(const[key,value]of Object.entries(node))if(!['loc','extra','comments'].includes(key)){if(Array.isArray(value))value.forEach(child=>walk(child,hint,inThemePalette));else if(value&&typeof value==='object')walk(value,hint,inThemePalette);}
  };
  walk(ast.program);let code=source.code;
- const themeHeader=pack.themes?'\n// Set this default to the host theme, or request theme through MCP.\nconst DFA_CRAYON_THEME = "light" as "light" | "dark";\nconst DFA_CRAYON_COLORS = '+JSON.stringify(pack.themes)+'[DFA_CRAYON_THEME];\n':'';
+ const themeHeader=pack.themes?'\n// Set this installation default or request theme through MCP. Existing theme props override it.\nconst DFA_CRAYON_THEME = "light" as "light" | "dark";\nconst DFA_CRAYON_PALETTES = '+JSON.stringify(pack.themes)+';\nconst DFA_CRAYON_COLORS = DFA_CRAYON_PALETTES[DFA_CRAYON_THEME];\n':'';
  // Palette constants precede module-level StyleSheet.create calls.
  if(themeHeader){const directive=ast.program.directives.at(-1)?.end??0;edits.push({at:directive,end:directive,text:themeHeader});}
  // The insertion above must join the same source-bound edit set before applying.
@@ -150,5 +168,5 @@ function makeNativeStyledSource(meta,source,pack){
  code+=ending;const codeEdits=[{at:source.code.length,end:source.code.length,text:ending},...edits];
  parse(code,{sourceType:'module',plugins:['typescript','jsx']});
  const nativeBrief=pack.prompt+'\n\nReact Native: retain native views, gestures and callbacks. Use the paper palette. Heading fallbacks use Chalkboard SE on iOS and casual on Android. Load the included Caveat font as DFA Crayon for identical custom typography if the host app supports custom fonts.';
- return{...source,code,codeEdits,prompt:source.prompt.trim()+'\n\n## Crayon visual style (Pro)\n\n'+nativeBrief,promptJson:JSON.stringify({...JSON.parse(source.promptJson),visualStyle:{id:'crayon',tier:'pro',platform:'mobile',palette:pack.palette,...(pack.themes?{themes:pack.themes}:{}),typography:pack.font}},null,2),visualStyle:'crayon',styleCss:materialCss(source.code,pack),font:pack.font};
+ return{...source,code,codeEdits,prompt:source.prompt.trim()+'\n\n## Crayon visual style (Pro)\n\n'+nativeBrief,promptJson:JSON.stringify({...JSON.parse(source.promptJson),visualStyle:{id:'crayon',tier:'pro',platform:'mobile',appearance:pack.appearance,palette:pack.palette,...(pack.themes?{themes:pack.themes}:{}),typography:pack.font}},null,2),visualStyle:'crayon',styleCss:materialCss(source.code,pack),font:pack.font};
 }

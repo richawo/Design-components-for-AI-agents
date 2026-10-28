@@ -3,7 +3,7 @@ import { unauthorized } from "@/lib/license";
 import { requireCommerceLicense } from "@/lib/commerce/licences";
 import { getComponent } from "@/lib/registry";
 import { readVisualSource } from "@/lib/visual-style-source";
-import { parseStyleTheme, parseVisualStyle, supportsVisualStyle, styleInstallText } from "@/lib/visual-styles";
+import { parseStyleTheme, parseVisualStyle, supportsVisualStyle, styleInstallText, withStyleTheme } from "@/lib/visual-styles";
 
 /**
  * Everything an agent needs for one component: metadata, install command,
@@ -29,7 +29,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   if (new URL(req.url).searchParams.get("format") === "raw") {
     return new Response(src.code, { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": cache } });
   }
-  const { hasSource: _h, ...meta } = entry;
+  const { hasSource: _h, ...meta } = visualStyle === "crayon" ? withStyleTheme(entry,theme) : entry;
   return Response.json(
     { ...meta, file: fileNameFor(entry), visualStyle, styleTier: visualStyle === "original" ? entry.tier : "pro", install: visualStyle === "original" ? installText(entry) : styleInstallText(entry,theme), code: src.code, prompt: src.prompt, promptJson: JSON.parse(src.promptJson) },
     { headers: { "Cache-Control": cache } },

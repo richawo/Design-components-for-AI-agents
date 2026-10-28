@@ -1,4 +1,4 @@
-import { VISUAL_STYLE_IDS, parseStyleTheme, parseVisualStyle, supportsVisualStyle, styleInstallText } from "./visual-styles";
+import { VISUAL_STYLE_IDS, parseStyleTheme, parseVisualStyle, supportsVisualStyle, styleInstallText, withStyleTheme, visualStyleQuery } from "./visual-styles";
 import { readVisualSource } from "./visual-style-source";
 import "server-only";
 import { cataloguePath } from "./catalogue-path";
@@ -205,6 +205,7 @@ export const TOOLS: Tool[] = [
       if (visualStyle === "crayon" && !ctx.license.ok) return text(`Crayon is a Pro style, including on free components. ${connectionNotice(ctx) ?? SIGN_IN()} Plans: ${absoluteUrl("/pricing")}.`, true);
       const theme = parseStyleTheme(a.theme);
       if (!theme) return text("Choose a light or dark Crayon theme.", true);
+      const selectedMeta = visualStyle === "crayon" ? withStyleTheme(e,theme) : e;
       const want = new Set(
         (a.include as string[] | undefined) ?? [
           "install",
@@ -221,7 +222,7 @@ export const TOOLS: Tool[] = [
         e.description,
         "",
         `Tier: ${e.tier} · Platform: ${e.platform} · Category: ${e.category} · File: ${fileNameFor(e)}${e.dependencies.length ? ` · Dependencies: ${e.dependencies.join(", ")}` : ""}`,
-        `Page: ${absoluteUrl(cataloguePath(e))}`,
+        `Page: ${absoluteUrl(cataloguePath(e)+visualStyleQuery(visualStyle,theme))}`,
         `Visual style: ${visualStyle}${visualStyle === "crayon" ? " · Style licence: Pro" : ""}`,
         `Available styles: ${(e.visualStyles ?? ["original"]).join(", ")}${e.visualStyles?.includes("crayon") ? " (Crayon requires Pro)" : ""}`,
       ];
@@ -235,21 +236,21 @@ export const TOOLS: Tool[] = [
           "",
           "## Usage",
           "```tsx",
-          e.usage,
+          selectedMeta.usage,
           "```",
         );
-      if (want.has("props") && e.props.length)
+      if (want.has("props") && selectedMeta.props.length)
         parts.push(
           "",
           "## Props",
-          ...e.props.map(
+          ...selectedMeta.props.map(
             (p) =>
               `- \`${p.name}\`: ${p.type}${p.default ? ` (default ${p.default})` : ""}. ${p.description}`,
           ),
         );
       // Controls are public metadata, so Pro components show them without a licence too.
-      if ((want.has("controls") || want.has("props")) && e.controls?.length)
-        parts.push("", ...controlsSection(e.controls));
+      if ((want.has("controls") || want.has("props")) && selectedMeta.controls?.length)
+        parts.push("", ...controlsSection(selectedMeta.controls));
       const needsSource =
         want.has("prompt") || want.has("json") || want.has("code");
       if (needsSource) {
