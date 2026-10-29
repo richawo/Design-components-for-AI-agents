@@ -21,6 +21,7 @@ const LOOP_GAP_MS = 1600;
 const MOUNT_SETTLE_MS = 120;
 
 type AnyComponent = ComponentType<Record<string, ControlValue>>;
+type InkRuntime = (root:Element,options?:Record<string,string>)=>(()=>void);
 
 /**
  * Renders one registry component on a bare page. The component page embeds
@@ -36,7 +37,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
   const { localize, locale } = useSiteI18n();
 
   const accent = useAccent();
-  const [styleMaterial,setStyleMaterial] = useState<{css:string;palette:Record<string,string>;themes?:Record<StyleTheme,Record<string,string>>;font:string}|null>(null);
+  const [styleMaterial,setStyleMaterial] = useState<{css:string;palette:Record<string,string>;themes?:Record<StyleTheme,Record<string,string>>;font:string;ink?:InkRuntime;inkOptions?:Record<string,string>;runtimeHash?:string}|null>(null);
   const [styleTheme,setStyleTheme] = useState<StyleTheme>("light");
   const [styleStatus,setStyleStatus] = useState<"original"|"loading"|"active"|"locked"|"error">("original");
   const [styleAttempt,setStyleAttempt] = useState(0);
@@ -54,7 +55,16 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
       const fontUrl=new URL(new URL(data.font.url).pathname,window.location.origin).href;
       const font=new FontFace(data.font.family,`url("${fontUrl}")`,{weight:data.font.weight});
       await font.load();document.fonts.add(font);
-      return {css:data.css.replaceAll(data.font.url,fontUrl),palette:data.palette,themes:data.themes,font:data.font.family};
+      let ink:InkRuntime|undefined;
+      if(data.runtimeUrl){
+        const runtimeUrl=new URL(data.runtimeUrl,window.location.origin);
+        if(runtimeUrl.origin!==window.location.origin||runtimeUrl.pathname!=="/api/styles/"+encodeURIComponent(slug)||!/^[a-f0-9]{64}$/.test(data.runtimeSha256)||runtimeUrl.searchParams.get("v")!==data.runtimeSha256)throw new Error("style_runtime_origin_mismatch");
+        if(styleAttempt>0)runtimeUrl.searchParams.set("attempt",String(styleAttempt));
+        const module=await import(/* webpackIgnore: true */ runtimeUrl.href);
+        if(typeof module.DFAMountCrayon!=="function")throw new Error("style_runtime_missing_entry");
+        ink=module.DFAMountCrayon;
+      }
+      return {css:data.css.replaceAll(data.font.url,fontUrl),palette:data.palette,themes:data.themes,font:data.font.family,ink,inkOptions:data.runtimeOptions,runtimeHash:data.runtimeSha256};
     }).then(material=>{if(!live)return;window.clearTimeout(timeout);if(!material){setStyleStatus("locked");return;}setStyleMaterial(material);setStyleStatus("active");}).catch(error=>{if(live&&error.name!=="AbortError"){window.clearTimeout(timeout);setStyleStatus("error");}});
     return()=>{live=false;window.clearTimeout(timeout);controller.abort();};
   },[slug,styleAttempt]);
@@ -63,7 +73,9 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
   const [mount, setMount] = useState(0);
   const cursor = useRef<CursorHandle>(null);
   const nativeStyleRoot = useRef<HTMLDivElement>(null);
+  const webStyleRoot = useRef<HTMLDivElement>(null);
   useLayoutEffect(()=>{if(platform!=="mobile"||!styleMaterial||!Comp||!nativeStyleRoot.current)return;return applyNativePreviewStyle(nativeStyleRoot.current,styleMaterial.themes?.[styleTheme]??styleMaterial.palette,styleMaterial.font);},[platform,styleMaterial,styleTheme,Comp,mount]);
+  useLayoutEffect(()=>{const root=platform==="mobile"?nativeStyleRoot.current:webStyleRoot.current;if(!root||!styleMaterial?.ink||!Comp)return;return styleMaterial.ink(root,styleMaterial.inkOptions);},[platform,styleMaterial,styleTheme,Comp,mount]);
   const run = useRef<AbortController | null>(null);
   const steps = useMemo(() => (demo ? parseSteps(demo.steps) : null), [demo]);
 
@@ -191,7 +203,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
           // Registry utilities use a later CSS layer; keep the device bounds independent of them.
           style={{ maxWidth: 390, height: "min(844px, 100dvh)" }}
         >
-          <div ref={nativeStyleRoot} data-dfa-style={styleMaterial ? "crayon" : undefined} data-dfa-theme={styleMaterial?styleTheme:undefined} data-dfa-native="true" className="flex h-full w-full flex-col">{node}</div>
+          <div ref={nativeStyleRoot} data-dfa-runtime={styleMaterial?.runtimeHash} data-dfa-style={styleMaterial ? "crayon" : undefined} data-dfa-theme={styleMaterial?styleTheme:undefined} data-dfa-native="true" className="flex h-full w-full flex-col">{node}</div>
           <div className="pointer-events-none absolute left-1/2 top-[11px] hidden h-[34px] w-[122px] -translate-x-1/2 rounded-full bg-black sm:block" />
         </div>
         {steps && <DemoCursor ref={cursor} />}
@@ -200,7 +212,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
   }
 
   return (
-    localize(<div data-preview-slug={slug} data-preview-ready={!!Comp} data-dfa-style={styleMaterial ? "crayon" : undefined} data-dfa-theme={styleMaterial?styleTheme:undefined} className={theme === "dark" ? "min-h-dvh bg-black" : "min-h-dvh bg-white"}>
+    localize(<div ref={webStyleRoot} data-dfa-runtime={styleMaterial?.runtimeHash} data-preview-slug={slug} data-preview-ready={!!Comp} data-dfa-style={styleMaterial ? "crayon" : undefined} data-dfa-theme={styleMaterial?styleTheme:undefined} className={theme === "dark" ? "min-h-dvh bg-black" : "min-h-dvh bg-white"}>
       {node}
       {steps && <DemoCursor ref={cursor} />}
     </div>)

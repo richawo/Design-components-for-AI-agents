@@ -1,6 +1,6 @@
 import {describe,expect,it} from "vitest";
 import {makeStyledSource} from "../scripts/lib/component-styles.mjs";
-import {packStyleSource,restoreStyleSource,type StyleDelta} from "../scripts/lib/style-delta.mjs";
+import {packStyleSource,restoreStyleSource,sharedStyleText,type StyleDelta} from "../scripts/lib/style-delta.mjs";
 import type {ComponentSource} from "../lib/registry-types";
 import {unpackContent} from "../scripts/lib/content-pack.mjs";
 import fs from "node:fs";
@@ -15,7 +15,8 @@ describe("small, source-bound style packs",()=>{
    const delta=unpackContent(JSON.parse(fs.readFileSync(path.join(styles,file),"utf8"))) as StyleDelta;
    const base=unpackContent(JSON.parse(fs.readFileSync(path.join(generated,"source-packs",file),"utf8"))) as ComponentSource;
    expect(createHash("sha256").update(base.code).digest("hex"),file).toBe(delta.baseCodeSha256);
-   expect(()=>restoreStyleSource(base,delta),file).not.toThrow();
+   const shared=delta.format==="dfa-style-delta-v2"?unpackContent(JSON.parse(fs.readFileSync(path.join(generated,"style-shared.json"),"utf8"))) as Record<string,string>:null;
+   expect(()=>restoreStyleSource(base,delta,shared),file).not.toThrow();
   }
  });
  it.each(["web","mobile"])("restores the exact %s source and briefs without storing another complete component",platform=>{
@@ -32,5 +33,17 @@ describe("small, source-bound style packs",()=>{
   expect(()=>restoreStyleSource({...base,code:base.code+"\n"},delta)).toThrow("does not match");
   expect(()=>restoreStyleSource({...base,slug:"other"},delta)).toThrow("does not match");
   expect(()=>restoreStyleSource(base,{...delta,codeEdits:[{at:-1,end:0,text:"bad"}]})).toThrow("Invalid compiled style edit");
+ });
+ it("shares paid drawing material once while restoring exact standalone source and runtime",()=>{
+  const runtime='export function DFAMountCrayon(root:Element){return ()=>root.removeAttribute("data-dfa-ink")}';
+  const pack={...material,css:'/* texture */'.repeat(200),webRuntime:runtime,webModule:runtime.replace(':Element',''),nativeRuntime:'// native drawing material\n'.repeat(100)};
+  const base={slug:'test',code:'export function Widget(){return <section><h1>Hello</h1></section>}',prompt:'Base',promptJson:'{}'};
+  const variant=makeStyledSource({slug:'test',platform:'web',usage:'<Widget/>'},base,pack)!;
+  const shared=sharedStyleText(pack)!,delta=packStyleSource(base,variant,shared),restored=restoreStyleSource(base,delta,shared);
+  expect(delta.format).toBe('dfa-style-delta-v2');
+  for(const key of ['code','prompt','promptJson','styleCss','styleRuntime','styleRuntimeSha256','styleOptions'] as const)expect(restored[key]).toEqual(variant[key]);
+  expect(JSON.stringify(delta)).not.toContain('texture');expect(JSON.stringify(delta)).not.toContain('function DFAMountCrayon');
+  expect(()=>restoreStyleSource(base,delta,{...shared,css:'Changed material'})).toThrow('shared material');
+  expect(()=>restoreStyleSource(base,delta)).toThrow('shared material');
  });
 });

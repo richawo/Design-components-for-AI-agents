@@ -39,7 +39,7 @@ import { showcaseCollections } from "../lib/showcase-collections.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 import { packContent } from "./lib/content-pack.mjs";
 import { makeStyledSource } from "./lib/component-styles.mjs";
-import { packStyleSource } from "./lib/style-delta.mjs";
+import { packStyleSource, sharedStyleText } from "./lib/style-delta.mjs";
 import { loadStylePack, styleSourceIdentity, styleSourcePin } from "./lib/style-source.mjs";
 import { writePublicContentRuntime } from "./lib/public-content-runtime.mjs";
 import { verifyPublicationRequest } from "./lib/publication-request.mjs";
@@ -385,6 +385,7 @@ const componentSources = new Map([...free, ...pro].map(c => [c.meta.slug, {
 const styleManifestPath = path.join(registryDir, "style-manifest.json");
 const styled = new Map();
 const styleMaterial = loadStylePack(root);
+const sharedMaterial = sharedStyleText(styleMaterial);
 const styleSourceAvailable = Boolean(styleMaterial);
 if (styleSourceAvailable) {
   const material = styleMaterial;
@@ -393,7 +394,7 @@ if (styleSourceAvailable) {
     if (!publishedSlugs.has(c.meta.slug)) continue;
     const source = componentSources.get(c.meta.slug);
     const variant = makeStyledSource(c.meta, source, material);
-    if (variant) styled.set(c.meta.slug, packStyleSource(source, variant));
+    if (variant) styled.set(c.meta.slug, packStyleSource(source, variant, sharedMaterial));
   }
   writeJson(styleManifestPath, { crayon: [...styled.keys()].sort() });
 }
@@ -405,7 +406,8 @@ const stylePacksDir = path.join(outDir, "style-packs");
 fs.mkdirSync(stylePacksDir, { recursive: true });
 prune(stylePacksDir, new Set([...styled.keys()].map(slug => `${slug}.json`)));
 for (const [slug, variant] of styled) writeJson(path.join(stylePacksDir, `${slug}.json`), packContent(variant));
-writeAtomic(path.join(outDir, "visual-styles.ts"), `// Generated. Server-only licensed style source.\nimport "server-only";\nexport const styledLoaders: Record<string, () => Promise<{ default: unknown }>> = {\n${[...styled.keys()].map(slug => `  ${JSON.stringify(slug)}: () => import(${JSON.stringify(`./style-packs/${slug}.json`)}),`).join("\n")}\n};\n`);
+writeJson(path.join(outDir,"style-shared.json"),packContent(sharedMaterial??{}));
+writeAtomic(path.join(outDir, "visual-styles.ts"), `// Generated. Server-only licensed style source.\nimport "server-only";\nexport const styledLoaders: Record<string, () => Promise<{ default: unknown }>> = {\n${[...styled.keys()].map(slug => `  ${JSON.stringify(slug)}: () => import(${JSON.stringify(`./style-packs/${slug}.json`)}),`).join("\n")}\n};\nexport const loadSharedStyle = () => import("./style-shared.json");\n`);
 
 // Write in place (several agents may run this while a dev server is compiling)
 // and prune files for components that no longer exist.

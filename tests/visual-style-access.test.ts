@@ -34,4 +34,11 @@ describe('style entitlement is separate from component tier',()=>{
   expect((await registry(req('/api/registry/free?visualStyle=crayon&theme=unexpected'),params())).status).toBe(400);
   expect(f.source).not.toHaveBeenCalled();
  });
+ it('serves drawing modules only after entitlement, with private caching and JavaScript MIME',async()=>{
+  f.source.mockResolvedValue({styleRuntime:'export function DFAMountCrayon(){/* PRIVATE_INK */}',styleRuntimeSha256:'a'.repeat(64),styleCss:'PRIVATE_CSS',font:{family:'Hand',url:'/font.woff2'},promptJson:'{}'});
+  const path='/api/styles/free?format=module';const denied=await preview(req(path),params());expect(await denied.text()).not.toContain('PRIVATE_INK');expect(f.source).not.toHaveBeenCalled();
+  f.license.mockResolvedValue({ok:true});const granted=await preview(req(path),params());expect(granted.headers.get('content-type')).toContain('text/javascript');expect(granted.headers.get('cache-control')).toBe('private, no-store');expect(granted.headers.get('x-content-type-options')).toBe('nosniff');expect(await granted.text()).toContain('PRIVATE_INK');
+  expect(granted.headers.get('x-dfa-style-runtime')).toBe('a'.repeat(64));
+  expect((await preview(req(path+'&v='+('b'.repeat(64))),params())).status).toBe(409);
+ });
 });

@@ -49,4 +49,15 @@ describe("independently pinned paid style material",()=>{
   fs.writeFileSync(file,JSON.stringify({...f.pin,previewVersion:3}));expect(styleSourcePin(f.root)?.previewVersion).toBe(3);
   for(const previewVersion of ["../private",1,2.5]){fs.writeFileSync(file,JSON.stringify({...f.pin,previewVersion}));expect(()=>styleSourcePin(f.root)).toThrow("Invalid visual-style preview version");}
  });
+ it('pins both drawing runtimes and rejects incomplete or changed runtime material',()=>{
+  const f=fixture();const manifest=JSON.stringify({id:'crayon',tier:'pro',appearance:'light',version:4,palette:{ink:'#171719'},themes:{light:{ink:'#171719'},dark:{ink:'#ededef'}}});
+  fs.writeFileSync(path.join(f.dir,'manifest.json'),manifest);
+  const runtime={'web.ts':'export function DFAMountCrayon(root:Element){return ()=>{}}','native.tsx':'// Native ink fixture'};
+  for(const[name,value]of Object.entries(runtime))fs.writeFileSync(path.join(f.dir,name),value);
+  f.git('add','_styles');f.git('-c','user.name=Local QA','-c','user.email=qa@example.invalid','commit','--quiet','-m','Drawing material');
+  const pin={...f.pin,commit:f.git('rev-parse','HEAD'),files:[...f.pin.files.map(file=>file.path.endsWith('manifest.json')?{...file,sha256:sha(manifest)}:file),...Object.entries(runtime).map(([name,value])=>({path:'_styles/crayon/'+name,sha256:sha(value)}))]};
+  const file=path.join(f.root,'registry/style-source.json');fs.writeFileSync(file,JSON.stringify(pin));
+  expect(styleSourcePin(f.root)?.files).toHaveLength(5);materializeStyleSource(f.root,f.pro,pin);const loaded=loadStylePack(f.root);expect(loaded?.webModule).toContain('function DFAMountCrayon(root)');expect(loaded?.nativeRuntime).toContain('Native ink');
+  fs.writeFileSync(file,JSON.stringify({...pin,files:pin.files.slice(0,4)}));expect(()=>styleSourcePin(f.root)).toThrow('Invalid private visual-style source pin');
+ });
 });

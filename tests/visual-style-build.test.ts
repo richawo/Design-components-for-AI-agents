@@ -28,6 +28,11 @@ describe('licensed style compilation',()=>{
   expect(value.code).not.toContain('<style>');expect(value.code).not.toContain('data-dfa-style');expect(value.code).toContain('<View style={s.card}>');
   expect(()=>parse(value.code,{sourceType:'module',plugins:['typescript','jsx']})).not.toThrow();
  });
+ it('keeps native avatar initials legible when their neutral gradient is adapted',()=>{
+  const source={slug:'test',code:'import {View,Text} from "react-native";const THEMES={light:{avatar:["#222222","#111111"],avatarInk:"#ffffff"}};export function Widget(){return <View><Text>IM</Text></View>}',prompt:'Base',promptJson:'{}'};
+  const result=makeStyledSource({...meta,platform:'mobile'},source,material)!;
+  expect(result.code).toContain('avatar:["#fff8e7","#fff8e7"]');expect(result.code).toContain('avatarInk:"#2d3027"');
+ });
  it('styles dynamically bound palette tokens without overriding an explicit accent',()=>{
   const source={slug:'test',code:'export function Widget({accent="red"}){const palette={field:"#111",label:"#ddd"}; return <form style={Object.fromEntries(Object.entries(palette).map(([k,v])=>["--w-"+k,v]))}><label className="text-[var(--w-label)]">Email</label><input className="bg-[var(--w-field)]"/><button style={{"--w-accent":accent}} className="bg-[var(--w-accent)]">Continue</button></form>}',prompt:'base',promptJson:'{}'};
   const value=makeStyledSource(meta,source,{...material,palette:{...material.palette,accent:'#b74e28'}})!;
@@ -53,5 +58,14 @@ describe('licensed style compilation',()=>{
   const files=fs.readdirSync(path.resolve('public/r')).filter(f=>f.endsWith('.json'));
   expect(files.length).toBeGreaterThan(50);
   for(const name of files)expect(fs.readFileSync(path.resolve('public/r',name),'utf8')).not.toContain('DFA_LICENSED_VISUAL_CSS');
+ });
+ it('includes drawing in standalone exports without replacing their event handlers or native primitives',()=>{
+  const pack={...material,webRuntime:'export function DFAMountCrayon(root:Element){return ()=>{}}',webModule:'export function DFAMountCrayon(root){return ()=>{}}',nativeRuntime:'function DFAInkSurface(props:unknown){return null} function DFAInkWriting(props:unknown){return null}'};
+  const base={slug:'test',prompt:'Base',promptJson:'{}'};
+  const web=makeStyledSource(meta,{...base,code:'export function Widget({onClick}){return <button onClick={onClick}>Run</button>}'},pack)!;
+  expect(web.code).toContain('<DFAInkMaterial/>');expect(web.code).toContain('DFAMountCrayon(root,');expect(web.code).toContain('onClick={onClick}');expect(web.styleRuntime).toBe(pack.webModule);
+  const native=makeStyledSource({...meta,platform:'mobile'},{...base,code:'import {View,Text,Pressable,StyleSheet} from "react-native";export function Widget({onPress}){return <View style={s.card}><Text style={s.heading}>Title</Text><Pressable style={s.button} onPress={onPress}><Text>Run</Text></Pressable></View>}const s=StyleSheet.create({card:{borderRadius:12},heading:{fontSize:28},button:{backgroundColor:"#ffffff"}});'},pack)!;
+  expect(native.code).toContain('<DFAInkSurface as={View}');expect(native.code).toContain('<DFAInkSurface as={Pressable}');expect(native.code).toContain('<DFAInkWriting as={Text}');expect(native.code).toContain('onPress={onPress}');expect(native.code).not.toContain('<div');
+  for(const code of [web.code,native.code])expect(()=>parse(code,{sourceType:'module',plugins:['typescript','jsx']})).not.toThrow();
  });
 });

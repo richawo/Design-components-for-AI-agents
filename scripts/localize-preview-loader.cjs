@@ -1,2 +1,3 @@
 const { transform } = require("./lib/localize-jsx.cjs");
-module.exports = function (source) { return transform(source, this.resourcePath); };
+const { bridgeScene } = require("./lib/scene-bridge.cjs");
+module.exports = function (source) { return transform(bridgeScene(source), this.resourcePath); };

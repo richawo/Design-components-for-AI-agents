@@ -249,7 +249,7 @@ async function record(browser, slug) {
         const expected=stylePack?.themes?.[styleTheme]?.page??stylePack?.palette?.page;
         const actual=await page.locator('[data-dfa-style="crayon"]').first().evaluate(node=>getComputedStyle(node).getPropertyValue("--dfa-crayon-page").trim().toLowerCase());
         if(expected&&actual!==expected.toLowerCase())throw new Error(`Preview palette ${actual} differs from the pinned ${styleTheme} palette ${expected}; keep the last good recording.`);
-        let compiledCssSha256;
+        let compiledCssSha256,runtimeSha256;
         const sourceFile=path.join(root,"registry",meta.tier,slug,slug+".tsx");
         if(stylePack&&fs.existsSync(sourceFile)){
           const css=await page.locator("[data-licensed-visual-style]").textContent();
@@ -259,8 +259,16 @@ async function record(browser, slug) {
           const sha=value=>createHash("sha256").update(value).digest("hex");
           compiledCssSha256=sha(expectedCss);
           if(sha(normalized)!==compiledCssSha256)throw new Error("Preview CSS differs from the checked-out style compiler and pinned material; keep the last good recording.");
+          if(stylePack.webModule){
+            runtimeSha256=sha(stylePack.webModule);
+            await page.locator('[data-dfa-ink-ready="true"]').first().waitFor({state:"attached",timeout:15000});
+            const loaded=await page.locator('[data-dfa-runtime]').first().getAttribute('data-dfa-runtime');
+            const moduleUrl=new URL('/api/styles/'+encodeURIComponent(slug)+'?format=module&v='+runtimeSha256,base).href;
+            const response=await page.request.get(moduleUrl);
+            if(loaded!==runtimeSha256||response.status()!==200||sha(await response.text())!==runtimeSha256)throw new Error("Preview drawing runtime differs from the pinned compiler material; keep the last good recording.");
+          }
         }
-        materialEvidence={commit:stylePin?.commit,theme:styleTheme,page:actual,...(compiledCssSha256?{compiledCssSha256,sourceCssVerified:true}:{})};
+        materialEvidence={commit:stylePin?.commit,theme:styleTheme,page:actual,...(compiledCssSha256?{compiledCssSha256,sourceCssVerified:true}:{}),...(runtimeSha256?{runtimeSha256,sourceRuntimeVerified:true}:{})};
       }
     }
     await page.waitForTimeout(meta.category === "three-d" || meta.dependencies?.includes("three") ? 6000 : 3200);
@@ -374,6 +382,7 @@ async function record(browser, slug) {
       page.waitForTimeout(1500).then(() => { throw new Error("No opening screencast frame before the demo actions; retry the capture."); }),
     ]);
     await page.waitForTimeout(gallery ? 60 : 150);
+    if(styled&&stylePack?.webModule)await page.evaluate(()=>{for(const root of document.querySelectorAll('[data-dfa-ink-root]'))root.dispatchEvent(new Event('dfa:ink-replay'));});
 
     // Paced by the clock, not by step count, so a glide takes exactly as long
     // as it does in the live player however slow each mouse.move is.
