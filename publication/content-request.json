@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-10-28-five-design-guides",
+  "requestId": "2026-10-29-five-workflow-guides",
   "mode": "daily",
-  "requestedAt": "2026-10-28T15:55:08.703Z",
-  "privateContentCommit": "94ef5200ce490d75919c732e0eadba40049269ae",
-  "sourceInputsSha256": "d223266ceb5ad17284efb0cd3b16b3e914e66e4598171d50c891a78dfe28fc95",
-  "approvalSha256": "cd5bb692e61a5cb87fc7696106c710aa5ada5583a557eac24b474dafb7fe69c0",
+  "requestedAt": "2026-10-29T13:09:33.219Z",
+  "privateContentCommit": "c7e325faec08714f6287a21c1df5e6bbd5473ef8",
+  "sourceInputsSha256": "3f226ea80c962d8aef9ff3c90aa1e3a1e7c0cf40fc1d43c061123d4212ef27c2",
+  "approvalSha256": "cc6a1c0ba1a0b29c0062e91d894ba111c2d76315fae894cf1712013ae7d1c9d2",
   "articleSlugs": [
-    "base-ui-vs-radix-shadcn",
-    "react-components-existing-design-system",
-    "update-customized-shadcn-components",
-    "react-streaming-chat-scroll",
-    "react-tool-call-ui"
+    "react-async-form-error-recovery",
+    "react-saved-views-data-table",
+    "react-command-palette-accessibility",
+    "react-audit-log-ui",
+    "react-notification-inbox-ui"
   ]
 }
