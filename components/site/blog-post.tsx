@@ -77,7 +77,7 @@ export default async function BlogPost({ slug, locale = "en" }: { slug: string; 
           <ul className="mt-4 border-t border-white/[0.12]">
             {related.map((r) => (
               <li key={r.slug} className="site-reveal">
-                <Link href={blogPath(locale, r.slug)} className="group block border-b border-white/[0.08] py-6">
+                <Link href={blogPath(locale, r.slug)} className="group block border-b border-white/[0.08] py-6 [overflow-wrap:anywhere]">
                   <span className="block text-balance text-2xl font-semibold tracking-[-0.035em] text-site-fg-2 transition-colors duration-150 group-hover:text-site-fg">{r.title}</span>
                   <span className="mt-1 block text-[15px] text-site-fg-3">{r.excerpt}</span>
                 </Link>
