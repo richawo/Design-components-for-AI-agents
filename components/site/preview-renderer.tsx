@@ -12,6 +12,7 @@ import { PREVIEW_CHANNEL, parseToPreview, type Body, type FromPreview } from "@/
 import { parseSteps } from "@/lib/demo/schema.mjs";
 import type { ControlValue, DemoScript } from "@/lib/registry-types";
 import { applyNativePreviewStyle } from "@/lib/preview-native-style";
+import { materialDefaultProps } from "@/lib/visual-style-props";
 import { parseStyleTheme, type StyleTheme } from "@/lib/visual-styles";
 import { DemoCursor } from "./demo-cursor";
 
@@ -187,7 +188,8 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig, ini
     `[style*="${token}"]{${token}:${effectiveAccent}!important;${token === "--accent" ? `--on:${accentInk(effectiveAccent)}!important;` : ""}}` +
     `[class~="bg-(${token})"],[class~="bg-[var(${token})]"]{color:${accentInk(effectiveAccent)}!important;}`
   ).join("\n") : "";
-  const node = <>{styleMaterial && <style data-licensed-visual-style>{styleMaterial.css}</style>}{accentCss && <style data-preview-accent>{accentCss}</style>}{Comp ? <Comp key={mount} locale={initialLocale ?? formatLocale(locale === "en" ? "en-US" : locale)} {...accentProps} {...overrides} {...(styleMaterial ? {theme:styleTheme} : {})} /> : null}</>;
+  const materialProps=styleMaterial?materialDefaultProps(styleMaterial.inkOptions?.defaults,styleMaterial.themes?.[styleTheme]??styleMaterial.palette,overrides):{};
+  const node = <>{styleMaterial && <style data-licensed-visual-style>{styleMaterial.css}</style>}{accentCss && <style data-preview-accent>{accentCss}</style>}{Comp ? <Comp key={mount} locale={initialLocale ?? formatLocale(locale === "en" ? "en-US" : locale)} {...accentProps} {...overrides} {...materialProps} {...(styleMaterial ? {theme:styleTheme} : {})} /> : null}</>;
 
   if(styleStatus === "locked" || styleStatus === "error" || styleStatus === "loading") {
     return localize(<div data-preview-slug={slug} data-preview-ready={styleStatus!=="loading"} className="flex min-h-dvh items-center justify-center bg-black p-8 text-white"><div className="max-w-md text-center">

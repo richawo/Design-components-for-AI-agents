@@ -7,10 +7,11 @@ function sceneBridgeEdits(source){
   const namespace=declaration?.specifiers.find(node=>node.type==="ImportNamespaceSpecifier")?.local.name;
   if(!namespace)return [];
   const edits=[];
+  const stable=node=>node?.type==="Identifier"||node?.type==="MemberExpression"&&!node.computed&&node.property.type==="Identifier"&&stable(node.object);
   function walk(node){
     if(!node||typeof node!=="object")return;
     if(node.type==="CallExpression"&&node.callee.type==="MemberExpression"&&node.callee.property.name==="render"&&node.arguments.length===2){
-      const object=node.callee.object,safe=object.type==="Identifier"||object.type==="MemberExpression"&&object.object.type==="Identifier"&&object.property.name==="current";
+      const object=node.callee.object,safe=stable(object);
       if(safe){const renderer=source.slice(object.start,object.end),scene=source.slice(node.arguments[0].start,node.arguments[0].end),camera=source.slice(node.arguments[1].start,node.arguments[1].end);
         const types=["EdgesGeometry","LineSegments","LineBasicMaterial","SphereGeometry"].map(name=>name+":"+namespace+"."+name).join(",");
         const canvas=renderer+'.domElement';

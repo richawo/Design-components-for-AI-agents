@@ -6,6 +6,11 @@ describe("optional scene material hook",()=>{
  it("leaves ordinary components and React root rendering unchanged",()=>{
   for(const source of ['export function Widget(){return <button>Run</button>}','import * as THREE from "three"; root.render(<Widget/>);'])expect(bridge.bridgeScene(source)).toBe(source);
  });
+ it("supports renderer rigs without changing calls with computed receivers",()=>{
+  const imports='import * as THREE from "three";';
+  expect(bridge.bridgeScene(imports+'rig.renderer.render(scene,camera);')).toContain('rig.renderer.domElement');
+  expect(bridge.bridgeScene(imports+'rig[choose()].render(scene,camera);')).toBe(imports+'rig[choose()].render(scene,camera);');
+ });
  it("never dispatches for Original, preserves every render and throttles active material inspection",()=>{
   const source='import * as THREE from "three";renderer.render(scene,camera);',code=bridge.bridgeScene(source).replace(/^import[^;]+;/,""),events:unknown[]=[],order:string[]=[];
   let enabled=false,clock=1000;const attrs=new Map<string,string>(),scene={},camera={};

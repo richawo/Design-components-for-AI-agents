@@ -6,6 +6,12 @@ import path from "node:path";
 const material={css:'/* private material fixture */',prompt:'Keep the keyboard interaction.',appearance:'light',font:{family:'Hand',url:'https://example.invalid/font.woff2',weight:'400 700'},palette:{page:'#fff8e7',ink:'#2d3027',onInk:'#fff8e7',surface:'#fff8e7'}};
 const meta={slug:'test',platform:'web',usage:'import { Widget } from "./test";\n<Widget />'};
 describe('licensed style compilation',()=>{
+ it('changes private engine defaults with the theme while preserving explicit caller values',()=>{
+  const source={slug:'test',code:'"use client";const DEFAULTS={inkA:"#ededef",inkB:"#0b0b0c"} as const;export function Widget({inkA=DEFAULTS.inkA}){return <div style={{color:inkA}}>Hello</div>}',prompt:'base',promptJson:'{}'};
+  const value=makeStyledSource(meta,source,{...material,themes:{light:{ink:'#171719',page:'#fafafa'},dark:{ink:'#ededef',page:'#000000'}},defaults:{test:{inkA:{binding:'DEFAULTS',role:'ink'},inkB:{binding:'DEFAULTS',role:'page'}}}})!;
+  expect(value.code).toContain('inkA:(DFA_CRAYON_THEME === "dark" ? "#ededef" : "#171719")');
+  expect(value.code).toContain('inkA=DEFAULTS.inkA');expect(value.code).toContain('color:inkA');
+ });
  it('styles named and demo exports while preserving component callbacks and imports',()=>{
   const source={slug:'test',code:'"use client";\nexport function Widget({onClick}:{onClick:()=>void}) { const vars={"--w-bg":"#000","--w-ink":"#fff"}; return <button style={vars} onClick={onClick}>Run</button>; }\nexport default function Demo(){ return <div><Widget onClick={()=>{}} /></div>; }',prompt:'Base brief.',promptJson:'{}'};
   const value=makeStyledSource(meta,source,material)!;
