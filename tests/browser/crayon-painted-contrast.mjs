@@ -13,7 +13,7 @@ try{
  for(const theme of ["light","dark"]){
   const context=await browser.newContext({viewport:{width:1000,height:900},reducedMotion:"reduce"});
   await context.addCookies([{name:"dfa_license",value:license,url:base,httpOnly:true,sameSite:"Lax",secure:new URL(base).protocol==="https:"}]);
-  for(const slug of ["button-magnetic","bg-grain-gradient","three-keycaps","three-contour-terrain","hero-prism","three-globe-arcs","three-particle-sphere","three-wave-field","three-holo-card","three-voice-orb","three-ascii-object"]){
+  for(const slug of ["button-magnetic","bg-grain-gradient","three-keycaps","three-contour-terrain","hero-prism","three-globe-arcs","three-particle-sphere","three-wave-field","three-holo-card","three-voice-orb","three-ascii-object","footer-ascii-wordmark","effect-border-tracer","footer-columns-status"]){
    const page=await context.newPage(),errors=[];page.on("pageerror",e=>errors.push(e.message));
    await page.goto(base+"/preview/"+slug+"?visualStyle=crayon&theme="+theme,{waitUntil:"load"});
    await page.locator('[data-dfa-ink-ready="true"]').first().waitFor();
@@ -27,12 +27,18 @@ try{
     ?await page.locator('div[data-seed]').evaluate(el=>({ink:getComputedStyle(el.querySelector('p[class*="text-white/70"]')).color,paint:getComputedStyle(el).backgroundColor}))
     :slug==="hero-prism"
     ?await page.locator('h1').evaluate(el=>({ink:getComputedStyle(el).color,paint:getComputedStyle(el.closest('[class~="bg-black"]')).backgroundColor}))
+    :slug==="footer-ascii-wordmark"
+    ?await page.locator('[data-demo="wordmark"]').evaluate(el=>{const stage=el.closest('[class~="bg-black"]');return{ink:getComputedStyle(stage).color,paint:getComputedStyle(stage).backgroundColor};})
+    :slug==="footer-columns-status"
+    ?await page.locator('footer').first().evaluate(el=>({ink:getComputedStyle(el).color,paint:getComputedStyle(el).backgroundColor}))
+    :slug==="effect-border-tracer"
+    ?await page.locator('#ebt-job-title').evaluate(el=>({ink:getComputedStyle(el).color,paint:getComputedStyle(el.closest('[class~="bg-[#09090b]"]')).backgroundColor}))
     :slug==="three-ascii-object"
     ?await page.locator('[data-edges]').evaluate(el=>({ink:getComputedStyle(el).color,paint:getComputedStyle(el).backgroundColor}))
     :await page.locator('section[class~="bg-black"]').first().evaluate(el=>({ink:getComputedStyle(el.querySelector('p[class*="text-white"],dd[class*="text-white"]')).color,paint:getComputedStyle(el).backgroundColor}));
    // These authored stages contain fixed dark artwork. A themed DOM
    // background behind the canvas is not the paint the viewer actually sees.
-   if(slug.startsWith("three-")||slug==="hero-prism")assert.equal(colors.paint,"rgb(0, 0, 0)",slug+" "+theme+" authored paint contrast (fixed artwork)");
+   if(slug.startsWith("three-")||slug==="hero-prism"||slug==="footer-ascii-wordmark")assert.equal(colors.paint,"rgb(0, 0, 0)",slug+" "+theme+" authored paint contrast (fixed artwork)");
    const ratio=contrast(colors.ink,colors.paint);assert(ratio>=7,slug+" "+theme+" authored paint contrast");
    if(slug==="three-globe-arcs"){
     const nested=await page.evaluate(()=>{

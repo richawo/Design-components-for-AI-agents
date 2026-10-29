@@ -97,6 +97,13 @@ describe('licensed style compilation',()=>{
   expect(materialCanvasClasses('new THREE.WebGLRenderer();'+source.replace('0x000000, 1','0x000000, 0'),pack)).toEqual(['bg-black']);
   expect(materialCanvasClasses('new THREE.WebGLRenderer();renderer.setClearColor(palette.background,1);<div className="bg-(--stage) text-(--ink)"/>',pack)).toEqual([]);
   expect(materialCanvasClasses('new THREE.WebGLRenderer(); <div className="bg-[#0e0e10]/90 bg-[#111]/[0.94] bg-[#111]/20"/>',pack)).toEqual(['bg-[#0e0e10]/90','bg-[#111]/[0.94]']);
+  expect(materialCanvasClasses('canvas.getContext("2d");ctx.fillText("Sample",0,0);<footer className="bg-black"><canvas/></footer>',pack)).toEqual(['bg-black']);
+  expect(materialCanvasClasses('canvas.getContext("2d");<article className="bg-black"/>',pack)).toEqual([]);
+  expect(materialCanvasClasses('const theme="light";canvas.getContext("2d");ctx.fillText("Sample",0,0);<article className="bg-black"><canvas/></article>',pack)).toEqual([]);
+  expect(materialCanvasClasses('const css=".ebt-edge{}";const style={offsetPath:"path(M0 0)"};<article className="bg-[#09090b] text-white"/>',pack)).toEqual(['bg-[#09090b]']);
+  expect(materialCanvasClasses('const style={offsetPath:"path(M0 0)"};<article className="bg-[#09090b] text-white"/>',pack)).toEqual([]);
+  expect(materialCanvasClasses('function Panel({theme="light"}){return <article className="bg-[#09090b]"/>}',pack)).toEqual([]);
+  expect(materialCanvasClasses('const id="fcs-demo-pill";function Footer({theme="system"}){return <footer className="bg-black"/>}',pack)).toEqual(['bg-black']);
   expect(materialCss(source.replace('0x000000, 1','0x000000, 0'),pack)).not.toContain('[class~="bg-black"]{--dfa-crayon-scheme:dark;');
  });
  it('keeps a layered selected pill label contrasting with its unchanged bright paint',()=>{

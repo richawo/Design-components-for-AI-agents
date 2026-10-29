@@ -110,7 +110,16 @@ export function materialCanvasClasses(code,pack){
   const fixedDarkShader=shaderInk&&shaderInk.slice(1).map(Number).every(value=>Number.isFinite(value)&&value>=0&&value<.12);
   const opaqueBlackCanvas=/\.setClearColor\(\s*0x0{6}\s*,\s*1\s*\)/.test(code);
   const authoredWebGL=/new\s+(?:[A-Za-z_$][\w$]*\.)?WebGLRenderer\s*\(/.test(code);
-  return pack.themes?.dark&&(fixedDarkShader||opaqueBlackCanvas||authoredWebGL)?[...new Set([...code.matchAll(/(?<![:\w-])bg-(?:black(?![\w/-])|\[#[\da-f]{3}(?:[\da-f]{3})?\](?:\/(?:\d{1,3}|\[0?\.\d+\]))?)/gi)].map(match=>match[0]).filter(name=>{if(name==='bg-black')return true;const m=name.match(/^bg-\[(#[\da-f]+)\](?:\/(\d+)|\/\[([\d.]+)\])?$/i);if(!m)return false;const alpha=m[2]?Number(m[2])/100:m[3]?Number(m[3]):1;if(alpha<.6)return false;let hex=m[1].slice(1);if(hex.length===3)hex=[...hex].map(c=>c+c).join('');return[0,2,4].map(at=>parseInt(hex.slice(at,at+2),16)).every(value=>value<48);}))]:[];
+  const themeControl=/\b(?:theme|darkMode)\s*(?:\??\s*:|=)|\.(?:theme|darkMode)\b|\bdark\s*\??\s*:\s*boolean\b/.test(code);
+  const drawnTypography=!themeControl&&/<canvas\b/.test(code)&&/\.getContext\(\s*['"]2d['"]/.test(code)&&/\.fillText\(/.test(code);
+  // This border-effect stage is fixed dark artwork; a motion path inside an
+  // ordinary editor or form does not change that component's selected theme.
+  const pathArtwork=!themeControl&&/\.ebt-edge\s*\{/.test(code)&&/\boffsetPath\s*:/.test(code);
+  // The status footer's theme control reports a site preference. Its own
+  // fixed dark chrome does not change with that preference.
+  const preferenceChrome=/["']fcs-demo-pill["']/.test(code);
+  const artwork=Boolean(fixedDarkShader||opaqueBlackCanvas||authoredWebGL||drawnTypography||pathArtwork||preferenceChrome);
+  return pack.themes?.dark&&artwork?[...new Set([...code.matchAll(/(?<![:\w-])bg-(?:black(?![\w/-])|\[#[\da-f]{3}(?:[\da-f]{3})?\](?:\/(?:\d{1,3}|\[0?\.\d+\]))?)/gi)].map(match=>match[0]).filter(name=>{if(name==='bg-black')return true;const m=name.match(/^bg-\[(#[\da-f]+)\](?:\/(\d+)|\/\[([\d.]+)\])?$/i);if(!m)return false;const alpha=m[2]?Number(m[2])/100:m[3]?Number(m[3]):1;if(alpha<.6)return false;let hex=m[1].slice(1);if(hex.length===3)hex=[...hex].map(c=>c+c).join('');return[0,2,4].map(at=>parseInt(hex.slice(at,at+2),16)).every(value=>value<48);}))]:[];
 }
 function hasLayeredBlackRadio(code){
   if(!code.includes('text-black')||!code.includes('radio'))return false;
