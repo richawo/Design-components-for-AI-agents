@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parse } from "@babel/parser";
-import { makeStyledSource, materialCss, styleRoots } from "../scripts/lib/component-styles.mjs";
+import { makeStyledSource, materialCss, materialCanvasClasses, styleRoots } from "../scripts/lib/component-styles.mjs";
 import fs from "node:fs";
 import path from "node:path";
 const material={css:'/* private material fixture */',prompt:'Keep the keyboard interaction.',appearance:'light',font:{family:'Hand',url:'https://example.invalid/font.woff2',weight:'400 700'},palette:{page:'#fff8e7',ink:'#2d3027',onInk:'#fff8e7',surface:'#fff8e7'}};
@@ -92,6 +92,8 @@ describe('licensed style compilation',()=>{
   const source='renderer.setClearColor(0x000000, 1); export function Scene(){return <div className="bg-black text-white"><h2>Survey sheet</h2></div>}';
   const pack={...material,themes:{light:material.palette,dark:{ink:'#ededef',page:'#000000',onInk:'#000000'}}};
   expect(materialCss(source,pack)).toContain('[class~="bg-black"]{--dfa-crayon-scheme:dark;');
+  expect(materialCanvasClasses(source,pack)).toEqual(['bg-black']);
+  expect(materialCanvasClasses(source.replace('0x000000, 1','0x000000, 0'),pack)).toEqual([]);
   expect(materialCss(source.replace('0x000000, 1','0x000000, 0'),pack)).not.toContain('[class~="bg-black"]{--dfa-crayon-scheme:dark;');
  });
  it('keeps generated styled sources out of public registry files',()=>{

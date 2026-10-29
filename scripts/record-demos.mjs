@@ -33,7 +33,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import sharp from "sharp";
 import { createHash } from "node:crypto";
-import { materialCss } from "./lib/component-styles.mjs";
+import { materialCss, materialCanvasClasses } from "./lib/component-styles.mjs";
 import { captureQuality, gallerySteps, concatFrameList, framedCropFilter, fitViewportFrame } from "./lib/recording-quality.mjs";
 import { launchChromium } from "./lib/browser.mjs";
 import { mountFixture } from "./lib/component-fixture.mjs";
@@ -254,16 +254,24 @@ async function record(browser, slug) {
       if (styled) {
         await page.locator("[data-licensed-visual-style]").waitFor({ state: "attached", timeout: 15000 });
         await page.waitForFunction(({style,theme})=>[...document.querySelectorAll("[data-dfa-style]")].some(node=>node.getAttribute("data-dfa-style")===style&&node.getAttribute("data-dfa-theme")===theme),{style:visualStyle,theme:styleTheme},{timeout:15000});
-        const expected=stylePack?.themes?.[styleTheme]?.page??stylePack?.palette?.page;
+        let expected=stylePack?.themes?.[styleTheme]?.page??stylePack?.palette?.page;
+        const sourceFile=path.join(root,"registry",meta.tier,slug,slug+".tsx");
+        const sourceCode=stylePack&&fs.existsSync(sourceFile)?fs.readFileSync(sourceFile,"utf8"):null;
+        // An opaque canvas may keep its authored local dark material in a
+        // Light host. Use the compiler's exact owner classes, not any palette.
+        if(sourceCode){
+          const owners=materialCanvasClasses(sourceCode,stylePack);
+          const localDark=owners.length&&await page.locator('[data-dfa-style="crayon"]').first().evaluate((node,names)=>names.some(name=>node.classList.contains(name)),owners);
+          if(localDark)expected=stylePack.themes.dark.page;
+        }
         const actual=await page.locator('[data-dfa-style="crayon"]').first().evaluate(node=>getComputedStyle(node).getPropertyValue("--dfa-crayon-page").trim().toLowerCase());
         if(expected&&actual!==expected.toLowerCase())throw new Error(`Preview palette ${actual} differs from the pinned ${styleTheme} palette ${expected}; keep the last good recording.`);
         let compiledCssSha256,runtimeSha256;
-        const sourceFile=path.join(root,"registry",meta.tier,slug,slug+".tsx");
-        if(stylePack&&fs.existsSync(sourceFile)){
+        if(sourceCode){
           const css=await page.locator("[data-licensed-visual-style]").textContent();
           const localFont=new URL(new URL(stylePack.font.url).pathname,base).href;
           const normalized=(css??"").replaceAll(localFont,stylePack.font.url);
-          const expectedCss=materialCss(fs.readFileSync(sourceFile,"utf8"),stylePack);
+          const expectedCss=materialCss(sourceCode,stylePack);
           const sha=value=>createHash("sha256").update(value).digest("hex");
           compiledCssSha256=sha(expectedCss);
           if(sha(normalized)!==compiledCssSha256)throw new Error("Preview CSS differs from the checked-out style compiler and pinned material; keep the last good recording.");
