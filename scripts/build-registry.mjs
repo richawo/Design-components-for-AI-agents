@@ -28,6 +28,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { validateComposition, installedBlockSource, compositionRegistryDependencies } from "./lib/block-composition.mjs";
 import { loadBlogSource, bundleBlog } from "./lib/blog-source.mjs";
 import { auditBlog } from "./lib/blog-audit.mjs";
@@ -38,6 +39,7 @@ import { conveyorVideoManifest } from "./lib/conveyor-videos.mjs";
 import { showcaseCollections } from "../lib/showcase-collections.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 import { packContent } from "./lib/content-pack.mjs";
+import { packCachedContent } from "./lib/content-pack-cache.mjs";
 import { makeStyledSource } from "./lib/component-styles.mjs";
 import { packStyleSource, sharedStyleText } from "./lib/style-delta.mjs";
 import { loadStylePack, styleSourceIdentity, styleSourcePin } from "./lib/style-source.mjs";
@@ -470,8 +472,16 @@ const siteContent = { ...editorialBundle, blogImages, docs: mdFiles("docs") };
 buildSiteI18n(root);
 // The readable bundle supports audits; request-time code imports only its pack.
 writeJson(path.join(outDir, "content.json"), siteContent);
-const packedPublicContent = packContent(siteContent);
-writeJson(path.join(outDir, "content-packed.json"), packedPublicContent);
+const publicPackPath=path.join(outDir,"content-packed.json"),publicPackReceiptPath=path.join(outDir,"content-pack-cache.json");
+const readPackCache=file=>{try{return JSON.parse(fs.readFileSync(file,"utf8"));}catch{return null;}};
+const publicPack=packCachedContent(siteContent,{
+  previous:readPackCache(publicPackPath),receipt:readPackCache(publicPackReceiptPath),
+  codecIdentity:createHash("sha256").update(fs.readFileSync(path.join(root,"scripts/lib/content-pack.mjs"))).digest("hex"),
+});
+const packedPublicContent=publicPack.packed;
+writeJson(publicPackPath,packedPublicContent);
+writeJson(publicPackReceiptPath,publicPack.receipt);
+console.log("content pack: "+(publicPack.reused?"reused verified bytes":"encoded current inputs"));
 writePublicContentRuntime(root, packedPublicContent);
 writeJson(path.join(root, "public", ".well-known", "design-build.json"), {
   visualStyleSource: styleSourceIdentity(root),
