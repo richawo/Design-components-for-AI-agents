@@ -5,6 +5,8 @@ import { packContent, unpackContent } from "../scripts/lib/content-pack.mjs";
 import { gzipSync } from "node:zlib";
 
 describe("packed editorial content", () => {
+  const dir = path.resolve(import.meta.dirname, "../registry/__generated__");
+  const sourceNames = fs.readdirSync(path.join(dir, "sources"));
   it("preserves multilingual prose, markup and code", () => {
     const content = { en: '<a href="/blog/guide">A guide</a>', ar: "دليل التصميم", ja: "デザインガイド", code: 'const name = "React";\n', empty: {} };
     expect(unpackContent(packContent(content))).toEqual(content);
@@ -30,15 +32,16 @@ describe("packed editorial content", () => {
     expect(unpackContent(packed)).toEqual(data);
     expect(unpackContent(legacy)).toEqual(data);
   });
-  it("preserves every component's installable code and briefs byte for byte", () => {
-    const dir = path.resolve(import.meta.dirname, "../registry/__generated__");
+  it.each(sourceNames)("preserves the installable code and briefs for %s byte for byte", name => {
+    const original = fs.readFileSync(path.join(dir, "sources", name), "utf8");
+    const packed = fs.readFileSync(path.join(dir, "source-packs", name), "utf8");
+    expect(unpackContent(JSON.parse(packed))).toEqual(JSON.parse(original));
+  });
+  it("keeps the complete component source collection within its compression budget", () => {
     let originalBytes = 0, packedBytes = 0;
-    for (const name of fs.readdirSync(path.join(dir, "sources"))) {
-      const original = fs.readFileSync(path.join(dir, "sources", name), "utf8");
-      const packed = fs.readFileSync(path.join(dir, "source-packs", name), "utf8");
-      expect(unpackContent(JSON.parse(packed))).toEqual(JSON.parse(original));
-      originalBytes += Buffer.byteLength(original);
-      packedBytes += Buffer.byteLength(packed);
+    for (const name of sourceNames) {
+      originalBytes += fs.statSync(path.join(dir, "sources", name)).size;
+      packedBytes += fs.statSync(path.join(dir, "source-packs", name)).size;
     }
     expect(originalBytes).toBeGreaterThan(0);
     expect(packedBytes).toBeLessThan(originalBytes * 0.6);
