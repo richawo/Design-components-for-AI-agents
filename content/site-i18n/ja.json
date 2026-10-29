@@ -23601,5 +23601,14 @@
   "# Or ask your connected agent for visualStyle: \"crayon\".": "# または、接続されているエージェントに VisualStyle: \"crayon\" を尋ねます。",
   "Gallery cards and live previews follow your selection.": "ギャラリー カードとライブ プレビューは選択に従います。",
   "Theme not available": "テーマが利用できません",
-  "Choose a light or dark Crayon theme.": "明るいまたは暗い Crayon テーマを選択します。"
+  "Choose a light or dark Crayon theme.": "明るいまたは暗い Crayon テーマを選択します。",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "スタイルをプレビューできます。ProでCrayonコンポーネント、プロンプト、MCP連携をご利用いただけます。",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Crayon スタイル サンプル: 紙の表面、手書きの見出し、描画カード",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "少し普通ではありません。",
+  "Make something good.": "良いものを作りましょう。",
+  "Choose component style": "コンポーネントのスタイルを選択してください",
+  "Component styles": "コンポーネントのスタイル",
+  "Site component style": "サイトコンポーネントのスタイル",
+  "Your Pro access unlocks both styles across the library.": "Pro アクセスにより、ライブラリ全体で両方のスタイルのロックが解除されます。"
 }

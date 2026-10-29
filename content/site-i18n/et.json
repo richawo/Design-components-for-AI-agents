@@ -2546,5 +2546,18 @@
   "Loading Crayon": "Laadimine Crayon",
   "Retry Crayon": "Proovi uuesti Crayon",
   "Crayon is a Pro style.": "Crayon on Pro stiil.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon allikas ja viipad nõuavad tasulist Pro litsentsi isegi siis, kui baas on tasuta."
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon allikas ja viipad nõuavad tasulist Pro litsentsi isegi siis, kui baas on tasuta.",
+  "We couldn't check your Pro access. Please try again.": "Me ei saanud teie Pro juurdepääsu kontrollida. Palun proovi uuesti.",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Vaadake välimuse eelvaadet. Pro avab Crayon komponendid, viibad ja MCP juurdepääsu.",
+  "Get Pro access": "Hankige Pro juurdepääs",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Crayon stiilinäidis: paberipinnad, käsitsi kirjutatud pealkirjad ja joonistatud kaardid",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "Natuke vähem tavaline.",
+  "Make something good.": "Tee midagi head.",
+  "Choose component style": "Valige komponendi stiil",
+  "Component styles": "Komponentide stiilid",
+  "Component style": "Komponentide stiil",
+  "Site component style": "Saidi komponendi stiil",
+  "Checking Pro access": "Pro-juurdepääsu kontrollimine",
+  "Your Pro access unlocks both styles across the library.": "Teie Pro juurdepääs avab kogu teegi mõlemad stiilid."
 }

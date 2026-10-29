@@ -23578,5 +23578,16 @@
   "Loading Crayon": "Зареждане Crayon",
   "Retry Crayon": "Опитайте отново Crayon",
   "Crayon is a Pro style.": "Crayon е професионален стил.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon източникът и подканите изискват платен Pro лиценз дори когато базата е безплатна."
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon източникът и подканите изискват платен Pro лиценз дори когато базата е безплатна.",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Преглед на външния вид. Pro отключва Crayon компоненти, подкани и MCP достъп.",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Примерен стил Crayon: хартиени повърхности, ръкописни заглавия и нарисувани карти",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "Малко по-малко обикновен.",
+  "Make something good.": "Направете нещо добро.",
+  "Choose component style": "Изберете стил на компонента",
+  "Component styles": "Стилове на компоненти",
+  "Component style": "Стил на компонента",
+  "Site component style": "Стил на компонентите на сайта",
+  "Checking Pro access": "Проверява се достъпът до Pro",
+  "Your Pro access unlocks both styles across the library.": "Вашият професионален достъп отключва и двата стила в цялата библиотека."
 }

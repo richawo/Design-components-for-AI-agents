@@ -1954,5 +1954,18 @@
   "Loading Crayon": "正在加载 Crayon",
   "Retry Crayon": "重试 Crayon",
   "Crayon is a Pro style.": "Crayon 是 Pro 风格。",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "即使基础组件免费，Crayon 源码和提示词仍需付费 Pro 许可证。"
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "即使基础组件免费，Crayon 源码和提示词仍需付费 Pro 许可证。",
+  "We couldn't check your Pro access. Please try again.": "我们无法检查您的 Pro 访问权限。请再试一次。",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "预览外观。 Pro 解锁 Crayon 组件、提示和 MCP 访问权限。",
+  "Get Pro access": "获得专业版访问权限",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Crayon 样式示例：纸质表面、手写标题和绘制卡片",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "稍微不那么普通一点。",
+  "Make something good.": "做点好事。",
+  "Choose component style": "选择组件样式",
+  "Component styles": "组件样式",
+  "Component style": "组件样式",
+  "Site component style": "网站组件样式",
+  "Checking Pro access": "检查 Pro 访问权限",
+  "Your Pro access unlocks both styles across the library.": "您的专业版访问权限可以解锁整个库中的两种风格。"
 }

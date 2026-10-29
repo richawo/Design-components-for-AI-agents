@@ -30,6 +30,8 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import sharp from "sharp";
+import { createHash } from "node:crypto";
+import { materialCss } from "./lib/component-styles.mjs";
 import { captureQuality, gallerySteps, concatFrameList, framedCropFilter, fitViewportFrame } from "./lib/recording-quality.mjs";
 import { launchChromium } from "./lib/browser.mjs";
 import { mountFixture } from "./lib/component-fixture.mjs";
@@ -247,7 +249,18 @@ async function record(browser, slug) {
         const expected=stylePack?.themes?.[styleTheme]?.page??stylePack?.palette?.page;
         const actual=await page.locator('[data-dfa-style="crayon"]').first().evaluate(node=>getComputedStyle(node).getPropertyValue("--dfa-crayon-page").trim().toLowerCase());
         if(expected&&actual!==expected.toLowerCase())throw new Error(`Preview palette ${actual} differs from the pinned ${styleTheme} palette ${expected}; keep the last good recording.`);
-        materialEvidence={commit:stylePin?.commit,theme:styleTheme,page:actual};
+        let compiledCssSha256;
+        const sourceFile=path.join(root,"registry",meta.tier,slug,slug+".tsx");
+        if(stylePack&&fs.existsSync(sourceFile)){
+          const css=await page.locator("[data-licensed-visual-style]").textContent();
+          const localFont=new URL(new URL(stylePack.font.url).pathname,base).href;
+          const normalized=(css??"").replaceAll(localFont,stylePack.font.url);
+          const expectedCss=materialCss(fs.readFileSync(sourceFile,"utf8"),stylePack);
+          const sha=value=>createHash("sha256").update(value).digest("hex");
+          compiledCssSha256=sha(expectedCss);
+          if(sha(normalized)!==compiledCssSha256)throw new Error("Preview CSS differs from the checked-out style compiler and pinned material; keep the last good recording.");
+        }
+        materialEvidence={commit:stylePin?.commit,theme:styleTheme,page:actual,...(compiledCssSha256?{compiledCssSha256,sourceCssVerified:true}:{})};
       }
     }
     await page.waitForTimeout(meta.category === "three-d" || meta.dependencies?.includes("three") ? 6000 : 3200);

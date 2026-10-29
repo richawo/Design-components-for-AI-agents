@@ -23579,5 +23579,16 @@
   "Loading Crayon": "Betöltés Crayon",
   "Retry Crayon": "Próbáld újra Crayon",
   "Crayon is a Pro style.": "A Crayon egy profi stílus.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "A Crayon forrás és promptok fizetős Pro licencet igényelnek még akkor is, ha az alap ingyenes."
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "A Crayon forrás és promptok fizetős Pro licencet igényelnek még akkor is, ha az alap ingyenes.",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Tekintse meg a megjelenés előnézetét. A Pro feloldja a Crayon összetevőket, felszólításokat és MCP hozzáférést.",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Crayon stílusminta: papírfelületek, kézzel írt fejlécek és rajzolt kártyák",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "Kicsit kevésbé hétköznapi.",
+  "Make something good.": "Csinálj valami jót.",
+  "Choose component style": "Válassza ki a komponens stílusát",
+  "Component styles": "Komponensstílusok",
+  "Component style": "Komponens stílus",
+  "Site component style": "Webhely összetevő stílusa",
+  "Checking Pro access": "Pro-hozzáférés ellenőrzése",
+  "Your Pro access unlocks both styles across the library.": "Pro-hozzáférése mindkét stílust feloldja a könyvtárban."
 }

@@ -1,18 +1,19 @@
 {
   "repository": "richawo/Design-for-AI",
-  "commit": "290e9098ee258fc14638ab1692d4d9acf25f20f8",
+  "commit": "7f896c9a06a16fd98e577d6f5f4c565a478e7ad1",
   "files": [
     {
       "path": "_styles/crayon/manifest.json",
-      "sha256": "4445d1881def2e0a9478f5ef0c44791c2ff14cb1eb4c78dec9c0cca9db9384a6"
+      "sha256": "5963da214b198f414d7c78a48357ef75e41d2377f887e4af569cd97b5f4ace31"
     },
     {
       "path": "_styles/crayon/prompt.md",
-      "sha256": "facf88ef4202771fbd19bb0a356a9ab3703de6dfb8f3e4fd8ace714e1e885493"
+      "sha256": "319c9ae51eba70ae9087721ecdd56ffebc265669928d5c14bf9aa0f7392d6645"
     },
     {
       "path": "_styles/crayon/style.css",
-      "sha256": "9748f113d45dbddee6e6e4be3008b8cce88a56ac3c12ea6bd285a974285750ab"
+      "sha256": "ddbaccd8cd785b5f15041a3f5ec6dabc09b6b182ef2fe08cf333cc6be9acf4ad"
     }
-  ]
+  ],
+  "previewVersion": 3
 }

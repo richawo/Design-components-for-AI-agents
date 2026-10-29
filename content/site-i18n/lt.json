@@ -2027,5 +2027,18 @@
   "Loading Crayon": "Įkeliama Crayon",
   "Retry Crayon": "Bandykite dar kartą Crayon",
   "Crayon is a Pro style.": "Crayon yra profesionalus stilius.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon šaltiniui ir raginimams reikalinga mokama Pro licencija, net jei bazė yra nemokama."
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon šaltiniui ir raginimams reikalinga mokama Pro licencija, net jei bazė yra nemokama.",
+  "We couldn't check your Pro access. Please try again.": "Nepavyko patikrinti jūsų profesionalų prieigos. Bandykite dar kartą.",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Peržiūrėkite išvaizdą. Pro atrakina Crayon komponentus, raginimus ir MCP prieigą.",
+  "Get Pro access": "Gaukite „Pro“ prieigą",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Crayon stiliaus pavyzdys: popieriaus paviršiai, ranka rašytos antraštės ir nupieštos kortelės",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "Šiek tiek mažiau įprastas.",
+  "Make something good.": "Padaryk ką nors gero.",
+  "Choose component style": "Pasirinkite komponento stilių",
+  "Component styles": "Komponentų stiliai",
+  "Component style": "Komponento stilius",
+  "Site component style": "Svetainės komponento stilius",
+  "Checking Pro access": "Tikrinama „Pro“ prieiga",
+  "Your Pro access unlocks both styles across the library.": "„Pro“ prieiga atrakina abu stilius bibliotekoje."
 }

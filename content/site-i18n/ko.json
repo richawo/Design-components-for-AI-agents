@@ -1954,5 +1954,18 @@
   "Loading Crayon": "Crayon 불러오는 중",
   "Retry Crayon": "Crayon 다시 시도",
   "Crayon is a Pro style.": "Crayon은 Pro 스타일입니다.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "기본 컴포넌트가 무료여도 Crayon 소스와 프롬프트를 사용하려면 유료 Pro 라이선스가 필요합니다."
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "기본 컴포넌트가 무료여도 Crayon 소스와 프롬프트를 사용하려면 유료 Pro 라이선스가 필요합니다.",
+  "We couldn't check your Pro access. Please try again.": "Pro 액세스를 확인할 수 없습니다. 다시 시도해 주세요.",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "모습을 미리 보세요. Pro는 Crayon 구성 요소, 프롬프트 및 MCP 액세스를 잠금 해제합니다.",
+  "Get Pro access": "Pro 액세스 받기",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Crayon 스타일 샘플: 종이 표면, 손으로 쓴 제목 및 그려진 카드",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "조금 덜 평범합니다.",
+  "Make something good.": "좋은 것을 만드십시오.",
+  "Choose component style": "구성요소 스타일 선택",
+  "Component styles": "구성요소 스타일",
+  "Component style": "구성요소 스타일",
+  "Site component style": "사이트 구성요소 스타일",
+  "Checking Pro access": "Pro 액세스 확인 중",
+  "Your Pro access unlocks both styles across the library.": "Pro에 액세스하면 라이브러리 전체에서 두 스타일을 모두 잠금 해제할 수 있습니다."
 }

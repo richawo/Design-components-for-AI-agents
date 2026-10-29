@@ -1954,5 +1954,18 @@
   "Loading Crayon": "Tagħbija Crayon",
   "Retry Crayon": "Erġa' pprova Crayon",
   "Crayon is a Pro style.": "Crayon huwa stil Pro.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon sors u prompts jeħtieġu liċenzja Pro mħallsa anke meta l-bażi tkun ħielsa."
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon sors u prompts jeħtieġu liċenzja Pro mħallsa anke meta l-bażi tkun ħielsa.",
+  "We couldn't check your Pro access. Please try again.": "Ma stajniex niċċekkjaw l-aċċess Pro tiegħek. Jekk jogħġbok erġa' pprova.",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Preview-dehra. Pro jiftaħ Crayon komponenti, prompts u MCP aċċess.",
+  "Get Pro access": "Ikseb aċċess Pro",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Crayon kampjun tal-istil: uċuħ tal-karti, intestaturi miktuba bl-idejn u karti miġbuda",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "Ftit inqas ordinarju.",
+  "Make something good.": "Agħmel xi ħaġa tajba.",
+  "Choose component style": "Agħżel l-istil tal-komponent",
+  "Component styles": "Stili tal-komponenti",
+  "Component style": "Stil tal-komponent",
+  "Site component style": "Stil tal-komponent tas-sit",
+  "Checking Pro access": "Iċċekkja l-aċċess Pro",
+  "Your Pro access unlocks both styles across the library.": "L-aċċess Pro tiegħek jiftaħ iż-żewġ stili fil-librerija."
 }

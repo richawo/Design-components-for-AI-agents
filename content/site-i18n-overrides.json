@@ -17,7 +17,8 @@
     "# Both themes are included. DFA_CRAYON_THEME selects the installation default.",
     "# Or ask your connected agent for visualStyle: \"crayon\", theme: \"{{0}}\".",
     "# Both themes are included. Follow the host .dark/.light class or data-theme attribute.",
-    "Crayon"
+    "Crayon",
+    "STUDIO / 01"
   ],
   "_preserveInPreviews": {
     "hero-blur-statement": [
@@ -45,7 +46,8 @@
     "Signal found": "Signal détecté",
     "at 1420 MHz.": "à 1420 MHz.",
     "Signal found at 1420 MHz.": "Signal détecté à 1420 MHz.",
-    "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready.": "État contrôlé de la requête, avec la même structure que useChat de AI SDK. Une valeur non définie simule réflexion → streaming → prêt."
+    "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready.": "État contrôlé de la requête, avec la même structure que useChat de AI SDK. Une valeur non définie simule réflexion → streaming → prêt.",
+    "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Découvrez le style. Pro donne accès aux composants Crayon, aux prompts et à MCP."
   },
   "it": {
     "A monochrome, dark-first React Native inbox: rows rise from blur, swipe actions fill at their thresholds, a full swipe archives with glass undo, and new mail lands.": "Una casella di posta React Native monocromatica, scura per impostazione predefinita: le righe emergono dalla sfocatura, le azioni di scorrimento si riempiono alle rispettive soglie, uno scorrimento completo archivia con un comando Annulla dall’effetto vetro e i nuovi messaggi arrivano."
@@ -61,7 +63,8 @@
     "Warm the dough rather than the room. Aim for 24 to 26 °C by heating the water: multiply your target by three and subtract the flour and room temperatures.[3][6] Cold flour counts too, so keep the bag somewhere warm.[7] A richer feed at 1:2:2 keeps the starter on time.[4]": "Varm dejen frem for rummet. Sigt efter 24 til 26 °C ved at varme vandet: gang måltemperaturen med tre, og træk melets og rummets temperaturer fra.[3][6] Koldt mel tæller også med, så opbevar posen et varmt sted.[7] En rigeligere fodring i forholdet 1:2:2 holder surdejen på rette tid.[4]"
   },
   "de": {
-    "Underline Tabs": "Tabs mit Unterstreichung"
+    "Underline Tabs": "Tabs mit Unterstreichung",
+    "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Stil in der Vorschau ansehen. Pro schaltet Crayon-Komponenten, Prompts und den MCP-Zugriff frei."
   },
   "cs": {
     "Deep work: onboarding flow": "Soustředěná práce: průběh úvodního nastavení"
@@ -76,9 +79,19 @@
     "Pass the growing JSON as `text` on every chunk with `status` (streaming, done, stopped, error). Partial JSON is expected: each value opens at its first character and closes at its last.": "Minden új adatrésznél add át a bővülő JSON-t a `text` propban, az állapotot pedig a `status` propban (streaming, done, stopped, error). A részleges JSON támogatott: minden érték az első karakterénél nyílik meg, és az utolsónál zárul le."
   },
   "es": {
-    "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready.": "Estado controlado de la solicitud, con la misma estructura que useChat de AI SDK. Si no se define, simula pensar → transmitir → listo."
+    "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready.": "Estado controlado de la solicitud, con la misma estructura que useChat de AI SDK. Si no se define, simula pensar → transmitir → listo.",
+    "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Vista previa del estilo. Pro incluye los componentes Crayon, los prompts y el acceso a MCP."
   },
   "ro": {
     "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready.": "Starea controlată a cererii, cu aceeași structură ca useChat din AI SDK. O valoare nedefinită simulează gândire → streaming → gata."
+  },
+  "ja": {
+    "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "スタイルをプレビューできます。ProでCrayonコンポーネント、プロンプト、MCP連携をご利用いただけます。"
+  },
+  "ar": {
+    "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "عاين المظهر. تتيح خطة Pro استخدام مكونات Crayon والتوجيهات والوصول إلى MCP."
+  },
+  "vi": {
+    "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Xem trước giao diện. Pro mở khóa các thành phần Crayon, lời nhắc và quyền truy cập MCP."
   }
 }

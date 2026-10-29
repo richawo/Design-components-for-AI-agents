@@ -1954,5 +1954,18 @@
   "Loading Crayon": "جاري التحميل Crayon",
   "Retry Crayon": "إعادة المحاولة Crayon",
   "Crayon is a Pro style.": "Crayon هو أسلوب احترافي.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon يتطلب المصدر والمطالبات ترخيص Pro مدفوعًا حتى عندما تكون القاعدة مجانية."
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon يتطلب المصدر والمطالبات ترخيص Pro مدفوعًا حتى عندما تكون القاعدة مجانية.",
+  "We couldn't check your Pro access. Please try again.": "لم نتمكن من التحقق من وصولك الاحترافي. يرجى المحاولة مرة أخرى.",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "عاين المظهر. تتيح خطة Pro استخدام مكونات Crayon والتوجيهات والوصول إلى MCP.",
+  "Get Pro access": "احصل على وصول احترافي",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Crayon نموذج النمط: الأسطح الورقية والعناوين المكتوبة بخط اليد والبطاقات المرسومة",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "أقل عادية قليلا.",
+  "Make something good.": "اصنع شيئًا جيدًا.",
+  "Choose component style": "اختر نمط المكون",
+  "Component styles": "أنماط المكونات",
+  "Component style": "نمط المكون",
+  "Site component style": "نمط مكون الموقع",
+  "Checking Pro access": "التحقق من وصول برو",
+  "Your Pro access unlocks both styles across the library.": "يفتح وصولك الاحترافي كلا النمطين عبر المكتبة."
 }

@@ -10,6 +10,9 @@ if (!license) throw new Error("Set TEST_STYLE_LICENSE to an existing Pro key sco
 const out = process.env.TEST_OUT || "test-results/crayon-motion/gallery";
 fs.mkdirSync(out, { recursive: true });
 const browser = await launchChromium({ args: [] });
+const previewVersion=JSON.parse(fs.readFileSync(new URL("../../registry/style-source.json",import.meta.url),"utf8")).previewVersion??2;
+const mediaPrefix=theme=>`/style-previews/crayon/${previewVersion>=3?`v${previewVersion}/${theme}/`:theme==="dark"?"dark/":""}`;
+const lightPrefix=mediaPrefix("light"),darkPrefix=mediaPrefix("dark");
 const report = {};
 async function context(options = {}, paid = true) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: "no-preference", ...options });
@@ -18,13 +21,17 @@ async function context(options = {}, paid = true) {
 }
 async function choose(page, name) {
   await page.getByRole("button", { name: "Choose component style", exact: true }).click();
-  await page.getByRole("region", { name: "Component styles", exact: true }).getByRole("button", { name: new RegExp(`^${name}`) }).click();
+  const menu=page.getByRole("region", { name: "Component styles", exact: true });
+  await menu.getByRole("button", { name: new RegExp(`^${name}`) }).click();
+  // A cached entitlement closes immediately. A pending check leaves the menu
+  // open to explain the paid style, so dismiss it before interacting with cards.
+  if(await menu.isVisible())await page.getByRole("button",{name:"Choose component style",exact:true}).click();
 }
 async function chooseTheme(page,theme){
   await page.getByRole("button",{name:"Choose component style",exact:true}).click();
   await page.getByRole("region",{name:"Component styles",exact:true}).getByRole("button",{name:theme,exact:true}).click();
   await page.getByRole("button",{name:"Choose component style",exact:true}).click();
-  await page.waitForFunction(dark=>[...document.querySelectorAll(".component-card img")].every(img=>img.src.includes("/crayon/dark/")===dark),theme==="Dark");
+  await page.waitForFunction(prefix=>[...document.querySelectorAll(".component-card img")].every(img=>img.src.includes(prefix)),theme==="Dark"?darkPrefix:lightPrefix);
 }
 async function waitForStyle(page, styled) {
   await page.waitForFunction(styled => {
@@ -74,7 +81,7 @@ try {
   await page.goto(`${base}/components`);
   await choose(page, "Crayon");
   await waitForStyle(page, true);
-  report.crayon = await movingCard(page, "/style-previews/crayon/");
+  report.crayon = await movingCard(page, lightPrefix);
   assert.equal(await page.locator(".component-card img[srcset]").count(), 0, "Original responsive posters survived the style switch");
   assert.equal(await page.locator('.component-card source[src^="/previews/"]').count(), 0, "Original recording covered Crayon");
   const active = await page.locator(".component-card video").evaluateAll(videos => videos.filter(v => !v.paused).length);
@@ -82,8 +89,8 @@ try {
   assert.ok(!requests.some(req => /^\/preview\/|^\/api\/styles\//.test(req.url)), "gallery initialized a live component or fetched licensed source");
   await page.screenshot({ path: `${out}/crayon-playing.png` });
   await chooseTheme(page,"Dark");
-  report.darkCrayon=await movingCard(page,"/style-previews/crayon/dark/");
-  assert.equal(await page.locator('.component-card source[src^="/style-previews/crayon/"]:not([src*="/dark/"])').count(),0,"Light recordings survived the dark theme selection");
+  report.darkCrayon=await movingCard(page,darkPrefix);
+  assert.equal(await page.locator(`.component-card source[src^="${lightPrefix}"]:not([src^="${darkPrefix}"])`).count(),0,"Light recordings survived the dark theme selection");
   await page.screenshot({path:`${out}/crayon-dark-playing.png`});
 
   const oldCard = await page.locator(".component-card video").first().elementHandle();
@@ -118,7 +125,7 @@ try {
   await page.goto(base);
   await page.mouse.move(8, 8);
   await page.locator('[data-conveyor-row="0"]').scrollIntoViewIfNeeded();
-  await page.waitForFunction(() => [...document.querySelectorAll("[data-conveyor-row] video")].some(video => !video.paused && video.readyState >= 2 && video.videoWidth === 960 && video.currentSrc.includes("/style-previews/crayon/dark/conveyor/")));
+  await page.waitForFunction(prefix => [...document.querySelectorAll("[data-conveyor-row] video")].some(video => !video.paused && video.readyState >= 2 && video.videoWidth === 960 && video.currentSrc.includes(prefix+"conveyor/")),darkPrefix);
   report.conveyor = await page.locator("[data-conveyor-row] video").evaluateAll(videos => ({ active: videos.filter(v => !v.paused && v.readyState >= 2).length, decoderCost: videos.filter(v => !v.paused && v.readyState >= 2).reduce((sum, v) => sum + (v.currentSrc.includes("/conveyor/") ? .5 : 1), 0), loaded: videos.filter(v => v.currentSrc).map(v => ({ source: v.currentSrc, width: v.videoWidth })) }));
   assert.ok(report.conveyor.active > 0 && report.conveyor.active <= 12);
   assert.ok(report.conveyor.decoderCost <= 6);
@@ -129,8 +136,27 @@ try {
   await page.waitForFunction(() => [...document.querySelectorAll("[data-conveyor-row] video")].some(video => !video.paused && video.readyState >= 2));
   report.conveyor.pauseResume = true;
   await chooseTheme(page,"Light");
-  await page.waitForFunction(()=>[...document.querySelectorAll("[data-conveyor-row] video")].some(video=>!video.paused&&video.readyState>=2&&video.currentSrc.includes("/style-previews/crayon/conveyor/")));
+  await page.waitForFunction(prefix=>[...document.querySelectorAll("[data-conveyor-row] video")].some(video=>!video.paused&&video.readyState>=2&&video.currentSrc.includes(prefix+"conveyor/")),lightPrefix);
   report.conveyor.lightAndDark=true;
+  report.themeCoverage=[];
+  for(const route of ["/components?q=Settings","/blocks"]){
+    const start=requests.length;
+    await page.goto(base+route);await waitForStyle(page,true);
+    for(const theme of ["Dark","Light"]){
+      await chooseTheme(page,theme);
+      const prefix=theme==="Dark"?darkPrefix:lightPrefix;
+      await page.waitForFunction(prefix=>[...document.querySelectorAll(".component-card video")].some(video=>!video.paused&&video.readyState>=2&&video.currentSrc.includes(prefix)),prefix);
+      const media=await page.locator(".component-card").evaluateAll(cards=>cards.map(card=>({poster:card.querySelector("img")?.getAttribute("src"),sources:[...card.querySelectorAll("video source")].map(source=>source.getAttribute("src"))})));
+      assert(media.every(card=>card.poster?.includes(prefix)&&card.sources.every(source=>source?.includes(prefix))),route+": a movie or poster retained the previous theme");
+      report.themeCoverage.push({route,theme,media});
+    }
+    await page.reload();await waitForStyle(page,true);
+    assert.equal(await page.evaluate(()=>localStorage.getItem("dfa-component-style-v1")),"crayon");
+    assert.equal(await page.evaluate(()=>localStorage.getItem("dfa-component-theme-v1")),"light");
+    assert.equal(await page.locator(`.component-card img[src^="${darkPrefix}"]`).count(),0);
+    assert(!requests.slice(start).some(request=>/^\/preview\/|^\/api\/styles\//.test(request.url)),"gallery theme switching initialized a live component");
+  }
+  report.refreshRetainsStyleAndTheme=true;
   assert.deepEqual(errors, []);
   await ctx.close();
 
@@ -141,7 +167,7 @@ try {
   await sharedPage.frameLocator("#preview iframe").locator('[data-dfa-theme="light"]').waitFor({state:"attached"});
   assert.equal(await sharedPage.evaluate(()=>localStorage.getItem("dfa-component-theme-v1")),"light");
   await sharedPage.goto(`${base}/components`);await waitForStyle(sharedPage,true);
-  assert.equal(await sharedPage.locator('.component-card img[src*="/crayon/dark/"]').count(),0,"Fresh navigation lost the shared link's light theme");
+  assert.equal(await sharedPage.locator(`.component-card img[src^="${darkPrefix}"]`).count(),0,"Fresh navigation lost the shared link's light theme");
   await shared.close();
   report.sharedLinkTheme=true;
 
@@ -159,11 +185,31 @@ try {
     report[preference] = { posterOnly: true };
     await ctx.close();
   }
-  const guest = await context({}, false), guestPage = await guest.newPage();
-  await guestPage.goto(`${base}/components`); await choose(guestPage, "Crayon");
+  const guest = await context({}, false), guestPage = await guest.newPage(),guestRequests=[];
+  guestPage.on("request",request=>guestRequests.push(request.url().replace(base,"")));
+  await guestPage.goto(`${base}/components?q=Settings`);
+  await guestPage.getByRole("button",{name:"Choose component style",exact:true}).click();
+  await guestPage.getByRole("region",{name:"Component styles",exact:true}).getByRole("button",{name:"Dark",exact:true}).click();
   await guestPage.getByText("Preview the look. Pro unlocks Crayon components, prompts and MCP access.", { exact: true }).waitFor();
-  assert.equal(await guestPage.locator('.component-card img[src^="/style-previews/"]').count(), 0);
-  report.guestStillLocked = true;
+  await waitForStyle(guestPage,true);
+  await guestPage.getByRole("button",{name:"Choose component style",exact:true}).click();
+  report.guestDarkPreview=await movingCard(guestPage,darkPrefix);
+  await chooseTheme(guestPage,"Light");report.guestLightPreview=await movingCard(guestPage,lightPrefix);
+  assert.equal(new URL(guestPage.url()).searchParams.get("theme"),"light","gallery URL retained a stale theme that would override the saved preference");
+  assert.equal(new URL(guestPage.url()).searchParams.get("q"),"Settings","style selection discarded the search query");
+  await guestPage.reload();await waitForStyle(guestPage,true);
+  assert.equal(await guestPage.evaluate(()=>localStorage.getItem("dfa-component-style-v1")),"crayon");
+  assert.equal(await guestPage.evaluate(()=>localStorage.getItem("dfa-component-theme-v1")),"light");
+  assert.equal(await guestPage.locator(`.component-card img[src^="${darkPrefix}"]`).count(),0);
+  assert(!guestRequests.some(url=>/^\/preview\/|^\/api\/styles\//.test(url)),"public recorded previews loaded licensed live material");
+  for(const theme of ["light","dark"]){
+    const source=await guest.request.get(`${base}/api/registry/hero-swiss-grid?visualStyle=crayon&theme=${theme}`);
+    assert.equal(source.status(),401);assert(source.headers()["cache-control"].includes("no-store"));assert(!(await source.text()).includes("DFA_LICENSED_VISUAL_CSS"));
+  }
+  await guestPage.goto(`${base}/components/hero-swiss-grid`);
+  await guestPage.frameLocator("#preview iframe").getByText("Crayon is a Pro style.",{exact:true}).waitFor();
+  assert.equal(await guestPage.frameLocator("#preview iframe").locator("[data-licensed-visual-style]").count(),0);
+  report.guestMoviesAndPersistence=true;report.guestLiveAndSourceStillLocked=true;
   await guest.close();
   fs.writeFileSync(`${out}/report.json`, JSON.stringify(report, null, 2));
   console.log("Styled and Original recordings animate; offscreen unloading, navigation, preferences and guest access passed.");

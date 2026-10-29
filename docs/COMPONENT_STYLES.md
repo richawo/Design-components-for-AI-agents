@@ -1,8 +1,12 @@
 # Component styles
 
 The header selector and component toolbar share one selection. Original is the
-default. A paid selection is remembered in this browser and follows navigation.
-Original browsing does not request account state. Opening the style menu or restoring a paid selection checks Pro access. This keeps public cache hits from initializing the licensed server just to display the header.
+default. The preview selection is remembered in this browser and follows navigation.
+Catalogue and component URLs also follow the selected style and theme without
+dropping search filters.
+Recorded previews are public. Live Crayon material, source, prompts and installs
+remain Pro-only, including when the original component is free.
+Original browsing does not request account state. Opening the style menu or restoring Crayon checks Pro access. This keeps public cache hits from initializing the licensed server just to display the header.
 
 The public menu contains a small illustrative sample, without serving licensed
 component material. Catalogue cards use a matched recording and first-frame
@@ -39,8 +43,10 @@ selector renders this collection rather than a fixed pair of controls. Remote
 MCP schemas derive their style IDs from the same collection; update the packaged
 stdio schema alongside it when adding an option.
 
-Crayon includes light paper and dark charcoal palettes, with the same component
-contracts and interactions. Scoped web material follows the host `.light` /
+Crayon shares Original's neutral light and dark colour family: near-white paper
+and white surfaces in Light, with a true-black canvas and graphite surfaces in Dark.
+Handwritten type and drawn edges define the style. Purposeful component accents,
+imagery, contracts and interactions are preserved. Scoped web material follows the host `.light` /
 `.dark` class or `data-theme` attribute; `data-dfa-theme` on a component root
 overrides that host. MCP `get_component` and `install_command`, source APIs and
 the licensed registry accept `theme: "light" | "dark"` (a `theme` query string
@@ -52,8 +58,11 @@ the selected installation.
 Preview URLs accept the same theme query. Record the dark catalogue with
 `scripts/record-demos.mjs --visual-style=crayon --theme=dark`, and its smaller
 homepage takes with `scripts/build-conveyor-videos.mjs --visual-style=crayon --theme=dark`.
-Dark media lives under `public/style-previews/crayon/dark/`; light URLs remain
-stable. Neither theme bypasses Pro authorization.
+The neutral palette uses `public/style-previews/crayon/v3/light/` and
+`public/style-previews/crayon/v3/dark/`. The public style pin's `previewVersion`
+selects a complete matching movie, poster and compact-media set. Earlier sets
+remain available to open sessions during the release. Source and live material
+retain Pro authorization in both themes.
 
 Each paid option also needs its own private art direction, font assets and
 component material, an immutable source pin, a build compiler and protected

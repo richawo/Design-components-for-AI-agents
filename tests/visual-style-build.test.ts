@@ -36,6 +36,19 @@ describe('licensed style compilation',()=>{
   expect(value.styleCss).not.toContain('--w-accent:#b74e28!important');
   expect(value.code).toContain('"--w-accent":accent');
  });
+ it('preserves the foreground calculated for an unchanged accent fill',()=>{
+  const source={slug:'test',code:'export function Widget({accent="#1d4ed8"}){const vars={"--w-ink":"#111111","--w-accent":accent,"--w-accent-ink":"#ffffff","--w-accent-text":"#ffffff","--w-onAccent":"#ffffff","--on-brand":"#ffffff"};return <button style={vars} className="bg-[var(--w-accent)] text-[var(--w-accent-ink)]">Hold dates</button>}',prompt:'base',promptJson:'{}'};
+  const value=makeStyledSource(meta,source,material)!;
+  for(const token of ['--w-accent','--w-accent-ink','--w-accent-text','--w-onAccent','--on-brand'])expect(value.styleCss).not.toContain(token+':');
+  expect(value.styleCss).toContain('--w-ink:#2d3027!important');
+  expect(value.code).toContain('"--w-accent-ink":"#ffffff"');
+ });
+ it('still adapts inverse text when its neutral ink fill changes',()=>{
+  const source={slug:'test',code:'export function Widget(){const vars={"--w-ink":"#111111","--w-on-ink":"#ffffff"};return <button style={vars} className="bg-[var(--w-ink)] text-[var(--w-on-ink)]">Continue</button>}',prompt:'base',promptJson:'{}'};
+  const value=makeStyledSource(meta,source,material)!;
+  expect(value.styleCss).toContain('--w-ink:#2d3027!important');
+  expect(value.styleCss).toContain('--w-on-ink:#fff8e7!important');
+ });
  it('keeps generated styled sources out of public registry files',()=>{
   const files=fs.readdirSync(path.resolve('public/r')).filter(f=>f.endsWith('.json'));
   expect(files.length).toBeGreaterThan(50);

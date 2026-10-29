@@ -89,7 +89,11 @@ function roleFor(token){
 }
 export function materialCss(code,pack){
   const variables=[...new Set([...code.matchAll(/--[a-zA-Z][\w-]*/g)].map(m=>m[0]))];
-  const mapped=variables.flatMap(token=>{const role=roleFor(token);return role&&role!=='accent'&&!/on-accent$/.test(token)&&pack.palette[role]?[[token,pack.themes?`var(--dfa-crayon-${role==='onInk'?'on-ink':role})`:pack.palette[role]]]:[];});
+  // Accent fills retain their original value, so keep the foreground computed
+  // for that fill too. Mapping accent-ink to page ink erased selected dates
+  // and action labels when both resolved to the same neutral colour.
+  const onAccent=token=>/(?:^|-)(?:on-(?:accent|brand|primary)|(?:accent|brand|primary)-(?:ink|fg|foreground|text|label|contrast|on))$/.test(token.replace(/([a-z])([A-Z])/g,'$1-$2').toLowerCase());
+  const mapped=variables.flatMap(token=>{const role=roleFor(token);return role&&role!=='accent'&&!onAccent(token)&&pack.palette[role]?[[token,pack.themes?`var(--dfa-crayon-${role==='onInk'?'on-ink':role})`:pack.palette[role]]]:[];});
   const scope='[data-dfa-style="crayon"]';
   const bindings=mapped.map(([token,value])=>scope+','+scope+' [style*="'+token+'"]{'+token+':'+value+'!important}').join('\n');
   return pack.css+'\n'+bindings;
@@ -167,6 +171,6 @@ function makeNativeStyledSource(meta,source,pack){
  const ending='\n\n// Crayon visual style: Design for AI Pro. Native primitives and component API are preserved.\nimport {Platform as DFAStylePlatform} from "react-native";\n';
  code+=ending;const codeEdits=[{at:source.code.length,end:source.code.length,text:ending},...edits];
  parse(code,{sourceType:'module',plugins:['typescript','jsx']});
- const nativeBrief=pack.prompt+'\n\nReact Native: retain native views, gestures and callbacks. Use the paper palette. Heading fallbacks use Chalkboard SE on iOS and casual on Android. Load the included Caveat font as DFA Crayon for identical custom typography if the host app supports custom fonts.';
+ const nativeBrief=pack.prompt+'\n\nReact Native: retain native views, gestures and callbacks. Use the selected neutral palette. Heading fallbacks use Chalkboard SE on iOS and casual on Android. Load the included Caveat font as DFA Crayon for identical custom typography if the host app supports custom fonts.';
  return{...source,code,codeEdits,prompt:source.prompt.trim()+'\n\n## Crayon visual style (Pro)\n\n'+nativeBrief,promptJson:JSON.stringify({...JSON.parse(source.promptJson),visualStyle:{id:'crayon',tier:'pro',platform:'mobile',appearance:pack.appearance,palette:pack.palette,...(pack.themes?{themes:pack.themes}:{}),typography:pack.font}},null,2),visualStyle:'crayon',styleCss:materialCss(source.code,pack),font:pack.font};
 }

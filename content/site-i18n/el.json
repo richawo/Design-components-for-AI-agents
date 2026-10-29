@@ -10917,5 +10917,16 @@
   "Loading Crayon": "Φόρτωση Crayon",
   "Retry Crayon": "Επανάληψη Crayon",
   "Crayon is a Pro style.": "Το Crayon είναι ένα στυλ Pro.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Η πηγή Crayon και τα μηνύματα προτροπής απαιτούν πληρωμένη άδεια Pro ακόμη και όταν η βάση είναι δωρεάν."
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Η πηγή Crayon και τα μηνύματα προτροπής απαιτούν πληρωμένη άδεια Pro ακόμη και όταν η βάση είναι δωρεάν.",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Προεπισκόπηση της εμφάνισης. Το Pro ξεκλειδώνει στοιχεία Crayon, προτροπές και πρόσβαση MCP.",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Crayon δείγμα στυλ: επιφάνειες χαρτιού, χειρόγραφες επικεφαλίδες και τραβηγμένες κάρτες",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "Λίγο λιγότερο συνηθισμένο.",
+  "Make something good.": "Φτιάξε κάτι καλό.",
+  "Choose component style": "Επιλέξτε στυλ συστατικού",
+  "Component styles": "Στυλ συστατικών",
+  "Component style": "Στυλ συστατικών",
+  "Site component style": "Στυλ στοιχείου τοποθεσίας",
+  "Checking Pro access": "Έλεγχος πρόσβασης Pro",
+  "Your Pro access unlocks both styles across the library.": "Η πρόσβαση Pro σας ξεκλειδώνει και τα δύο στυλ σε όλη τη βιβλιοθήκη."
 }

@@ -1954,5 +1954,18 @@
   "Loading Crayon": "Đang tải Crayon",
   "Retry Crayon": "Thử lại Crayon",
   "Crayon is a Pro style.": "Crayon là phong cách Pro.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Mã nguồn và câu lệnh Crayon yêu cầu giấy phép Pro trả phí, ngay cả khi thành phần gốc miễn phí."
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Mã nguồn và câu lệnh Crayon yêu cầu giấy phép Pro trả phí, ngay cả khi thành phần gốc miễn phí.",
+  "We couldn't check your Pro access. Please try again.": "Chúng tôi không thể kiểm tra quyền truy cập Pro của bạn. Vui lòng thử lại.",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Xem trước giao diện. Pro mở khóa các thành phần Crayon, lời nhắc và quyền truy cập MCP.",
+  "Get Pro access": "Nhận quyền truy cập Pro",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Mẫu kiểu Crayon: bề mặt giấy, tiêu đề viết tay và thẻ vẽ",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "Ít bình thường hơn một chút.",
+  "Make something good.": "Làm điều gì đó tốt đẹp.",
+  "Choose component style": "Chọn kiểu thành phần",
+  "Component styles": "Kiểu thành phần",
+  "Component style": "Kiểu thành phần",
+  "Site component style": "Kiểu thành phần trang web",
+  "Checking Pro access": "Kiểm tra quyền truy cập Pro",
+  "Your Pro access unlocks both styles across the library.": "Quyền truy cập Pro của bạn sẽ mở khóa cả hai kiểu trên thư viện."
 }

@@ -2027,5 +2027,18 @@
   "Loading Crayon": "Notiek Crayon ielāde",
   "Retry Crayon": "Mēģināt Crayon vēlreiz",
   "Crayon is a Pro style.": "Crayon ir Pro stils.",
-  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon pirmkodam un uzvednēm ir nepieciešama maksas Pro licence, pat ja pamata komponents ir bez maksas."
+  "Crayon source and prompts require a paid Pro licence even when the base is free.": "Crayon pirmkodam un uzvednēm ir nepieciešama maksas Pro licence, pat ja pamata komponents ir bez maksas.",
+  "We couldn't check your Pro access. Please try again.": "Mēs nevarējām pārbaudīt jūsu Pro piekļuvi. Lūdzu, mēģiniet vēlreiz.",
+  "Preview the look. Pro unlocks Crayon components, prompts and MCP access.": "Priekšskatiet izskatu. Pro atbloķē Crayon komponentus, uzvednes un MCP piekļuvi.",
+  "Get Pro access": "Iegūstiet Pro piekļuvi",
+  "Crayon style sample: paper surfaces, handwritten headings and drawn cards": "Crayon stila paraugs: papīra virsmas, ar roku rakstīti virsraksti un zīmētas kartītes",
+  "STUDIO / 01": "STUDIO / 01",
+  "A little less ordinary.": "Nedaudz mazāk parasta.",
+  "Make something good.": "Uztaisi kaut ko labu.",
+  "Choose component style": "Izvēlieties komponentu stilu",
+  "Component styles": "Komponentu stili",
+  "Component style": "Komponentu stils",
+  "Site component style": "Vietnes komponentu stils",
+  "Checking Pro access": "Tiek pārbaudīta Pro piekļuve",
+  "Your Pro access unlocks both styles across the library.": "Profesionāla piekļuve bibliotēkā atbloķē abus stilus."
 }
