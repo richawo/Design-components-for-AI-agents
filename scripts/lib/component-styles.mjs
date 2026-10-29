@@ -137,7 +137,8 @@ export function materialCss(code,pack){
   // Its overlay and controls therefore keep a local dark material in a light host.
   const shaderInk=code.match(/\bvec3\s+ink\s*=\s*vec3\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)/);
   const fixedDarkShader=shaderInk&&shaderInk.slice(1).map(Number).every(value=>Number.isFinite(value)&&value>=0&&value<.12);
-  const darkPaint=pack.themes?.dark&&fixedDarkShader?[...new Set([...code.matchAll(/(?<![:\w-])bg-\[(#[\da-f]{6})\]/gi)].map(match=>match[0]).filter(name=>{const hex=name.slice(5,-1);return[0,2,4].map(at=>parseInt(hex.slice(at,at+2),16)).every(value=>value<48);}))]:[];
+  const opaqueBlackCanvas=/\.setClearColor\(\s*0x0{6}\s*,\s*1\s*\)/.test(code);
+  const darkPaint=pack.themes?.dark&&(fixedDarkShader||opaqueBlackCanvas)?[...new Set([...code.matchAll(/(?<![:\w-])bg-(?:black(?![\w/-])|\[#[\da-f]{3}(?:[\da-f]{3})?\])/gi)].map(match=>match[0]).filter(name=>{if(name==='bg-black')return true;let hex=name.slice(5,-1);if(hex.length===3)hex=[...hex].map(c=>c+c).join('');return[0,2,4].map(at=>parseInt(hex.slice(at,at+2),16)).every(value=>value<48);}))]:[];
   const sceneInk=darkPaint.length?darkPaint.flatMap(name=>[`${scope}[class~="${name}"]`,`${scope} [class~="${name}"]`]).join(',')+'{--dfa-crayon-scheme:dark;'+Object.entries(pack.themes.dark).map(([key,value])=>`--dfa-crayon-${key==='onInk'?'on-ink':key}:${value};`).join('')+'}':'';
   return pack.css+'\n'+bindings+(paperInk.length?'\n'+paperInk.join('\n'):'')+(sceneInk?'\n'+sceneInk:'');
 }

@@ -13,13 +13,22 @@ try{
  for(const theme of ["light","dark"]){
   const context=await browser.newContext({viewport:{width:1000,height:900},reducedMotion:"reduce"});
   await context.addCookies([{name:"dfa_license",value:license,url:base,httpOnly:true,sameSite:"Lax",secure:new URL(base).protocol==="https:"}]);
-  for(const slug of ["button-magnetic","bg-grain-gradient"]){
+  for(const slug of ["button-magnetic","bg-grain-gradient","three-keycaps","three-contour-terrain","hero-prism"]){
    const page=await context.newPage(),errors=[];page.on("pageerror",e=>errors.push(e.message));
    await page.goto(base+"/preview/"+slug+"?visualStyle=crayon&theme="+theme,{waitUntil:"load"});
    await page.locator('[data-dfa-ink-ready="true"]').first().waitFor();
    const colors=slug==="button-magnetic"
     ?await page.getByRole("button",{name:/Start building/}).evaluate(el=>({ink:getComputedStyle(el).color,paint:getComputedStyle(el).backgroundColor}))
-    :await page.locator('[data-demo="field"]').evaluate(el=>({ink:getComputedStyle(el.querySelector("h2")).color,paint:getComputedStyle(el).backgroundColor}));
+    :slug==="bg-grain-gradient"
+    ?await page.locator('[data-demo="field"]').evaluate(el=>({ink:getComputedStyle(el.querySelector("h2")).color,paint:getComputedStyle(el).backgroundColor}))
+    :slug==="three-keycaps"
+    ?await page.getByRole("group",{name:/Keycaps/}).evaluate(el=>{const stage=el.closest('[class~="bg-black"]');return{ink:getComputedStyle(stage.querySelector('p[aria-hidden="true"]')).color,paint:getComputedStyle(stage).backgroundColor};})
+    :slug==="three-contour-terrain"
+    ?await page.locator('div[data-seed]').evaluate(el=>({ink:getComputedStyle(el.querySelector('p[class*="text-white/70"]')).color,paint:getComputedStyle(el).backgroundColor}))
+    :await page.locator('h1').evaluate(el=>({ink:getComputedStyle(el).color,paint:getComputedStyle(el.closest('[class~="bg-black"]')).backgroundColor}));
+   // These renderers clear to opaque black. A themed DOM background behind
+   // the canvas is not the paint the viewer actually sees.
+   if(["three-keycaps","three-contour-terrain","hero-prism"].includes(slug))assert.equal(colors.paint,"rgb(0, 0, 0)",slug+" "+theme+" authored paint contrast (opaque canvas)");
    const ratio=contrast(colors.ink,colors.paint);assert(ratio>=7,slug+" "+theme+" authored paint contrast");
    await page.screenshot({path:out+"/"+slug+"-"+theme+".png"});assert.deepEqual(errors,[]);report.push({slug,theme,colors,contrast:ratio});await page.close();
   }
