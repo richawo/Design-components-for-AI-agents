@@ -52,7 +52,9 @@ try{
   const hashes=capture.frames.map(frame=>crypto.createHash('sha256').update(fs.readFileSync(frame.file)).digest('hex'));
   assert(new Set(hashes).size>fps*.65,'the exported frames must contain actual source movement');
   const dimensions=await sharp(capture.frames[0].file).metadata();assert.equal(dimensions.width,320);assert.equal(dimensions.height,240);
-  reports.push({fps,before,moving,paused,resumed,distinctFrames:new Set(hashes).size,evidence});await page.close();
+  await page.evaluate(()=>document.body.appendChild(document.createElement("video")));
+  await assert.rejects(()=>startFrameSteppedRecording(page,{directory,fps}),/Native audio\/video clocks require real-time capture/);
+  reports.push({fps,before,moving,paused,resumed,distinctFrames:new Set(hashes).size,nativeMediaClockProtected:true,evidence});await page.close();
   }
   fs.writeFileSync(out+'/report.json',JSON.stringify({cadences:reports},null,2));
   console.log('Frame stepping preserves source motion, timers, input, pause/resume and completion.');

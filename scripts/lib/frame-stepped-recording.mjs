@@ -8,6 +8,7 @@ export async function installFrameClock(page) {
 }
 
 export async function startFrameSteppedRecording(page,{directory,quality=92,fps=60,clip}) {
+  if(await page.locator("audio,video").count())throw new Error("Native audio/video clocks require real-time capture");
   // Leave an IPC margin before pausing. A busy host can deliver the command
   // after a 50 ms deadline even though the source itself is animating normally.
   let epoch;
@@ -39,6 +40,7 @@ export async function startFrameSteppedRecording(page,{directory,quality=92,fps=
   });
   const capture=async()=>{
     const sourceMs=await page.evaluate(time=>{
+      if(document.querySelector("audio,video"))throw new Error("Native audio/video clocks require real-time capture");
       const state=window.__dfaOfflineFrames;
       for(const animation of document.getAnimations()) {
         if(animation.playState==="idle"||animation.playState==="finished")continue;
