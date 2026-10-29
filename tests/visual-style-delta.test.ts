@@ -8,19 +8,18 @@ import path from "node:path";
 import {createHash} from "node:crypto";
 const material={css:"/* licensed material */",prompt:"Keep interactions.",appearance:"light",font:{family:"Hand",url:"https://example.invalid/font",weight:"400 700"},palette:{surface:"#fff8e7",page:"#f6edda",ink:"#2d3027",muted:"#675b49"}};
 describe("small, source-bound style packs",()=>{
- it("binds every generated variant to the source the runtime actually serves, including composed blocks",()=>{
-  const generated=path.resolve("registry/__generated__"),styles=path.join(generated,"style-packs");
-  if(!fs.existsSync(styles))return; // Public clones without private material have no variants.
-  // Runtime requests share one immutable material pool. Read that same pool
-  // once while still checking the exact source binding of every component.
-  let shared:Record<string,string>|null=null;
-  for(const file of fs.readdirSync(styles).filter(file=>file.endsWith(".json"))){
+ const generated=path.resolve("registry/__generated__"),styles=path.join(generated,"style-packs");
+ const files=fs.existsSync(styles)?fs.readdirSync(styles).filter(file=>file.endsWith(".json")):[];
+ // Keep each source binding independently timed and reported as the catalogue grows.
+ // Runtime requests share this one material pool; every component still verifies it.
+ let shared:Record<string,string>|null=null;
+ it.each(files.length?files:[null])("binds %s to the exact source served at runtime",file=>{
+   if(file===null)return; // Public clones without private material have no variants.
    const delta=unpackContent(JSON.parse(fs.readFileSync(path.join(styles,file),"utf8"))) as StyleDelta;
    const base=unpackContent(JSON.parse(fs.readFileSync(path.join(generated,"source-packs",file),"utf8"))) as ComponentSource;
    expect(createHash("sha256").update(base.code).digest("hex"),file).toBe(delta.baseCodeSha256);
    if(delta.format==="dfa-style-delta-v2"&&!shared)shared=unpackContent(JSON.parse(fs.readFileSync(path.join(generated,"style-shared.json"),"utf8"))) as Record<string,string>;
    expect(()=>restoreStyleSource(base,delta,delta.format==="dfa-style-delta-v2"?shared:null),file).not.toThrow();
-  }
  });
  it.each(["web","mobile"])("restores the exact %s source and briefs without storing another complete component",platform=>{
   const code=platform==="web"?'export const Widget=({onClick})=> <button onClick={onClick}>Click</button>':'import {View,Text,StyleSheet} from "react-native"; export function Widget(){return <View><Text style={s.heading}>Hello</Text></View>} const s=StyleSheet.create({heading:{fontSize:28,color:"#fff"}});';
