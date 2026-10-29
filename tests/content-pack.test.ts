@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { packContent, unpackContent } from "../scripts/lib/content-pack.mjs";
+import { gzipSync } from "node:zlib";
 
 describe("packed editorial content", () => {
   it("preserves multilingual prose, markup and code", () => {
@@ -17,6 +18,17 @@ describe("packed editorial content", () => {
   });
   it("rejects a damaged payload instead of serving incomplete text", () => {
     expect(() => unpackContent({ encoding: "gzip-base64", data: "broken" })).toThrow();
+    expect(() => unpackContent({ encoding: "brotli-base64", data: "broken" })).toThrow();
+    expect(() => unpackContent({ encoding: "unknown", data: "anything" })).toThrow();
+  });
+  it("preserves a large multilingual pack with less encoded data and reads legacy gzip", () => {
+    const data = { text: "Retain markup <a href='/x'>guide</a> العربية 日本語. ".repeat(24000) };
+    const packed = packContent(data);
+    const legacy = { encoding: "gzip-base64", data: gzipSync(JSON.stringify(data), { level: 9 }).toString("base64") };
+    expect(packed.encoding).toBe("brotli-base64");
+    expect(packed.data.length).toBeLessThan(legacy.data.length);
+    expect(unpackContent(packed)).toEqual(data);
+    expect(unpackContent(legacy)).toEqual(data);
   });
   it("preserves every component's installable code and briefs byte for byte", () => {
     const dir = path.resolve(import.meta.dirname, "../registry/__generated__");

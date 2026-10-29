@@ -6,7 +6,7 @@ The public site reads its ignored `registry/pro/` checkout at build time.
 Generated content and social cards stay out of the public Git index.
 
 The readable generated `content.json` remains available for audits. Runtime
-routes import `content-packed.json`, a gzip/base64 pack decoded once per Worker
+routes import `content-packed.json`, a lossless compressed/base64 pack decoded once per Worker
 isolate through Node zlib. This keeps the multilingual corpus below the Worker
 module limit without removing text or language editions. Registry generation also
 writes the ignored `@design-yaps/public-content-runtime` package in `node_modules`.
@@ -14,6 +14,10 @@ Next treats it as server external so independently compiled routes share one
 packed editorial payload. Development retains the directly watched JSON bundle.
 The final deployment rejects a missing or duplicated public pack. The content-pack test
 checks the complete generated payload against the readable source.
+
+Packs of at least 1 MiB use Brotli at build time; smaller packs retain gzip.
+The runtime reads both formats, including older gzip artifacts. Full-content
+round-trip tests and the unchanged final module-size guard apply to both.
 
 Use Node 24, matching production. Run `npm run blog:translate` after changing
 editorial copy. It uses the same translation provider and token protection as

@@ -41,6 +41,11 @@ server does not reference it. Referenced or different modules remain included.
 
 After `npm run deploy:dry-run`, exercise that exact package with
 `npx wrangler dev .open-next/deploy/worker.js --no-bundle --port 4189`.
+For a large prepared assets directory on macOS, start this local check with
+`CHOKIDAR_USEPOLLING=true CHOKIDAR_INTERVAL=1000` if directory watching makes
+Wrangler fail with `spawn EBADF`. This avoids the observed watcher-related
+startup failure without changing the package or production limits. Keep the
+failed observation and verify that the resulting Worker actually serves pages.
 Run the component navigation and preview recovery browser replays against it,
 and check public cache hits and anonymous Pro-source guards. The faster router
 does not authorize caching account state or licensed source.
