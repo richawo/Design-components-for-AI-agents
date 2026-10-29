@@ -257,7 +257,7 @@ async function record(browser, slug) {
         let expected=stylePack?.themes?.[styleTheme]?.page??stylePack?.palette?.page;
         const sourceFile=path.join(root,"registry",meta.tier,slug,slug+".tsx");
         const sourceCode=stylePack&&fs.existsSync(sourceFile)?fs.readFileSync(sourceFile,"utf8"):null;
-        // An opaque canvas may keep its authored local dark material in a
+        // Fixed canvas artwork may keep its authored local dark material in a
         // Light host. Use the compiler's exact owner classes, not any palette.
         if(sourceCode){
           const owners=materialCanvasClasses(sourceCode,stylePack);

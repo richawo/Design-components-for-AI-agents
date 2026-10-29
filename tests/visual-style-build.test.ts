@@ -88,13 +88,24 @@ describe('licensed style compilation',()=>{
   expect(value.styleCss).toContain('--dfa-crayon-ink:#ededef;');
   expect(value.code).toContain('vec3 ink = vec3(0.027, 0.027, 0.031)');
  });
- it('keeps drawn overlays readable over an opaque black canvas but lets transparent canvases follow their host',()=>{
+ it('matches overlays to authored black canvas stages and their dark glass labels',()=>{
   const source='renderer.setClearColor(0x000000, 1); export function Scene(){return <div className="bg-black text-white"><h2>Survey sheet</h2></div>}';
   const pack={...material,themes:{light:material.palette,dark:{ink:'#ededef',page:'#000000',onInk:'#000000'}}};
   expect(materialCss(source,pack)).toContain('[class~="bg-black"]{--dfa-crayon-scheme:dark;');
   expect(materialCanvasClasses(source,pack)).toEqual(['bg-black']);
   expect(materialCanvasClasses(source.replace('0x000000, 1','0x000000, 0'),pack)).toEqual([]);
+  expect(materialCanvasClasses('new THREE.WebGLRenderer();'+source.replace('0x000000, 1','0x000000, 0'),pack)).toEqual(['bg-black']);
+  expect(materialCanvasClasses('new THREE.WebGLRenderer();renderer.setClearColor(palette.background,1);<div className="bg-(--stage) text-(--ink)"/>',pack)).toEqual([]);
+  expect(materialCanvasClasses('new THREE.WebGLRenderer(); <div className="bg-[#0e0e10]/90 bg-[#111]/[0.94] bg-[#111]/20"/>',pack)).toEqual(['bg-[#0e0e10]/90','bg-[#111]/[0.94]']);
   expect(materialCss(source.replace('0x000000, 1','0x000000, 0'),pack)).not.toContain('[class~="bg-black"]{--dfa-crayon-scheme:dark;');
+ });
+ it('keeps a layered selected pill label contrasting with its unchanged bright paint',()=>{
+  const source='export function Widget({selected=true}){return <button role="radio" aria-checked={selected} className={selected?"relative text-black":"relative text-white"}>{selected&&<span className="absolute inset-0" style={{background:"#ededef"}}/>}<span className="relative">Front</span></button>}';
+  const pack={...material,themes:{light:material.palette,dark:{...material.palette,ink:'#ededef'}}};
+  const value=materialCss(source,pack);
+  expect(value).toContain('[role="radio"][class~="text-black"]:not([class*="bg-"])');
+  expect(value).toContain('color:#2d3027!important;--dfa-ink-pencil:#2d3027');
+  expect(materialCss(source.replace('relative text-black','relative bg-(--paint) text-black'),pack)).not.toContain('[role="radio"][class~="text-black"]');
  });
  it('keeps generated styled sources out of public registry files',()=>{
   const files=fs.readdirSync(path.resolve('public/r')).filter(f=>f.endsWith('.json'));

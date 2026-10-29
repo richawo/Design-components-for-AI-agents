@@ -104,12 +104,29 @@ function roleFor(token){
   if(/(?:^|-)(?:down|negative|danger|error|err|bad)$/.test(s))return'negative';
   return null;
 }
-/** Authored opaque canvas owners keep a local dark palette inside either host. */
+/** Fixed dark artwork keeps its authored material inside either host theme. */
 export function materialCanvasClasses(code,pack){
   const shaderInk=code.match(/\bvec3\s+ink\s*=\s*vec3\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)/);
   const fixedDarkShader=shaderInk&&shaderInk.slice(1).map(Number).every(value=>Number.isFinite(value)&&value>=0&&value<.12);
   const opaqueBlackCanvas=/\.setClearColor\(\s*0x0{6}\s*,\s*1\s*\)/.test(code);
-  return pack.themes?.dark&&(fixedDarkShader||opaqueBlackCanvas)?[...new Set([...code.matchAll(/(?<![:\w-])bg-(?:black(?![\w/-])|\[#[\da-f]{3}(?:[\da-f]{3})?\])/gi)].map(match=>match[0]).filter(name=>{if(name==='bg-black')return true;let hex=name.slice(5,-1);if(hex.length===3)hex=[...hex].map(c=>c+c).join('');return[0,2,4].map(at=>parseInt(hex.slice(at,at+2),16)).every(value=>value<48);}))]:[];
+  const authoredWebGL=/new\s+(?:[A-Za-z_$][\w$]*\.)?WebGLRenderer\s*\(/.test(code);
+  return pack.themes?.dark&&(fixedDarkShader||opaqueBlackCanvas||authoredWebGL)?[...new Set([...code.matchAll(/(?<![:\w-])bg-(?:black(?![\w/-])|\[#[\da-f]{3}(?:[\da-f]{3})?\](?:\/(?:\d{1,3}|\[0?\.\d+\]))?)/gi)].map(match=>match[0]).filter(name=>{if(name==='bg-black')return true;const m=name.match(/^bg-\[(#[\da-f]+)\](?:\/(\d+)|\/\[([\d.]+)\])?$/i);if(!m)return false;const alpha=m[2]?Number(m[2])/100:m[3]?Number(m[3]):1;if(alpha<.6)return false;let hex=m[1].slice(1);if(hex.length===3)hex=[...hex].map(c=>c+c).join('');return[0,2,4].map(at=>parseInt(hex.slice(at,at+2),16)).every(value=>value<48);}))]:[];
+}
+function hasLayeredBlackRadio(code){
+  if(!code.includes('text-black')||!code.includes('radio'))return false;
+  const ast=parse(code,{sourceType:'module',plugins:['typescript','jsx']});
+  const attr=(node,name)=>node.openingElement?.attributes.find(a=>a.type==='JSXAttribute'&&a.name?.name===name);
+  const text=node=>node?code.slice(node.start,node.end):'';
+  const some=(node,test)=>{if(!node||typeof node!=='object')return false;if(test(node))return true;return Object.entries(node).some(([key,value])=>!['loc','extra','comments'].includes(key)&&(Array.isArray(value)?value.some(child=>some(child,test)):some(value,test)));};
+  return some(ast,node=>{
+    if(node.type!=='JSXElement'||attr(node,'role')?.value?.value!=='radio')return false;
+    const classes=text(attr(node,'className'));if(!classes.includes('text-black')||classes.includes('bg-'))return false;
+    return node.children.some(child=>some(child,layer=>{
+      if(layer.type!=='JSXElement')return false;
+      const classes=text(attr(layer,'className')),paint=text(attr(layer,'style'));
+      return /\babsolute\b/.test(classes)&&/\binset-0\b/.test(classes)&&/\bbackground(?:Color)?\s*:/.test(paint)&&!paint.includes('var(--');
+    }));
+  });
 }
 export function materialCss(code,pack){
   const variables=[...new Set([...code.matchAll(/--[a-zA-Z][\w-]*/g)].map(m=>m[0]))];
@@ -140,11 +157,18 @@ export function materialCss(code,pack){
     const selectedTab=`${scope} [role="tab"]:has(>[class~="bg-(--${family}-paper)"])`;
     return selectors.join(',')+`{--dfa-crayon-ink:var(--${family}-ink);--dfa-ink-pencil:var(--${family}-ink)}\n`+selectedTab+`{color:var(--${family}-ink);--dfa-ink-pencil:var(--${family}-ink)}`;
   });
-  // Fixed dark shader artwork cannot be recoloured by DOM palette variables.
-  // Its overlay and controls therefore keep a local dark material in a light host.
+  // Authored canvas stages, overlays and controls share a local dark material
+  // so their fixed paint and drawn ink stay aligned inside a light host.
   const darkPaint=materialCanvasClasses(code,pack);
-  const sceneInk=darkPaint.length?darkPaint.flatMap(name=>[`${scope}[class~="${name}"]`,`${scope} [class~="${name}"]`]).join(',')+'{--dfa-crayon-scheme:dark;'+Object.entries(pack.themes.dark).map(([key,value])=>`--dfa-crayon-${key==='onInk'?'on-ink':key}:${value};`).join('')+'}':'';
-  return pack.css+'\n'+bindings+(paperInk.length?'\n'+paperInk.join('\n'):'')+(sceneInk?'\n'+sceneInk:'');
+  const sceneInk=darkPaint.length?darkPaint.flatMap(name=>[`${scope}[class~="${name}"]`,`${scope} [class~="${name}"]`]).join(',')+'{--dfa-crayon-scheme:dark;'+Object.entries(pack.themes.dark).map(([key,value])=>`--dfa-crayon-${key==='onInk'?'on-ink':key}:${value};`).join('')+'color:var(--dfa-crayon-ink);--dfa-ink-pencil:var(--dfa-crayon-ink)}':'';
+  // Standalone demos can nest exported component roots. Inherit their painted
+  // context while retaining explicit theme overrides on the nested root.
+  const nestedInk=darkPaint.length?`:where(${scope}) ${scope}:not(:where(.light,.dark,[data-theme],[data-dfa-theme])){`+['scheme',...Object.keys(pack.themes.dark).map(key=>key==='onInk'?'on-ink':key)].map(key=>`--dfa-crayon-${key}:inherit;`).join('')+'--dfa-ink-pencil:var(--dfa-crayon-ink)}':'';
+  // A full-size child supplies these selected pills' unchanged light paint.
+  // Their authored black label and pencil stay dark in either host theme.
+  const radioInk=pack.themes?.light?.ink??pack.palette.ink;
+  const layeredInk=radioInk&&hasLayeredBlackRadio(code)?[scope,scope+' '].map(prefix=>prefix+'[role="radio"][class~="text-black"]:not([class*="bg-"])').join(',')+`{color:${radioInk}!important;--dfa-ink-pencil:${radioInk}}`:'';
+  return pack.css+'\n'+bindings+(paperInk.length?'\n'+paperInk.join('\n'):'')+(sceneInk?'\n'+sceneInk+'\n'+nestedInk:'')+(layeredInk?'\n'+layeredInk:'');
 }
 export function makeStyledSource(meta,source,pack){
   if(meta.platform==='mobile')return makeNativeStyledSource(meta,source,pack);
