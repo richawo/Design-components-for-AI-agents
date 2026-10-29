@@ -65,6 +65,15 @@ describe('licensed style compilation',()=>{
   expect(value.styleCss).toContain('--w-ink:#2d3027!important');
   expect(value.styleCss).toContain('--w-on-ink:#fff8e7!important');
  });
+ it('keeps authored receipt paper and its contrasting ink together in both themes',()=>{
+  const source={slug:'test',code:'export function Widget(){const vars={"--print-paper":"#f3efe4","--print-receipt":"#f4f0e5","--print-ink":"#24221c","--print-cta-ink":"#111111","--ui-ink":"#111111"};return <section style={vars}><div className="bg-(--print-receipt) text-(--print-ink)">Printed receipt</div><button className="bg-(--print-paper) text-(--print-cta-ink)">Buy</button></section>}',prompt:'base',promptJson:'{}'};
+  const value=makeStyledSource(meta,source,{...material,themes:{light:material.palette,dark:{...material.palette,ink:'#ededef',surface:'#0a0a0b'}}})!;
+  for(const token of ['--print-paper','--print-receipt','--print-ink','--print-cta-ink'])expect(value.styleCss).not.toContain(token+':var(--dfa-crayon-');
+  expect(value.styleCss).toContain('--ui-ink:var(--dfa-crayon-ink)!important');
+  expect(value.styleCss).toContain('[class~="bg-(--print-receipt)"]');
+  expect(value.styleCss).toContain('--dfa-ink-pencil:var(--print-ink)');
+  expect(value.code).toContain('"--print-ink":"#24221c"');
+ });
  it('keeps generated styled sources out of public registry files',()=>{
   const files=fs.readdirSync(path.resolve('public/r')).filter(f=>f.endsWith('.json'));
   expect(files.length).toBeGreaterThan(50);

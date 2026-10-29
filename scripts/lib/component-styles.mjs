@@ -106,14 +106,28 @@ function roleFor(token){
 }
 export function materialCss(code,pack){
   const variables=[...new Set([...code.matchAll(/--[a-zA-Z][\w-]*/g)].map(m=>m[0]))];
+  // A printed receipt intentionally pairs light paper with dark ink on a dark
+  // host. Its paper is also inverse text outside the receipt. Recolouring those
+  // shared tokens independently erases both the print and the selected option.
+  const paperFamilies=variables.flatMap(token=>{
+    const family=token.match(/^--(.+)-receipt$/)?.[1];
+    return family&&variables.includes(`--${family}-paper`)&&variables.includes(`--${family}-ink`)?[family]:[];
+  });
+  const authoredPaper=token=>paperFamilies.some(family=>token.startsWith(`--${family}-`));
   // Accent fills retain their original value, so keep the foreground computed
   // for that fill too. Mapping accent-ink to page ink erased selected dates
   // and action labels when both resolved to the same neutral colour.
   const onAccent=token=>/(?:^|-)(?:on-(?:accent|brand|primary)|(?:accent|brand|primary)-(?:ink|fg|foreground|text|label|contrast|on))$/.test(token.replace(/([a-z])([A-Z])/g,'$1-$2').toLowerCase());
-  const mapped=variables.flatMap(token=>{const role=roleFor(token);return role&&role!=='accent'&&!onAccent(token)&&pack.palette[role]?[[token,pack.themes?`var(--dfa-crayon-${role==='onInk'?'on-ink':role})`:pack.palette[role]]]:[];});
+  const mapped=variables.flatMap(token=>{const role=roleFor(token);return role&&role!=='accent'&&!onAccent(token)&&!authoredPaper(token)&&pack.palette[role]?[[token,pack.themes?`var(--dfa-crayon-${role==='onInk'?'on-ink':role})`:pack.palette[role]]]:[];});
   const scope='[data-dfa-style="crayon"]';
   const bindings=mapped.map(([token,value])=>scope+','+scope+' [style*="'+token+'"]{'+token+':'+value+'!important}').join('\n');
-  return pack.css+'\n'+bindings;
+  const paperInk=paperFamilies.map(family=>{
+    const surfaces=[`bg-(--${family}-receipt)`,`bg-(--${family}-paper)`];
+    const selectors=surfaces.flatMap(surface=>[`${scope}[class~="${surface}"]`,`${scope} [class~="${surface}"]`]);
+    const selectedTab=`${scope} [role="tab"]:has(>[class~="bg-(--${family}-paper)"])`;
+    return selectors.join(',')+`{--dfa-crayon-ink:var(--${family}-ink);--dfa-ink-pencil:var(--${family}-ink)}\n`+selectedTab+`{color:var(--${family}-ink);--dfa-ink-pencil:var(--${family}-ink)}`;
+  });
+  return pack.css+'\n'+bindings+(paperInk.length?'\n'+paperInk.join('\n'):'');
 }
 export function makeStyledSource(meta,source,pack){
   if(meta.platform==='mobile')return makeNativeStyledSource(meta,source,pack);
