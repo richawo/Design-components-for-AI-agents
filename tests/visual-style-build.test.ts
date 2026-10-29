@@ -74,6 +74,20 @@ describe('licensed style compilation',()=>{
   expect(value.styleCss).toContain('--dfa-ink-pencil:var(--print-ink)');
   expect(value.code).toContain('"--print-ink":"#24221c"');
  });
+ it('retains a calculated foreground on an unchanged caller-selected accent',()=>{
+  const source={slug:'test',code:'export function Widget({accent="#000000"}){const fill=accent;const ink=inkOn(fill);const vars={"--button-accent":fill,"--button-ink":ink,"--ui-ink":"#111111"};return <button style={vars}>Start building</button>}',prompt:'base',promptJson:'{}'};
+  const value=makeStyledSource(meta,source,material)!;
+  expect(value.styleCss).not.toContain('--button-ink:');
+  expect(value.styleCss).toContain('--ui-ink:#2d3027!important');
+  expect(value.code).toContain('const ink=inkOn(fill)');
+ });
+ it('keeps white overlay ink on fixed dark shader artwork without changing the host palette',()=>{
+  const source={slug:'test',code:'const shader="vec3 ink = vec3(0.027, 0.027, 0.031);";export function Widget(){return <div className="bg-[#070708]"><h2 className="text-white">The light moves.</h2></div>}',prompt:'base',promptJson:'{}'};
+  const value=makeStyledSource(meta,source,{...material,themes:{light:material.palette,dark:{ink:'#ededef',page:'#000000',onInk:'#000000'}}})!;
+  expect(value.styleCss).toContain('[class~="bg-[#070708]"]{--dfa-crayon-scheme:dark;');
+  expect(value.styleCss).toContain('--dfa-crayon-ink:#ededef;');
+  expect(value.code).toContain('vec3 ink = vec3(0.027, 0.027, 0.031)');
+ });
  it('keeps generated styled sources out of public registry files',()=>{
   const files=fs.readdirSync(path.resolve('public/r')).filter(f=>f.endsWith('.json'));
   expect(files.length).toBeGreaterThan(50);

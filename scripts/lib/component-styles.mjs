@@ -106,6 +106,12 @@ function roleFor(token){
 }
 export function materialCss(code,pack){
   const variables=[...new Set([...code.matchAll(/--[a-zA-Z][\w-]*/g)].map(m=>m[0]))];
+  // A caller-calculated label already follows its unchanged accent fill.
+  // Keep that calculation, including widgets whose token is simply "ink".
+  const calculatedInk=new Set([...code.matchAll(/["'](--[\w-]+)["']\s*:\s*([A-Za-z_$][\w$]*)\b/g)].flatMap(match=>{
+    const binding=match[2].replace(/[$]/g,'\\$');
+    return roleFor(match[1])==='ink'&&new RegExp('\\b(?:const|let)\\s+'+binding+'\\s*=\\s*inkOn\\s*\\(').test(code)?[match[1]]:[];
+  }));
   // A printed receipt intentionally pairs light paper with dark ink on a dark
   // host. Its paper is also inverse text outside the receipt. Recolouring those
   // shared tokens independently erases both the print and the selected option.
@@ -118,7 +124,7 @@ export function materialCss(code,pack){
   // for that fill too. Mapping accent-ink to page ink erased selected dates
   // and action labels when both resolved to the same neutral colour.
   const onAccent=token=>/(?:^|-)(?:on-(?:accent|brand|primary)|(?:accent|brand|primary)-(?:ink|fg|foreground|text|label|contrast|on))$/.test(token.replace(/([a-z])([A-Z])/g,'$1-$2').toLowerCase());
-  const mapped=variables.flatMap(token=>{const role=roleFor(token);return role&&role!=='accent'&&!onAccent(token)&&!authoredPaper(token)&&pack.palette[role]?[[token,pack.themes?`var(--dfa-crayon-${role==='onInk'?'on-ink':role})`:pack.palette[role]]]:[];});
+  const mapped=variables.flatMap(token=>{const role=roleFor(token);return role&&role!=='accent'&&!onAccent(token)&&!calculatedInk.has(token)&&!authoredPaper(token)&&pack.palette[role]?[[token,pack.themes?`var(--dfa-crayon-${role==='onInk'?'on-ink':role})`:pack.palette[role]]]:[];});
   const scope='[data-dfa-style="crayon"]';
   const bindings=mapped.map(([token,value])=>scope+','+scope+' [style*="'+token+'"]{'+token+':'+value+'!important}').join('\n');
   const paperInk=paperFamilies.map(family=>{
@@ -127,7 +133,13 @@ export function materialCss(code,pack){
     const selectedTab=`${scope} [role="tab"]:has(>[class~="bg-(--${family}-paper)"])`;
     return selectors.join(',')+`{--dfa-crayon-ink:var(--${family}-ink);--dfa-ink-pencil:var(--${family}-ink)}\n`+selectedTab+`{color:var(--${family}-ink);--dfa-ink-pencil:var(--${family}-ink)}`;
   });
-  return pack.css+'\n'+bindings+(paperInk.length?'\n'+paperInk.join('\n'):'');
+  // Fixed dark shader artwork cannot be recoloured by DOM palette variables.
+  // Its overlay and controls therefore keep a local dark material in a light host.
+  const shaderInk=code.match(/\bvec3\s+ink\s*=\s*vec3\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)/);
+  const fixedDarkShader=shaderInk&&shaderInk.slice(1).map(Number).every(value=>Number.isFinite(value)&&value>=0&&value<.12);
+  const darkPaint=pack.themes?.dark&&fixedDarkShader?[...new Set([...code.matchAll(/(?<![:\w-])bg-\[(#[\da-f]{6})\]/gi)].map(match=>match[0]).filter(name=>{const hex=name.slice(5,-1);return[0,2,4].map(at=>parseInt(hex.slice(at,at+2),16)).every(value=>value<48);}))]:[];
+  const sceneInk=darkPaint.length?darkPaint.flatMap(name=>[`${scope}[class~="${name}"]`,`${scope} [class~="${name}"]`]).join(',')+'{--dfa-crayon-scheme:dark;'+Object.entries(pack.themes.dark).map(([key,value])=>`--dfa-crayon-${key==='onInk'?'on-ink':key}:${value};`).join('')+'}':'';
+  return pack.css+'\n'+bindings+(paperInk.length?'\n'+paperInk.join('\n'):'')+(sceneInk?'\n'+sceneInk:'');
 }
 export function makeStyledSource(meta,source,pack){
   if(meta.platform==='mobile')return makeNativeStyledSource(meta,source,pack);

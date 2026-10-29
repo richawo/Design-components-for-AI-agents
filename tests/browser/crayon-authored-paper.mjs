@@ -17,8 +17,14 @@ try{
   await page.goto(base+"/preview/pricing-receipt?visualStyle=crayon&theme="+theme,{waitUntil:"load"});
   await page.locator('[data-dfa-ink-ready="true"]').first().waitFor();
   for(const name of ["Solo","Team"]){
-   await page.getByRole("tab",{name:new RegExp(name)}).click();
-   await page.waitForTimeout(100);
+   const tab=page.getByRole("tab",{name:new RegExp(name)});
+   await tab.click();
+   // Sample the completed colour, not a transient CSS oklab interpolation.
+   await tab.evaluate(async el=>{
+    getComputedStyle(el).color;
+    await Promise.all(el.getAnimations({subtree:true}).filter(animation=>Number.isFinite(animation.effect?.getComputedTiming().endTime)).map(animation=>animation.finished.catch(()=>{})));
+   });
+   await page.waitForFunction(selected=>[...document.querySelectorAll('[class~="bg-(--rc-receipt)"]')].some(el=>el.textContent.includes(selected.toUpperCase())),name);
    const ink=await page.locator('[class~="bg-(--rc-receipt)"]').first().evaluate(el=>{
     const css=getComputedStyle(el),edge=el.querySelector('[data-dfa-ink="edge"]');
     const selected=document.querySelector('[role="tab"][aria-selected="true"]'),selectedPaper=selected?.querySelector('[class~="bg-(--rc-paper)"]'),selectedEdge=selected?.querySelector('[data-dfa-ink="edge"]');
