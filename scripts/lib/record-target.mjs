@@ -1,7 +1,7 @@
 /** Resolve recorder pointer targets inside their actual scrolling panes. */
-export function createRecordTargetResolver({ page, targetSelector, onProblem }) {
+export function createRecordTargetResolver({ page, targetSelector, onProblem, advance }) {
   return async (t, moving = false) => {
-    const r = await page.evaluate(({ sel, moving }) => new Promise(resolve => {
+    const lookup = page.evaluate(({ sel, moving }) => new Promise(resolve => {
       let previous, stable = 0, frame;
       const finish = value => { clearTimeout(timer); cancelAnimationFrame(frame); resolve(value); };
       const timer = setTimeout(() => finish(null), 2500);
@@ -38,6 +38,8 @@ export function createRecordTargetResolver({ page, targetSelector, onProblem }) 
       };
       frame = requestAnimationFrame(sample);
     }), { sel: targetSelector(t.name), moving });
+    if(advance){let done=false;lookup.then(()=>{done=true;},()=>{done=true;});while(!done)await advance(1000/60);}
+    const r=await lookup;
     if (!r) {
       onProblem(`demo target @${t.name} unavailable or still moving when its step ran`);
       return null;

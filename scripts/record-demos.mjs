@@ -12,6 +12,7 @@
 //        [--isolated-source] bundles the exact checked-out demo with production React
 //        [--tab-capture] records that owned fixture directly, with source-stall guards
 //        [--page-frames] requests actual page images when tab capture omits a tween
+//        [--frame-stepped] renders every source frame on an offline clock (not a performance replay)
 //        [--extend-stage-edges] extends verified empty stage edges into crop padding
 //        [--report=dir] retains metrics and rejected encoded/source inputs before cleanup
 //        [--visual-style=crayon] [--theme=light|dark] records the licensed style with DESIGN_FOR_AI_LICENSE
@@ -35,6 +36,7 @@ import { materialCss } from "./lib/component-styles.mjs";
 import { captureQuality, gallerySteps, concatFrameList, framedCropFilter, fitViewportFrame } from "./lib/recording-quality.mjs";
 import { launchChromium } from "./lib/browser.mjs";
 import { mountFixture } from "./lib/component-fixture.mjs";
+import { installFrameClock, startFrameSteppedRecording } from "./lib/frame-stepped-recording.mjs";
 import { startTabRecording, stopTabRecording, sourceChangeQuality } from "./lib/tab-recording.mjs";
 import { startPageFrameRecording, stopPageFrameRecording, discardPageFrameRecording } from "./lib/page-frame-recording.mjs";
 import { startChangedSourceScreenshots } from "./lib/source-screenshots.mjs";
@@ -75,8 +77,10 @@ const pagePath = flag("page-path", "");
 const isolatedSource = args.includes("--isolated-source");
 if (isolatedSource && pagePath) throw new Error("--isolated-source records a component demo; omit --page-path");
 if (styled && (isolatedSource || pagePath)) throw new Error("Licensed styles must record their authorized live preview; omit --isolated-source and --page-path");
+const frameStepped = args.includes("--frame-stepped");
 const tabCapture = args.includes("--tab-capture");
 const pageFrames = args.includes("--page-frames");
+if (frameStepped && (tabCapture || pageFrames || isolatedSource)) throw new Error("Frame-stepped capture requires the actual preview page");
 if (tabCapture && pageFrames) throw new Error("Choose --tab-capture or --page-frames, not both");
 const captureTitle = `Design for AI owned fixture ${Date.now()}`;
 if ((tabCapture || pageFrames) && (!isolatedSource || args.includes("--software-rendering"))) throw new Error("Direct capture requires an isolated source fixture and native rendering");
@@ -222,6 +226,7 @@ async function record(browser, slug) {
   const context = await browser.newContext({ viewport: { width: vw, height: vh }, deviceScaleFactor: dpr, reducedMotion: "no-preference" });
   if (license) await context.addCookies([{ name: "dfa_license", value: license, url: base, httpOnly: true, sameSite: "Lax", secure: new URL(base).protocol === "https:" }]);
   const page = await context.newPage();
+  if(frameStepped)await installFrameClock(page);
   page.on("pageerror", (e) => problems.push(`page error: ${e.message}`));
   page.on("console", (m) => m.type() === "error" && problems.push(`console error: ${m.text()}`));
   try {
@@ -325,8 +330,15 @@ async function record(browser, slug) {
       : initialFrame && fullViewport ? fitViewportFrame(vw, vh, initialFrame.bg, OUT_W, OUT_H) : initialFrame;
 
     // Frames: Chrome's screencast, with timestamps, at full quality.
-    const cdp = tabCapture || pageFrames ? null : await context.newCDPSession(page);
-    let frames = [];
+    if(frameStepped)await page.evaluate((ambient)=>(window.__dfaCursor.dataset.on=ambient?"0":"1"),!!sceneAmbientMs);
+    const region=frameStepped&&!mobile?{
+      x:Math.max(0,Math.floor(frame.cx/2)*2),y:Math.max(0,Math.floor(frame.cy/2)*2),
+      width:0,height:0,
+    }:null;
+    if(region){region.width=Math.min(vw,Math.ceil((frame.cx+frame.cw)/2)*2)-region.x;region.height=Math.min(vh,Math.ceil((frame.cy+frame.ch)/2)*2)-region.y;}
+    const stepped=frameStepped?await startFrameSteppedRecording(page,{directory:tmp,quality:captureJpegQuality,fps:FPS,clip:region}):null;
+    const cdp = tabCapture || pageFrames || stepped ? null : await context.newCDPSession(page);
+    let frames = stepped?.frames ?? [];
     const writes = [];
     let frameIndex = 0;
     let resolveOpeningFrame;
@@ -370,7 +382,9 @@ async function record(browser, slug) {
         writes.push(fs.promises.writeFile(file, Buffer.from(data,"base64")));
       },
     }) : null;
-    const t0 = nativeStart?.startTime ?? Date.now() / 1000;
+    const now=()=>stepped?stepped.now():Date.now()/1000;
+    const wait=ms=>stepped?stepped.advance(ms):page.waitForTimeout(ms);
+    const t0 = stepped?.startTime ?? nativeStart?.startTime ?? now();
     if (cdp) await cdp.send("Page.startScreencast", { format: "jpeg", quality: captureJpegQuality, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
     await page.evaluate((ambient) => (window.__dfaCursor.dataset.on = ambient ? "0" : "1"), !!sceneAmbientMs);
     // A screencast can wait for compositor damage before emitting its first
@@ -381,7 +395,7 @@ async function record(browser, slug) {
       openingFrame,
       page.waitForTimeout(1500).then(() => { throw new Error("No opening screencast frame before the demo actions; retry the capture."); }),
     ]);
-    await page.waitForTimeout(gallery ? 60 : 150);
+    await wait(gallery ? 60 : 150);
     if(styled&&stylePack?.webModule)await page.evaluate(()=>{for(const root of document.querySelectorAll('[data-dfa-ink-root]'))root.dispatchEvent(new Event('dfa:ink-replay'));});
 
     // Paced by the clock, not by step count, so a glide takes exactly as long
@@ -391,13 +405,17 @@ async function record(browser, slug) {
       if (Math.hypot(x - px, y - py) < 1) { px = x; py = y; return; }
       const x0 = px;
       const y0 = py;
-      const start = Date.now();
+      const start = now()*1000;
+      if(stepped){
+        await stepped.advance(ms,async t=>{const e=ease(t);await page.mouse.move(x0+(x-x0)*e,y0+(y-y0)*e);});
+        continuousWindows.push([start/1000,now()]);px=x;py=y;return;
+      }
       for (;;) {
         const t = Math.min(1, (Date.now() - start) / ms);
         const e = ease(t);
         await page.mouse.move(x0 + (x - x0) * e, y0 + (y - y0) * e);
         if (t >= 1) break;
-        await page.waitForTimeout(12);
+        await wait(12);
       }
       continuousWindows.push([start / 1000, Date.now() / 1000]);
       px = x;
@@ -405,12 +423,12 @@ async function record(browser, slug) {
     };
     // Resolve after consecutive stable animation frames inside the page. Keeping
     // this to one browser round trip avoids stretching every recorded step.
-    const pointOf = createRecordTargetResolver({ page, targetSelector, onProblem: problem => problems.push(problem) });
+    const pointOf = createRecordTargetResolver({ page, targetSelector, onProblem: problem => problems.push(problem), advance:stepped?ms=>stepped.advance(ms):undefined });
 
     const motionWindows = [];
     for (const s of steps) {
-      const actionStart = Date.now() / 1000;
-      if (s.cmd === "wait") await page.waitForTimeout(s.ms);
+      const actionStart = now();
+      if (s.cmd === "wait") await wait(s.ms);
       else if (s.cmd === "move") await glide(s.point[0] * vw, s.point[1] * vh, timings.glide);
       else if (s.cmd === "hover" || (s.cmd === "click" && s.target)) {
         // A marquee stops only after the pointer enters it. Waiting for it
@@ -426,12 +444,12 @@ async function record(browser, slug) {
           await glide(landing[0], landing[1], 120);
         if (s.cmd === "click") {
           await page.mouse.down();
-          await page.waitForTimeout(timings.press);
+          await wait(timings.press);
           await page.mouse.up();
         }
       } else if (s.cmd === "click") {
         await page.mouse.down();
-        await page.waitForTimeout(timings.press);
+        await wait(timings.press);
         await page.mouse.up();
       } else if (s.cmd === "down") await page.mouse.down();
       else if (s.cmd === "up") await page.mouse.up();
@@ -442,23 +460,27 @@ async function record(browser, slug) {
       } else if (s.cmd === "tab") {
         for (let i = 0; i < s.n; i++) {
           await page.keyboard.press("Tab");
-          await page.waitForTimeout(timings.tabGap);
+          await wait(timings.tabGap);
         }
       } else if (s.cmd === "key") {
         await page.keyboard.press(s.key);
-        await page.waitForTimeout(timings.keyGap);
-      } else if (s.cmd === "type") await page.keyboard.type(s.text, { delay: timings.typeGap });
+        await wait(timings.keyGap);
+      } else if (s.cmd === "type") {
+        if(stepped){for(const char of s.text){await page.keyboard.type(char,{delay:0});await wait(timings.typeGap);}}
+        else await page.keyboard.type(s.text, { delay: timings.typeGap });
+      }
       else if (s.cmd === "scroll") {
         await page.mouse.wheel(0, s.px);
-        await page.waitForTimeout(timings.scrollSettle);
+        await wait(timings.scrollSettle);
       }
-      if (s.cmd !== "wait") motionWindows.push([actionStart, Date.now() / 1000 + .3]);
+      if (s.cmd !== "wait") motionWindows.push([actionStart, now() + .3]);
     }
     // A short tail so the last state lands before the loop restarts.
     await page.evaluate(() => (window.__dfaCursor.dataset.on = "0"));
-    await page.waitForTimeout(Math.max(350, gallery ? 3000 - (Date.now() / 1000 - t0) * 1000 : 350));
+    await wait(Math.max(350, gallery ? 3000 - (now() - t0) * 1000 : 350));
     const sourceScreenshotEvidence = await sourceScreenshots?.stop();
-    const t1 = Date.now() / 1000;
+    const t1 = now();
+    const steppedEnd=await stepped?.stop();
     const nativeEnd = nativeStart ? pageFrames ? await stopPageFrameRecording(page, tmp, nativeStart) : await stopTabRecording(page, tmp, nativeStart) : null;
     if (nativeEnd) frames = nativeEnd.frames;
     // Stop before shutdown IPC, pending writes or ffmpeg add unrecorded time.
@@ -468,7 +490,7 @@ async function record(browser, slug) {
       return { sourceFrames: capture.sourceFrames, sourceChanges: capture.sourceChanges, longTasks: capture.longTasks };
     }) : null;
     if (cdp) await cdp.send("Page.stopScreencast");
-    await page.waitForTimeout(100);
+    if(!stepped)await page.waitForTimeout(100);
     await Promise.all(writes);
 
     if (!frames.length) throw new Error("screencast produced no frames");
@@ -493,7 +515,7 @@ async function record(browser, slug) {
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, ...(styled ? {visualStyle,theme:styleTheme,material:materialEvidence} : {}), renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(sourceEvidence ? { captureTransport: nativeEnd ? pageFrames ? "owned-page-screenshots" : "owned-browser-tab" : sourceScreenshotEvidence?.captures.length ? "page-screencast+owned-screenshots" : "page-screencast", nativeSourceQuality, nativeChangeQuality, native: sourceEvidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, ...(styled ? {visualStyle,theme:styleTheme,material:materialEvidence} : {}), renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(steppedEnd?{captureTransport:"frame-stepped-page",offline:steppedEnd}:{}), ...(sourceEvidence ? { captureTransport: nativeEnd ? pageFrames ? "owned-page-screenshots" : "owned-browser-tab" : sourceScreenshotEvidence?.captures.length ? "page-screencast+owned-screenshots" : "page-screencast", nativeSourceQuality, nativeChangeQuality, native: sourceEvidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, ...(region?{captureRegion:region}:{}), framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
       if (nativeEnd) fs.copyFileSync(nativeEnd.file, path.join(directory, `${slug}-raw.${nativeEnd.extension}`));
     }
     // Each frame holds until the next one; the last holds to the end.
@@ -508,8 +530,8 @@ async function record(browser, slug) {
       inputs = [...inputs, "-i", mask];
       graph = `[0:v]scale=-2:${h}:flags=lanczos,pad=${OUT_W}:${OUT_H}:(ow-iw)/2:(oh-ih)/2:color=0x050505[v];[v][1:v]overlay=0:0,fps=${FPS},format=yuv420p`;
     } else {
-      const pixelFrame = { ...frame, cw: frame.cw * dpr, ch: frame.ch * dpr, cx: frame.cx * dpr, cy: frame.cy * dpr };
-      graph = `[0:v]${framedCropFilter(vw * dpr, vh * dpr, pixelFrame, extendStageEdges)},scale=${OUT_W}:${OUT_H}:flags=lanczos,fps=${FPS},format=yuv420p`;
+      const pixelFrame = { ...frame, cw: frame.cw * dpr, ch: frame.ch * dpr, cx: (frame.cx-(region?.x??0))*dpr, cy: (frame.cy-(region?.y??0))*dpr };
+      graph = `[0:v]${framedCropFilter((region?.width??vw)*dpr, (region?.height??vh)*dpr, pixelFrame, extendStageEdges)},scale=${OUT_W}:${OUT_H}:flags=lanczos,fps=${FPS},format=yuv420p`;
     }
     const mp4Tmp = path.join(tmp, `${slug}.mp4`);
     let crf = 24;
