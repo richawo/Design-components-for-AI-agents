@@ -1,5 +1,10 @@
 {
   "crayon": {
+    "fashion-assortment-planner": { "steps": ["wait:700", "hover:@cell-shoreditch-crew-forest", "drag:0.92,0.42", "wait:500", "click:@autofill", "wait:1300", "click:@publish", "wait:1300"], "viewport": { "width": 1280, "height": 800 } },
+    "collab-message-list": { "steps": ["click:@composer", "type:Great. Ship it at 14:00.", "key:Enter", "wait:1800", "click:@react-m6-celebrate", "wait:1000"] },
+    "app-permission-matrix": { "steps": ["wait:500", "click:@permission-reviewer-approve", "wait:800", "click:@save-policy", "wait:1300"], "viewport": { "width": 1280, "height": 800 } },
+    "bento-grid": { "steps": ["wait:300", "click:@metric-signups", "wait:700", "click:@metric-revenue", "wait:600", "scroll:760", "wait:200", "click:@switch-anomaly-alerts", "wait:1100", "click", "wait:800"], "viewport": { "width": 1280, "height": 800 } },
+    "billing-invoice-list": { "steps": ["wait:400", "click:@filter-open", "wait:900", "click:@download-inv-1046", "wait:1400"], "viewport": { "width": 1280, "height": 800 } },
     "auth-passkey": { "steps": ["click:@passkey-button", "wait:3900"] },
     "mobile-onboarding": { "steps": ["click:@next", "wait:1700", "click:@skip", "wait:1000", "click:@next", "wait:1400"] },
     "three-wave-field": { "ambientMs": 4000 },
