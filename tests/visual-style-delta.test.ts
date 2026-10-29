@@ -11,12 +11,15 @@ describe("small, source-bound style packs",()=>{
  it("binds every generated variant to the source the runtime actually serves, including composed blocks",()=>{
   const generated=path.resolve("registry/__generated__"),styles=path.join(generated,"style-packs");
   if(!fs.existsSync(styles))return; // Public clones without private material have no variants.
+  // Runtime requests share one immutable material pool. Read that same pool
+  // once while still checking the exact source binding of every component.
+  let shared:Record<string,string>|null=null;
   for(const file of fs.readdirSync(styles).filter(file=>file.endsWith(".json"))){
    const delta=unpackContent(JSON.parse(fs.readFileSync(path.join(styles,file),"utf8"))) as StyleDelta;
    const base=unpackContent(JSON.parse(fs.readFileSync(path.join(generated,"source-packs",file),"utf8"))) as ComponentSource;
    expect(createHash("sha256").update(base.code).digest("hex"),file).toBe(delta.baseCodeSha256);
-   const shared=delta.format==="dfa-style-delta-v2"?unpackContent(JSON.parse(fs.readFileSync(path.join(generated,"style-shared.json"),"utf8"))) as Record<string,string>:null;
-   expect(()=>restoreStyleSource(base,delta,shared),file).not.toThrow();
+   if(delta.format==="dfa-style-delta-v2"&&!shared)shared=unpackContent(JSON.parse(fs.readFileSync(path.join(generated,"style-shared.json"),"utf8"))) as Record<string,string>;
+   expect(()=>restoreStyleSource(base,delta,delta.format==="dfa-style-delta-v2"?shared:null),file).not.toThrow();
   }
  });
  it.each(["web","mobile"])("restores the exact %s source and briefs without storing another complete component",platform=>{
