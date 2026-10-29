@@ -12,7 +12,8 @@
 //        [--isolated-source] bundles the exact checked-out demo with production React
 //        [--tab-capture] records that owned fixture directly, with source-stall guards
 //        [--page-frames] requests actual page images when tab capture omits a tween
-//        [--frame-stepped] renders every source frame on an offline clock (not a performance replay)
+//        [--frame-stepped] renders on an offline clock (not a performance replay)
+//        [--frame-step-fps=30|60] source cadence; defaults to 60 for native/3D, 30 for web cards
 //        [--extend-stage-edges] extends verified empty stage edges into crop padding
 //        [--report=dir] retains metrics and rejected encoded/source inputs before cleanup
 //        [--visual-style=crayon] [--theme=light|dark] records the licensed style with DESIGN_FOR_AI_LICENSE
@@ -78,6 +79,8 @@ const isolatedSource = args.includes("--isolated-source");
 if (isolatedSource && pagePath) throw new Error("--isolated-source records a component demo; omit --page-path");
 if (styled && (isolatedSource || pagePath)) throw new Error("Licensed styles must record their authorized live preview; omit --isolated-source and --page-path");
 const frameStepped = args.includes("--frame-stepped");
+const frameStepFpsFlag=flag("frame-step-fps",undefined);
+if(frameStepFpsFlag!==undefined&&![30,60].includes(Number(frameStepFpsFlag)))throw new Error("--frame-step-fps must be 30 or 60");
 const tabCapture = args.includes("--tab-capture");
 const pageFrames = args.includes("--page-frames");
 if (frameStepped && (tabCapture || pageFrames || isolatedSource)) throw new Error("Frame-stepped capture requires the actual preview page");
@@ -336,7 +339,8 @@ async function record(browser, slug) {
       width:0,height:0,
     }:null;
     if(region){region.width=Math.min(vw,Math.ceil((frame.cx+frame.cw)/2)*2)-region.x;region.height=Math.min(vh,Math.ceil((frame.cy+frame.ch)/2)*2)-region.y;}
-    const stepped=frameStepped?await startFrameSteppedRecording(page,{directory:tmp,quality:captureJpegQuality,fps:FPS,clip:region}):null;
+    const sourceFps=frameStepFpsFlag!==undefined?Number(frameStepFpsFlag):(mobile||meta.category==="three-d"||meta.dependencies?.includes("three")?60:30);
+    const stepped=frameStepped?await startFrameSteppedRecording(page,{directory:tmp,quality:captureJpegQuality,fps:sourceFps,clip:region}):null;
     const cdp = tabCapture || pageFrames || stepped ? null : await context.newCDPSession(page);
     let frames = stepped?.frames ?? [];
     const writes = [];

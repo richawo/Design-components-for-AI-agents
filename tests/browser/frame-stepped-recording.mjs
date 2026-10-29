@@ -11,6 +11,9 @@ const out=process.env.TEST_OUT||"test-results/frame-stepped-recording";
 fs.mkdirSync(out,{recursive:true});
 const browser=await launchChromium({args:[]});
 try{
+  const reports=[];
+  for(const fps of [30,60]){
+  const directory=out+"/"+fps;fs.mkdirSync(directory,{recursive:true});
   const page=await browser.newPage({viewport:{width:480,height:320}});
   await installFrameClock(page);
   await page.setContent(`<!doctype html><style>
@@ -29,7 +32,7 @@ try{
       effect.finished.then(()=>document.querySelector('#receipt').textContent='Complete');
     };
     </script>`);
-  const capture=await startFrameSteppedRecording(page,{directory:out,clip:{x:0,y:0,width:320,height:240}});
+  const capture=await startFrameSteppedRecording(page,{directory,fps,clip:{x:0,y:0,width:320,height:240}});
   const position=()=>page.evaluate(()=>({css:new DOMMatrix(getComputedStyle(document.querySelector('#css')).transform).m41,js:parseFloat(document.querySelector('#js').style.left),ticks:Number(document.body.dataset.ticks||0)}));
   const before=await position();
   await page.mouse.click(30,110);
@@ -47,8 +50,10 @@ try{
   const resumed=await position();assert(resumed.css-paused.css>20,'CSS animation must resume from its paused position');
   const evidence=await capture.stop();
   const hashes=capture.frames.map(frame=>crypto.createHash('sha256').update(fs.readFileSync(frame.file)).digest('hex'));
-  assert(new Set(hashes).size>40,'the exported frames must contain actual source movement');
+  assert(new Set(hashes).size>fps*.65,'the exported frames must contain actual source movement');
   const dimensions=await sharp(capture.frames[0].file).metadata();assert.equal(dimensions.width,320);assert.equal(dimensions.height,240);
-  fs.writeFileSync(out+'/report.json',JSON.stringify({before,moving,paused,resumed,distinctFrames:new Set(hashes).size,evidence},null,2));
+  reports.push({fps,before,moving,paused,resumed,distinctFrames:new Set(hashes).size,evidence});await page.close();
+  }
+  fs.writeFileSync(out+'/report.json',JSON.stringify({cadences:reports},null,2));
   console.log('Frame stepping preserves source motion, timers, input, pause/resume and completion.');
 }finally{await browser.close();}
