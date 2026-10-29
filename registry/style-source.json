@@ -1,19 +1,27 @@
 {
   "repository": "richawo/Design-for-AI",
-  "commit": "7f896c9a06a16fd98e577d6f5f4c565a478e7ad1",
+  "commit": "9d847ac3ba5f12abe421c421d180ca669ebab45a",
   "files": [
     {
       "path": "_styles/crayon/manifest.json",
-      "sha256": "5963da214b198f414d7c78a48357ef75e41d2377f887e4af569cd97b5f4ace31"
+      "sha256": "07525fec82f76d72a972863fcac36673bf4ccc986ca29a449b8a687a5db0ccaf"
     },
     {
       "path": "_styles/crayon/prompt.md",
-      "sha256": "319c9ae51eba70ae9087721ecdd56ffebc265669928d5c14bf9aa0f7392d6645"
+      "sha256": "0a33187950e96d1daa616ec14b1028861f08663e36e8ca1bcf8032ad03cba8ef"
     },
     {
       "path": "_styles/crayon/style.css",
-      "sha256": "ddbaccd8cd785b5f15041a3f5ec6dabc09b6b182ef2fe08cf333cc6be9acf4ad"
+      "sha256": "0ca6e034be319c30a8bfb8049cb75aae71995d63acca44bf150701f886021c4b"
+    },
+    {
+      "path": "_styles/crayon/web.ts",
+      "sha256": "4a07967be4bedd2a2f882caf52846aa11449456ef2ce7e80912a5dab39460dac"
+    },
+    {
+      "path": "_styles/crayon/native.tsx",
+      "sha256": "c5ee9bb36111df4a62ba33b9b87864e28323e038eb0b991405d7096946353dfc"
     }
   ],
-  "previewVersion": 3
+  "previewVersion": 4
 }

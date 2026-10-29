@@ -186,12 +186,18 @@ when verifying another pinned publication.
 
 ### Private visual-style source
 
-`registry/style-source.json` independently pins the three private Crayon material
+`registry/style-source.json` independently pins the private Crayon material
 files by Git commit and SHA-256. Pro sync fetches that commit and materializes only
 those blobs under ignored `registry/__generated__/style-inputs/`. It does not move
 the editorial checkout or include later blog edits. Changing a style requires a
 reviewed private commit followed by a new public pin. The generator rejects a
-hash mismatch before building styled component packs.
+hash mismatch before building styled component packs. Drawing material includes
+five pinned files: the manifest, brief, stylesheet, web runtime and native runtime.
+The licensed preview imports its web runtime through the same private/no-store
+entitlement gate as its CSS. Standalone source includes the runtime directly.
+Shared style text is stored once in a source-bound server pack, rather than
+repeating the drawing implementation across every component. Capture verifies
+both the compiled CSS and the exact runtime bytes before replacing a recording.
 
 The live marker also reports `visualStyleSource.commit`, `pinSha256` and
 `available`. Production must match the public pin and report `available: true`.

@@ -45,8 +45,19 @@ stdio schema alongside it when adding an option.
 
 Crayon shares Original's neutral light and dark colour family: near-white paper
 and white surfaces in Light, with a true-black canvas and graphite surfaces in Dark.
-Handwritten type and drawn edges define the style. Purposeful component accents,
-imagery, contracts and interactions are preserved. Scoped web material follows the host `.light` /
+Measured wax-pencil contours, card-corner hatching and handwritten type define
+the style. Containers, buttons, selected controls and fields receive their own
+drawn treatment. Headings write on without changing their text or line breaks,
+then finish with a pencil underline. Focus and press draw a fresh trace. Existing
+component animations keep their timing; reduced motion leaves the complete
+drawing and text visible. Purposeful component accents,
+imagery, contracts and interactions are preserved. Fixed receipt paper keeps its authored
+ink and inverse-label colours, including contrasting drawn edges, in both themes.
+Calculated accent labels retain their contrasting foreground. Fixed canvas artwork
+keeps a local dark material for its overlays and controls inside either host theme.
+Nested standalone roots inherit that painted context, with explicit theme overrides
+preserved. Selected controls with a separate bright fill retain dark labels and pencil.
+Scoped web material follows the host `.light` /
 `.dark` class or `data-theme` attribute; `data-dfa-theme` on a component root
 overrides that host. MCP `get_component` and `install_command`, source APIs and
 the licensed registry accept `theme: "light" | "dark"` (a `theme` query string
@@ -58,8 +69,8 @@ the selected installation.
 Preview URLs accept the same theme query. Record the dark catalogue with
 `scripts/record-demos.mjs --visual-style=crayon --theme=dark`, and its smaller
 homepage takes with `scripts/build-conveyor-videos.mjs --visual-style=crayon --theme=dark`.
-The neutral palette uses `public/style-previews/crayon/v3/light/` and
-`public/style-previews/crayon/v3/dark/`. The public style pin's `previewVersion`
+The current material uses `public/style-previews/crayon/v4/light/` and
+`public/style-previews/crayon/v4/dark/`. The public style pin's `previewVersion`
 selects a complete matching movie, poster and compact-media set. Earlier sets
 remain available to open sessions during the release. Source and live material
 retain Pro authorization in both themes.
@@ -72,8 +83,10 @@ pieces work. See DEPLOY.md for the independent private source pin.
 Crayon compiles the existing source without changing its imports, data contract,
 callbacks or demo scripts. Web exports receive scoped material on their returned
 roots, including SVG, custom roots and portals. React Native exports retain
-native primitives and adapt neutral palettes and heading typography. Native
-previews adapt the web rendering after authorization; they retain gestures and
+native primitives, compose their original layout and press callbacks, and draw
+real `react-native-svg` contours over those same gesture owners. Native headings
+settle into full ink. Native previews adapt the web rendering after authorization;
+they retain gestures and
 leave actual imagery and coloured data alone. Native heading fallbacks are
 Chalkboard SE on iOS and casual on Android. Hosts can load Caveat as DFA Crayon
 when they want the same custom font on every platform.
