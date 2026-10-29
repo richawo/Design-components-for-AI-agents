@@ -4,16 +4,17 @@ import { createHash } from "node:crypto";
 import { conveyorVideoManifest } from "./conveyor-videos.mjs";
 
 /** Public pixels only. The licensed material and source stay in private packs. */
-export function stylePreviewManifest(root, variants, { required = false, themes = ["light"] } = {}) {
+export function stylePreviewManifest(root, variants, { required = false, themes = ["light"], previewVersion = 2 } = {}) {
   if (themes.some(theme => !["light", "dark"].includes(theme))) throw new Error("Invalid preview theme");
+  if (!Number.isSafeInteger(previewVersion) || previewVersion < 2) throw new Error("Invalid preview version");
   const result = {}, missing = [];
   for (const [style, slugs] of Object.entries(variants)) {
     if (!/^[a-z][a-z0-9-]*$/.test(style)) throw new Error("Invalid preview style");
-    const conveyors = Object.fromEntries(["light", "dark"].map(theme => [theme, conveyorVideoManifest(root, slugs, { visualStyle: style, theme })]));
+    const conveyors = Object.fromEntries(["light", "dark"].map(theme => [theme, conveyorVideoManifest(root, slugs, { visualStyle: style, theme, previewVersion })]));
     for (const slug of slugs) {
       if (!/^[a-z][a-z0-9-]*$/.test(slug)) throw new Error("Invalid preview slug");
       const material = theme => {
-        const suffix = theme === "dark" ? "/dark" : "";
+        const suffix = previewVersion >= 3 ? `/v${previewVersion}/${theme}` : theme === "dark" ? "/dark" : "";
         const asset = extension => {
           const relative = `/style-previews/${style}${suffix}/${slug}.${extension}`;
           const file = path.join(root, "public", relative);

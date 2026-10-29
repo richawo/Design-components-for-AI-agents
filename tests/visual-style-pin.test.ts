@@ -44,4 +44,9 @@ describe("independently pinned paid style material",()=>{
   const f=fixture();fs.writeFileSync(path.join(f.dir,"style.css"),"Changed after approval");
   expect(()=>loadStylePack(f.root)).toThrow("differ from their committed pin");
  });
+ it("accepts a numeric preview version and rejects paths masquerading as versions",()=>{
+  const f=fixture(),file=path.join(f.root,"registry/style-source.json");
+  fs.writeFileSync(file,JSON.stringify({...f.pin,previewVersion:3}));expect(styleSourcePin(f.root)?.previewVersion).toBe(3);
+  for(const previewVersion of ["../private",1,2.5]){fs.writeFileSync(file,JSON.stringify({...f.pin,previewVersion}));expect(()=>styleSourcePin(f.root)).toThrow("Invalid visual-style preview version");}
+ });
 });

@@ -41,6 +41,7 @@ import { createRecordTargetResolver } from "./lib/record-target.mjs";
 import { waitForPreview } from "./lib/preview-ready.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
+import { loadStylePack, styleSourcePin } from "./lib/style-source.mjs";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const args = process.argv.slice(2);
@@ -57,7 +58,10 @@ const catalogue = styled ? JSON.parse(fs.readFileSync(path.join(root, "registry/
 if (styled && !catalogue.some(entry => entry.visualStyles?.includes(visualStyle))) throw new Error("Unknown visual style");
 const license = styled ? process.env.DESIGN_FOR_AI_LICENSE : null;
 if (styled && !license) throw new Error("Set DESIGN_FOR_AI_LICENSE to record licensed style previews. The key is scoped to the selected base URL.");
-const out = path.resolve(root, flag("out", styled ? `public/style-previews/${visualStyle}${styleTheme === "dark" ? "/dark" : ""}` : "public/previews"));
+const stylePin=styled?styleSourcePin(root):null,stylePack=styled?loadStylePack(root):null;
+const previewVersion=stylePin?.previewVersion??2;
+const styleSuffix=previewVersion>=3?`/v${previewVersion}/${styleTheme}`:styleTheme==="dark"?"/dark":"";
+const out = path.resolve(root, flag("out", styled ? `public/style-previews/${visualStyle}${styleSuffix}` : "public/previews"));
 const sheetDir = flag("sheet", "");
 const reportDir = flag("report", "");
 const gallery = !args.includes("--original-timing");
@@ -210,6 +214,7 @@ async function record(browser, slug) {
   const dpr = mobile ? 2 : webScale;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), `dfa-rec-${slug}-`));
   const problems = [];
+  let materialEvidence;
   let sourceScreenshots;
 
   const context = await browser.newContext({ viewport: { width: vw, height: vh }, deviceScaleFactor: dpr, reducedMotion: "no-preference" });
@@ -239,6 +244,10 @@ async function record(browser, slug) {
       if (styled) {
         await page.locator("[data-licensed-visual-style]").waitFor({ state: "attached", timeout: 15000 });
         await page.waitForFunction(({style,theme})=>[...document.querySelectorAll("[data-dfa-style]")].some(node=>node.getAttribute("data-dfa-style")===style&&node.getAttribute("data-dfa-theme")===theme),{style:visualStyle,theme:styleTheme},{timeout:15000});
+        const expected=stylePack?.themes?.[styleTheme]?.page??stylePack?.palette?.page;
+        const actual=await page.locator('[data-dfa-style="crayon"]').first().evaluate(node=>getComputedStyle(node).getPropertyValue("--dfa-crayon-page").trim().toLowerCase());
+        if(expected&&actual!==expected.toLowerCase())throw new Error(`Preview palette ${actual} differs from the pinned ${styleTheme} palette ${expected}; keep the last good recording.`);
+        materialEvidence={commit:stylePin?.commit,theme:styleTheme,page:actual};
       }
     }
     await page.waitForTimeout(meta.category === "three-d" || meta.dependencies?.includes("three") ? 6000 : 3200);
@@ -462,7 +471,7 @@ async function record(browser, slug) {
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, ...(styled ? {visualStyle,theme:styleTheme} : {}), renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(sourceEvidence ? { captureTransport: nativeEnd ? pageFrames ? "owned-page-screenshots" : "owned-browser-tab" : sourceScreenshotEvidence?.captures.length ? "page-screencast+owned-screenshots" : "page-screencast", nativeSourceQuality, nativeChangeQuality, native: sourceEvidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, ...(styled ? {visualStyle,theme:styleTheme,material:materialEvidence} : {}), renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(sourceEvidence ? { captureTransport: nativeEnd ? pageFrames ? "owned-page-screenshots" : "owned-browser-tab" : sourceScreenshotEvidence?.captures.length ? "page-screencast+owned-screenshots" : "page-screencast", nativeSourceQuality, nativeChangeQuality, native: sourceEvidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
       if (nativeEnd) fs.copyFileSync(nativeEnd.file, path.join(directory, `${slug}-raw.${nativeEnd.extension}`));
     }
     // Each frame holds until the next one; the last holds to the end.

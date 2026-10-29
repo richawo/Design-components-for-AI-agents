@@ -8,6 +8,7 @@ export function styleSourcePin(root){
  const file=path.join(root,'registry/style-source.json');
  if(!fs.existsSync(file))return null;
  const pin=JSON.parse(fs.readFileSync(file,'utf8'));
+ if(pin.previewVersion!==undefined&&(!Number.isSafeInteger(pin.previewVersion)||pin.previewVersion<2))throw Error('Invalid visual-style preview version');
  if(pin.repository!=='richawo/Design-for-AI'||!/^[a-f0-9]{40}$/.test(pin.commit)||!Array.isArray(pin.files)||pin.files.length!==3||new Set(pin.files.map(f=>f.path)).size!==3||pin.files.some(f=>!names.some(name=>f.path==='_styles/crayon/'+name)||!/^[a-f0-9]{64}$/.test(f.sha256)))throw Error('Invalid private visual-style source pin');
  return pin;
 }

@@ -48,3 +48,15 @@ it("fingerprints each Crayon theme against its own master",()=>{
   fs.writeFileSync(path.join(directory,"example.mp4"),"new dark recording");expect(conveyorVideoManifest(root,["example"],{visualStyle:"crayon",theme:"dark"})).toEqual({});
  }finally{fs.rmSync(root,{recursive:true,force:true});}
 });
+
+it("keeps a newer palette's compact movies bound to its own theme and source version",()=>{
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),"versioned-conveyor-"));
+ try{
+  const directory=path.join(root,"public/style-previews/crayon/v3/dark");fs.mkdirSync(path.join(directory,"conveyor"),{recursive:true});
+  const bytes=Buffer.from("neutral dark movie"),name=`example.${conveyorVideoHash(bytes,{visualStyle:"crayon"})}.mp4`;
+  fs.writeFileSync(path.join(directory,"example.mp4"),bytes);fs.writeFileSync(path.join(directory,"conveyor",name),"neutral dark compact movie");
+  expect(conveyorVideoManifest(root,["example"],{visualStyle:"crayon",theme:"dark",previewVersion:3})).toEqual({example:`/style-previews/crayon/v3/dark/conveyor/${name}`});
+  expect(conveyorVideoManifest(root,["example"],{visualStyle:"crayon",theme:"light",previewVersion:3})).toEqual({});
+  expect(conveyorVideoManifest(root,["example"],{visualStyle:"crayon",theme:"dark"})).toEqual({});
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});

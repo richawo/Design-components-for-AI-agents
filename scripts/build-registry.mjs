@@ -40,7 +40,7 @@ import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 import { packContent } from "./lib/content-pack.mjs";
 import { makeStyledSource } from "./lib/component-styles.mjs";
 import { packStyleSource } from "./lib/style-delta.mjs";
-import { loadStylePack, styleSourceIdentity } from "./lib/style-source.mjs";
+import { loadStylePack, styleSourceIdentity, styleSourcePin } from "./lib/style-source.mjs";
 import { writePublicContentRuntime } from "./lib/public-content-runtime.mjs";
 import { verifyPublicationRequest } from "./lib/publication-request.mjs";
 import { stylePreviewManifest } from "./lib/style-previews.mjs";
@@ -484,7 +484,7 @@ const previewsDir = path.join(root, "public", "previews");
 const previewFiles = fs.existsSync(previewsDir) ? fs.readdirSync(previewsDir).sort() : [];
 const thumbs = previewFiles.filter((f) => f.endsWith(".webp"));
 const cardThumbnails = await buildCardImages(root, thumbs);
-const stylePreviews = stylePreviewManifest(root, publishedStyles, { required: STRICT && styleSourceAvailable, themes: styleMaterial?.themes ? ["light", "dark"] : ["light"] });
+const stylePreviews = stylePreviewManifest(root, publishedStyles, { required: STRICT && styleSourceAvailable, themes: styleMaterial?.themes ? ["light", "dark"] : ["light"], previewVersion: styleSourcePin(root)?.previewVersion ?? 2 });
 // Hover videos recorded by scripts/record-demos.mjs from meta.demo.
 const videos = previewFiles.filter((f) => f.endsWith(".mp4") || f.endsWith(".webm"));
 const conveyorVideos = conveyorVideoManifest(root, showcaseCollections.flatMap(c => c.slugs));
