@@ -39,6 +39,11 @@ describe('licensed style compilation',()=>{
   const result=makeStyledSource({...meta,platform:'mobile'},source,material)!;
   expect(result.code).toContain('avatar:["#fff8e7","#fff8e7"]');expect(result.code).toContain('avatarInk:"#2d3027"');
  });
+ it('adapts neutral native backdrop stops while retaining meaningful coloured stops',()=>{
+  const source={slug:'test',code:'import {View} from "react-native";import {LinearGradient} from "expo-linear-gradient";const C={bgTop:"#191919",bg:"#000000",block:["#191919","#090909"] as const};export function Widget(){return <View><LinearGradient colors={[C.bgTop,"#0b0b0b","#e78040",C.bg,"rgba(32,32,32,0.6)"]}/></View>}',prompt:'Base',promptJson:'{}'};
+  const result=makeStyledSource({...meta,platform:'mobile'},source,material)!;
+  expect(result.code).toContain('block:["#fff8e7","#fff8e7"]');expect(result.code).toContain('bgTop:"#fff8e7"');expect(result.code).toContain('colors={[C.bgTop,"#fff8e7","#e78040",C.bg,("#fff8e7" + "99")]}');
+ });
  it('styles dynamically bound palette tokens without overriding an explicit accent',()=>{
   const source={slug:'test',code:'export function Widget({accent="red"}){const palette={field:"#111",label:"#ddd"}; return <form style={Object.fromEntries(Object.entries(palette).map(([k,v])=>["--w-"+k,v]))}><label className="text-[var(--w-label)]">Email</label><input className="bg-[var(--w-field)]"/><button style={{"--w-accent":accent}} className="bg-[var(--w-accent)]">Continue</button></form>}',prompt:'base',promptJson:'{}'};
   const value=makeStyledSource(meta,source,{...material,palette:{...material.palette,accent:'#b74e28'}})!;

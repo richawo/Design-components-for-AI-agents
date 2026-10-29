@@ -93,7 +93,7 @@ function roleFor(token){
   const s=token.replace(/^--/,'').replace(/([a-z])([A-Z])/g,'$1-$2').toLowerCase();
   if(/(?:^|-)(?:on-ink|on-accent|on|inverse)$/.test(s))return'onInk';
   if(/(?:^|-)(?:border|line|rule|edge|stroke)(?:-(?:hover|strong|soft))?$/.test(s))return'line';
-  if(/(?:^|-)(?:bg|background|canvas|page|base|stage|shell)$/.test(s))return'page';
+  if(/(?:^|-)(?:bg|background|canvas|page|base|stage|shell)(?:-(?:top|bottom))?$/.test(s))return'page';
   if(/(?:^|-)(?:surface|panel|card|popover|input|well|field|paper|sunken|glass|tile)$/.test(s))return'surface';
   if(/(?:^|-)(?:raised|elevated|soft)$/.test(s))return'raised';
   if(/(?:^|-)(?:ink|fg|foreground|text|label|heading|title|body)$/.test(s))return'ink';
@@ -176,14 +176,20 @@ function makeNativeStyledSource(meta,source,pack){
  };
  const font='DFAStylePlatform.select({ios:"Chalkboard SE",android:"casual",default:"DFA Crayon"}) ?? "System"';
  const paint=(role,hint)=>pack.themes?`${hint?'DFA_CRAYON_PALETTES.'+hint:'DFA_CRAYON_COLORS'}.${role}`:JSON.stringify(pack.palette[role]);
+ const gradientPaint=(value,hint)=>{let alpha=1;if(/^rgba\(/.test(value))alpha=Number(value.match(/[\d.]+/g)?.[3]??1);else if(/^#[a-f0-9]{8}$/i.test(value))alpha=parseInt(value.slice(-2),16)/255;else if(/^#[a-f0-9]{4}$/i.test(value))alpha=parseInt(value.at(-1).repeat(2),16)/255;return alpha>=1?paint('surface',hint):'('+paint('surface',hint)+' + "'+Math.round(Math.max(0,alpha)*255).toString(16).padStart(2,'0')+'")';};
  const walk=(node,hint=null,inThemePalette=false)=>{
   if(!node||typeof node!=='object')return;
   if(node.type==='VariableDeclarator'&&/(?:^|_)(?:palettes?|themes?)(?:_|$)/i.test(node.id?.name??''))inThemePalette=true;
+  if(node.type==='JSXOpeningElement'&&node.name?.name==='LinearGradient'){
+   const colors=node.attributes.find(item=>item.name?.name==='colors')?.value?.expression;
+   if(colors?.type==='ArrayExpression')for(const item of colors.elements)if(item?.type==='StringLiteral'&&neutral(item.value))edits.push({at:item.start,end:item.end,text:gradientPaint(item.value,hint)});
+  }
   if(node.type==='ObjectProperty'){
    const key=node.key?.name??node.key?.value,value=node.value;
    if(inThemePalette&&['light','dark'].includes(key))hint=key;
    if(['colors','image','art'].includes(key))return;
-   if(['card','chip','control','avatar'].includes(key)&&value?.type==='ArrayExpression')for(const item of value.elements)if(item?.type==='StringLiteral'&&neutral(item.value))edits.push({at:item.start,end:item.end,text:paint('surface',hint)});
+   const array=value?.type==='TSAsExpression'?value.expression:value;
+   if(['card','chip','control','avatar','block','sheet','tile','segThumb','bar'].includes(key)&&array?.type==='ArrayExpression')for(const item of array.elements)if(item?.type==='StringLiteral'&&neutral(item.value))edits.push({at:item.start,end:item.end,text:gradientPaint(item.value,hint)});
    if(typeof key==='string'&&value?.type==='StringLiteral'&&neutral(value.value)){
     const role=key==='backgroundColor'?'surface':key==='ground'?'page':key==='soft'?'muted':key==='borderColor'?'line':key==='color'?'ink':roleFor('--'+key);
     if(role&&role!=='accent'&&key!=='shadowColor'&&pack.palette[role])edits.push({at:value.start,end:value.end,text:paint(role,hint)});
