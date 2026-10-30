@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "requestId": "2026-10-30-existing-guide-repairs",
+  "requestId": "2026-10-30-repair-markdown-mcp",
   "mode": "daily",
-  "requestedAt": "2026-10-30T11:35:40.425459+00:00",
-  "privateContentCommit": "84154ee2dfa6be024a741c2414bca5bb2c13d5ee",
+  "requestedAt": "2026-10-30T12:40:23.731Z",
+  "privateContentCommit": "ac90f0866797d8d738540e3e42afd15456d25c38",
   "sourceInputsSha256": "9b19d3a35b000d795e89cd0ffaade418d4a8f92169d39cfaed5eb384425b6899",
-  "approvalSha256": "9da220d833375bef3f200c78c032028089cda2c931834c7324e5ce2547bda91a",
+  "approvalSha256": "d73f875896130156a5a87402d5f8d17b1bdfecbda8fe1ea1b7216fb64d68ea92",
   "articleSlugs": [
     "react-dashboard-templates",
     "react-fashion-merchandising-dashboard",
