@@ -1,11 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import matter from "gray-matter";
 import { marked } from "marked";
+import { decodeEntities } from "@/scripts/lib/translation-tokens.mjs";
 
 const metadataKey = "Persist { ticketId, priority, assigneeId }. If rejected, show the failure and restore the previous route or inbox unless a newer host routing state takes precedence.";
 const supportFrench = "Enregistrer { ticketId, priority, assigneeId }. En cas de rejet, rétablir la route précédente ou la boîte de réception, sauf si un état plus récent prévaut.";
 const otherFrench = "Autre traduction propre à ce composant.";
 const blockFrench = "Traduction propre au bloc.";
+const decisionKey = 'Records { decision: "approve" | "reject" } and shows a failure.';
+const decisionFrench = 'Enregistre { decision: "approve" | "reject" } et affiche une erreur.';
 
 vi.mock("@/lib/registry", async (importOriginal) => {
   const original = await importOriginal<typeof import("@/lib/registry")>();
@@ -17,7 +20,10 @@ vi.mock("@/lib/registry", async (importOriginal) => {
       if (!entry || !["saas-support-triage", "chart-portfolio", "block-saas-landing"].includes(slug)) return entry;
       return {
         ...entry,
-        props: [{ name: "onTriage", type: "(update: SupportTriageUpdate) => void | Promise<void>", description: metadataKey }],
+        props: [
+          { name: "onTriage", type: "(update: SupportTriageUpdate) => void | Promise<void>", description: metadataKey },
+          { name: "onDecision", type: '"approve" | "reject"', default: '"approve" | "reject"', description: decisionKey },
+        ],
       };
     },
   };
@@ -29,7 +35,7 @@ vi.mock("@/lib/i18n/server", async (importOriginal) => {
     ...original,
     siteDictionary: vi.fn(async () => ({ [metadataKey]: "Valeur générale périmée." })),
     entryCopy: vi.fn(async (locale: string, slug: string) => {
-      if (slug === "saas-support-triage") return { [metadataKey]: locale === "fr" ? supportFrench : `translated-${locale}` };
+      if (slug === "saas-support-triage") return { [metadataKey]: locale === "fr" ? supportFrench : `translated-${locale}`, [decisionKey]: decisionFrench };
       if (locale !== "fr") return {};
       if (slug === "chart-portfolio") return { [metadataKey]: otherFrench };
       if (slug === "block-saas-landing") return { [metadataKey]: blockFrench };
@@ -111,6 +117,24 @@ describe("MCP and localized Markdown page parity", () => {
     expect(row![1].text).toContain("void | Promise&lt;void&gt;");
     expect(row![3].text).toBe(supportFrench);
     expect((await call("fr/components/saas-support-triage")).content[0].text).toBe(markdown);
+  });
+
+  it("preserves pipes in type, default and description cells in English and French", async () => {
+    const english = await componentMarkdown(request(), { params: Promise.resolve({ slug: "saas-support-triage" }) });
+    const french = await local(["components", "saas-support-triage"]);
+    for (const [path, response, expectedDescription] of [
+      ["components/saas-support-triage", english, decisionKey],
+      ["fr/components/saas-support-triage", french, decisionFrench],
+    ] as const) {
+      const markdown = await response.text();
+      const tables = marked.lexer(matter(markdown).content).filter((token) => token.type === "table");
+      const row = tables.flatMap((table) => table.rows).find((cells) => cells[0].text.includes("onDecision"));
+      expect(row, path).toHaveLength(4);
+      expect(decodeEntities(row![1].text), path).toContain('"approve" | "reject"');
+      expect(decodeEntities(row![2].text), path).toContain('"approve" | "reject"');
+      expect(decodeEntities(row![3].text), path).toBe(expectedDescription);
+      expect((await call(path)).content[0].text).toBe(markdown);
+    }
   });
 
   it("returns the exact English and localized documentation Markdown from get_page", async () => {

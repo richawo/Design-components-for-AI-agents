@@ -7,6 +7,7 @@ import { markdownForPage } from "@/lib/page-markdown";
 import { entryCopy, siteDictionary } from "@/lib/i18n/server";
 import { treeLocalizer } from "@/lib/i18n/tree";
 import { mapMarkdown } from "@/lib/i18n/markdown.mjs";
+import { decodeEntities, escapeText } from "@/scripts/lib/translation-tokens.mjs";
 import { localizePath } from "@/lib/i18n/routing";
 import { absoluteUrl } from "@/lib/site";
 import { GET as componentMarkdown } from "@/app/md/components/[slug]/route";
@@ -38,6 +39,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ loca
   const inline = (key: string) => {
     const translated = t(key);
     if (translated !== key) return translated;
+    // Metadata dictionaries use the original text, while Markdown's inline
+    // renderer encodes quotes and other entities before translation lookup.
+    const decoded = decodeEntities(key);
+    if (decoded !== key && !/<[^>]*>/.test(key)) {
+      const decodedTranslation = t(decoded);
+      if (decodedTranslation !== decoded) return escapeText(decodedTranslation);
+    }
     let code = false;
     return key.split(/(<[^>]*>)/g).map((part) => {
       if (/^<code\b/.test(part)) code = true;

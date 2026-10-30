@@ -6,6 +6,8 @@ import { getComponent, readSource } from "@/lib/registry";
 import { CATEGORIES } from "@/lib/registry-types";
 import { absoluteUrl } from "@/lib/site";
 
+const tableCell = (value: string) => value.replace(/(\\*)\|/g, (_, slashes: string) => `${slashes}${slashes.length % 2 ? "" : "\\"}|`);
+
 /** Markdown twin of a component page: /components/<slug>.md */
 export async function GET(
   _req: Request,
@@ -63,7 +65,7 @@ export async function GET(
     "| --- | --- | --- | --- |",
     ...e.props.map(
       (p) =>
-        `| \`${p.name}\` | \`${p.type.replace(/\|/g, "\\|")}\` | ${p.default ? `\`${p.default}\`` : "None"} | ${p.description} |`,
+        `| \`${p.name}\` | \`${tableCell(p.type)}\` | ${p.default ? `\`${tableCell(p.default)}\`` : "None"} | ${tableCell(p.description)} |`,
     ),
     "",
     ...(e.controls?.length ? [...controlsSection(e.controls), ""] : []),
