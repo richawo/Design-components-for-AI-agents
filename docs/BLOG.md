@@ -96,9 +96,11 @@ on every day for compatibility; their identities and dates must stay unchanged.
 Current R39 approvals also require complete linguistic review of all 29 additional
 language editions per selected owner. Read every title, description, paragraph,
 heading, list, table cell, FAQ, source note and technical explanation against the
-English source. Correct meaning, grammar, naturalness and domain terminology, then
-reread each complete corrected edition. Reject substantial English clauses as well as whole sentences. Token checks and samples do not replace
-the reading. Describe AI review accurately; it is not native professional review.
+English source with a lightweight sense check for obvious or glaring errors. Fix clear
+meaning, broken-text, number, licence and technical problems without polishing minor
+style, then briefly reread each affected edition once for the current receipt contract.
+Reject substantial English clauses as well as whole sentences. Token checks and samples
+do not replace the reading. Describe AI review accurately; it is not native professional review.
 
 Each private article review supplies `translationReviews`, one reference per
 current non-English locale, with `locale`, private `review` path and `reviewSha256`.
