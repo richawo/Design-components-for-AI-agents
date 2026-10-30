@@ -7,6 +7,10 @@ import { controlsSection } from "./demo/describe";
 import { fileNameFor, installText } from "./install";
 import type { Verified } from "./license";
 import { markdownForPage } from "./page-markdown";
+import { localeByCode } from "./blog/locales.mjs";
+import { GET as componentMarkdown } from "@/app/md/components/[slug]/route";
+import { GET as blockMarkdown } from "@/app/md/blocks/[slug]/route";
+import { GET as localizedMarkdown } from "@/app/md/localized/[locale]/[...path]/route";
 import {
   allComponents,
   categoriesWithCounts,
@@ -354,7 +358,7 @@ export const TOOLS: Tool[] = [
     name: "get_page",
     title: "Read a site page",
     description:
-      "Any page of design.yaps.ai as Markdown, e.g. 'pricing', 'docs/installation', 'categories/auth', 'components', 'blog', 'fr/blog', 'blog/<slug>' or 'sitemap'. Blog editions keep their selected language and canonical URL.",
+      "A public page of design.yaps.ai as Markdown, e.g. 'pricing', 'docs/installation', 'fr/docs/installation', 'components/<slug>', 'fr/blocks/<slug>', 'blog/<slug>' or 'sitemap'. Localized editions keep their language and canonical URL; Pro source remains licensed.",
     inputSchema: {
       type: "object",
       properties: {
@@ -368,7 +372,23 @@ export const TOOLS: Tool[] = [
     },
     annotations: readOnly,
     async run(a) {
-      const md = await markdownForPage(String(a.path ?? ""));
+      const requested = String(a.path ?? "");
+      const parts = requested.replace(/^\/+|\/+$/g, "").split("/");
+      const locale = localeByCode(parts[0]);
+      let md: string | null;
+      if (locale && locale.code !== "en" && parts[1] !== "blog") {
+        const response = await localizedMarkdown(new Request(absoluteUrl("/")), {
+          params: Promise.resolve({ locale: locale.code, path: parts.slice(1) }),
+        });
+        md = response.ok ? await response.text() : null;
+      } else if (parts.length === 2 && ["components", "blocks"].includes(parts[0])) {
+        const response = await (parts[0] === "blocks" ? blockMarkdown : componentMarkdown)(new Request(absoluteUrl("/")), {
+          params: Promise.resolve({ slug: parts[1] }),
+        });
+        md = response.ok ? await response.text() : null;
+      } else {
+        md = await markdownForPage(requested);
+      }
       return md
         ? text(md)
         : text(
