@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import matter from "gray-matter";
+import { marked } from "marked";
 
 const metadataKey = "Persist { ticketId, priority, assigneeId }. If rejected, show the failure and restore the previous route or inbox unless a newer host routing state takes precedence.";
 const supportFrench = "Enregistrer { ticketId, priority, assigneeId }. En cas de rejet, rétablir la route précédente ou la boîte de réception, sauf si un état plus récent prévaut.";
@@ -16,7 +17,7 @@ vi.mock("@/lib/registry", async (importOriginal) => {
       if (!entry || !["saas-support-triage", "chart-portfolio", "block-saas-landing"].includes(slug)) return entry;
       return {
         ...entry,
-        props: [{ name: "onTriage", type: "(update: Update) => Promise<void>", description: metadataKey }],
+        props: [{ name: "onTriage", type: "(update: SupportTriageUpdate) => void | Promise<void>", description: metadataKey }],
       };
     },
   };
@@ -99,6 +100,17 @@ describe("MCP and localized Markdown page parity", () => {
       expect(text, locale.code).not.toContain(metadataKey);
     }
     expect(entryCopy).toHaveBeenCalledTimes(29);
+  });
+
+  it("preserves a union type and translated description as separate Markdown table cells through MCP", async () => {
+    const response = await local(["components", "saas-support-triage"]);
+    const markdown = await response.text();
+    const tables = marked.lexer(matter(markdown).content).filter((token) => token.type === "table");
+    const row = tables.flatMap((table) => table.rows).find((cells) => cells[0].text.includes("onTriage"));
+    expect(row).toHaveLength(4);
+    expect(row![1].text).toContain("void | Promise&lt;void&gt;");
+    expect(row![3].text).toBe(supportFrench);
+    expect((await call("fr/components/saas-support-triage")).content[0].text).toBe(markdown);
   });
 
   it("returns the exact English and localized documentation Markdown from get_page", async () => {
