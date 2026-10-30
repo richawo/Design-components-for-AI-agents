@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { isUntouched, hasUntranslatedClause, protectedIntact, translationMarkupIntact } from "../scripts/lib/translation-quality.mjs";
+import { encode } from "../scripts/lib/translation-tokens.mjs";
 
 describe("unchanged translation detection", () => {
   it("rejects an unchanged sentence even when the source has escaped punctuation", () => {
@@ -47,6 +48,22 @@ describe("translation structure", () => {
     expect(protectedIntact(source, "基数ベースのラッパーは Radix コンポーネントと異なる場合があります。")).toBe(false);
     expect(protectedIntact(source, "Radix ベースのラッパーは Radix コンポーネントと異なる場合があります。")).toBe(true);
     expect(protectedIntact("Compare Radix components.", "Võrrelge Radixi komponente.")).toBe(true);
+  });
+  it("protects vendor names and their repeated occurrences in comparison copy", () => {
+    const source = "Compare Tiptap with Lexical, MUI X Data Grid and Tabulator. Tabulator has a licence.";
+    expect(protectedIntact(source, "Compare toque con léxico, MUI X Cuadrícula de datos y Tabulador. Tabulador tiene licencia.")).toBe(false);
+    expect(protectedIntact(source, "Compare Tiptap con Lexical, MUI X Data Grid y Tabulator. Tabulator tiene licencia.")).toBe(true);
+    expect(protectedIntact("AG Grid Community and AG Grid Enterprise have different rights.", "AG Grid Community et AG Grid ont des droits différents.")).toBe(false);
+    expect(protectedIntact("TanStack Charts and React Spectrum Charts S2 provide charts.", "TanStack Charts et React Spectrum Charts S2 fournissent des graphiques.")).toBe(true);
+    expect(protectedIntact("MUI X Charts supplies charts.", "MUI X graphiques fournit des graphiques.")).toBe(false);
+  });
+  it("protects MIT in both ordinary and hyphenated licence references", () => {
+    const source = "MIT conditions apply to MIT-licensed copies.";
+    const encoded = encode(source);
+    expect(encoded.text.match(/\[\[\[T\d+\]\]\]/g)).toHaveLength(2);
+    const restored = encoded.restore("Les conditions [[[T0]]] concernent les copies sous licence [[[T1]]].");
+    expect(restored).toBeTruthy();
+    expect(protectedIntact(source, restored!)).toBe(true);
   });
   it("preserves exact code markers, link destinations and nonempty anchor text", () => {
     const source = 'Inspect <a href="/docs">the guide</a> and {{0}}.';

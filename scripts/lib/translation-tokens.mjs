@@ -12,6 +12,8 @@ export const PROTECTED = new RegExp(
     // The short product name also occurs in prose as "Radix-based". The
     // general glossary boundary excludes hyphenated package-name fragments.
     String.raw`(?<![\p{L}\p{N}])Radix(?=-based\b)`,
+    // The MIT licence can also appear as the hyphenated adjective MIT-licensed.
+    String.raw`(?<![\p{L}\p{N}])MIT(?=-licensed\b)`,
     GLOSSARY_PATTERN.source,
   ].join("|"),
   "gu",
