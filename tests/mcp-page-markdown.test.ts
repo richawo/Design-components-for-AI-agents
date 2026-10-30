@@ -12,6 +12,12 @@ const otherFrench = "Autre traduction propre à ce composant.";
 const blockFrench = "Traduction propre au bloc.";
 const decisionKey = 'Records { decision: "approve" | "reject" } and shows a failure.';
 const decisionFrench = 'Enregistre { decision: "approve" | "reject" } et affiche une erreur.';
+const submissionKey = "Receives `{ formId, questionIds, answers }` for the path taken only. Return a promise for the sending state; reject to show the retry state with every answer kept.";
+const submissionFrench = "Reçoit `{ formId, questionIds, answers }` pour le parcours suivi. En cas de rejet, garde les réponses pour réessayer.";
+const protectedKey = "Pass `ticketId` to the server.";
+const unsafeProtectedFrench = "Passez `ticketIdentifiant` au serveur.";
+const encodedCodeKey = "Pass `Promise<void>` and `a & b` to the handler.";
+const encodedCodeFrench = "Transmettez `Promise<void>` et `a & b` au gestionnaire.";
 
 vi.mock("@/lib/registry", async (importOriginal) => {
   const original = await importOriginal<typeof import("@/lib/registry")>();
@@ -26,6 +32,9 @@ vi.mock("@/lib/registry", async (importOriginal) => {
         props: [
           { name: "onTriage", type: "(update: SupportTriageUpdate) => void | Promise<void>", description: metadataKey },
           { name: "onDecision", type: '"approve" | "reject"', default: '"approve" | "reject"', description: decisionKey },
+          { name: "onSubmit", type: "(submission: SurveySubmission) => Promise<void> | void", description: submissionKey },
+          { name: "onUnsafeTranslation", type: "() => void", description: protectedKey },
+          { name: "onEncodedCode", type: "() => void", description: encodedCodeKey },
         ],
       };
     },
@@ -38,7 +47,7 @@ vi.mock("@/lib/i18n/server", async (importOriginal) => {
     ...original,
     siteDictionary: vi.fn(async () => ({ [metadataKey]: "Valeur générale périmée." })),
     entryCopy: vi.fn(async (locale: string, slug: string) => {
-      if (slug === "saas-support-triage") return { [metadataKey]: locale === "fr" ? supportFrench : `translated-${locale}`, [decisionKey]: decisionFrench };
+      if (slug === "saas-support-triage") return { [metadataKey]: locale === "fr" ? supportFrench : `translated-${locale}`, [decisionKey]: decisionFrench, [submissionKey]: submissionFrench, [protectedKey]: unsafeProtectedFrench, [encodedCodeKey]: encodedCodeFrench };
       if (locale !== "fr") return {};
       if (slug === "chart-portfolio") return { [metadataKey]: otherFrench };
       if (slug === "block-saas-landing") return { [metadataKey]: blockFrench };
@@ -138,6 +147,25 @@ describe("MCP and localized Markdown page parity", () => {
       expect(decodeEntities(row![3].text), path).toBe(expectedDescription);
       expect((await call(path)).content[0].text).toBe(markdown);
     }
+  });
+
+  it("looks up an existing translated description containing a protected code span", async () => {
+    const response = await local(["components", "saas-support-triage"]);
+    const markdown = await response.text();
+    const tables = marked.lexer(matter(markdown).content).filter(isTable);
+    const row = tables.flatMap((table) => table.rows).find((cells) => cells[0].text.includes("onSubmit"));
+    expect(row).toHaveLength(4);
+    expect(row![3].text).toContain("Reçoit <code>{ formId, questionIds, answers }</code>");
+    expect(row![3].text).not.toContain("Receives");
+    const unsafe = tables.flatMap((table) => table.rows).find((cells) => cells[0].text.includes("onUnsafeTranslation"));
+    expect(unsafe![3].text).toContain("<code>ticketId</code>");
+    expect(unsafe![3].text).not.toContain("ticketIdentifiant");
+    const encoded = tables.flatMap((table) => table.rows).find((cells) => cells[0].text.includes("onEncodedCode"));
+    expect(encoded![3].text).toContain("<code>Promise&lt;void&gt;</code>");
+    expect(encoded![3].text).toContain("<code>a &amp; b</code>");
+    expect(encoded![3].text).not.toContain("&amp;lt;");
+    expect(encoded![3].text).not.toContain("&amp;amp;");
+    expect((await call("fr/components/saas-support-triage")).content[0].text).toBe(markdown);
   });
 
   it("returns the exact English and localized documentation Markdown from get_page", async () => {

@@ -6,7 +6,7 @@ import { getComponent } from "@/lib/registry";
 import { markdownForPage } from "@/lib/page-markdown";
 import { entryCopy, siteDictionary } from "@/lib/i18n/server";
 import { treeLocalizer } from "@/lib/i18n/tree";
-import { mapMarkdown } from "@/lib/i18n/markdown.mjs";
+import { inlineUnit, mapMarkdown } from "@/lib/i18n/markdown.mjs";
 import { decodeEntities, escapeText } from "@/scripts/lib/translation-tokens.mjs";
 import { localizePath } from "@/lib/i18n/routing";
 import { absoluteUrl } from "@/lib/site";
@@ -36,7 +36,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ loca
   const { t } = treeLocalizer(locale, { ...await siteDictionary(locale), ...selectedCopy });
   const parsed = matter(markdown);
   const page = cataloguePage ?? (path.join("/") === "index" ? "/" : "/" + path.join("/"));
-  const inline = (key: string) => {
+  const inline = (key: string, sourceText?: string) => {
     const translated = t(key);
     if (translated !== key) return translated;
     // Metadata dictionaries use the original text, while Markdown's inline
@@ -45,6 +45,18 @@ export async function GET(request: Request, { params }: { params: Promise<{ loca
     if (decoded !== key && !/<[^>]*>/.test(key)) {
       const decodedTranslation = t(decoded);
       if (decodedTranslation !== decoded) return escapeText(decodedTranslation);
+    }
+    // Entry dictionaries also retain literal Markdown code spans as keys.
+    if (sourceText && ["components", "blocks"].includes(section)) {
+      const sourceTranslation = t(sourceText);
+      if (sourceTranslation !== sourceText) {
+        const originalCode = inlineUnit(sourceText).opaque;
+        const translatedCode = inlineUnit(sourceTranslation).opaque;
+        if (originalCode.length === translatedCode.length && originalCode.every((span, index) => span === translatedCode[index])) {
+          // Keep placeholders so mapMarkdown restores the original code spans.
+          return inlineUnit(escapeText(sourceTranslation)).key;
+        }
+      }
     }
     let code = false;
     return key.split(/(<[^>]*>)/g).map((part) => {
