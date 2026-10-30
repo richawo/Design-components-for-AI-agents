@@ -1,14 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-10-30-repair-markdown-mcp",
+  "requestId": "2026-10-30-five-design-guides",
   "mode": "daily",
-  "requestedAt": "2026-10-30T12:40:23.731Z",
-  "privateContentCommit": "ac90f0866797d8d738540e3e42afd15456d25c38",
-  "sourceInputsSha256": "9b19d3a35b000d795e89cd0ffaade418d4a8f92169d39cfaed5eb384425b6899",
-  "approvalSha256": "d73f875896130156a5a87402d5f8d17b1bdfecbda8fe1ea1b7216fb64d68ea92",
+  "requestedAt": "2026-10-30T13:11:35.757Z",
+  "privateContentCommit": "04aabe3b39554adc4a85a6e1feef49e859ccc2cd",
+  "sourceInputsSha256": "cf899a4633ad04cf1b7e1c1fe5fe15811bd1c5b48eef8406aba4943c0b08fd43",
+  "approvalSha256": "c33686538040ea70f7369be58be17b7c2f9eb361a346bc93f62ee356f54ccd34",
   "articleSlugs": [
-    "react-dashboard-templates",
-    "react-fashion-merchandising-dashboard",
-    "mcp-servers-for-ui-design"
+    "react-admin-data-table-components",
+    "react-rich-text-editor-ui-components",
+    "accessible-react-chart-components",
+    "react-onboarding-wizard-components",
+    "react-support-ticket-triage-ui"
   ]
 }
