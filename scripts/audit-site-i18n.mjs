@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { LOCALES } from "../lib/blog/locales.mjs";
-import { siteCorpus } from "./lib/site-i18n.mjs";
+import { loadSiteDictionary, siteCorpus } from "./lib/site-i18n.mjs";
 import { protectedIntact } from "./lib/translation-quality.mjs";
 
 const root = process.cwd();
@@ -11,8 +11,7 @@ const overrides = JSON.parse(fs.readFileSync(path.join(root, "content/site-i18n-
 const tokens = (text) => (text.match(/\{\{\d+\}\}/g) ?? []).sort().join("|");
 let errors = 0;
 for (const locale of LOCALES.filter((language) => language.code !== "en")) {
-  const file = path.join(root, "content/site-i18n", `${locale.code}.json`);
-  const dictionary = { ...(fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {}), ...overrides[locale.code], ...Object.fromEntries(overrides._preserve.map((key) => [key, key])) };
+  const { dictionary } = loadSiteDictionary(root, locale.code, overrides);
   const missing = keys.filter((key) => typeof dictionary[key] !== "string" || !dictionary[key].trim());
   const invalid = keys.filter((key) => typeof dictionary[key] === "string" && (tokens(key) !== tokens(dictionary[key]) || !protectedIntact(key, dictionary[key])));
   errors += missing.length + invalid.length;

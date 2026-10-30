@@ -6,8 +6,34 @@ import matter from "gray-matter";
 import { LOCALES } from "../../lib/blog/locales.mjs";
 import { packContent } from "./content-pack.mjs";
 import { mapMarkdown } from "./blog-source.mjs";
+import { protectedIntact } from "./translation-quality.mjs";
 
 export const keyOf = (text) => text.replace(/\s+/g, " ").trim();
+const readDictionary = (file) => {
+  if (!fs.existsSync(file)) return {};
+  const dictionary = JSON.parse(fs.readFileSync(file, "utf8"));
+  if (!dictionary || typeof dictionary !== "object" || Array.isArray(dictionary)) throw new Error(`Invalid site dictionary: ${file}`);
+  return dictionary;
+};
+const privateSiteOverlay = (root, locale) => readDictionary(path.join(root, "registry/pro/_site/i18n/site", `${locale}.json`));
+
+export function privateSiteTranslationKeys(root) {
+  return new Set(LOCALES.filter((locale) => locale.code !== "en").flatMap((locale) => Object.keys(privateSiteOverlay(root, locale.code))));
+}
+
+// Private translations are build inputs, but only selected corpus entries are
+// emitted as public locale assets. Explicit overrides retain their precedence.
+export function loadSiteDictionary(root, locale, overrides = readDictionary(path.join(root, "content/site-i18n-overrides.json"))) {
+  const publicDictionary = readDictionary(path.join(root, "content/site-i18n", `${locale}.json`));
+  const privateOverlay = privateSiteOverlay(root, locale);
+  const dictionary = {
+    ...publicDictionary,
+    ...privateOverlay,
+    ...overrides[locale],
+    ...Object.fromEntries((overrides._preserve ?? []).map((key) => [key, key])),
+  };
+  return { publicDictionary, privateOverlay, dictionary };
+}
 // Demo datasets also contain code examples. They remain useful in every
 // edition exactly as written, just like source panels and install commands.
 const codeLike = (key) => /^(?:const |let |var |export |import |return |async |await |function |class |interface |type |test\(|it\(|describe\(|\/\/|-- |[+\-] (?:const|test|expect)\b)/.test(key)
@@ -116,12 +142,19 @@ export function siteCorpus(root) {
 
 export function buildSiteI18n(root) {
   const corpus = siteCorpus(root);
+  const privateKeys = [...privateSiteTranslationKeys(root)].filter((key) => corpus.keys.includes(key));
   const dictionaries = {};
   const retained = new Set();
+  const overrides = readDictionary(path.join(root, "content/site-i18n-overrides.json"));
   for (const locale of LOCALES.filter((language) => language.code !== "en")) {
-    const file = path.join(root, "content/site-i18n", `${locale.code}.json`);
-    const overrides = JSON.parse(fs.readFileSync(path.join(root, "content/site-i18n-overrides.json"), "utf8"));
-    const strings = { ...(fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {}), ...overrides[locale.code], ...Object.fromEntries(overrides._preserve.map((key) => [key, key])) };
+    const { dictionary: strings, privateOverlay } = loadSiteDictionary(root, locale.code, overrides);
+    for (const key of privateKeys) {
+      const value = privateOverlay[key];
+      const tokens = (text) => (text.match(/\{\{\d+\}\}/g) ?? []).sort().join("|");
+      if (typeof value !== "string" || !value.trim() || tokens(key) !== tokens(value) || !protectedIntact(key, value)) {
+        throw new Error(`Missing or invalid private site translation for ${locale.code}: ${key}`);
+      }
+    }
     const docs = Object.fromEntries(files(path.join(root, "content/docs")).map((file) => {
       const doc = matter(fs.readFileSync(file, "utf8"));
       return [path.basename(file, ".md"), mapMarkdown(doc.content, (key) => strings[key] ?? key)];

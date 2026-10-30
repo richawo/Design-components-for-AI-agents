@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { LOCALES } from "../lib/blog/locales.mjs";
-import { siteCorpus } from "./lib/site-i18n.mjs";
+import { loadSiteDictionary, privateSiteTranslationKeys, siteCorpus } from "./lib/site-i18n.mjs";
 import { encode, escapeText, decodeEntities, SEPARATOR, splitBatch } from "./lib/translation-tokens.mjs";
 import { isUntranslatable } from "./lib/translation-glossary.mjs";
 import { isUntouched, protectedIntact } from "./lib/translation-quality.mjs";
@@ -23,18 +23,30 @@ const interval = Math.max(1000, Number(argument("--interval-ms")) || 1000);
 const seedRoot = argument("--seed-dir");
 const overrides = read(path.join(root, "content/site-i18n-overrides.json"));
 const preserve = new Set(overrides._preserve ?? []);
+const privateKeys = privateSiteTranslationKeys(root);
 const invariant = (key) => preserve.has(key) || isUntranslatable(key) || /^#[a-f0-9]{3,8}$/i.test(key) || !/[a-zA-Z]{2,}/.test(key);
 const acceptable = (key, value) => typeof value === "string" && value.length > 0 && protectedIntact(key, value) && (invariant(key) || !isUntouched(key, value));
+const tokens = (text) => (text.match(/\{\{\d+\}\}/g) ?? []).sort().join("|");
 const seeded = new Map();
 const invalid = [];
 // Seed every language up front; a rate limit in one edition must not prevent
 // other editions from retaining their already reviewed Yaps translations.
 for (const locale of locales) {
   const file = path.join(root, "content/site-i18n", `${locale.code}.json`);
-  const old = read(file);
+  const { publicDictionary: old, privateOverlay } = loadSiteDictionary(root, locale.code, overrides);
   const seeds = { ...read(path.join(root, "registry/pro/_site/i18n/strings", `${locale.code}.json`)), ...(seedRoot ? read(path.join(seedRoot, `${locale.code}.json`)) : {}) };
   const dictionary = {};
   for (const key of ordered) {
+    if (privateKeys.has(key)) {
+      const value = privateOverlay[key];
+      if (typeof value !== "string" || !value.trim() || tokens(key) !== tokens(value) || !protectedIntact(key, value)) {
+        throw new Error(`Missing or invalid private site translation for ${locale.code}: ${key}`);
+      }
+      // Never copy a private overlay into the public dictionary. Preserve any
+      // pre-existing public entry verbatim; the overlay still takes precedence.
+      if (Object.hasOwn(old, key)) dictionary[key] = old[key];
+      continue;
+    }
     if (invariant(key)) dictionary[key] = key;
     else if (acceptable(key, old[key])) dictionary[key] = old[key];
     else if (acceptable(key, seeds[key])) dictionary[key] = seeds[key];
@@ -75,7 +87,7 @@ async function request(locale, text) {
 async function translate(locale, texts, phase) {
   const file = path.join(root, "content/site-i18n", `${locale.code}.json`);
   const dictionary = seeded.get(locale.code);
-  const missing = texts.filter((key) => !dictionary[key]);
+  const missing = texts.filter((key) => !dictionary[key] && !privateKeys.has(key));
   if (!missing.length) return;
   console.log(`${locale.code}: ${missing.length}/${texts.length} ${phase} text units need translation`);
   const batches = []; let group = [], size = 0;
