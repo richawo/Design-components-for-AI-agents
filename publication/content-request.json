@@ -1,16 +1,14 @@
 {
   "version": 2,
-  "requestId": "2026-10-29-five-workflow-guides",
+  "requestId": "2026-10-30-existing-guide-repairs",
   "mode": "daily",
-  "requestedAt": "2026-10-29T13:09:33.219Z",
-  "privateContentCommit": "c7e325faec08714f6287a21c1df5e6bbd5473ef8",
-  "sourceInputsSha256": "3f226ea80c962d8aef9ff3c90aa1e3a1e7c0cf40fc1d43c061123d4212ef27c2",
-  "approvalSha256": "cc6a1c0ba1a0b29c0062e91d894ba111c2d76315fae894cf1712013ae7d1c9d2",
+  "requestedAt": "2026-10-30T11:35:40.425459+00:00",
+  "privateContentCommit": "84154ee2dfa6be024a741c2414bca5bb2c13d5ee",
+  "sourceInputsSha256": "9b19d3a35b000d795e89cd0ffaade418d4a8f92169d39cfaed5eb384425b6899",
+  "approvalSha256": "9da220d833375bef3f200c78c032028089cda2c931834c7324e5ce2547bda91a",
   "articleSlugs": [
-    "react-async-form-error-recovery",
-    "react-saved-views-data-table",
-    "react-command-palette-accessibility",
-    "react-audit-log-ui",
-    "react-notification-inbox-ui"
+    "react-dashboard-templates",
+    "react-fashion-merchandising-dashboard",
+    "mcp-servers-for-ui-design"
   ]
 }
