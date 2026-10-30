@@ -158,4 +158,140 @@ export async function check({ page, mount, assert }) {
   assert.match(await page.getByRole("alert").innerText(), /Invalid timestamps: T-1/);
   assert.match(await txt(page.locator("section").first()), /Time unavailable/);
   assert.equal(await page.locator('svg [d*="NaN"], svg [stroke-dashoffset="NaN"]').count(), 0);
+
+  // Same-ticket pending routes reject duplicate actions and reconcile newer host state.
+  const mountStaleRoute = () => mount(`window.staleJobs=[];function Host(){const [tickets,setTickets]=React.useState([{id:'STALE-1',subject:'A ticket',customer:'Ada',company:'Example',channel:'email',receivedAt:'2026-10-17T09:36:00Z',messages:[],priority:'low',assigneeId:'noor'}]);React.useEffect(()=>{window.staleHost={priority:tickets[0].priority,subject:tickets[0].subject}},[tickets]);window.updateStaleHost=changes=>setTickets(previous=>previous.map(ticket=>({...ticket,...changes})));return <Subject.SupportTriage now="2026-10-17T09:42:00Z" tickets={tickets} onTriage={update=>new Promise((resolve,reject)=>window.staleJobs.push({update,resolve,reject}))}/>};createRoot(document.getElementById('root')).render(<Host/>);`);
+  const stale = (name) => queue(name).locator('[data-demo="queued-stale-1"]');
+  const beginStaleRoute = async () => {
+    await stale("Low").waitFor();
+    await page.locator('[data-demo="route-high"]').click();
+    await page.waitForFunction(() => window.staleJobs.length === 1);
+    await stale("High").waitFor();
+  };
+
+  await mountStaleRoute();
+  await beginStaleRoute();
+  assert.equal(await page.locator('[data-demo="route-urgent"]').isDisabled(), true);
+  await stale("High").focus();
+  await page.keyboard.press("1");
+  assert.equal(await page.evaluate(() => window.staleJobs.length), 1, "The shortcut cannot start a second route for the pending ticket");
+  await page.evaluate(() => window.staleJobs[0].reject(Error("Delayed route rejected")));
+  await page.getByRole("alert").filter({ hasText: "STALE-1 is back in its previous queue." }).waitFor();
+  await stale("Low").waitFor();
+  await stale("High").waitFor({ state: "detached" });
+  assert.equal(await stale("Urgent").count(), 0);
+
+  // A later host update also makes an already displayed rollback suffix stale.
+  await mountStaleRoute();
+  await beginStaleRoute();
+  await page.evaluate(() => window.staleJobs[0].reject(Error("Route rejected")));
+  const priorAlert = page.getByRole("alert").filter({ hasText: "Route rejected" });
+  await priorAlert.filter({ hasText: "STALE-1 is back in its previous queue." }).waitFor();
+  await stale("Low").waitFor();
+  await page.evaluate(() => window.updateStaleHost({ priority: "urgent" }));
+  await page.waitForFunction(() => window.staleHost?.priority === "urgent");
+  await stale("Urgent").waitFor();
+  await stale("Low").waitFor({ state: "detached" });
+  assert.doesNotMatch(await txt(priorAlert), /back in (its previous queue|the inbox)/);
+
+  await mountStaleRoute();
+  await beginStaleRoute();
+  await page.evaluate(() => window.updateStaleHost({ priority: "urgent" }));
+  await page.waitForFunction(() => window.staleHost?.priority === "urgent");
+  await page.evaluate(() => window.staleJobs[0].reject(Error("Older route rejected")));
+  const newerHostAlert = page.getByRole("alert").filter({ hasText: "Older route rejected" });
+  await newerHostAlert.waitFor();
+  await stale("Urgent").waitFor();
+  await stale("High").waitFor({ state: "detached" });
+  await stale("Low").waitFor({ state: "detached" });
+  assert.match(await txt(newerHostAlert), /STALE-1/);
+  assert.doesNotMatch(await txt(newerHostAlert), /back in (its previous queue|the inbox)/);
+
+  // A stale successful response cannot overwrite a newer host route or advertise its undo.
+  await mountStaleRoute();
+  await beginStaleRoute();
+  await page.evaluate(() => window.updateStaleHost({ priority: "urgent" }));
+  await page.waitForFunction(() => window.staleHost?.priority === "urgent");
+  await page.evaluate(() => window.staleJobs[0].resolve());
+  await stale("Urgent").waitFor();
+  await stale("High").waitFor({ state: "detached" });
+  await stale("Low").waitFor({ state: "detached" });
+  await page.getByRole("status").filter({ hasText: "STALE-1 → High" }).waitFor({ state: "detached" });
+
+  // A host acknowledgment of this exact route keeps the ordinary Undo action.
+  await mountStaleRoute();
+  await beginStaleRoute();
+  await page.evaluate(() => window.updateStaleHost({ priority: "high" }));
+  await page.waitForFunction(() => window.staleHost?.priority === "high");
+  await page.evaluate(() => window.staleJobs[0].resolve());
+  const acknowledged = page.getByRole("status").filter({ hasText: "STALE-1 → High" });
+  await acknowledged.getByRole("button", { name: "Undo", exact: true }).waitFor();
+  assert.equal(await acknowledged.getByRole("button", { name: "Undo", exact: true }).isDisabled(), false);
+  await stale("High").waitFor();
+
+  // A host unroute committed immediately after settlement must still take effect.
+  await mountStaleRoute();
+  await beginStaleRoute();
+  await page.evaluate(() => {
+    window.staleJobs[0].resolve();
+    window.updateStaleHost({ priority: undefined, assigneeId: null });
+  });
+  await page.waitForFunction(() => window.staleHost && window.staleHost.priority === undefined);
+  await page.locator('[data-demo="ticket-stale-1"]').waitFor();
+  await stale("High").waitFor({ state: "detached" });
+  await page.getByRole("status").filter({ hasText: "STALE-1 → High" }).waitFor({ state: "detached" });
+
+  await mountStaleRoute();
+  await beginStaleRoute();
+  await page.evaluate(() => window.updateStaleHost({ priority: undefined, assigneeId: null }));
+  await page.waitForFunction(() => window.staleHost && window.staleHost.priority === undefined);
+  await page.evaluate(() => window.staleJobs[0].reject(Error("Older route rejected")));
+  const clearedHostAlert = page.getByRole("alert").filter({ hasText: "Older route rejected" });
+  await clearedHostAlert.waitFor();
+  await page.locator('[data-demo="ticket-stale-1"]').waitFor();
+  await stale("High").waitFor({ state: "detached" });
+  await stale("Low").waitFor({ state: "detached" });
+  assert.doesNotMatch(await txt(clearedHostAlert), /back in its previous queue/);
+
+  // A rerender with an unchanged host route must not replace a newer local route.
+  await mountStaleRoute();
+  await stale("Low").waitFor();
+  await page.locator('[data-demo="route-urgent"]').click();
+  await page.waitForFunction(() => window.staleJobs.length === 1);
+  await page.evaluate(() => window.staleJobs[0].resolve());
+  await stale("Urgent").waitFor();
+  await page.waitForFunction(() => !document.querySelector('[data-demo="route-high"]')?.disabled);
+  await page.locator('[data-demo="route-high"]').click();
+  await page.waitForFunction(() => window.staleJobs.length === 2);
+  await stale("High").waitFor();
+  await page.evaluate(() => window.updateStaleHost({ subject: "A renamed ticket" }));
+  await page.waitForFunction(() => window.staleHost?.subject === "A renamed ticket");
+  await page.evaluate(() => window.staleJobs[1].reject(Error("Latest route rejected")));
+  await page.getByRole("alert").filter({ hasText: "STALE-1 is back in its previous queue." }).waitFor();
+  await stale("Urgent").waitFor();
+  await stale("High").waitFor({ state: "detached" });
+  assert.equal(await stale("Low").count(), 0);
+
+  // A route that changes away and back while pending is still a newer host decision.
+  await mountStaleRoute();
+  await stale("Low").waitFor();
+  await page.locator('[data-demo="route-urgent"]').click();
+  await page.waitForFunction(() => window.staleJobs.length === 1);
+  await page.evaluate(() => window.staleJobs[0].resolve());
+  await stale("Urgent").waitFor();
+  await page.waitForFunction(() => !document.querySelector('[data-demo="route-high"]')?.disabled);
+  await page.locator('[data-demo="route-high"]').click();
+  await page.waitForFunction(() => window.staleJobs.length === 2);
+  await stale("High").waitFor();
+  await page.evaluate(() => window.updateStaleHost({ priority: "urgent" }));
+  await page.waitForFunction(() => window.staleHost?.priority === "urgent");
+  await page.evaluate(() => window.updateStaleHost({ priority: "low" }));
+  await page.waitForFunction(() => window.staleHost?.priority === "low");
+  await page.evaluate(() => window.staleJobs[1].reject(Error("Older route rejected")));
+  const changedBackAlert = page.getByRole("alert").filter({ hasText: "Older route rejected" });
+  await changedBackAlert.waitFor();
+  await stale("Low").waitFor();
+  await stale("High").waitFor({ state: "detached" });
+  await stale("Urgent").waitFor({ state: "detached" });
+  assert.doesNotMatch(await txt(changedBackAlert), /back in (its previous queue|the inbox)/);
 }
