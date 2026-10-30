@@ -7,7 +7,7 @@ section: About
 
 ## Free components
 
-Everything in `registry/free/` of the [GitHub repository](https://github.com/richawo/Design-components-for-AI-agents), including code, prompts and JSON prompts, is released under the **MIT licence**. Use it for anything, commercial or not. Attribution is appreciated but not required.
+Everything in `registry/free/` of the [GitHub repository](https://github.com/richawo/Design-components-for-AI-agents), including code, prompts and JSON prompts, is released under the **MIT licence**. You may use it commercially or otherwise, provided copies or substantial portions include the copyright and permission notices.
 
 ## Pro components
 

@@ -3180,7 +3180,7 @@
     "integration": [
       "Tickets without a `priority` wait in the inbox; ones with a priority start in their queue. Clocks run from each `receivedAt` against your `sla` minutes.",
       "Pass `now` as the current time; the clocks then tick in real time and pause while the component is off screen or the tab is hidden.",
-      "`onTriage` receives { ticketId, priority, assigneeId }; reject it and the ticket returns to the inbox with the error shown. `onUndo` mirrors the toast's Undo.",
+      "A rejected route restores its previous route or returns a previously unrouted ticket to the inbox and shows the error. The undo callback must persist restoration of the earlier route in the host before it resolves.",
       "Keys 1–4 route the open ticket and J/K move through the inbox, so agents can triage without the mouse.",
       "Resolve onUndo to restore the prior queue or inbox. Reject to keep the route and expose a retry. Invalid ticket/message timestamps are flagged; timing stays unavailable for those records."
     ],
@@ -3189,7 +3189,7 @@
       "saas-notification-inbox",
       "collab-comment-thread"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-30"
   },
   "saas-usage-policy": {
     "useWhen": "Admins set warning thresholds, hard limits and enforcement for metered resources and need to see when current or simulated usage would cross them this billing period.",

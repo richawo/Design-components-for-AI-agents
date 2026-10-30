@@ -90,6 +90,15 @@ export async function check({ page, mount, assert }) {
   await queue("Low").locator('[data-demo="queued-sup-2484"]').waitFor({ state: "detached" });
   assert.deepEqual(await page.evaluate(() => window.updates.at(-1)), { ticketId: "SUP-2484", priority: "urgent", assigneeId: "noor" });
 
+  // A failed reassignment restores the existing queue and describes that outcome.
+  await page.evaluate(() => (window.fail = true));
+  await page.locator('[data-demo="route-low"]').click();
+  await page.getByRole("alert").filter({ hasText: "SUP-2484 is back in its previous queue." }).waitFor({ timeout: 4000 });
+  await queue("Urgent").locator('[data-demo="queued-sup-2484"]').waitFor();
+  assert.equal(await card("sup-2484").count(), 0);
+  await queue("Low").locator('[data-demo="queued-sup-2484"]').waitFor({ state: "detached" });
+  await page.evaluate(() => (window.fail = false));
+
   // Clear the inbox.
   const subjects = {
     "sup-2485": "Typo in the weekly digest subject line",

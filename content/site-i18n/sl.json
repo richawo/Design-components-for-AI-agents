@@ -14217,7 +14217,7 @@
   "Public client id, used as the app's name and in the sample payloads.": "Javni ID odjemalca, ki se uporablja kot ime aplikacije in v vzorčnih koristnih obremenitvah.",
   "Public reply": "Javni odgovor",
   "Publish": "Objavi",
-  "Publish Pro source in a public repository. Shipping compiled code in your product is fine, of course.": "Objavite vir Pro v javnem skladišču. Pošiljanje prevedene kode v vašem izdelku je seveda v redu.",
+  "Publish Pro source in a public repository. Shipping compiled code in your product is fine, of course.": "Objaviti izvorno kodo Pro v javnem repozitoriju. Distribucija prevedene kode kot dela vašega izdelka je dovoljena.",
   "Publish again": "Ponovno objavi",
   "Publish bundle": "Objavi sveženj",
   "Publish changes": "Objavi spremembe",
@@ -16221,7 +16221,7 @@
   "Share update excl.": "Deli posodobitev razen",
   "Share with": "Delite z",
   "Share with workspace": "Delite z delovnim prostorom",
-  "Share your licence key outside your seat allowance. Pro is for one person; Team covers up to 10.": "Delite svoj licenčni ključ zunaj svojega sedeža. Pro je za eno osebo; Ekipa pokriva do 10.",
+  "Share your licence key outside your seat allowance. Pro is for one person; Team covers up to 10.": "Deliti licenčni ključ zunaj dovoljenega števila uporabnikov. Pro je za eno osebo, Team pa za največ 10 oseb.",
   "Shared": "V skupni rabi",
   "Shared Slack": "Slack v skupni rabi",
   "Shared by Inès · 2h ago": "Delila Inès · pred 2 h",
@@ -19617,7 +19617,7 @@
   "Use defaultPage for local navigation or page with onPageChange for controlled acknowledgement. Supply the actual pageCount; invalid totals have a written empty state. The callback proposes a valid one-based destination synchronously, and the host loads results or changes routes. Full page numbers remain available to assistive technology when visible labels are compact.": "Uporabite defaultPage za lokalno navigacijo ali stran z onPageChange za nadzorovano potrditev. Navedite dejansko število strani; neveljavne vsote imajo zapisano prazno stanje. Povratni klic sinhrono predlaga veljaven cilj na podlagi enega, gostitelj pa naloži rezultate ali spremeni poti. Celotne številke strani ostanejo na voljo podporni tehnologiji, ko so vidne oznake kompaktne.",
   "Use defaultValue for an initial/reset chord or value with onChange for controlled acknowledgement. The callback receives a separate array synchronously. Register shortcuts in the host and handle OS/browser conflicts and persistence there. Events are captured only while the focused button is recording.": "Uporabite defaultValue za začetni/ponastavljeni akord ali vrednost z onChange za nadzorovano potrditev. Povratni klic sinhrono prejme ločeno polje. Registrirajte bližnjice v gostitelju in tam obravnavajte spore OS/brskalnik ter obstojnost. Dogodki se zajamejo samo med snemanjem izbranega gumba.",
   "Use email instead": "Namesto tega uporabite e-pošto",
-  "Use every Pro component in <strong>unlimited personal and commercial projects</strong>, including client work and products you sell.": "Uporabite vsako komponento Pro v <strong>neomejenih osebnih in komercialnih projektih</strong>, vključno z delom strank in izdelki, ki jih prodajate.",
+  "Use every Pro component in <strong>unlimited personal and commercial projects</strong>, including client work and products you sell.": "Uporabljajte vsako komponento Pro v <strong>neomejenem številu osebnih in komercialnih projektov</strong>, vključno z delom za stranke in izdelki, ki jih prodajate.",
   "Use frameClassName for the artwork's own surface and accent for the redline colour. spacingCss(value) returns the same declarations the readout shows if you need them elsewhere.": "Uporabite frameClassName za lastno površino umetniškega dela in poudarek za barvo rdeče črte. razmikCss(vrednost) vrne iste deklaracije, kot jih prikaže branje, če jih potrebujete drugje.",
   "Use mic": "Uporabi mikrofon",
   "Use of AI tools": "Uporaba orodij AI",
@@ -23590,5 +23590,9 @@
   "Component style": "Slog komponente",
   "Site component style": "Slog komponente spletnega mesta",
   "Checking Pro access": "Preverjanje dostopa Pro",
-  "Your Pro access unlocks both styles across the library.": "Vaš dostop Pro odklene oba sloga v knjižnici."
+  "Your Pro access unlocks both styles across the library.": "Vaš dostop Pro odklene oba sloga v knjižnici.",
+  "Everything in {{0}} of the <a href=\"https://github.com/richawo/Design-components-for-AI-agents\">GitHub repository</a>, including code, prompts and JSON prompts, is released under the <strong>MIT licence</strong>. You may use it commercially or otherwise, provided copies or substantial portions include the copyright and permission notices.": "Vsa vsebina v {{0}} <a href=\"https://github.com/richawo/Design-components-for-AI-agents\">repozitorija GitHub</a>, vključno s kodo, pozivi in pozivi JSON, je objavljena pod <strong>licenco MIT</strong>. Uporabljate jo lahko za komercialne ali druge namene, če kopije ali bistveni deli vsebujejo obvestilo o avtorskih pravicah in obvestilo o dovoljenju.",
+  "Persist { ticketId, priority, assigneeId }. If rejected, restore the previous route or return an unrouted ticket to the inbox and show the failure.": "Shranite { ticketId, priority, assigneeId }. Če je shranjevanje zavrnjeno, obnovite prejšnjo usmeritev ali vrnite še neusmerjeno zahtevo v prejeto pošto in prikažite napako.",
+  "A rejected route restores its previous route or returns a previously unrouted ticket to the inbox and shows the error. The undo callback must persist restoration of the earlier route in the host before it resolves.": "Če je usmeritev zahtevka zavrnjena, se obnovi njegova prejšnja usmeritev. Če zahtevek prej ni bil usmerjen, se vrne v prejeto pošto. V obeh primerih se prikaže napaka. Povratni klic za razveljavitev mora obnovitev prejšnje usmeritve trajno shraniti v gostiteljski aplikaciji, preden se uspešno zaključi.",
+  "is back in its previous queue.": "se je vrnil v prejšnjo čakalno vrsto."
 }
