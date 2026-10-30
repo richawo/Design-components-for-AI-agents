@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { marked } from "marked";
+import { marked, type Token, type Tokens } from "marked";
 import { mapMarkdown } from "@/lib/i18n/markdown.mjs";
+
+const isTable = (token: Token): token is Tokens.Table =>
+  token.type === "table" && "rows" in token && Array.isArray(token.rows);
 
 describe("localized Markdown tables", () => {
   it("keeps a code union and a translated literal pipe inside their own cells", () => {
@@ -11,7 +14,7 @@ describe("localized Markdown tables", () => {
       "",
     ].join("\n");
     const localized = mapMarkdown(source, (key) => key === "Save the route." ? "Enregistrer | puis vérifier." : key);
-    const table = marked.lexer(localized).find((token) => token.type === "table");
+    const table = marked.lexer(localized).find(isTable);
     expect(table).toBeDefined();
     expect(table!.rows[0]).toHaveLength(3);
     expect(table!.rows[0][1].text).toContain("void | Promise&lt;void&gt;");

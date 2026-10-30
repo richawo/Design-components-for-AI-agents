@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import matter from "gray-matter";
-import { marked } from "marked";
+import { marked, type Token, type Tokens } from "marked";
 import { decodeEntities } from "@/scripts/lib/translation-tokens.mjs";
+
+const isTable = (token: Token): token is Tokens.Table =>
+  token.type === "table" && "rows" in token && Array.isArray(token.rows);
 
 const metadataKey = "Persist { ticketId, priority, assigneeId }. If rejected, show the failure and restore the previous route or inbox unless a newer host routing state takes precedence.";
 const supportFrench = "Enregistrer { ticketId, priority, assigneeId }. En cas de rejet, rétablir la route précédente ou la boîte de réception, sauf si un état plus récent prévaut.";
@@ -111,7 +114,7 @@ describe("MCP and localized Markdown page parity", () => {
   it("preserves a union type and translated description as separate Markdown table cells through MCP", async () => {
     const response = await local(["components", "saas-support-triage"]);
     const markdown = await response.text();
-    const tables = marked.lexer(matter(markdown).content).filter((token) => token.type === "table");
+    const tables = marked.lexer(matter(markdown).content).filter(isTable);
     const row = tables.flatMap((table) => table.rows).find((cells) => cells[0].text.includes("onTriage"));
     expect(row).toHaveLength(4);
     expect(row![1].text).toContain("void | Promise&lt;void&gt;");
@@ -127,7 +130,7 @@ describe("MCP and localized Markdown page parity", () => {
       ["fr/components/saas-support-triage", french, decisionFrench],
     ] as const) {
       const markdown = await response.text();
-      const tables = marked.lexer(matter(markdown).content).filter((token) => token.type === "table");
+      const tables = marked.lexer(matter(markdown).content).filter(isTable);
       const row = tables.flatMap((table) => table.rows).find((cells) => cells[0].text.includes("onDecision"));
       expect(row, path).toHaveLength(4);
       expect(decodeEntities(row![1].text), path).toContain('"approve" | "reject"');
