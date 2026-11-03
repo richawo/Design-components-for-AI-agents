@@ -5503,5 +5503,22 @@
       "editor-markdown-split"
     ],
     "updated": "2026-11-03"
+  },
+  "ai-listening-indicators": {
+    "useWhen": "A small, honest signal that a voice feature is hearing someone: a mic button, a composer, a call bar or an assistant chip. It follows a real input level and shows idle, listening, thinking, speaking and muted distinctly, from 16px up.",
+    "avoidWhen": "A full voice conversation surface with a transcript, a hero-scale 3D orb, or a text-only working indicator for a chat reply; use the voice mode, voice orb or thinking-states components instead.",
+    "integration": [
+      "Pass getLevel returning an AnalyserNode's RMS times 8–10 so the level never re-renders React; while speaking, return the playback level instead.",
+      "Drive state from your voice session; changes cross-fade and can be interrupted, so set it as often as you like.",
+      "Use one announcing instance per surface and pass announce={false} to decorative repeats.",
+      "Set accent once (for example recording red); muted always turns graphite."
+    ],
+    "related": [
+      "ai-voice-mode",
+      "three-voice-orb",
+      "ai-thinking-states",
+      "ai-voice-pill"
+    ],
+    "updated": "2026-11-03"
   }
 }
