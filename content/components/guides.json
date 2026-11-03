@@ -5404,5 +5404,21 @@
       "hero-prism"
     ],
     "updated": "2026-11-03"
+  },
+  "bg-reactive-threads": {
+    "useWhen": "A sign-in, one-time-code or short single-purpose form deserves a calm, full-screen backdrop that visibly acknowledges typing, sending, failure and success without extra widgets.",
+    "avoidWhen": "Long forms, dense dashboards or reading-heavy pages, where continuous motion competes with content, or when the page cannot report form state to the background.",
+    "integration": [
+      "Give the parent a height (for example h-[100dvh]) and render the form as children.",
+      "Map your form state to state: idle, active, sending, error or settled.",
+      "Increment activityKey on every input event and change pulseKey on resend.",
+      "Below 900px wide, put the form near the top; the ribbon moves to compactBaseline."
+    ],
+    "related": [
+      "bg-dither-flow",
+      "bg-topographic-contours",
+      "bg-grain-gradient"
+    ],
+    "updated": "2026-11-03"
   }
 }
