@@ -1,0 +1,142 @@
+{
+  "slug": "button-theme-toggle",
+  "name": "Theme Toggle",
+  "tier": "free",
+  "platform": "web",
+  "category": "buttons",
+  "description": "A sun–moon theme button whose glyphs cross-rotate, plus a Light / System / Dark switch; the new theme wipes across the page in a circle from the control.",
+  "tags": [
+    "theme toggle",
+    "dark mode",
+    "light mode",
+    "view transitions",
+    "segmented control",
+    "sun moon",
+    "appearance",
+    "settings"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 460,
+  "usage": "import { ThemeToggle } from \"@/components/design-for-ai/button-theme-toggle\";\n\nconst [mode, setMode] = useState<ThemeMode>(\"system\");\n\n<ThemeToggle mode={mode} onModeChange={setMode} />\n<ThemeToggle variant=\"segmented\" mode={mode} onModeChange={setMode} />",
+  "props": [
+    {
+      "name": "mode",
+      "type": "\"light\" | \"dark\" | \"system\"",
+      "description": "The chosen mode; System follows prefers-color-scheme live. Uncontrolled when omitted (starts dark)."
+    },
+    {
+      "name": "onModeChange",
+      "type": "(mode: ThemeMode) => void",
+      "description": "Called with the new mode, inside the view transition so the wipe captures your re-render."
+    },
+    {
+      "name": "variant",
+      "type": "\"icon\" | \"segmented\"",
+      "default": "\"icon\"",
+      "description": "A single sun/moon button, or a three-way Light / System / Dark radio group."
+    },
+    {
+      "name": "reveal",
+      "type": "boolean",
+      "default": "true",
+      "description": "Wipe the new theme across the page in a circle from the control. Falls back to an instant switch without View Transitions."
+    },
+    {
+      "name": "revealMs",
+      "type": "number",
+      "default": "560",
+      "description": "Duration of the circular wipe."
+    },
+    {
+      "name": "surface",
+      "type": "\"light\" | \"dark\"",
+      "description": "Colours the control's own chrome for the surface it sits on. Defaults to the resolved theme."
+    },
+    {
+      "name": "size",
+      "type": "\"sm\" | \"md\"",
+      "default": "\"md\"",
+      "description": "32 or 36px button; 28 or 32px segments."
+    },
+    {
+      "name": "labels",
+      "type": "boolean",
+      "default": "true",
+      "description": "Segmented only: show words beside the glyphs. Icon-only segments keep accessible names and tooltips."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "\"\"",
+      "description": "Extra classes on the root."
+    },
+    {
+      "name": "set",
+      "type": "\"light\" | \"dark\" | \"system\"",
+      "description": "Stage only, not a ThemeToggle prop. Jumps the preview to a mode; used by the Customize panel."
+    }
+  ],
+  "added": "2026-11-03",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@toggle",
+      "wait:1500",
+      "hover:@mode-system",
+      "wait:300",
+      "click:@mode-dark",
+      "wait:1600"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "set",
+      "label": "Mode",
+      "kind": "action",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "system",
+          "label": "System"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "prop": "labels",
+      "label": "Segment labels",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}

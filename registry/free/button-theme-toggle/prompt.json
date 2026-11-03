@@ -1,0 +1,96 @@
+{
+  "component": "ThemeToggle",
+  "intent": "A sun–moon theme button and a Light / System / Dark switch sharing one mode; the new theme wipes across the page in a circle from the pressed control.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 plus one namespaced <style> (tt-)",
+    "animation": "CSS transitions for the cross-rotating glyphs; motion/react layoutId for the segmented pill; View Transitions + Web Animations for the circular reveal",
+    "icons": "hand-drawn 24-grid SVG, stroke 1.8"
+  },
+  "layout": {
+    "icon": "36×36 button (32 sm), radius 10px, 18px glyph box; sun r4 + 8 rays; crescent moon",
+    "segmented": "3px-padded well radius 11px; three 32px segments (28 sm), 16px glyph + 6px gap + label, 12px padding; icon-only square segments when labels=false",
+    "stage": "56px header with wordmark and icon toggle; reading card; Appearance row with the segmented switch (stacks under @sm)"
+  },
+  "typography": {
+    "segment": {
+      "font": "sans (Geist)",
+      "size": "13px",
+      "weight": 500
+    },
+    "readout": {
+      "font": "mono",
+      "size": "11px",
+      "case": "uppercase",
+      "tracking": "0.08em"
+    },
+    "stageHeadline": {
+      "font": "display",
+      "size": "22px",
+      "weight": 600,
+      "tracking": "-0.03em",
+      "leading": 1.15
+    }
+  },
+  "color": {
+    "approach": "monochrome; the theme itself is the content, no accent",
+    "dark": {
+      "ink": "#ededef",
+      "soft": "#a0a0a8",
+      "wash": "rgba(255,255,255,0.06)",
+      "well": "rgba(255,255,255,0.04)",
+      "hair": "rgba(255,255,255,0.09)",
+      "pill": "rgba(255,255,255,0.1)"
+    },
+    "light": {
+      "ink": "#111113",
+      "soft": "#6b6b73",
+      "wash": "rgba(0,0,0,0.05)",
+      "well": "rgba(0,0,0,0.035)",
+      "hair": "rgba(0,0,0,0.08)",
+      "pill": "#ffffff"
+    },
+    "stage": {
+      "dark": "#08080a / #0f0f11",
+      "light": "#f6f6f4 / #ffffff"
+    }
+  },
+  "motion": {
+    "glyphs": "cross-rotate ±90°, scale 0.5, fade, 450ms cubic-bezier(0.2,0,0,1); rays extend 0→1 over 260ms from 120ms, 28ms apart",
+    "hover": "radial wash 160ms; glyph lifts 1px, scale 1.06 (180ms)",
+    "press": "button 0.94, glyph 0.92, 90ms",
+    "pill": "layoutId spring(500, 40)",
+    "reveal": "View Transition; ::view-transition-new(root) clip-path circle(0) → farthest corner from the control centre, 560ms cubic-bezier(0.65,0,0.35,1); update resolves after React commits (layout effect), 320ms safety timeout; overrides scoped to an <html> class during the reveal; skipped when nothing visible changes",
+    "reducedMotion": "150ms cross-fades only"
+  },
+  "responsive": "Fixed-size controls; the stage's readout appears from @sm and the Appearance row stacks under @sm; works from 320px.",
+  "accessibility": [
+    "Icon button aria-label names the action and aria-pressed reflects dark; matching title",
+    "Segmented is role=radiogroup labelled Theme with role=radio segments, aria-checked and roving tabindex",
+    "Arrow keys, Home and End move and select",
+    "Icon-only segments keep accessible names and tooltips",
+    "Focus-visible 2px ink ring, offset 2px, no transition",
+    "System mode follows prefers-color-scheme changes live"
+  ],
+  "content": {
+    "brand": "Margin",
+    "modes": [
+      "Light",
+      "System",
+      "Dark"
+    ],
+    "labels": {
+      "toDark": "Switch to dark theme",
+      "toLight": "Switch to light theme"
+    },
+    "card": "Night mode is a promise about 2 a.m."
+  },
+  "avoid": [
+    "Transitioning every colour on the page instead of a single reveal",
+    "Global view-transition overrides left active outside the reveal",
+    "Yellow suns, blue moons, starry skeuomorphic switches",
+    "A wipe when nothing visible changes",
+    "Blocking the switch where View Transitions are unsupported"
+  ]
+}

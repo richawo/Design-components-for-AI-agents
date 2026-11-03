@@ -5213,5 +5213,20 @@
       "mobile-live-activity"
     ],
     "updated": "2026-10-17"
+  },
+  "button-theme-toggle": {
+    "useWhen": "Letting people choose light, dark or system appearance from a header or settings page, with a switch that feels deliberate.",
+    "avoidWhen": "A product with a single fixed theme, or an embedded widget that must not repaint the host page.",
+    "integration": [
+      "Store `mode` yourself (cookie or localStorage) and apply the resolved theme class in `onModeChange`; the wipe captures whatever your re-render commits.",
+      "Render the icon and segmented variants from the same state so the header and the settings page never disagree.",
+      "Set `reveal={false}` inside iframes or pages that already run their own view transitions."
+    ],
+    "related": [
+      "segmented-control",
+      "switch-spring",
+      "settings-panel"
+    ],
+    "updated": "2026-11-03"
   }
 }
