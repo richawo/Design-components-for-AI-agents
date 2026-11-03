@@ -5291,5 +5291,19 @@
       "command-palette"
     ],
     "updated": "2026-11-03"
+  },
+  "onboarding-marker-guide": {
+    "useWhen": "Teaching a first-run workflow inside a real screen, where each step is an action the user should actually take (name a thing, flip a setting, press the primary button) and an interrupting tour would feel like a tax.",
+    "avoidWhen": "Explaining concepts with no control to act on, long multi-screen tours that need persistence across routes, or flows where a modal checklist or empty state teaches better.",
+    "integration": [
+      "Wrap the surface in MarkerGuide and add data-guide=\"…\" to each target (or pass refs); mark the owning card with data-guide-scope so notes can use the margin and the spotlight scrim stays local.",
+      "Persist completion in onFinish(reason); drive activeStep yourself to resume or to pause with active={false} while a modal is open.",
+      "Use variant=\"spotlight\" for a single late tip; keep accent as the guide's only colour."
+    ],
+    "related": [
+      "onboarding-setup-checklist",
+      "tooltip-group"
+    ],
+    "updated": "2026-11-03"
   }
 }
