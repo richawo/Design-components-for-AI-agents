@@ -5305,5 +5305,20 @@
       "tooltip-group"
     ],
     "updated": "2026-11-03"
+  },
+  "media-progressive-voice-player": {
+    "useWhen": "Read-aloud or text-to-speech playback that starts before the audio has finished generating: it shows what has been heard, what exists and what is still being made, and tells listeners plainly when they are waiting on the generator.",
+    "avoidWhen": "Finished recordings (music, podcasts, uploaded audio) where every second is already available; a standard transport or transcript player is simpler and clearer there.",
+    "integration": [
+      "Drive currentTime, playing and generatedUntil from your audio element and stream; send status as generating, ready, stalled or error, and wire onStop to cancel generation.",
+      "Pass segments as generated parts with word start and end times in seconds; the text can arrive before its audio, and onSeek only ever receives positions inside generated audio.",
+      "Mirror onVolumeChange(volume, muted) and onSpeedChange onto the audio element; use layout=\"compact\" for a floating now-playing pill over the page being read."
+    ],
+    "related": [
+      "media-transcript-player",
+      "media-audio-transport",
+      "three-voice-orb"
+    ],
+    "updated": "2026-11-03"
   }
 }
