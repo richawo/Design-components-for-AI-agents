@@ -5452,5 +5452,22 @@
       "ai-voice-pill"
     ],
     "updated": "2026-11-03"
+  },
+  "bg-state-field": {
+    "useWhen": "A multi-step flow such as onboarding, checkout or a setup wizard needs one continuous background that changes mood with each step instead of swapping screens, with a light sweep on navigation and a bloom when something succeeds.",
+    "avoidWhen": "A single static page or hero needs texture, content scrolls over long documents, or the device budget can't spare a full-screen shader; use a lighter static background there.",
+    "integration": [
+      "Mount it once above every screen of the flow, usually in a fixed inset-0 wrapper, and render the steps as children so it never remounts.",
+      "Map each step to a state, pass the step id as sweepKey, and set sweepDirection from whether the user moved forward or back.",
+      "Change bloomKey on success and measure the element that succeeded into bloomOrigin, as fractions of the field's box.",
+      "Change introKey when a flow restarts; set intro to false when the field mounts under existing content."
+    ],
+    "related": [
+      "bg-grain-gradient",
+      "bg-ripple-splash",
+      "bg-dither-flow",
+      "onboarding-setup-checklist"
+    ],
+    "updated": "2026-11-03"
   }
 }
