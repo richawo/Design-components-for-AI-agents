@@ -5420,5 +5420,21 @@
       "bg-grain-gradient"
     ],
     "updated": "2026-11-03"
+  },
+  "bg-nebula-billows": {
+    "useWhen": "The closing screen of an onboarding or checkout flow, or a quiet section behind a final call to action, where a slow atmosphere should sit under a short message and one button in the dark upper area.",
+    "avoidWhen": "Dense content, dashboards or anything read for long periods; pages that need a bright or light surface; places where copy must sit over the lower third, which the billows occupy.",
+    "integration": [
+      "Give the parent a height; the root fills it and layers children above the field.",
+      "Toggle paused when the screen is not the active step so it does no GPU work.",
+      "Use palette for a re-skin or pass five hex stops; keep the one action as the brightest thing on screen.",
+      "Use height to set how much of the frame the billows fill, and centre copy in the dark above them."
+    ],
+    "related": [
+      "bg-grain-gradient",
+      "bg-dither-flow",
+      "bg-topographic-contours"
+    ],
+    "updated": "2026-11-03"
   }
 }
