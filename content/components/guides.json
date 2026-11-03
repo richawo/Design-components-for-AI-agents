@@ -5486,5 +5486,22 @@
       "media-trim-timeline"
     ],
     "updated": "2026-11-03"
+  },
+  "editor-margin-comments": {
+    "useWhen": "Long-form documents, essays or design reviews where comments should sit beside the exact words they discuss, stay put while reading, and be findable across the whole document from a compact overview strip.",
+    "avoidWhen": "Short UI surfaces, canvases or images (use pinned annotations), or a single focused discussion thread with mentions where a dedicated thread view reads better.",
+    "integration": [
+      "Pass the document as blocks and anchor each comment with { block, start, end } character offsets into that block's text.",
+      "Keep comments in host state and persist through onCreate, onReply and onResolve; drive activeId with onActiveChange for deep links.",
+      "Set draftAnchor from a toolbar Comment button; feed playheadFraction from a read-aloud player, or null to hide the playhead.",
+      "layout=\"auto\" switches to a bottom sheet under 760px of container width; set height to fit the host pane."
+    ],
+    "related": [
+      "collab-comment-thread",
+      "collab-annotation-pins",
+      "editor-rich-text",
+      "editor-markdown-split"
+    ],
+    "updated": "2026-11-03"
   }
 }
