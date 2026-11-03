@@ -5436,5 +5436,21 @@
       "bg-topographic-contours"
     ],
     "updated": "2026-11-03"
+  },
+  "selects-voice-orbs": {
+    "useWhen": "Choosing one voice from a text-to-speech or voice-agent library where people need to tell voices apart at a glance and hear a short sample before committing: narrator pickers, assistant persona settings, audiobook or podcast tools.",
+    "avoidWhen": "Long catalogues that need search, sorting and many facets, or plain settings where a native select or a simple radio list is enough; also avoid when voices have no audio sample to preview.",
+    "integration": [
+      "Pass voices with two identity hues each; keep the hues stable so a voice keeps its colours everywhere it appears.",
+      "Control previewingId and play the clip in onPreview; pass previewProgress from your audio element for a real progress ring, or previewDuration for a timed one.",
+      "Use layout=\"grid\" with size=\"lg\" for an onboarding gallery and layout=\"list\" with size=\"sm\" in a settings column."
+    ],
+    "related": [
+      "three-voice-orb",
+      "media-progressive-voice-player",
+      "selects-tree-picker",
+      "ai-voice-pill"
+    ],
+    "updated": "2026-11-03"
   }
 }
