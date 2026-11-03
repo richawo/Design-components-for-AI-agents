@@ -5387,5 +5387,22 @@
       "three-voice-orb"
     ],
     "updated": "2026-11-03"
+  },
+  "bg-streak-ribbons": {
+    "useWhen": "A calm, cinematic dark hero or section backdrop where light should feel physical (long-exposure ribbons) yet stay out of the way of a headline, with one hue that can carry a brand or product mood.",
+    "avoidWhen": "The backdrop must carry information, sit behind dense body copy or forms, or render on light surfaces; or the page already has a moving element competing for attention.",
+    "integration": [
+      "Give the parent a fixed height; the field fills it and children render above it in the calm zone.",
+      "Match calmZone to where your copy sits (center or left); use none only when no text overlaps the field.",
+      "Keep start=\"idle\" (or \"interaction\" for strict performance budgets); a static SVG of the same composition paints until WebGL boots.",
+      "Use palette for a mood and accent for a brand hue; intensity 0.6–0.8 suits sections below the fold."
+    ],
+    "related": [
+      "bg-dither-flow",
+      "bg-grain-gradient",
+      "bg-topographic-contours",
+      "hero-prism"
+    ],
+    "updated": "2026-11-03"
   }
 }
