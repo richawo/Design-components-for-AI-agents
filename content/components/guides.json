@@ -5243,5 +5243,21 @@
       "dropdown-menu-nested"
     ],
     "updated": "2026-11-03"
+  },
+  "ai-voice-pill": {
+    "useWhen": "An app needs an always-available voice input control that stays out of the way: a floating dock that shows a live level, lets people cancel or confirm in place, and reports transcribing, inserted and failed outcomes without opening a panel.",
+    "avoidWhen": "Full voice conversations with an assistant, or recording long audio that people will play back; a voice mode or a memo recorder suits those better.",
+    "integration": [
+      "Fix the 96px dock to the bottom of the viewport and drive `state` from your recording pipeline; call `onStart(modeId)`, `onCancel` and `onConfirm` to start, discard or finish a recording.",
+      "Pass `getLevel` returning an AnalyserNode RMS with `sensitivity` around 9; the component never requests the microphone itself.",
+      "Set `startedAt` so the timer survives remounts, and `successDetail` to report what was inserted."
+    ],
+    "related": [
+      "ai-voice-mode",
+      "three-voice-orb",
+      "header-island",
+      "button-hold-confirm"
+    ],
+    "updated": "2026-11-03"
   }
 }
