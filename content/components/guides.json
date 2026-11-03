@@ -5354,5 +5354,22 @@
       "saas-notification-inbox"
     ],
     "updated": "2026-11-03"
+  },
+  "features-vignette-grid": {
+    "useWhen": "A product's features are best understood in motion: a landing-page or onboarding section where each capability can be shown as a tiny live scene (text cleaning itself up, a card flipping into a translation, a search highlighting its matches) rather than described beside an icon.",
+    "avoidWhen": "Features are abstract or non-visual (pricing tiers, compliance claims), the page already has a large animated hero competing for attention, or you need a dense comparison table; use a static bento or spec sheet instead.",
+    "integration": [
+      "Pass features with a built-in scene id each; mark roadmap items status \"soon\" with an ETA in meta.",
+      "Keep playMode \"focus-one\" for landing pages so only one scene moves at a time; use \"hover\" inside dense docs pages.",
+      "Set accent once to your brand's signal colour; everything else stays graphite.",
+      "Below 600px of container width it becomes a snap carousel automatically, so place it in any column width."
+    ],
+    "related": [
+      "features-shortcut-theatre",
+      "features-compare-lenses",
+      "features-integration-trace",
+      "feature-sticky-scroll"
+    ],
+    "updated": "2026-11-03"
   }
 }
