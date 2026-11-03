@@ -2115,6 +2115,216 @@
     ]
   },
   {
+    "slug": "ai-listening-indicators",
+    "name": "Listening Indicators",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "Eight canvas voice indicators (dot, ripples, orbit, arcs, blob, bars, wave, dots) that follow a real mic level and show idle, listening, thinking, speaking and muted.",
+    "tags": [
+      "voice",
+      "listening",
+      "microphone",
+      "audio level",
+      "speaking indicator",
+      "voice assistant",
+      "status",
+      "canvas",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ListeningIndicator } from \"@/components/design-for-ai/ai-listening-indicators\";\n\n// Read the mic once per frame without re-rendering React.\nconst analyser = audioCtx.createAnalyser();\nconst buf = new Float32Array(analyser.fftSize);\nconst getLevel = () => {\n  analyser.getFloatTimeDomainData(buf);\n  let sum = 0;\n  for (const v of buf) sum += v * v;\n  return Math.min(1, Math.sqrt(sum / buf.length) * 9);\n};\n\n<ListeningIndicator variant=\"orbit\" state={voiceState} getLevel={getLevel} size={40} />",
+    "props": [
+      {
+        "name": "variant",
+        "type": "\"dot\" | \"ripple\" | \"orbit\" | \"arc\" | \"blob\" | \"bars\" | \"wave\" | \"dots\"",
+        "default": "\"orbit\"",
+        "description": "Which design to draw. dot to blob are square; bars, wave and dots are 2.4× as wide as they are tall."
+      },
+      {
+        "name": "state",
+        "type": "\"idle\" | \"listening\" | \"thinking\" | \"speaking\" | \"muted\"",
+        "default": "\"listening\"",
+        "description": "Listening follows the level, thinking runs its own ambient motion, speaking follows the output level, muted drains to graphite and stops. Changes cross-fade and reverse mid-flight."
+      },
+      {
+        "name": "level",
+        "type": "number",
+        "description": "Live level 0–1: the mic while listening, the reply's playback while speaking. Smoothed with a 35ms attack and 240ms release. Ignored when getLevel is set."
+      },
+      {
+        "name": "getLevel",
+        "type": "() => number",
+        "description": "Called once per animation frame; return 0–1. Wire an AnalyserNode's RMS (×8–10) here so React never re-renders for the level."
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "default": "48",
+        "description": "Height in px. Shrinks to fit a narrower container, keeping its proportions."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ededef\"",
+        "description": "The live colour (#rgb or #rrggbb). Muted always drains to graphite."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<Record<ListeningState, string>>",
+        "description": "Text announced politely per state. Defaults: Microphone ready, Listening, Thinking, Speaking, Microphone muted."
+      },
+      {
+        "name": "announce",
+        "type": "boolean",
+        "default": "true",
+        "description": "Render as a polite role=\"status\" live region. Turn it off for decorative repeats of an indicator announced elsewhere."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the root."
+      },
+      {
+        "name": "loudness",
+        "type": "number",
+        "default": "70",
+        "description": "Stage only, not a ListeningIndicator prop. How loud the demo's simulated voice peaks, 0–100; used by the Customize panel."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@state-thinking",
+        "wait:1300",
+        "click:@state-speaking",
+        "wait:1500",
+        "click:@composer-mic",
+        "wait:1200"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "variant",
+        "label": "Featured",
+        "kind": "select",
+        "options": [
+          {
+            "value": "dot",
+            "label": "Breathing dot"
+          },
+          {
+            "value": "ripple",
+            "label": "Ripples"
+          },
+          {
+            "value": "orbit",
+            "label": "Orbit"
+          },
+          {
+            "value": "arc",
+            "label": "Twin arcs"
+          },
+          {
+            "value": "blob",
+            "label": "Blob"
+          },
+          {
+            "value": "bars",
+            "label": "Mirrored bars"
+          },
+          {
+            "value": "wave",
+            "label": "Line wave"
+          },
+          {
+            "value": "dots",
+            "label": "Wave dots"
+          }
+        ],
+        "default": "orbit",
+        "group": "Indicator"
+      },
+      {
+        "prop": "state",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "idle",
+            "label": "Idle"
+          },
+          {
+            "value": "listening",
+            "label": "Listening"
+          },
+          {
+            "value": "thinking",
+            "label": "Thinking"
+          },
+          {
+            "value": "speaking",
+            "label": "Speaking"
+          },
+          {
+            "value": "muted",
+            "label": "Muted"
+          }
+        ],
+        "group": "Indicator"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ededef",
+        "options": [
+          "#ededef",
+          "#ff453a",
+          "#32d74b",
+          "#5ac8fa",
+          "#ffd60a"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "size",
+        "label": "Featured size",
+        "kind": "slider",
+        "min": 96,
+        "max": 200,
+        "step": 4,
+        "unit": "px",
+        "default": 176,
+        "group": "Look"
+      },
+      {
+        "prop": "loudness",
+        "label": "Simulated level",
+        "kind": "slider",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "default": 70,
+        "group": "Voice"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "ai-mcp-elicitation",
     "name": "MCP Elicitation",
     "tier": "pro",
@@ -15075,6 +15285,235 @@
     ]
   },
   {
+    "slug": "cta-scribble-nudge",
+    "name": "Scribble Nudge Trial CTA",
+    "tier": "pro",
+    "platform": "web",
+    "category": "cta",
+    "description": "A dark trial card where a pen writes “nothing to pay today” in the margin, draws an arrow to the button, and one sheen sweeps it: reassurance at the moment of hesitation.",
+    "tags": [
+      "call to action",
+      "free trial",
+      "pricing card",
+      "handwriting",
+      "annotation",
+      "paywall",
+      "upgrade",
+      "sheen",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { CtaScribbleNudge } from \"@/components/design-for-ai/cta-scribble-nudge\";\n\n<CtaScribbleNudge\n  brand=\"Acme\"\n  trialLabel=\"14 days free\"\n  price=\"$120\"\n  wasPrice=\"$180\"\n  noteVariant=\"free-today\"\n  placement=\"right\"\n  onCta={() => startTrial()}\n/>",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Quire\"",
+        "description": "Product name beside the mark."
+      },
+      {
+        "name": "planTag",
+        "type": "string",
+        "default": "\"Pro · yearly\"",
+        "description": "Mono tag at the top right."
+      },
+      {
+        "name": "trialLabel",
+        "type": "string",
+        "default": "\"7 days free\"",
+        "description": "The headline offer."
+      },
+      {
+        "name": "price",
+        "type": "string",
+        "default": "\"$96\"",
+        "description": "What it costs once the trial ends."
+      },
+      {
+        "name": "wasPrice",
+        "type": "string",
+        "default": "\"$144\"",
+        "description": "Old price, struck through by the same pen that writes the note."
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "default": "\"year\"",
+        "description": "Billing period after the price."
+      },
+      {
+        "name": "dueLabel",
+        "type": "string",
+        "default": "\"Due today\"",
+        "description": "Receipt line label; the honest text statement the note repeats."
+      },
+      {
+        "name": "dueToday",
+        "type": "string",
+        "default": "\"$0.00\"",
+        "description": "Receipt line amount, tabular mono."
+      },
+      {
+        "name": "benefits",
+        "type": "string[]",
+        "description": "Three short benefit lines with checks."
+      },
+      {
+        "name": "ctaLabel",
+        "type": "string",
+        "default": "\"Start free trial\"",
+        "description": "Button label."
+      },
+      {
+        "name": "successLabel",
+        "type": "string",
+        "default": "\"Trial started\"",
+        "description": "Shown in the button for 1.8s after a promise from onCta resolves."
+      },
+      {
+        "name": "finePrint",
+        "type": "string",
+        "description": "Small centred line under the button."
+      },
+      {
+        "name": "noteVariant",
+        "type": "\"free-today\" | \"cancel-anytime\" | \"custom\"",
+        "default": "\"free-today\"",
+        "description": "Which note the pen writes. \"custom\" writes noteText."
+      },
+      {
+        "name": "noteText",
+        "type": "string",
+        "description": "What screen readers hear for the note (it also describes the button). With \"custom\" it is the phrase written; phrases with letters the hand lacks fall back to a serif italic reveal."
+      },
+      {
+        "name": "placement",
+        "type": "\"left\" | \"right\" | \"above\"",
+        "default": "\"right\"",
+        "description": "Margin beside the button (mirrored in RTL) or inside the card above it. Below a 660px container the note always moves above the button and the arrow re-routes."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#e9e7e1\"",
+        "description": "The ink: note, arrow and the strike through the old price. Pencil white by default; highlighter yellow suits too."
+      },
+      {
+        "name": "sheen",
+        "type": "boolean",
+        "default": "true",
+        "description": "One sweep of light across the button after the arrow lands, and again on hover or keyboard focus. Never loops."
+      },
+      {
+        "name": "onCta",
+        "type": "() => void | Promise<unknown>",
+        "description": "Button handler. Return a promise to hold a loading state in the same box."
+      },
+      {
+        "name": "animateOnMount",
+        "type": "boolean",
+        "default": "true",
+        "description": "Write the note on mount. Off: it is already written."
+      },
+      {
+        "name": "writeKey",
+        "type": "string | number",
+        "description": "Change it to erase and write the note again, e.g. after the plan changes."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:700",
+        "click:@rewrite",
+        "wait:3900",
+        "hover:@cta",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "placement",
+        "label": "Placement",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "above",
+            "label": "Above"
+          }
+        ],
+        "default": "right",
+        "group": "Note"
+      },
+      {
+        "prop": "noteVariant",
+        "label": "Note",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "free-today",
+            "label": "Free today"
+          },
+          {
+            "value": "cancel-anytime",
+            "label": "Cancel"
+          },
+          {
+            "value": "custom",
+            "label": "Custom"
+          }
+        ],
+        "default": "free-today",
+        "group": "Note"
+      },
+      {
+        "prop": "accent",
+        "label": "Ink",
+        "kind": "color",
+        "default": "#e9e7e1",
+        "options": [
+          "#e9e7e1",
+          "#f2dc4a",
+          "#8ec5ff",
+          "#9be3b4"
+        ],
+        "group": "Note"
+      },
+      {
+        "prop": "sheen",
+        "label": "Button sheen",
+        "kind": "toggle",
+        "default": true,
+        "group": "Button"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "dashboard-kpi-cards",
     "name": "KPI Cards",
     "tier": "pro",
@@ -20935,6 +21374,270 @@
         "label": "Read-only",
         "kind": "toggle",
         "default": false
+      }
+    ]
+  },
+  {
+    "slug": "editor-margin-comments",
+    "name": "Margin Comments",
+    "tier": "pro",
+    "platform": "web",
+    "category": "content",
+    "description": "Book-margin comments for long documents: cards solved beside their highlighted text without overlap, plus an 8px overview spine whose ticks jump to each note.",
+    "tags": [
+      "comments",
+      "margin",
+      "annotations",
+      "document",
+      "review",
+      "highlights",
+      "overview",
+      "reader",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 750,
+    "usage": "import { EditorMarginComments } from \"@/components/design-for-ai/editor-margin-comments\";\n\n// Host state owns the comment list and the active comment; the margin calls back on every change.\nexport default function Review({ doc, comments, activeId, setActiveId, save }) {\n  return (\n    <EditorMarginComments\n      title={doc.title}\n      blocks={doc.blocks}\n      comments={comments}\n      currentUser={{ name: \"Noor Haddad\", initials: \"NH\" }}\n      activeId={activeId}\n      onActiveChange={setActiveId}\n      onCreate={(comment) => save.create(comment)}\n      onReply={(id, reply) => save.reply(id, reply)}\n      onResolve={(id, resolved) => save.resolve(id, resolved)}\n      playheadFraction={null}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "blocks",
+        "type": "{ id: string; kind: \"heading\" | \"paragraph\" | \"quote\"; text: string }[]",
+        "default": "12-block design review",
+        "description": "The document. Comments anchor to character ranges inside a block's text."
+      },
+      {
+        "name": "comments",
+        "type": "{ id; anchor: { block; start; end }; author: { name; initials }; body; time; replies?: { id; author; body; time }[]; resolved?: boolean }[]",
+        "default": "7 demo comments",
+        "description": "Margin notes. `anchor` is a range in one block (start inclusive, end exclusive); overlapping ranges are fine."
+      },
+      {
+        "name": "currentUser",
+        "type": "{ name: string; initials: string }",
+        "default": "{ name: \"Noor Haddad\", initials: \"NH\" }",
+        "description": "Author of new comments and replies."
+      },
+      {
+        "name": "activeId",
+        "type": "string | null",
+        "default": "uncontrolled",
+        "description": "Optional. The comment pinned to its anchor and opened for reply. Pair with onActiveChange."
+      },
+      {
+        "name": "defaultActiveId",
+        "type": "string | null",
+        "default": "null",
+        "description": "Uncontrolled starting comment."
+      },
+      {
+        "name": "onActiveChange",
+        "type": "(id: string | null) => void",
+        "default": "none",
+        "description": "Called when a card, highlight or spine tick is chosen, and on Escape."
+      },
+      {
+        "name": "onCreate",
+        "type": "(comment) => void",
+        "default": "none",
+        "description": "Called with a new comment after a draft (from the selection pill, ⌥⌘M or draftAnchor) is posted."
+      },
+      {
+        "name": "onReply",
+        "type": "(commentId: string, reply) => void",
+        "default": "none",
+        "description": "Called when a reply is posted."
+      },
+      {
+        "name": "onResolve",
+        "type": "(commentId: string, resolved: boolean) => void",
+        "default": "none",
+        "description": "Called on Resolve (the card folds into a one-line marker) and Reopen."
+      },
+      {
+        "name": "showSpine",
+        "type": "boolean",
+        "default": "true",
+        "description": "The viewport-fixed overview strip: one tick per comment at its fraction of the document, a window for what is on screen, click to jump."
+      },
+      {
+        "name": "playheadFraction",
+        "type": "number | null",
+        "default": "null",
+        "description": "0–1 read-aloud position, drawn as a playhead on the spine; ticks behind it dim. null hides it."
+      },
+      {
+        "name": "layout",
+        "type": "\"auto\" | \"margin\" | \"sheet\"",
+        "default": "\"auto\"",
+        "description": "auto puts comments in the margin at 760px of container width and in a bottom sheet below it."
+      },
+      {
+        "name": "draftAnchor",
+        "type": "{ block; start; end } | null",
+        "default": "null",
+        "description": "Open a draft card on this range, e.g. from a toolbar Comment button. Each distinct range opens once; null discards an untouched draft."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#e8c547\"",
+        "description": "The highlighter: anchor marks, the echo underline, the connector and the active tick."
+      },
+      {
+        "name": "path",
+        "type": "string",
+        "default": "\"Reviews / Harbour checkout\"",
+        "description": "Mono breadcrumb in the toolbar."
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"Design review · Second pass\"",
+        "description": "Mono line above the title."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Notes on the second pass\"",
+        "description": "Document title."
+      },
+      {
+        "name": "byline",
+        "type": "string",
+        "default": "\"Noor Haddad · 9 min read · Updated Tue 16:40\"",
+        "description": "Line under the title."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "640",
+        "description": "Total height in px; the document scrolls inside it."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the root."
+      },
+      {
+        "name": "draft",
+        "type": "\"none\" | \"new\"",
+        "description": "Stage only, not a component prop. Opens a draft on a sentence in the last section, as a host Comment button would; used by the Customize panel."
+      },
+      {
+        "name": "scenario",
+        "type": "\"review\" | \"empty\"",
+        "description": "Stage only, not a component prop. The commented design review, or the same document with no comments (the empty state); used by the Customize panel."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:900",
+        "click:@tick-c6",
+        "wait:800",
+        "click:@reply-input",
+        "type:Debounce it is.",
+        "key:Enter",
+        "wait:600",
+        "click:@resolve",
+        "wait:1000"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "showSpine",
+        "label": "Overview spine",
+        "kind": "toggle",
+        "default": true,
+        "group": "Overview"
+      },
+      {
+        "prop": "playheadFraction",
+        "label": "Read-aloud position",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "default": 0.38,
+        "group": "Overview"
+      },
+      {
+        "prop": "layout",
+        "label": "Layout",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "auto",
+            "label": "Auto"
+          },
+          {
+            "value": "sheet",
+            "label": "Sheet"
+          },
+          {
+            "value": "margin",
+            "label": "Margin"
+          }
+        ],
+        "default": "auto",
+        "group": "Layout"
+      },
+      {
+        "prop": "accent",
+        "label": "Highlighter",
+        "kind": "color",
+        "default": "#e8c547",
+        "options": [
+          "#e8c547",
+          "#f4f4f5",
+          "#7cc4fa",
+          "#5fd38d",
+          "#f28fb0"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "scenario",
+        "label": "Comments",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "review",
+            "label": "Review"
+          },
+          {
+            "value": "empty",
+            "label": "Empty"
+          }
+        ],
+        "default": "review",
+        "group": "Content"
+      },
+      {
+        "prop": "draft",
+        "label": "Draft",
+        "kind": "action",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "new",
+            "label": "Add draft"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
@@ -34070,6 +34773,214 @@
     "added": "2026-10-13"
   },
   {
+    "slug": "media-speaker-timeline",
+    "name": "Speaker Timeline",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A meeting scrubber drawn as speaker turns: a 4px ribbon in each person’s colour, chapters above it, a talk-time roster and a transcript that seek by turn.",
+    "tags": [
+      "meeting",
+      "speaker timeline",
+      "diarization",
+      "who spoke when",
+      "scrubber",
+      "transcript",
+      "interview",
+      "talk time",
+      "chapters",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { SpeakerTimeline } from \"@/components/design-for-ai/media-speaker-timeline\";\n\n// The audio element owns the clock; the timeline draws who spoke when and asks for seeks.\n<SpeakerTimeline\n  title={meeting.title}\n  detail={`${meeting.team} · Recorded ${meeting.date}`}\n  speakers={meeting.people}            // [{ id, name, role?, color? }]\n  turns={meeting.segments}             // [{ speakerId | null, start, end, text }]; same-speaker runs merge\n  chapters={meeting.chapters}          // [{ id, title, start }]\n  duration={audio.duration}\n  currentTime={time}\n  onSeek={(s) => (audio.currentTime = s)}\n  playing={!audio.paused}\n  onPlayingChange={(play) => (play ? audio.play() : audio.pause())}\n  focusSpeakerId={focus}\n  onFocusSpeaker={setFocus}\n/>",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Pricing review: annual plans\"",
+        "description": "What was recorded."
+      },
+      {
+        "name": "detail",
+        "type": "string",
+        "default": "\"Northline · Recorded 28 Oct\"",
+        "description": "Mono line above the title."
+      },
+      {
+        "name": "speakers",
+        "type": "TimelineSpeaker[]",
+        "description": "{ id, name, role?, color? }. Colours come from an eight-colour muted palette by array order, so a person keeps theirs; anyone past eight shares one neutral. color pins a person’s colour."
+      },
+      {
+        "name": "turns",
+        "type": "SpeakerTurn[]",
+        "description": "{ speakerId | null, start, end, text } in seconds. Raw diarised segments are fine: consecutive entries from one speaker merge into a single turn. speakerId null is speech not yet attributed; it draws hatched."
+      },
+      {
+        "name": "chapters",
+        "type": "TimelineChapter[]",
+        "description": "{ id, title, start }. Each runs to the next. Labels and ticks sit above the ribbon, notches cut through it, and the current one lights as the playhead passes."
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "description": "Total seconds. Defaults to the last turn’s end."
+      },
+      {
+        "name": "currentTime",
+        "type": "number",
+        "description": "Controlled playhead in seconds. Omit it and the timeline runs its own clock (prototypes, offline demos)."
+      },
+      {
+        "name": "defaultTime",
+        "type": "number",
+        "default": "0",
+        "description": "Where an uncontrolled playhead starts."
+      },
+      {
+        "name": "onSeek",
+        "type": "(seconds: number) => void",
+        "description": "Every seek: scrubbing (each move while dragging), arrow keys, turn steps, chapter labels and transcript rows."
+      },
+      {
+        "name": "playing",
+        "type": "boolean",
+        "description": "Controlled playback. Uncontrolled when omitted."
+      },
+      {
+        "name": "onPlayingChange",
+        "type": "(playing: boolean) => void",
+        "description": "Play/pause requests from the button and Space on the ribbon; false when the own clock reaches the end."
+      },
+      {
+        "name": "focusSpeakerId",
+        "type": "string | null",
+        "description": "Filter to one person: their turns stay lit on the ribbon and in the transcript, everyone else dims, and the turn stepper walks only their turns. null or \"\" is everyone."
+      },
+      {
+        "name": "onFocusSpeaker",
+        "type": "(speakerId: string | null) => void",
+        "description": "Called from the roster cards (a second click clears)."
+      },
+      {
+        "name": "showChapters",
+        "type": "boolean",
+        "default": "true",
+        "description": "Chapter labels, ticks, ribbon notches and the current-chapter readout."
+      },
+      {
+        "name": "compact",
+        "type": "boolean",
+        "default": "false",
+        "description": "Player and a filtering legend only, with the current line quoted under the ribbon; no talk-time cards or transcript."
+      },
+      {
+        "name": "seekStep",
+        "type": "number",
+        "default": "5",
+        "description": "Seconds an arrow key moves; Page Up/Down move six steps."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the card. The layout responds to its container."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "hover:@ribbon:0.535,0.5",
+        "wait:800",
+        "click:@ribbon:0.535,0.5",
+        "wait:450",
+        "click:@speaker-hana",
+        "wait:650",
+        "click:@next-turn",
+        "wait:650",
+        "click:@play",
+        "wait:600"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "playing",
+        "label": "Playback",
+        "kind": "action",
+        "options": [
+          {
+            "value": false,
+            "label": "Pause"
+          },
+          {
+            "value": true,
+            "label": "Play"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "focusSpeakerId",
+        "label": "Focus speaker",
+        "kind": "select",
+        "options": [
+          {
+            "value": "",
+            "label": "Everyone"
+          },
+          {
+            "value": "priya",
+            "label": "Priya Raman"
+          },
+          {
+            "value": "tomas",
+            "label": "Tomás Ferreira"
+          },
+          {
+            "value": "hana",
+            "label": "Hana Sato"
+          },
+          {
+            "value": "ade",
+            "label": "Ade Okafor"
+          },
+          {
+            "value": "lena",
+            "label": "Lena Brandt"
+          }
+        ],
+        "default": "",
+        "group": "State"
+      },
+      {
+        "prop": "showChapters",
+        "label": "Chapters",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "compact",
+        "label": "Compact",
+        "kind": "toggle",
+        "default": false,
+        "group": "Layout"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "media-track-list",
     "name": "Music Track List",
     "tier": "pro",
@@ -44566,6 +45477,175 @@
           "ready",
           "loading"
         ]
+      }
+    ]
+  },
+  {
+    "slug": "text-glyph-fill",
+    "name": "Glyph Fill",
+    "tier": "pro",
+    "platform": "web",
+    "category": "text",
+    "description": "Display type with a live canvas effect sealed inside the letters: aurora light, a sloshing liquid level, film grain or rain, over real selectable text.",
+    "tags": [
+      "kinetic type",
+      "display type",
+      "canvas",
+      "text mask",
+      "liquid fill",
+      "film grain",
+      "statement",
+      "selectable text",
+      "dark"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 600,
+    "usage": "import { TextGlyphFill, GlyphFillWord } from \"@/components/design-for-ai/text-glyph-fill\";\n\n// Asterisks mark the words that carry the effect:\n<TextGlyphFill as=\"h1\" text=\"Works *offline.*\" effect=\"aurora\" />\n\n// A value the liquid can show:\n<TextGlyphFill text={`Charged to *${pct}%*`} effect=\"liquid\" level={pct / 100} accent=\"#7ee0b5\" />\n\n// Or your own markup:\n<TextGlyphFill effect=\"rain\">\n  Rain or <GlyphFillWord>shine.</GlyphFillWord>\n</TextGlyphFill>",
+    "props": [
+      {
+        "name": "text",
+        "type": "string",
+        "default": "\"Works *offline.*\"",
+        "description": "The statement. Words wrapped in asterisks carry the effect; with none, the whole line does. Newlines break lines. Ignored when children are given."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Your own markup instead of text. Wrap the effect words in <GlyphFillWord>."
+      },
+      {
+        "name": "effect",
+        "type": "\"aurora\" | \"liquid\" | \"grain\" | \"rain\"",
+        "default": "\"aurora\"",
+        "description": "What lives inside the letters. Switching on the same words sweeps the new effect in from the left."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#d8dce4\"",
+        "description": "The one colour mixed into the effect: a light pool, the liquid's body, the sheen's fringe, tinted rain. Silver keeps it monochrome."
+      },
+      {
+        "name": "level",
+        "type": "number",
+        "default": "0.86",
+        "description": "Liquid only: how full the glyphs are, 0–1 of the cap height. Changes spring to the new level and slosh."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Time scale of the ambient motion, 0.25–2."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "default": "true",
+        "description": "The effect leans toward the pointer: the lead light follows it, the liquid tilts, the sheen tracks it, the wind turns."
+      },
+      {
+        "name": "as",
+        "type": "\"h1\" | \"h2\" | \"h3\" | \"p\"",
+        "default": "\"h2\"",
+        "description": "The element the statement renders as."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Classes on the root, for width and placement."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "hover:@glyph-word:0.15,0.55",
+        "hover:@glyph-word:0.85,0.4",
+        "click:@effect-liquid",
+        "wait:1300",
+        "hover:@glyph-word:0.92,0.5",
+        "hover:@glyph-word:0.08,0.5",
+        "click:@effect-rain",
+        "wait:900"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "effect",
+        "label": "Effect",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "aurora",
+            "label": "Aurora"
+          },
+          {
+            "value": "liquid",
+            "label": "Liquid"
+          },
+          {
+            "value": "grain",
+            "label": "Grain"
+          },
+          {
+            "value": "rain",
+            "label": "Rain"
+          }
+        ],
+        "default": "aurora",
+        "group": "Effect"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#d8dce4",
+        "options": [
+          "#d8dce4",
+          "#8fb8ff",
+          "#7ee0b5",
+          "#ff6b6b",
+          "#f2d36b"
+        ],
+        "group": "Effect"
+      },
+      {
+        "prop": "level",
+        "label": "Liquid level",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "default": 0.86,
+        "group": "Liquid"
+      },
+      {
+        "prop": "speed",
+        "label": "Speed",
+        "kind": "slider",
+        "min": 0.25,
+        "max": 2,
+        "step": 0.05,
+        "unit": "×",
+        "default": 1,
+        "group": "Effect"
+      },
+      {
+        "prop": "interactive",
+        "label": "Follow pointer",
+        "kind": "toggle",
+        "default": true,
+        "group": "Effect"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
