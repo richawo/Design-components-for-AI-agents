@@ -5320,5 +5320,23 @@
       "three-voice-orb"
     ],
     "updated": "2026-11-03"
+  },
+  "primitives-animated-icons": {
+    "useWhen": "A navigation rail, tab bar or toolbar whose icons answer the pointer with a specific gesture per destination (a door opening, a bell ringing, a gear ratcheting) plus a filled active state, from one coherent 24-grid stroke set.",
+    "avoidWhen": "You need hundreds of icons, brand logos, or icons that animate continuously to show live status; use a static icon library or a dedicated status indicator instead.",
+    "integration": [
+      "Place an icon inside any button, link or tab: its hover and keyboard focus play the one-shot automatically; add data-icon-trigger to other containers.",
+      "Pass active and accent for the selected item; selecting plays the glyph once and fills it with details knocked out.",
+      "Drive it from app events with play (increment a counter) and animateOn=\"none\", e.g. when an export finishes.",
+      "Use size 18 in rails and 20–24 in toolbars; weight=\"bold\" or an exact strokeWidth for denser UIs. Reduced motion is respected automatically."
+    ],
+    "related": [
+      "navigation-context-rail",
+      "devtools-icon-workbench",
+      "mobile-tab-bar",
+      "header-island",
+      "button-press-depth"
+    ],
+    "updated": "2026-11-03"
   }
 }
