@@ -5228,5 +5228,20 @@
       "settings-panel"
     ],
     "updated": "2026-11-03"
+  },
+  "brand-mark-menu": {
+    "useWhen": "The logo in a site or app header, where press, partners and designers look for brand assets and a little personality is welcome.",
+    "avoidWhen": "A formal or regulated brand where a playful mascot would undercut trust, or a header that already has a dense account menu on the same mark.",
+    "integration": [
+      "Pass outlined `markSvg` and `lockupSvg` sources so copies never depend on a font, and point `guidelinesHref` at your press page.",
+      "Desktop shells (Tauri, Electron) can route copies through `writeClipboard`; a rejection shows the blocked state instead of failing silently.",
+      "Use `onCopy` to count which asset people take, and `flipped` to hold the mascot up for a celebration."
+    ],
+    "related": [
+      "header-island",
+      "header-hairline",
+      "dropdown-menu-nested"
+    ],
+    "updated": "2026-11-03"
   }
 }
