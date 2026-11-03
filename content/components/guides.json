@@ -5371,5 +5371,21 @@
       "feature-sticky-scroll"
     ],
     "updated": "2026-11-03"
+  },
+  "hero-dictation-scene": {
+    "useWhen": "The live product specimen in a landing hero for a voice, dictation or writing tool: a seekable scene showing a held key, recording, a spoken self-correction and an automatic tidy, with chapters visitors can scrub.",
+    "avoidWhen": "You need a real recorder or transcription UI, the product isn't about speech-to-text, or a static screenshot or a short video would do.",
+    "integration": [
+      "Pass your own script of timed press, word, correct, release and format beats; chapter labels on beats become scrubber segments.",
+      "Drive it from outside with playing/onPlayingChange and time/onTimeChange, or hide the transport and let it loop; it pauses offscreen and in hidden tabs, and shows the finished frame under reduced motion.",
+      "Set accent to your live colour (recording red by default) and surface to dark or light; below a 620px container it crops to the note and pill automatically."
+    ],
+    "related": [
+      "hero-terminal-agent",
+      "hero-product-stack",
+      "ai-voice-pill",
+      "three-voice-orb"
+    ],
+    "updated": "2026-11-03"
   }
 }
