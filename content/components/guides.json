@@ -5338,5 +5338,21 @@
       "button-press-depth"
     ],
     "updated": "2026-11-03"
+  },
+  "feedback-background-jobs": {
+    "useWhen": "Long-running work (transcription, exports, renders, uploads) keeps going while people work, and they need a quiet always-visible summary plus a panel to cancel, retry or open results, without being shown progress nobody measured.",
+    "avoidWhen": "A single blocking operation with its own screen, instant actions that suit a toast, or chat-style agent runs where a step trace explains more than a queue.",
+    "integration": [
+      "Map worker state to jobs; pass progress only when it is measured and null otherwise, and etaSeconds from the worker's own estimate.",
+      "Keep job ids stable so completions settle in place, and set finishedAt so Done sorts and shows relative time.",
+      "Place it in a sidebar footer with fullWidth or in a toolbar; use compact for icon rails, and don't put it inside overflow-hidden or transformed ancestors."
+    ],
+    "related": [
+      "toast-promise",
+      "toast-stack",
+      "agent-status-pill",
+      "saas-notification-inbox"
+    ],
+    "updated": "2026-11-03"
   }
 }
