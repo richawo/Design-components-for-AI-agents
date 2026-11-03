@@ -5274,5 +5274,22 @@
       "three-voice-orb"
     ],
     "updated": "2026-11-03"
+  },
+  "navigation-sidebar-rail": {
+    "useWhen": "An app shell for a desktop product that needs a primary sidebar people can shrink to icons and widen to labels as they work: tools, studios, inboxes and dashboards with 5–12 destinations, counts and background work.",
+    "avoidWhen": "Marketing sites, content-first pages or apps with two or three destinations, where a header or tab bar is lighter; or navigation whose second level needs its own list, where a context rail fits better.",
+    "integration": [
+      "Give the parent a height (h-dvh or a flex column); the content pane is children.",
+      "Keep activeId in your router and pass collapsed/width with onCollapsedChange/onWidthChange to save preferences.",
+      "Pass jobs from your queue; an empty array hides the indicator.",
+      "Below compactBelow (640px of container width) it becomes an icon rail with an overlay drawer; adjust it for split views."
+    ],
+    "related": [
+      "navigation-context-rail",
+      "navigation-stacked-tabs",
+      "header-island",
+      "command-palette"
+    ],
+    "updated": "2026-11-03"
   }
 }
