@@ -4836,6 +4836,338 @@
     ]
   },
   {
+    "slug": "bg-nebula-billows",
+    "name": "Nebula Billows",
+    "tier": "pro",
+    "platform": "web",
+    "category": "backgrounds",
+    "description": "A slow WebGL nebula of smoke-grey billows rising from the lower third, leaving the dark above for a closing message. Breathes, drifts and swells under the cursor.",
+    "tags": [
+      "background",
+      "shader",
+      "webgl",
+      "nebula",
+      "clouds",
+      "fbm",
+      "finale",
+      "cta background",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { BgNebulaBillows } from \"@/components/design-for-ai/bg-nebula-billows\";\n\n<section className=\"relative h-[100svh] overflow-hidden\">\n  <BgNebulaBillows height={0.5} pointerLift paused={!isActiveStep}>\n    <div className=\"flex h-1/2 flex-col items-center justify-center gap-6 text-center\">\n      <h2 className=\"font-display text-5xl tracking-[-0.045em] text-white\">That’s everything.</h2>\n      <button className=\"h-11 rounded-full bg-white px-5 text-sm font-medium text-black\">Open the app</button>\n    </div>\n  </BgNebulaBillows>\n</section>\n\n// Re-skin with a named palette or five stops of your own:\n// <BgNebulaBillows palette=\"glacier\" starDust />\n// <BgNebulaBillows palette={{ base: \"#000000\", shadow: \"#0a0a0b\", mid: \"#121214\", crest: \"#1e1e22\", highlight: \"#3a3a40\" }} />\n// The root is h-full, so give the parent a height.",
+    "props": [
+      {
+        "name": "palette",
+        "type": "\"graphite\" | \"pewter\" | \"glacier\" | \"dusk\" | \"aurora\" | NebulaPalette",
+        "default": "\"graphite\"",
+        "description": "A named palette, or { base, shadow, mid, crest, highlight } hex stops. Graphite is neutral smoke on black (#0a0a0b to #333337); the others keep its luminance per stop and change only the hue."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "0.55",
+        "description": "How far up the frame the billows reach, 0.25 to 0.85 of its height. Above it the frame fades to near-black for copy."
+      },
+      {
+        "name": "drift",
+        "type": "number",
+        "default": "1",
+        "description": "Upward drift speed, 0 to 2. At 0 the clouds hold their shape and keep breathing."
+      },
+      {
+        "name": "pointerLift",
+        "type": "boolean",
+        "default": "false",
+        "description": "A mouse or pen near the band slowly swells the billows beneath it (0.55 s follow, 0.7 s swell). Touch never moves them, so the page still scrolls."
+      },
+      {
+        "name": "starDust",
+        "type": "boolean",
+        "default": "false",
+        "description": "Adds a sparse, slowly twinkling star field in the dark above the billows, hidden behind dense cloud."
+      },
+      {
+        "name": "paused",
+        "type": "boolean",
+        "default": "false",
+        "description": "Freeze the field on its current frame with no GPU work. Pause it when the screen isn't the active step."
+      },
+      {
+        "name": "renderer",
+        "type": "\"auto\" | \"webgl1\" | \"static\"",
+        "default": "\"auto\"",
+        "description": "auto prefers WebGL2, falls back to WebGL1, then to the CSS gradient. static forces the gradient; webgl1 exercises the WebGL1 path."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Content layered over the field, such as a closing message and one action."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the root element, which fills its parent."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "hover:@field:0.28,0.82",
+        "wait:1300",
+        "hover:@field:0.7,0.74",
+        "wait:1200",
+        "hover:@cta",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "palette",
+        "label": "Palette",
+        "kind": "select",
+        "options": [
+          {
+            "value": "graphite",
+            "label": "Graphite"
+          },
+          {
+            "value": "pewter",
+            "label": "Pewter"
+          },
+          {
+            "value": "glacier",
+            "label": "Glacier"
+          },
+          {
+            "value": "dusk",
+            "label": "Dusk"
+          },
+          {
+            "value": "aurora",
+            "label": "Aurora"
+          }
+        ],
+        "default": "graphite"
+      },
+      {
+        "prop": "height",
+        "label": "Band height",
+        "kind": "slider",
+        "min": 0.25,
+        "max": 0.85,
+        "step": 0.05,
+        "default": 0.55
+      },
+      {
+        "prop": "drift",
+        "label": "Drift",
+        "kind": "slider",
+        "min": 0,
+        "max": 2,
+        "step": 0.1,
+        "unit": "×",
+        "default": 1
+      },
+      {
+        "prop": "pointerLift",
+        "label": "Pointer lift",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "starDust",
+        "label": "Star dust",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "paused",
+        "label": "Paused",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
+  },
+  {
+    "slug": "bg-reactive-threads",
+    "name": "Reactive Threads",
+    "tier": "pro",
+    "platform": "web",
+    "category": "backgrounds",
+    "description": "A field of 54 fine luminous threads behind a sign-in form that swell as you type, carry a pulse when you send and settle into one calm line on success.",
+    "tags": [
+      "background",
+      "canvas",
+      "threads",
+      "sign in",
+      "login",
+      "one-time code",
+      "reactive",
+      "auth",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 680,
+    "usage": "import { BgReactiveThreads, type ThreadFieldState } from \"@/components/design-for-ai/bg-reactive-threads\";\n\n// keystrokes: a counter you bump on every input event\nconst state: ThreadFieldState = signedIn ? \"settled\" : pending ? \"sending\" : failed ? \"error\" : touched ? \"active\" : \"idle\";\n\n<div className=\"h-[100dvh]\">\n  <BgReactiveThreads state={state} activityKey={keystrokes} pulseKey={resends}>\n    <SignInCard onInput={bumpKeystrokes} />\n  </BgReactiveThreads>\n</div>\n\n// Bump activityKey on every keystroke; change pulseKey to send an extra pulse (e.g. on resend).",
+    "props": [
+      {
+        "name": "state",
+        "type": "\"idle\" | \"active\" | \"sending\" | \"settled\" | \"error\"",
+        "default": "\"idle\"",
+        "description": "What the form is doing. sending fires a pulse every 1.15s; error jolts and dims the threads; settled collapses them into one line."
+      },
+      {
+        "name": "energy",
+        "type": "number",
+        "description": "Resting energy, 0 to 1. Undefined lets state choose it (idle 0.25, active 0.42, sending 0.8). Keystrokes still lift it."
+      },
+      {
+        "name": "activityKey",
+        "type": "number | string",
+        "description": "Change it on every keystroke and the threads swell by 0.12, then ease back to rest."
+      },
+      {
+        "name": "pulseKey",
+        "type": "number | string",
+        "description": "Change it to send one Gaussian pulse across the field, e.g. when a code is resent."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ffffff\"",
+        "description": "Colour of the bright centre threads and the settled line. Neutral white by default."
+      },
+      {
+        "name": "density",
+        "type": "number",
+        "default": "54",
+        "description": "Number of threads, 24 to 96. The ribbon keeps its shape at any count."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "default": "1",
+        "description": "Brightness multiplier for every thread, 0.4 to 1.6."
+      },
+      {
+        "name": "baseline",
+        "type": "number",
+        "default": "0.5",
+        "description": "Vertical position of the ribbon as a share of the height, at 900px wide and up."
+      },
+      {
+        "name": "compactBaseline",
+        "type": "number",
+        "default": "0.76",
+        "description": "Vertical position of the ribbon below 900px wide, where the form usually sits above it."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Content drawn above the field, usually the form that drives it."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Classes for the root, which fills its parent. Give the parent a height."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@email",
+        "type:mara@example.com",
+        "key:Enter",
+        "wait:1300",
+        "type:428193",
+        "wait:2300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "state",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "idle",
+            "label": "Idle"
+          },
+          {
+            "value": "active",
+            "label": "Active"
+          },
+          {
+            "value": "sending",
+            "label": "Sending"
+          },
+          {
+            "value": "error",
+            "label": "Error"
+          },
+          {
+            "value": "settled",
+            "label": "Settled"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Centre threads",
+        "kind": "color",
+        "default": "#ffffff",
+        "options": [
+          "#ffffff",
+          "#7cc4ff",
+          "#f5d547",
+          "#2fbf71",
+          "#ff5a5f"
+        ],
+        "group": "Field"
+      },
+      {
+        "prop": "density",
+        "label": "Threads",
+        "kind": "slider",
+        "min": 24,
+        "max": 96,
+        "step": 6,
+        "default": 54,
+        "group": "Field"
+      },
+      {
+        "prop": "intensity",
+        "label": "Intensity",
+        "kind": "slider",
+        "min": 0.4,
+        "max": 1.6,
+        "step": 0.1,
+        "unit": "×",
+        "default": 1,
+        "group": "Field"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "bg-ripple-splash",
     "name": "Ripple Splash",
     "tier": "pro",
@@ -4996,6 +5328,394 @@
           "#3ecf8e"
         ],
         "group": "Field"
+      }
+    ]
+  },
+  {
+    "slug": "bg-state-field",
+    "name": "State Field",
+    "tier": "pro",
+    "platform": "web",
+    "category": "backgrounds",
+    "description": "One WebGL shader that stays mounted through a whole flow and changes mood by state: slow breathing glows, edge auroras, step sweeps and success blooms.",
+    "tags": [
+      "background",
+      "shader",
+      "webgl",
+      "onboarding",
+      "checkout",
+      "wizard",
+      "ambient",
+      "multi-step flow",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { BgStateField, type FieldStateName } from \"@/components/design-for-ai/bg-state-field\";\n\n// Mount once, above every screen of the flow. Screens change; the field never remounts.\nconst order = [\"plan\", \"connect\", \"done\"] as const;\nconst mood: Record<(typeof order)[number], FieldStateName> = { plan: \"ambient\", connect: \"focus\", done: \"aurora\" };\nconst [step, setStep] = useState<(typeof order)[number]>(\"plan\");\nconst [dir, setDir] = useState<\"forward\" | \"back\">(\"forward\");\n\n<div className=\"fixed inset-0\">\n  <BgStateField\n    state={mood[step]}\n    sweepKey={step}                 // any change sends one 700ms sweep\n    sweepDirection={dir}\n    bloomKey={step === \"done\" ? \"paid\" : undefined}\n    bloomOrigin={{ x: 0.5, y: 0.42 }}\n  >\n    <Checkout step={step} onStep={(next) => { setDir(order.indexOf(next) > order.indexOf(step) ? \"forward\" : \"back\"); setStep(next); }} />\n  </BgStateField>\n</div>",
+    "props": [
+      {
+        "name": "state",
+        "type": "\"ambient\" | \"focus\" | \"aurora\" | \"dimmed\"",
+        "default": "\"ambient\"",
+        "description": "The mood. Ambient breathes; focus dips 20% and slows behind forms; aurora brings up three edge hues for arrival; dimmed withdraws to 15% to hand the screen over. Every uniform cross-fades over 1.2s from wherever the field is, so interruptions never snap."
+      },
+      {
+        "name": "palette",
+        "type": "\"graphite\" | \"glacier\" | \"moss\" | \"amber\"",
+        "default": "\"graphite\"",
+        "description": "Colour set. Graphite is a neutral #0b0c0e base with cool, restrained glows; amber is the one warm option. Changes cross-fade."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "default": "1",
+        "description": "Overall strength, 0–1.5. The luminance ceiling still clamps the summed light, so text contrast holds at any setting."
+      },
+      {
+        "name": "sweepKey",
+        "type": "string | number",
+        "description": "Change it (pass the step id) to send one 700ms directional light sweep across the frame. Ignored while one is travelling and under reduced motion."
+      },
+      {
+        "name": "sweepDirection",
+        "type": "\"forward\" | \"back\"",
+        "default": "\"forward\"",
+        "description": "Forward travels left to right, back right to left. Read when the sweep fires."
+      },
+      {
+        "name": "bloomKey",
+        "type": "string | number",
+        "description": "Change it to fire one 1600ms success bloom from bloomOrigin. Two can overlap; a third replaces the oldest."
+      },
+      {
+        "name": "bloomOrigin",
+        "type": "{ x: number; y: number }",
+        "default": "{ x: 0.5, y: 0.5 }",
+        "description": "Where blooms swell from, as fractions of the field's box with y from the top. Measure the element that succeeded."
+      },
+      {
+        "name": "intro",
+        "type": "boolean",
+        "default": "true",
+        "description": "Plays the 2.4s converge beat on mount: the glows rush in from beyond the frame, gather at the centre with a soft core light, then settle."
+      },
+      {
+        "name": "introKey",
+        "type": "string | number",
+        "description": "Change it to replay the converge beat, for example when a flow starts over."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "The flow drawn above the field."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Classes on the root, which fills its parent. Give the parent a size, usually fixed inset-0."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@replay",
+        "wait:1200",
+        "click:@continue",
+        "wait:600",
+        "click:@connect",
+        "wait:2400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "state",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "ambient",
+            "label": "Ambient"
+          },
+          {
+            "value": "focus",
+            "label": "Focus"
+          },
+          {
+            "value": "aurora",
+            "label": "Aurora"
+          },
+          {
+            "value": "dimmed",
+            "label": "Dimmed"
+          }
+        ],
+        "group": "Beats"
+      },
+      {
+        "prop": "sweepDirection",
+        "label": "Sweep",
+        "kind": "action",
+        "options": [
+          {
+            "value": "forward",
+            "label": "Forward"
+          },
+          {
+            "value": "back",
+            "label": "Back"
+          }
+        ],
+        "group": "Beats"
+      },
+      {
+        "prop": "bloomKey",
+        "label": "Bloom",
+        "kind": "action",
+        "options": [
+          {
+            "value": "one",
+            "label": "Bloom"
+          },
+          {
+            "value": "two",
+            "label": "Two blooms"
+          }
+        ],
+        "group": "Beats"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      },
+      {
+        "prop": "palette",
+        "label": "Palette",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "graphite",
+            "label": "Graphite"
+          },
+          {
+            "value": "glacier",
+            "label": "Glacier"
+          },
+          {
+            "value": "moss",
+            "label": "Moss"
+          },
+          {
+            "value": "amber",
+            "label": "Amber"
+          }
+        ],
+        "default": "graphite",
+        "group": "Field"
+      },
+      {
+        "prop": "intensity",
+        "label": "Intensity",
+        "kind": "slider",
+        "min": 0.4,
+        "max": 1.5,
+        "step": 0.1,
+        "default": 1,
+        "group": "Field"
+      }
+    ]
+  },
+  {
+    "slug": "bg-streak-ribbons",
+    "name": "Streak Ribbons",
+    "tier": "pro",
+    "platform": "web",
+    "category": "backgrounds",
+    "description": "A hero backdrop of slow S-curved light ribbons at 23° in raw WebGL, white-hot at the core, held dark where your text sits. Streaks or a bolder beams bundle.",
+    "tags": [
+      "background",
+      "hero",
+      "shader",
+      "webgl",
+      "light streaks",
+      "ribbons",
+      "long exposure",
+      "parallax",
+      "dark"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { BgStreakRibbons } from \"@/components/design-for-ai/bg-streak-ribbons\";\n\n<section className=\"relative h-[640px]\">\n  <BgStreakRibbons mode=\"streaks\" palette=\"silver\" calmZone=\"center\">\n    <div className=\"flex h-full flex-col items-center justify-center text-center\">\n      <h1 className=\"font-display text-6xl tracking-[-0.04em]\">Night survey</h1>\n    </div>\n  </BgStreakRibbons>\n</section>\n\n// Children sit above the field. WebGL boots on idle by default; pass start=\"interaction\" to keep it off the load path entirely.",
+    "props": [
+      {
+        "name": "mode",
+        "type": "\"streaks\" | \"beams\"",
+        "default": "\"streaks\"",
+        "description": "streaks: 15 edge-lit ribbons drifting on a ~26s cycle with a dark centre column. beams: a bolder bundle of 22 whose S-bend breathes on a ~31s cycle. Changes glide over ~1s."
+      },
+      {
+        "name": "palette",
+        "type": "\"silver\" | \"glacier\" | \"sodium\" | \"phosphor\"",
+        "default": "\"silver\"",
+        "description": "Intensity ramp from dim falloff to hot core. silver: graphite → steel → white. glacier: cool blue. sodium: street-lamp amber. phosphor: CRT green."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Any #rrggbb. Overrides the palette with a ramp built from this hue (shadowed, true, washed, near-white core). Invalid values are ignored."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "default": "1",
+        "description": "Overall light level, 0.3 to 1.6."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Drift speed multiplier, 0 to 2. 0 holds one still frame and stops the loop."
+      },
+      {
+        "name": "parallax",
+        "type": "boolean",
+        "default": "true",
+        "description": "Damped pointer parallax of ±2.5% of the short axis (~0.8s time constant). Off with reduced motion."
+      },
+      {
+        "name": "calmZone",
+        "type": "\"center\" | \"left\" | \"none\"",
+        "default": "\"center\"",
+        "description": "Where your text sits. The shader and a soft scrim hold a dark column there; none lets the field run edge to edge."
+      },
+      {
+        "name": "start",
+        "type": "\"idle\" | \"interaction\" | \"immediate\"",
+        "default": "\"idle\"",
+        "description": "When WebGL boots. idle waits for an idle window; interaction waits for the first real input, then idle; immediate paints on mount with no ignition fade. Read on mount only."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Content drawn above the field, such as a headline. Place it in the calm zone."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Classes on the root, which fills its parent. Give the parent a height."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "hover:@field:0.22,0.7",
+        "hover:@field:0.8,0.36",
+        "click:@mode-beams",
+        "wait:2600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "mode",
+        "label": "Mode",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "streaks",
+            "label": "Streaks"
+          },
+          {
+            "value": "beams",
+            "label": "Beams"
+          }
+        ],
+        "default": "streaks",
+        "group": "Field"
+      },
+      {
+        "prop": "palette",
+        "label": "Palette",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "silver",
+            "label": "Silver"
+          },
+          {
+            "value": "glacier",
+            "label": "Glacier"
+          },
+          {
+            "value": "sodium",
+            "label": "Sodium"
+          },
+          {
+            "value": "phosphor",
+            "label": "Phosphor"
+          }
+        ],
+        "default": "silver",
+        "group": "Field"
+      },
+      {
+        "prop": "intensity",
+        "label": "Intensity",
+        "kind": "slider",
+        "min": 0.3,
+        "max": 1.6,
+        "step": 0.05,
+        "default": 1,
+        "group": "Field"
+      },
+      {
+        "prop": "speed",
+        "label": "Speed",
+        "kind": "slider",
+        "min": 0,
+        "max": 2,
+        "step": 0.1,
+        "unit": "×",
+        "default": 1,
+        "group": "Motion"
+      },
+      {
+        "prop": "parallax",
+        "label": "Pointer parallax",
+        "kind": "toggle",
+        "default": true,
+        "group": "Motion"
+      },
+      {
+        "prop": "calmZone",
+        "label": "Calm zone",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "center",
+            "label": "Centre"
+          },
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
+        ],
+        "default": "center",
+        "group": "Layout"
       }
     ]
   },
@@ -43407,6 +44127,268 @@
           "error"
         ],
         "default": "ready"
+      }
+    ]
+  },
+  {
+    "slug": "selects-voice-orbs",
+    "name": "Voice Orb Picker",
+    "tier": "pro",
+    "platform": "web",
+    "category": "selects",
+    "description": "A voice library picker where every voice is a liquid-glass orb in its own two hues; select with a travelling ring, preview and watch the liquid quicken.",
+    "tags": [
+      "voice picker",
+      "voice library",
+      "text to speech",
+      "radio group",
+      "audio preview",
+      "orb",
+      "liquid",
+      "select",
+      "dark"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { SelectsVoiceOrbs } from \"@/components/design-for-ai/selects-voice-orbs\";\n\n// voiceId / setVoiceId and previewing / setPreviewing are your own state.\n\n<SelectsVoiceOrbs\n  voices={voices} // { id, name, traits: [\"warm\", \"measured\"], locale, hues: [28, 344], fit: 4, uses: [\"narration\"] }\n  value={voiceId}\n  onChange={setVoiceId}\n  previewingId={previewing}\n  onPreview={(id) => {\n    setPreviewing(id);\n    id ? player.play(sampleUrl(id)) : player.stop();\n  }}\n  previewProgress={player.progress} // optional: real playback position 0–1\n  layout=\"list\"\n  size=\"md\"\n/>",
+    "props": [
+      {
+        "name": "voices",
+        "type": "VoiceOrbOption[]",
+        "default": "Eight sample voices",
+        "description": "Each voice: id, name, traits (two words), locale, hues ([back, front] HSL hues, the voice's identity colour), fit 0–4 and uses (filter values)."
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "description": "Controlled selected voice id. Pair with onChange."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | null",
+        "default": "the first voice",
+        "description": "Initial selection when uncontrolled."
+      },
+      {
+        "name": "onChange",
+        "type": "(id: string) => void",
+        "description": "Called when a voice is chosen by click, arrow keys or Space."
+      },
+      {
+        "name": "previewingId",
+        "type": "string | null",
+        "description": "Controlled preview: the voice the host is playing. Leave undefined to let the picker own it."
+      },
+      {
+        "name": "onPreview",
+        "type": "(id: string | null) => void",
+        "description": "Start (id) or stop (null) a preview. Also called with null when the timed ring completes. The host plays the audio."
+      },
+      {
+        "name": "previewDuration",
+        "type": "number",
+        "default": "2600",
+        "description": "Clip length in ms; the progress ring fills over it."
+      },
+      {
+        "name": "previewProgress",
+        "type": "number",
+        "description": "Real playback progress 0–1. When set, the ring follows it and the picker never ends the preview itself."
+      },
+      {
+        "name": "size",
+        "type": "\"sm\" | \"md\" | \"lg\"",
+        "default": "\"md\"",
+        "description": "Orb diameter (28 / 40 / 52px in a list, 40 / 52 / 68px on a card) and row density."
+      },
+      {
+        "name": "layout",
+        "type": "\"list\" | \"grid\"",
+        "default": "\"list\"",
+        "description": "Rows, or cards in 1–3 container-query columns."
+      },
+      {
+        "name": "filters",
+        "type": "{ value: string; label: string }[]",
+        "default": "All · Narration · Conversational",
+        "description": "Filter row with live counts. \"all\" shows every voice; pass [] to hide the row."
+      },
+      {
+        "name": "defaultFilter",
+        "type": "string",
+        "default": "\"all\"",
+        "description": "Initial filter."
+      },
+      {
+        "name": "onFilterChange",
+        "type": "(value: string) => void",
+        "description": "Called when the filter changes."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Reading voice\"",
+        "description": "Visible label that names the radio group."
+      },
+      {
+        "name": "fitLabel",
+        "type": "string",
+        "default": "\"Script fit\"",
+        "description": "Read before the fit word by screen readers."
+      },
+      {
+        "name": "fitWords",
+        "type": "[string, string, string, string, string]",
+        "default": "[\"Weak\", \"Fair\", \"Good\", \"Great\", \"Ideal\"]",
+        "description": "Word shown for fit 0–4."
+      },
+      {
+        "name": "emptyTitle",
+        "type": "string",
+        "default": "\"No voices in this library yet\"",
+        "description": "Empty-library heading."
+      },
+      {
+        "name": "emptyBody",
+        "type": "string",
+        "description": "Empty-library body copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the root panel."
+      },
+      {
+        "name": "preview",
+        "type": "\"idle\" | \"playing\"",
+        "description": "Stage only, not a SelectsVoiceOrbs prop. Starts or stops a preview of the selected voice."
+      },
+      {
+        "name": "library",
+        "type": "\"full\" | \"empty\"",
+        "description": "Stage only, not a SelectsVoiceOrbs prop. Shows the empty state."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@voice-tamsin",
+        "wait:600",
+        "click:@preview-tamsin",
+        "wait:2700",
+        "click:@filter-conversational",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "layout",
+        "label": "Layout",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "list",
+            "label": "List"
+          },
+          {
+            "value": "grid",
+            "label": "Grid"
+          }
+        ],
+        "default": "list",
+        "group": "Layout"
+      },
+      {
+        "prop": "size",
+        "label": "Size",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "sm",
+            "label": "S"
+          },
+          {
+            "value": "md",
+            "label": "M"
+          },
+          {
+            "value": "lg",
+            "label": "L"
+          }
+        ],
+        "default": "md",
+        "group": "Layout"
+      },
+      {
+        "prop": "value",
+        "label": "Selected voice",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "ines",
+            "label": "Ines"
+          },
+          {
+            "value": "marlow",
+            "label": "Marlow"
+          },
+          {
+            "value": "tamsin",
+            "label": "Tamsin"
+          },
+          {
+            "value": "oduya",
+            "label": "Oduya"
+          },
+          {
+            "value": "lumi",
+            "label": "Lumi"
+          }
+        ],
+        "default": "marlow",
+        "group": "State"
+      },
+      {
+        "prop": "preview",
+        "label": "Preview",
+        "kind": "action",
+        "options": [
+          {
+            "value": "idle",
+            "label": "Stop"
+          },
+          {
+            "value": "playing",
+            "label": "Play selected"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "library",
+        "label": "Library",
+        "kind": "action",
+        "options": [
+          {
+            "value": "full",
+            "label": "Full"
+          },
+          {
+            "value": "empty",
+            "label": "Empty"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
