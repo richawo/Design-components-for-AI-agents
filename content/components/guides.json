@@ -5469,5 +5469,22 @@
       "onboarding-setup-checklist"
     ],
     "updated": "2026-11-03"
+  },
+  "media-speaker-timeline": {
+    "useWhen": "Reviewing a recorded meeting, interview, podcast or call with several speakers, where people need to see who held the floor and when, jump to a person's turns or a chapter, and read the transcript in sync.",
+    "avoidWhen": "Single-voice audio, live captioning, or word-by-word read-along (use media-transcript-player); speech still being generated (use media-progressive-voice-player); plain music or track playback.",
+    "integration": [
+      "Pass diarised segments as turns ({ speakerId | null, start, end, text }); consecutive same-speaker segments merge automatically, and null marks speech not yet attributed.",
+      "Drive currentTime from your audio element's timeupdate and set audio.currentTime in onSeek; omit currentTime only for prototypes, where the component runs its own clock.",
+      "Keep the speakers array in a stable order so each person keeps their colour; pass color to pin brand or CRM colours.",
+      "Control focusSpeakerId to sync the speaker filter with other views such as action-item owners."
+    ],
+    "related": [
+      "media-transcript-player",
+      "media-progressive-voice-player",
+      "media-audio-transport",
+      "media-trim-timeline"
+    ],
+    "updated": "2026-11-03"
   }
 }
