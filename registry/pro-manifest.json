@@ -3423,6 +3423,248 @@
     ]
   },
   {
+    "slug": "ai-voice-pill",
+    "name": "Voice Dictation Pill",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "A bottom-docked dictation pill that grows out of a breathing dash: live level bars, hover-to-cancel or confirm, a shimmering transcribe state and a bead menu of modes.",
+    "tags": [
+      "voice",
+      "dictation",
+      "speech to text",
+      "recording",
+      "waveform",
+      "audio level",
+      "overlay",
+      "pill",
+      "mode picker",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 460,
+    "usage": "import { VoicePill } from \"@/components/design-for-ai/ai-voice-pill\";\n\n// Feed the bars from your own analyser; the pill never touches the microphone.\nconst getLevel = () => {\n  analyser.getFloatTimeDomainData(buffer);\n  return Math.sqrt(buffer.reduce((s, v) => s + v * v, 0) / buffer.length);\n};\n\n<div className=\"fixed inset-x-0 bottom-2 z-50\">\n  <VoicePill\n    state={state}\n    mode={mode}\n    getLevel={getLevel}\n    sensitivity={9}\n    startedAt={recordingStartedAt}\n    successDetail={`${words} words`}\n    onStart={(id) => startRecording(id)}\n    onCancel={() => discardRecording()}\n    onConfirm={() => transcribe()}\n  />\n</div>",
+    "props": [
+      {
+        "name": "state",
+        "type": "\"idle\" | \"recording\" | \"processing\" | \"success\" | \"error\"",
+        "default": "\"idle\"",
+        "description": "What the pill shows. The host drives it; every change morphs from wherever the pill is, so a change mid-animation reverses rather than cuts."
+      },
+      {
+        "name": "modes",
+        "type": "{ id: string; label: string; icon: LucideIcon }[]",
+        "description": "Beads in the mode menu, left to right. Number keys 1–9 pick them while it is open. An odd count keeps the default in the centre, where it rises first."
+      },
+      {
+        "name": "mode",
+        "type": "string",
+        "default": "the centre mode",
+        "description": "The current mode: its icon sits on the recording pill, its bead carries an accent ring, and a click on the dash starts it."
+      },
+      {
+        "name": "onStart",
+        "type": "(modeId: string) => void",
+        "description": "A click or Enter on the dash (current mode), a bead, or a number key in the menu."
+      },
+      {
+        "name": "onCancel",
+        "type": "() => void",
+        "description": "The cancel X that replaces the mode icon on hover, or Escape while focus is in the pill."
+      },
+      {
+        "name": "onConfirm",
+        "type": "() => void",
+        "description": "The tick that replaces the timer on hover."
+      },
+      {
+        "name": "level",
+        "type": "number",
+        "default": "0",
+        "description": "Live input level, 0–1, read every frame. Ignored when getLevel is set."
+      },
+      {
+        "name": "getLevel",
+        "type": "() => number",
+        "description": "Called once per animation frame while recording. Return an analyser's RMS (with sensitivity ≈ 9) or any 0–1 level. No MediaStream is requested by the component."
+      },
+      {
+        "name": "sensitivity",
+        "type": "number",
+        "default": "1",
+        "description": "Gain applied before the bars. Below 0.015 the bars breathe on their own instead."
+      },
+      {
+        "name": "bars",
+        "type": "number",
+        "default": "7",
+        "description": "Bars in the waveform (3–15). The pill widens 5px for each bar past seven."
+      },
+      {
+        "name": "startedAt",
+        "type": "number",
+        "description": "Epoch ms the recording began, so the timer survives remounts. Defaults to the moment the pill entered recording."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff453a\"",
+        "description": "The live signal only: the recording ring, the halo that travels across the bars and the current mode's bead ring."
+      },
+      {
+        "name": "reveal",
+        "type": "\"hover\" | \"always\"",
+        "default": "\"hover\"",
+        "description": "\"hover\" crossfades mic → cancel and timer → confirm on hover, focus or a first tap; \"always\" keeps both actions up for touch-first hosts."
+      },
+      {
+        "name": "menu",
+        "type": "boolean",
+        "default": "true",
+        "description": "Raise the bead menu when the dash is hovered, tapped, or given Arrow Up."
+      },
+      {
+        "name": "processingLabel",
+        "type": "string",
+        "default": "\"Transcribing\"",
+        "description": "Shown with a metallic shimmer while the host works."
+      },
+      {
+        "name": "successLabel",
+        "type": "string",
+        "default": "\"Inserted\"",
+        "description": "Beside the popped tick on success."
+      },
+      {
+        "name": "successDetail",
+        "type": "string",
+        "description": "Mono text after the success label, e.g. \"14 words\"."
+      },
+      {
+        "name": "errorLabel",
+        "type": "string",
+        "default": "\"Didn’t catch that\"",
+        "description": "Shown with a decaying shake and a red ring."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Dictation\"",
+        "description": "Accessible name of the whole control."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the 96px dock that holds the pill, its beads and their tooltip."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "hover:@confirm",
+        "wait:250",
+        "click",
+        "wait:2300",
+        "hover:@dash",
+        "wait:520",
+        "click:@mode-list",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "state",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "idle",
+            "label": "Idle"
+          },
+          {
+            "value": "recording",
+            "label": "Recording"
+          },
+          {
+            "value": "processing",
+            "label": "Processing"
+          },
+          {
+            "value": "success",
+            "label": "Success"
+          },
+          {
+            "value": "error",
+            "label": "Error"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Live accent",
+        "kind": "color",
+        "default": "#ff453a",
+        "options": [
+          "#ff453a",
+          "#ededef",
+          "#4fb8ff"
+        ],
+        "group": "Pill"
+      },
+      {
+        "prop": "bars",
+        "label": "Bars",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 5,
+            "label": "5"
+          },
+          {
+            "value": 7,
+            "label": "7"
+          },
+          {
+            "value": 9,
+            "label": "9"
+          }
+        ],
+        "default": 7,
+        "group": "Pill"
+      },
+      {
+        "prop": "reveal",
+        "label": "Actions",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "hover",
+            "label": "On hover"
+          },
+          {
+            "value": "always",
+            "label": "Always"
+          }
+        ],
+        "default": "hover",
+        "group": "Pill"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "app-permission-matrix",
     "name": "Permission Policy Matrix",
     "tier": "pro",
@@ -4590,6 +4832,170 @@
         "label": "Paused",
         "kind": "toggle",
         "default": false
+      }
+    ]
+  },
+  {
+    "slug": "bg-ripple-splash",
+    "name": "Ripple Splash",
+    "tier": "pro",
+    "platform": "web",
+    "category": "backgrounds",
+    "description": "A launch splash on a halftone ripple field: a spark lands, its ring reveals the dots, the mark draws round it and speaks a ripple every 2.4s over a hairline.",
+    "tags": [
+      "splash screen",
+      "loading screen",
+      "background",
+      "halftone",
+      "ripple",
+      "canvas",
+      "intro animation",
+      "voice",
+      "dark"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { BgRippleSplash } from \"@/components/design-for-ai/bg-ripple-splash\";\n\nconst [phase, setPhase] = useState<\"intro\" | \"loading\" | \"ready\">(\"intro\");\n\n<div className=\"fixed inset-0\">\n  <BgRippleSplash\n    label=\"Parley\"\n    phase={phase}\n    progress={download?.ratio}          // 0–1, or undefined for the indeterminate sweep\n    status=\"Fetching the voice model\"\n    detail={`${mb} of 1,180 MB`}\n    onIntroEnd={() => setPhase(\"loading\")}\n  />\n</div>\n\n// Set phase to \"ready\" when the app can take over, then unmount or cross-fade it.",
+    "props": [
+      {
+        "name": "phase",
+        "type": "\"intro\" | \"loading\" | \"ready\"",
+        "default": "\"intro\"",
+        "description": "intro plays the 3.25s opening drop; loading makes the mark speak a ripple every 2.4s; ready gives one last beat, completes and fades the hairline. Leaving intro early hurries the opening rather than cutting it; returning to intro replays it."
+      },
+      {
+        "name": "progress",
+        "type": "number | undefined",
+        "description": "0–1 fills the 96×1 hairline (scaleX, 320ms). Undefined shows a slow travelling segment instead."
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "default": "\"Opening your studio\"",
+        "description": "Line under the mark while loading. Changes cross-fade with a 4px roll."
+      },
+      {
+        "name": "detail",
+        "type": "string",
+        "description": "Smaller tabular line under the status, such as a byte count or version."
+      },
+      {
+        "name": "readyStatus",
+        "type": "string",
+        "default": "\"Ready when you are\"",
+        "description": "Replaces the status in the ready phase."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Parley\"",
+        "description": "Product name: the mark's accessible label and the region's name."
+      },
+      {
+        "name": "onIntroEnd",
+        "type": "() => void",
+        "description": "Called once when the opening finishes, played through or skipped. Called right away under reduced motion."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "default": "true",
+        "description": "Clicks send a ring (250px/s, 46px wavelength, 2.2s), drags leave a wake and hover a faint trail. Off leaves the tide and the mark's voice."
+      },
+      {
+        "name": "dotPitch",
+        "type": "number",
+        "default": "12",
+        "description": "Halftone spacing in CSS px, 8–20."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#8fb8ff\"",
+        "description": "A restrained signal tint on the crests of the mark's voice ripples only. The mark itself stays white on graphite; user ripples stay ink."
+      },
+      {
+        "name": "skipLabel",
+        "type": "string",
+        "default": "\"Skip\"",
+        "description": "Text of the skip control that appears 0.5s into the opening. Escape skips at any point; a press on the field skips once the control has appeared."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Classes on the root, which fills its parent. Give the parent a height."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:200",
+        "click:@replay",
+        "wait:3300",
+        "click:@field:0.24,0.7",
+        "wait:2400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "phase",
+        "label": "Phase",
+        "kind": "action",
+        "options": [
+          {
+            "value": "intro",
+            "label": "Intro"
+          },
+          {
+            "value": "loading",
+            "label": "Loading"
+          },
+          {
+            "value": "ready",
+            "label": "Ready"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      },
+      {
+        "prop": "dotPitch",
+        "label": "Dot pitch",
+        "kind": "slider",
+        "min": 8,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "default": 12,
+        "group": "Field"
+      },
+      {
+        "prop": "interactive",
+        "label": "Pointer ripples",
+        "kind": "toggle",
+        "default": true,
+        "group": "Field"
+      },
+      {
+        "prop": "accent",
+        "label": "Voice tint",
+        "kind": "color",
+        "default": "#8fb8ff",
+        "options": [
+          "#8fb8ff",
+          "#ededef",
+          "#ff5a52",
+          "#3ecf8e"
+        ],
+        "group": "Field"
       }
     ]
   },
@@ -6947,6 +7353,244 @@
           "light"
         ],
         "default": "dark"
+      }
+    ]
+  },
+  {
+    "slug": "brand-mark-menu",
+    "name": "Brand Mark Menu",
+    "tier": "pro",
+    "platform": "web",
+    "category": "headers",
+    "description": "A header logo whose mark wakes up on hover, eyes following your cursor in a new costume each time; right-click or hold it to copy the logo, wordmark or colour.",
+    "tags": [
+      "logo",
+      "brand",
+      "context menu",
+      "right click",
+      "mascot",
+      "copy svg",
+      "brand assets",
+      "header",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 520,
+    "usage": "import { BrandMarkMenu } from \"@/components/design-for-ai/brand-mark-menu\";\n\n<BrandMarkMenu\n  name=\"Hum\"\n  href=\"/\"\n  accent=\"#3b6cff\"\n  accentName=\"Signal blue\"\n  guidelinesHref=\"/brand\"\n  lockupSvg={outlinedLockup}\n  onCopy={({ asset, format }) => track(\"brand_copy\", { asset, format })}\n/>",
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "default": "\"Hum\"",
+        "description": "Wordmark beside the mark and the home link's accessible name."
+      },
+      {
+        "name": "href",
+        "type": "string",
+        "default": "\"#\"",
+        "description": "Where a plain click goes. A hold or right-click never navigates."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#3b6cff\"",
+        "description": "The mark's fill; the copied SVG, PNG and colour row use it too."
+      },
+      {
+        "name": "accentName",
+        "type": "string",
+        "default": "\"Signal blue\"",
+        "description": "Label beside the hex in the colour row."
+      },
+      {
+        "name": "mascot",
+        "type": "boolean",
+        "default": "true",
+        "description": "Flip the mark into its awake face on hover (pointer devices only)."
+      },
+      {
+        "name": "costume",
+        "type": "\"shuffle\" | \"headphones\" | \"party\" | \"crown\" | \"shades\" | \"beanie\" | \"sleepy\"",
+        "default": "\"shuffle\"",
+        "description": "A fixed costume, or a different one on every hover."
+      },
+      {
+        "name": "flipped",
+        "type": "boolean",
+        "description": "Hold the mascot face up regardless of the pointer."
+      },
+      {
+        "name": "guidelinesHref",
+        "type": "string",
+        "default": "\"#brand\"",
+        "description": "Target of the Brand guidelines row. Omit to hide the row."
+      },
+      {
+        "name": "markSvg",
+        "type": "string",
+        "description": "Replaces the copied logo source. Defaults to the built-in mark in accent."
+      },
+      {
+        "name": "lockupSvg",
+        "type": "string",
+        "description": "Replaces the copied wordmark source. Pass outlined paths in production."
+      },
+      {
+        "name": "defaultFormat",
+        "type": "\"svg\" | \"png\"",
+        "default": "\"svg\"",
+        "description": "Initial copy format; the menu's segmented switch changes it."
+      },
+      {
+        "name": "hint",
+        "type": "boolean",
+        "default": "true",
+        "description": "Shows “Right-click for brand assets” after the mascot has been up 0.9s, until the menu is first opened."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "description": "Controlled menu state; leave undefined to let the component own it."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "description": "Called when the menu opens or closes."
+      },
+      {
+        "name": "onCopy",
+        "type": "({ asset: \"mark\" | \"lockup\" | \"color\", format: \"svg\" | \"png\" | \"hex\" }) => void",
+        "description": "Called after a successful copy."
+      },
+      {
+        "name": "writeClipboard",
+        "type": "(payload: { type: \"text\"; text } | { type: \"png\"; blob }) => Promise<void>",
+        "description": "Swap the clipboard (Tauri, Electron, tests). A rejection shows the blocked state."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the root."
+      },
+      {
+        "name": "view",
+        "type": "\"rest\" | \"mascot\" | \"menu\"",
+        "description": "Stage only, not a BrandMarkMenu prop. Folds the preview into a view; used by the Customize panel."
+      },
+      {
+        "name": "clipboard",
+        "type": "\"allowed\" | \"blocked\"",
+        "description": "Stage only, not a BrandMarkMenu prop. Makes copies fail to show the blocked state."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "hover:@mark",
+        "wait:900",
+        "down",
+        "wait:620",
+        "up",
+        "wait:500",
+        "click:@copy-lockup",
+        "wait:900",
+        "click:@format-png",
+        "wait:350",
+        "click:@copy-mark",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "view",
+        "label": "View",
+        "kind": "action",
+        "options": [
+          {
+            "value": "rest",
+            "label": "Rest"
+          },
+          {
+            "value": "mascot",
+            "label": "Mascot"
+          },
+          {
+            "value": "menu",
+            "label": "Menu"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "clipboard",
+        "label": "Clipboard",
+        "kind": "action",
+        "options": [
+          {
+            "value": "allowed",
+            "label": "Allowed"
+          },
+          {
+            "value": "blocked",
+            "label": "Blocked"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Mark colour",
+        "kind": "color",
+        "default": "#3b6cff",
+        "options": [
+          "#3b6cff",
+          "#ededef",
+          "#2fbf71",
+          "#f5d547"
+        ],
+        "group": "Brand"
+      },
+      {
+        "prop": "costume",
+        "label": "Costume",
+        "kind": "select",
+        "options": [
+          "shuffle",
+          "headphones",
+          "party",
+          "crown",
+          "shades",
+          "beanie",
+          "sleepy"
+        ],
+        "default": "shuffle",
+        "group": "Brand"
+      },
+      {
+        "prop": "mascot",
+        "label": "Mascot on hover",
+        "kind": "toggle",
+        "default": true,
+        "group": "Brand"
+      },
+      {
+        "prop": "name",
+        "label": "Wordmark",
+        "kind": "text",
+        "default": "Hum",
+        "group": "Brand"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
@@ -23219,6 +23863,396 @@
     ]
   },
   {
+    "slug": "features-vignette-grid",
+    "name": "Vignette Feature Grid",
+    "tier": "pro",
+    "platform": "web",
+    "category": "features",
+    "description": "A dark feature grid where each card holds a live, looping micro-scene of the product instead of an icon. One plays at a time; hover takes over; touch gets a snap rail.",
+    "tags": [
+      "features",
+      "feature grid",
+      "product vignettes",
+      "micro animation",
+      "newsroom",
+      "carousel",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1040,
+    "usage": "import { FeaturesVignetteGrid } from \"@/components/design-for-ai/features-vignette-grid\";\n\n<FeaturesVignetteGrid\n  eyebrow=\"Lede · the reporter’s notebook\"\n  heading=\"From the briefing room to filed copy.\"\n  accent=\"#f2d24b\"\n  playMode=\"focus-one\"\n  features={[\n    { id: \"dictation\", title: \"File copy by voice\", description: \"…\", scene: \"dictation\", meta: \"Any CMS field\" },\n    { id: \"captions\", title: \"Caption the briefing\", description: \"…\", scene: \"captions\" },\n    { id: \"search\", title: \"Find the quote\", description: \"…\", scene: \"search\", status: \"soon\", meta: \"Spring 2027\" },\n  ]}\n/>",
+    "props": [
+      {
+        "name": "features",
+        "type": "{ id: string; title: string; description: string; scene: \"dictation\" | \"captions\" | \"translate\" | \"speakers\" | \"read-aloud\" | \"search\"; status?: \"live\" | \"soon\"; meta?: string }[]",
+        "default": "Six features of Lede, a fictional reporter’s notebook",
+        "description": "One card each. scene picks a built-in looping vignette; status \"soon\" draws the quieter roadmap treatment; meta is a short mono fact on the card's timeline row (or an ETA)."
+      },
+      {
+        "name": "playMode",
+        "type": "\"focus-one\" | \"hover\" | \"all\"",
+        "default": "\"focus-one\"",
+        "description": "focus-one tours visible cards one loop at a time and lets a hovered or focused card take over; hover plays only the pointed or focused card; all loops every card on screen."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f2d24b\"",
+        "description": "The one colour, highlighter yellow by default: the live signal inside scenes (warm mic, current word, playhead, quote marks) and the timeline fill."
+      },
+      {
+        "name": "columns",
+        "type": "1 | 2 | 3",
+        "default": "3",
+        "description": "The most columns the grid uses. It still collapses by container width (3 from 960px, 2 from 600px); below 600px, or at 1, it becomes a horizontal snap rail."
+      },
+      {
+        "name": "poster",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hold every card on its designed settle frame. Reduced motion does the same automatically."
+      },
+      {
+        "name": "eyebrow",
+        "type": "string | null",
+        "default": "\"Lede · the reporter’s notebook\"",
+        "description": "Mono label above the heading. null hides it."
+      },
+      {
+        "name": "heading",
+        "type": "string | null",
+        "default": "\"From the briefing room to filed copy.\"",
+        "description": "Section heading. null hides the header row (the section is then labelled \"Features\")."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the section."
+      },
+      {
+        "name": "showSoon",
+        "type": "boolean",
+        "default": "false",
+        "description": "Stage only, not a FeaturesVignetteGrid prop. Puts the last card in its coming-soon state; used by the Customize panel."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:700",
+        "hover:@card-captions",
+        "wait:2900",
+        "hover:@card-search",
+        "wait:2600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "playMode",
+        "label": "Playback",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "focus-one",
+            "label": "One at a time"
+          },
+          {
+            "value": "hover",
+            "label": "On hover"
+          },
+          {
+            "value": "all",
+            "label": "All"
+          }
+        ],
+        "default": "focus-one"
+      },
+      {
+        "prop": "columns",
+        "label": "Columns",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 3,
+            "label": "3"
+          },
+          {
+            "value": 2,
+            "label": "2"
+          },
+          {
+            "value": 1,
+            "label": "Rail"
+          }
+        ],
+        "default": 3
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f2d24b",
+        "options": [
+          "#f2d24b",
+          "#ededef",
+          "#ff5a4f",
+          "#7aa2ff"
+        ]
+      },
+      {
+        "prop": "poster",
+        "label": "Poster frames",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "showSoon",
+        "label": "Coming soon card",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "feedback-background-jobs",
+    "name": "Background Jobs Indicator",
+    "tier": "pro",
+    "platform": "web",
+    "category": "feedback",
+    "description": "A 40px pill that sums up running work and opens a blurred panel of jobs with honest progress: real bars only when measured, a shimmer and an ETA otherwise.",
+    "tags": [
+      "background jobs",
+      "job queue",
+      "progress",
+      "status pill",
+      "indeterminate progress",
+      "eta",
+      "retry",
+      "tabs",
+      "popover",
+      "bottom sheet",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 680,
+    "usage": "import { BackgroundJobs, type BackgroundJob } from \"@/components/design-for-ai/feedback-background-jobs\";\n\n// Map your worker's state. Pass progress only when it is measured.\nconst jobs: BackgroundJob[] = queue.map((t) => ({\n  id: t.id,\n  kind: \"transcribe\",\n  title: `Transcribing ${t.file}`,\n  doneTitle: `Transcribed ${t.file}`,\n  detail: `${t.minutes} min · ${t.language}`,\n  status: t.status,\n  progress: t.measured ? t.fraction : null,\n  etaSeconds: t.secondsLeft ?? null,\n  error: t.error,\n  result: t.outputName,\n  finishedAt: t.finishedAt,\n}));\n\n<BackgroundJobs\n  jobs={jobs}\n  fullWidth\n  placement=\"top-start\"\n  onCancel={(id) => worker.cancel(id)}\n  onRetry={(id) => worker.retry(id)}\n  onOpen={(id) => openOutput(id)}\n  onDismiss={(id) => worker.forget(id)}\n  onClearDone={() => worker.forgetFinished()}\n/>",
+    "props": [
+      {
+        "name": "jobs",
+        "type": "BackgroundJob[]",
+        "default": "five sample jobs",
+        "description": "{ id, kind, title, doneTitle?, detail?, status: \"queued\" | \"running\" | \"done\" | \"failed\", progress?: number | null, etaSeconds?: number | null, error?, result?, durationSeconds?, finishedAt? }. A null progress draws a shimmer, never a bar."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "description": "Controlled panel state; leave undefined to let the component own it."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": "false",
+        "description": "Initial panel state when uncontrolled."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "description": "Called when the pill, close button, Escape or an outside press opens or closes the panel."
+      },
+      {
+        "name": "tab",
+        "type": "\"running\" | \"done\" | \"failed\"",
+        "description": "Controlled tab; leave undefined to let the component own it."
+      },
+      {
+        "name": "defaultTab",
+        "type": "\"running\" | \"done\" | \"failed\"",
+        "default": "\"running\"",
+        "description": "Initial tab when uncontrolled."
+      },
+      {
+        "name": "onTabChange",
+        "type": "(tab: JobsTab) => void",
+        "description": "Called when a tab is chosen by click or arrow key."
+      },
+      {
+        "name": "placement",
+        "type": "\"top-start\" | \"top-end\" | \"bottom-start\" | \"bottom-end\"",
+        "default": "\"top-start\"",
+        "description": "Where the panel opens from the pill; it grows from that corner and clamps inside the viewport."
+      },
+      {
+        "name": "presentation",
+        "type": "\"auto\" | \"popover\" | \"sheet\"",
+        "default": "\"auto\"",
+        "description": "\"auto\" becomes a modal bottom sheet below a 480px viewport."
+      },
+      {
+        "name": "compact",
+        "type": "boolean",
+        "default": "false",
+        "description": "Collapse the pill to a 40px square with its 15px spinner; the count rides up onto the corner as a badge."
+      },
+      {
+        "name": "fullWidth",
+        "type": "boolean",
+        "default": "false",
+        "description": "Stretch the pill to its container, as in a sidebar footer."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ededef\"",
+        "description": "The one live colour: spinner arc, pill edge, count, running glyphs, measured bars, shimmer rail and tab underline."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Background jobs\"",
+        "description": "Panel heading and the start of the pill's accessible name."
+      },
+      {
+        "name": "footnote",
+        "type": "string",
+        "default": "\"Recording always takes priority\"",
+        "description": "Quiet mono line in the panel footer. Pass an empty string to hide it."
+      },
+      {
+        "name": "onCancel",
+        "type": "(id: string) => void",
+        "description": "Cancel a queued or running job. Omit to hide the button."
+      },
+      {
+        "name": "onRetry",
+        "type": "(id: string) => void",
+        "description": "Retry a failed job. Omit to hide the button."
+      },
+      {
+        "name": "onOpen",
+        "type": "(id: string) => void",
+        "description": "Open a finished job's result; makes its file chip a button."
+      },
+      {
+        "name": "onDismiss",
+        "type": "(id: string) => void",
+        "description": "Remove a finished or failed job from the list."
+      },
+      {
+        "name": "onClearDone",
+        "type": "() => void",
+        "description": "Shows “Clear done” in the Done tab's footer."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the root."
+      },
+      {
+        "name": "scenario",
+        "type": "\"busy\" | \"done\" | \"failed\" | \"empty\"",
+        "description": "Stage only, not a BackgroundJobs prop. Loads a set of simulated jobs; used by the Customize panel."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "hover:@job-interview",
+        "wait:2400",
+        "click:@tab-done",
+        "wait:1000",
+        "click:@pill",
+        "wait:500",
+        "click",
+        "wait:800"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "open",
+        "label": "Panel",
+        "kind": "action",
+        "options": [
+          {
+            "value": true,
+            "label": "Open"
+          },
+          {
+            "value": false,
+            "label": "Closed"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "scenario",
+        "label": "Jobs",
+        "kind": "action",
+        "options": [
+          {
+            "value": "busy",
+            "label": "Busy"
+          },
+          {
+            "value": "done",
+            "label": "All done"
+          },
+          {
+            "value": "failed",
+            "label": "Failed"
+          },
+          {
+            "value": "empty",
+            "label": "Empty"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "compact",
+        "label": "Compact pill",
+        "kind": "toggle",
+        "default": false,
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ededef",
+        "options": [
+          "#ededef",
+          "#3d8bff",
+          "#f5c542",
+          "#e5484d"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "finance-budget-variance",
     "name": "Budget Variance",
     "tier": "pro",
@@ -25393,6 +26427,233 @@
         "unit": "ms",
         "default": 200,
         "group": "Behaviour"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "hero-dictation-scene",
+    "name": "Dictation Hero Scene",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "A seekable product-demo scene for a landing hero: a held key, a live dictation pill, words landing in a note, a struck-through self-correction and a tidy finish.",
+    "tags": [
+      "hero",
+      "product demo",
+      "dictation",
+      "voice",
+      "timeline",
+      "scrubber",
+      "notes app",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { HeroDictationScene, type DictationBeat } from \"@/components/design-for-ai/hero-dictation-scene\";\n\nconst script: DictationBeat[] = [\n  { at: 400, type: \"press\", chapter: \"Dictate\" },\n  { at: 700, type: \"word\", text: \"send\" },\n  { at: 900, type: \"word\", text: \"it\" },\n  { at: 1050, type: \"word\", text: \"monday\" },\n  { at: 1400, type: \"word\", text: \"sorry\", chapter: \"Correct\" },\n  { at: 1650, type: \"correct\", strike: 2, text: \"tuesday\" },\n  { at: 2300, type: \"release\", chapter: \"Tidy\" },\n  { at: 2900, type: \"format\", text: \"Send it Tuesday.\" },\n];\n\n<HeroDictationScene script={script} noteTitle=\"Release plan\" accent=\"#ff453a\" />",
+    "props": [
+      {
+        "name": "script",
+        "type": "DictationBeat[]",
+        "default": "DEFAULT_SCRIPT (31 words, one correction, 11.4 s)",
+        "description": "Timed beats: { at, type: \"press\" | \"release\" } | { at, type: \"word\", text } | { at, type: \"correct\", strike, text } | { at, type: \"format\", text }. Any beat may carry a chapter label, which becomes a scrubber segment. In format text, \"\\n\" breaks lines and \"- \" starts a bullet."
+      },
+      {
+        "name": "noteTitle",
+        "type": "string",
+        "default": "\"Launch notes\"",
+        "description": "The note being dictated into; also its sidebar row."
+      },
+      {
+        "name": "noteDate",
+        "type": "string",
+        "default": "\"3 November 2026 at 09:41\"",
+        "description": "The date line above the note."
+      },
+      {
+        "name": "otherNotes",
+        "type": "{ title: string; preview: string; time: string }[]",
+        "description": "Neighbouring notes in the window sidebar (wide framing only)."
+      },
+      {
+        "name": "keyLabel",
+        "type": "string",
+        "default": "\"fn\"",
+        "description": "Legend on the dictation keycap."
+      },
+      {
+        "name": "processingLabel",
+        "type": "string",
+        "default": "\"Tidying up…\"",
+        "description": "What the pill says between release and the tidy result."
+      },
+      {
+        "name": "playing",
+        "type": "boolean",
+        "description": "Controlled play state. Reduced motion never autoplays; pressing play still works."
+      },
+      {
+        "name": "defaultPlaying",
+        "type": "boolean",
+        "default": "true",
+        "description": "Uncontrolled initial play state. A paused scene shows its settle (poster) frame."
+      },
+      {
+        "name": "onPlayingChange",
+        "type": "(playing: boolean) => void",
+        "description": "Called on play, pause, replay and when a non-looping scene ends."
+      },
+      {
+        "name": "time",
+        "type": "number",
+        "description": "Seek request in ms; whenever it changes the playhead moves there. Echoes of onTimeChange are ignored, so it can be mirrored."
+      },
+      {
+        "name": "onTimeChange",
+        "type": "(ms: number) => void",
+        "description": "The playhead: on every seek and about ten times a second while playing."
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "default": "true",
+        "description": "Loop with a 500 ms dissolve to the first frame; otherwise stop on the last frame. Leave undefined to let the loop button own it."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff453a\"",
+        "description": "The live signal, recording red by default: the pill's recording dot, the caret and punctuation as it lands."
+      },
+      {
+        "name": "showTransport",
+        "type": "boolean",
+        "default": "true",
+        "description": "Play/pause, the chaptered scrubber, replay and loop under the scene. Hidden, a play badge appears while paused."
+      },
+      {
+        "name": "surface",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "The notes window's appearance. The desk around it stays dark."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Dictation demo\"",
+        "description": "Accessible name of the scene."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the root section."
+      },
+      {
+        "name": "chapter",
+        "type": "\"dictate\" | \"correct\" | \"tidy\"",
+        "description": "Stage only, not a HeroDictationScene prop. Pauses the demo on a telling frame of that chapter; used by the Customize panel."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@chapter-correct",
+        "wait:300",
+        "click:@play-toggle",
+        "wait:3000"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "playing",
+        "label": "Playback",
+        "kind": "action",
+        "options": [
+          {
+            "value": false,
+            "label": "Pause"
+          },
+          {
+            "value": true,
+            "label": "Play"
+          }
+        ],
+        "group": "Timeline"
+      },
+      {
+        "prop": "chapter",
+        "label": "Hold frame",
+        "kind": "action",
+        "options": [
+          {
+            "value": "dictate",
+            "label": "Dictate"
+          },
+          {
+            "value": "correct",
+            "label": "Correct"
+          },
+          {
+            "value": "tidy",
+            "label": "Tidy"
+          }
+        ],
+        "group": "Timeline"
+      },
+      {
+        "prop": "loop",
+        "label": "Loop",
+        "kind": "toggle",
+        "default": true,
+        "group": "Timeline"
+      },
+      {
+        "prop": "showTransport",
+        "label": "Transport",
+        "kind": "toggle",
+        "default": true,
+        "group": "Scene"
+      },
+      {
+        "prop": "surface",
+        "label": "Window",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Scene"
+      },
+      {
+        "prop": "accent",
+        "label": "Live accent",
+        "kind": "color",
+        "default": "#ff453a",
+        "options": [
+          "#ff453a",
+          "#ededef",
+          "#3d8bff",
+          "#2fbf71"
+        ],
+        "group": "Scene"
       },
       {
         "prop": "$replay",
@@ -31633,6 +32894,259 @@
     ]
   },
   {
+    "slug": "media-progressive-voice-player",
+    "name": "Progressive Voice Player",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A read-aloud player for speech still being generated: a three-zone waveform, honest buffering, and a transcript that de-blurs as the voice catches up.",
+    "tags": [
+      "text to speech",
+      "tts",
+      "read aloud",
+      "audio player",
+      "waveform",
+      "transcript",
+      "streaming",
+      "buffering",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 660,
+    "usage": "import { ProgressiveVoicePlayer } from \"@/components/design-for-ai/media-progressive-voice-player\";\n\n// Feed it your TTS stream's state; the audio element owns the clock.\n<ProgressiveVoicePlayer\n  title={doc.title}\n  segments={timedParts}            // [{ id, words: [{ text, start, end }] }]\n  duration={estimatedSeconds}\n  generatedUntil={stream.secondsReady}\n  status={stream.status}           // \"generating\" | \"ready\" | \"stalled\" | \"error\"\n  currentTime={audio.currentTime}\n  onSeek={(s) => (audio.currentTime = s)}\n  playing={!audio.paused}\n  onPlayingChange={(play) => (play ? audio.play() : audio.pause())}\n  onVolumeChange={(v, muted) => { audio.volume = v; audio.muted = muted; }}\n  onStop={stream.cancel}\n/>",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"How the tide tables get made\"",
+        "description": "What is being read. Also seeds the waveform, so a read keeps its shape."
+      },
+      {
+        "name": "source",
+        "type": "string",
+        "default": "\"Harbour Almanac · read by Wren\"",
+        "description": "Mono line under the title."
+      },
+      {
+        "name": "segments",
+        "type": "VoiceSegment[]",
+        "description": "The read as generated parts: { id, words: { text, start, end }[] } in seconds. The text is known up front; audio fills in behind it."
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "description": "Expected total length in seconds (an estimate is fine while generating). Defaults to the last word's end."
+      },
+      {
+        "name": "generatedUntil",
+        "type": "number",
+        "description": "Seconds of audio generated so far. The waveform's generated zone, the clickable words and every seek stop here."
+      },
+      {
+        "name": "currentTime",
+        "type": "number",
+        "default": "0",
+        "description": "The playhead in seconds. The host owns the clock."
+      },
+      {
+        "name": "onSeek",
+        "type": "(seconds: number) => void",
+        "description": "Called on scrub release, arrow keys, ±skip and word clicks, always clamped inside generated audio."
+      },
+      {
+        "name": "playing",
+        "type": "boolean",
+        "description": "Controlled playback. Uncontrolled when omitted."
+      },
+      {
+        "name": "onPlayingChange",
+        "type": "(playing: boolean) => void",
+        "description": "Play/pause requests. Refused while waiting on the generator."
+      },
+      {
+        "name": "status",
+        "type": "\"generating\" | \"ready\" | \"stalled\" | \"error\"",
+        "default": "\"generating\"",
+        "description": "Generation state. Ready with less audio than text reads as Stopped."
+      },
+      {
+        "name": "onStop",
+        "type": "() => void",
+        "description": "Stop generating and playing. Offered in the header while generating, and beside the stall message."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Offered beside the error message."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Playback rate; controlled with onSpeedChange."
+      },
+      {
+        "name": "onSpeedChange",
+        "type": "(speed: number) => void",
+        "description": "Called from the speed select."
+      },
+      {
+        "name": "speeds",
+        "type": "number[]",
+        "default": "[0.75, 1, 1.25, 1.5, 2]",
+        "description": "Speed options."
+      },
+      {
+        "name": "defaultVolume",
+        "type": "number",
+        "default": "0.8",
+        "description": "Starting level, 0–1."
+      },
+      {
+        "name": "onVolumeChange",
+        "type": "(volume: number, muted: boolean) => void",
+        "description": "Mirror onto your audio element."
+      },
+      {
+        "name": "skipSeconds",
+        "type": "number",
+        "default": "10",
+        "description": "How far the skip buttons move."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5ac8fa\"",
+        "description": "The live signal: played audio, generated audio at 34%, the spoken word and the generating dot."
+      },
+      {
+        "name": "layout",
+        "type": "\"compact\" | \"expanded\"",
+        "default": "\"expanded\"",
+        "description": "Expanded: card with transcript. Compact: a now-playing pill that widens into the player on hover, focus or tap."
+      },
+      {
+        "name": "onLayoutChange",
+        "type": "(layout) => void",
+        "description": "Called from the collapse and expand buttons."
+      },
+      {
+        "name": "transcriptLines",
+        "type": "number",
+        "default": "4",
+        "description": "Transcript window height in whole lines (26px each), so no line is ever sliced."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:700",
+        "click:@word-2-1",
+        "wait:1100",
+        "hover:@waveform:0.86,0.5",
+        "wait:1000",
+        "click:@waveform:0.18,0.5",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "status",
+        "label": "Generation",
+        "kind": "action",
+        "options": [
+          {
+            "value": "generating",
+            "label": "Generating"
+          },
+          {
+            "value": "ready",
+            "label": "Ready"
+          },
+          {
+            "value": "stalled",
+            "label": "Stalled"
+          },
+          {
+            "value": "error",
+            "label": "Error"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "layout",
+        "label": "Layout",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "expanded",
+            "label": "Expanded"
+          },
+          {
+            "value": "compact",
+            "label": "Pill"
+          }
+        ],
+        "default": "expanded",
+        "group": "Layout"
+      },
+      {
+        "prop": "transcriptLines",
+        "label": "Transcript lines",
+        "kind": "slider",
+        "min": 3,
+        "max": 6,
+        "step": 1,
+        "unit": " lines",
+        "default": 4,
+        "group": "Layout"
+      },
+      {
+        "prop": "speed",
+        "label": "Speed",
+        "kind": "segmented",
+        "options": [
+          0.75,
+          1,
+          1.25,
+          1.5,
+          2
+        ],
+        "default": 1,
+        "group": "Playback"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5ac8fa",
+        "options": [
+          "#5ac8fa",
+          "#e4e4e7",
+          "#f5d547"
+        ],
+        "group": "Playback"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "media-spatial-collection",
     "name": "Spatial Collection",
     "tier": "pro",
@@ -37860,6 +39374,214 @@
     ]
   },
   {
+    "slug": "navigation-sidebar-rail",
+    "name": "Sidebar Rail",
+    "tier": "pro",
+    "platform": "web",
+    "category": "navigation",
+    "description": "A desktop sidebar that glides between a 64px icon rail and a labelled rail on one reveal value, with a stretching two-edge active pill and drag-to-resize.",
+    "tags": [
+      "sidebar",
+      "navigation",
+      "icon rail",
+      "collapsible",
+      "resizable",
+      "app shell",
+      "tooltip",
+      "keyboard shortcut",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 700,
+    "usage": "import { NavigationSidebarRail } from \"@/components/design-for-ai/navigation-sidebar-rail\";\n\n<div className=\"h-dvh\">\n  <NavigationSidebarRail\n    brand={{ name: \"Tessera\" }}\n    sections={[{ id: \"workspace\", label: \"Workspace\" }]}\n    items={[\n      { id: \"home\", label: \"Home\", icon: \"home\" },\n      { id: \"inbox\", label: \"Inbox\", icon: \"inbox\", count: unread },\n      { id: \"projects\", label: \"Projects\", icon: \"projects\", section: \"workspace\" },\n    ]}\n    activeId={route}\n    onSelect={(id) => router.push(`/${id}`)}\n    defaultCollapsed={prefs.railCollapsed}\n    onCollapsedChange={(c) => savePrefs({ railCollapsed: c })}\n    onWidthChange={(w) => savePrefs({ railWidth: w })}\n    jobs={runningJobs}\n    account={{ name: user.name, initials: user.initials, detail: team.name }}\n  >\n    <Page />\n  </NavigationSidebarRail>\n</div>\n\n// Give it a height. Below 640px of container width it rests as icons and expands over the content as a drawer.",
+    "props": [
+      {
+        "name": "items",
+        "type": "RailItem[]",
+        "default": "seven studio rows",
+        "description": "Rows with id, label, icon (a built-in glyph name or your own SVG element), optional section id, count and href. With href the row is a link."
+      },
+      {
+        "name": "sections",
+        "type": "{ id: string; label: string }[]",
+        "default": "Workspace, Library",
+        "description": "Section order and headings. On the icon rail a heading becomes a short hairline. Items without a section sit above the first one."
+      },
+      {
+        "name": "activeId",
+        "type": "string",
+        "description": "Controlled selection; the pill travels to it on two edges. Use defaultActiveId for uncontrolled."
+      },
+      {
+        "name": "onSelect",
+        "type": "(id: string, item?: RailItem) => void",
+        "description": "Called when a row (or the footer's Settings, with id \"settings\") is chosen."
+      },
+      {
+        "name": "collapsed",
+        "type": "boolean",
+        "description": "Controlled icon-rail state. Use defaultCollapsed (false) for uncontrolled."
+      },
+      {
+        "name": "onCollapsedChange",
+        "type": "(collapsed: boolean) => void",
+        "description": "Called by the toggle, the ⌘\\ / Ctrl+\\ shortcut, a click on the edge, or a drag released under 126px."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "default": "216",
+        "description": "Controlled expanded width, clamped to 188–268. Use defaultWidth for uncontrolled."
+      },
+      {
+        "name": "onWidthChange",
+        "type": "(width: number) => void",
+        "description": "Called when a drag or the arrow keys settle on a new expanded width."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ececee\"",
+        "description": "Wash of the active pill, the job ring and the icon-rail badges. A near-grey gives a neutral glass pill; a colour gives a restrained tint."
+      },
+      {
+        "name": "jobs",
+        "type": "{ id, label, detail?, progress? }[]",
+        "default": "three demo jobs",
+        "description": "Background work. Shows a pill with a turning ring and count that folds into a ring plus badge on the icon rail; it opens a small progress popover. Empty hides it."
+      },
+      {
+        "name": "account",
+        "type": "{ name, initials, detail? }",
+        "default": "Mara Okafor, Tessera Studio",
+        "description": "The footer's account button. Pair with onAccountClick."
+      },
+      {
+        "name": "brand",
+        "type": "{ name: string; mark?: ReactElement }",
+        "default": "{ name: \"Tessera\" }",
+        "description": "Wordmark and a 16px mark in the 32px brand tile. On the icon rail the tile gives way to the expand button under the pointer."
+      },
+      {
+        "name": "shortcut",
+        "type": "boolean",
+        "default": "true",
+        "description": "Listen for ⌘\\ / Ctrl+\\ to toggle the rail."
+      },
+      {
+        "name": "compactBelow",
+        "type": "number",
+        "default": "640",
+        "description": "Container width (px) below which the rail rests as icons and expands over the content as a drawer with a scrim."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "The content pane beside the rail."
+      },
+      {
+        "name": "backgroundJobs",
+        "type": "boolean",
+        "default": "true",
+        "description": "Stage only, not a NavigationSidebarRail prop. Shows or hides the demo's background jobs; used by the Customize panel."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@item-archive",
+        "wait:700",
+        "click:@toggle",
+        "wait:600",
+        "hover:@item-inbox",
+        "wait:550",
+        "hover:@item-projects",
+        "wait:500",
+        "click:@item-projects",
+        "wait:700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "collapsed",
+        "label": "Icon rail",
+        "kind": "toggle",
+        "default": false,
+        "group": "Rail"
+      },
+      {
+        "prop": "width",
+        "label": "Expanded width",
+        "kind": "slider",
+        "min": 188,
+        "max": 268,
+        "step": 4,
+        "unit": "px",
+        "default": 216,
+        "group": "Rail"
+      },
+      {
+        "prop": "activeId",
+        "label": "Current page",
+        "kind": "select",
+        "options": [
+          {
+            "value": "home",
+            "label": "Home"
+          },
+          {
+            "value": "inbox",
+            "label": "Inbox"
+          },
+          {
+            "value": "projects",
+            "label": "Projects"
+          },
+          {
+            "value": "docs",
+            "label": "Docs"
+          },
+          {
+            "value": "archive",
+            "label": "Archive"
+          }
+        ],
+        "default": "home",
+        "group": "Rail"
+      },
+      {
+        "prop": "accent",
+        "label": "Pill accent",
+        "kind": "color",
+        "default": "#ececee",
+        "options": [
+          "#ececee",
+          "#ff7a45",
+          "#6e9bff",
+          "#3ecf8e"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "backgroundJobs",
+        "label": "Background jobs",
+        "kind": "toggle",
+        "default": true,
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "navigation-stacked-tabs",
     "name": "Stacked Document Tabs",
     "tier": "pro",
@@ -38020,6 +39742,200 @@
         "step": 20,
         "unit": "px",
         "default": 400
+      }
+    ]
+  },
+  {
+    "slug": "onboarding-marker-guide",
+    "name": "Marker Circle Guide",
+    "tier": "pro",
+    "platform": "web",
+    "category": "onboarding",
+    "description": "A product tour with no scrim and no Next button: a hand-drawn marker circles the next control, a big cursor points, and it moves on when you do it.",
+    "tags": [
+      "product tour",
+      "walkthrough",
+      "onboarding",
+      "coach mark",
+      "hand-drawn",
+      "marker",
+      "annotation",
+      "spotlight",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 700,
+    "usage": "import { MarkerGuide } from \"@/components/design-for-ai/onboarding-marker-guide\";\n\n<MarkerGuide\n  steps={[\n    { target: \"meeting-name\", caption: \"Name it something you’ll search for later\", advanceOn: \"input\", minLength: 3 },\n    { target: \"auto-summary\", caption: \"Switch this on and the notes write themselves\", advanceOn: \"change\" },\n    { target: \"record\", caption: \"Now hit record. That’s the whole tour.\" },\n  ]}\n  onFinish={(reason) => saveTourSeen(reason)}\n>\n  <MeetingSettings />{/* controls carry data-guide=\"meeting-name\" etc. */}\n</MarkerGuide>",
+    "props": [
+      {
+        "name": "steps",
+        "type": "{ target: string | RefObject<HTMLElement>, caption: string, advanceOn?: \"click\" | \"input\" | \"change\", minLength?: number, id?: string }[]",
+        "description": "Each step names a control by its data-guide value (or a ref) inside the guide, a one-line margin note, and the real action that completes it. input moves on after a 650ms pause, Enter or blur."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "The app surface being taught. Targets are looked up inside it and followed with ResizeObserver, scroll and mutation observers."
+      },
+      {
+        "name": "activeStep",
+        "type": "number",
+        "description": "Controlled step index; steps.length means finished. Leave undefined to let the guide own it."
+      },
+      {
+        "name": "defaultStep",
+        "type": "number",
+        "default": "0",
+        "description": "Starting step when uncontrolled."
+      },
+      {
+        "name": "onStepChange",
+        "type": "(index: number) => void",
+        "description": "Called when a step is completed or skipped."
+      },
+      {
+        "name": "onFinish",
+        "type": "(reason: \"completed\" | \"skipped\") => void",
+        "description": "Called once after the last step, or on skip. Persisting ‘seen’ is the host’s job."
+      },
+      {
+        "name": "variant",
+        "type": "\"marker\" | \"spotlight\"",
+        "default": "\"marker\"",
+        "description": "marker: drawn circle, guide cursor and handwritten caption. spotlight: the quieter coach mark, a scoped scrim with a soft ~120px hole and an inverted label."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5d547\"",
+        "description": "Marker ink for the circle, cursor and caption, highlighter yellow by default. The guide’s only colour."
+      },
+      {
+        "name": "seed",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Mixed into each circle’s seeded wobble. The same seed and target always draw the same circle."
+      },
+      {
+        "name": "skippable",
+        "type": "boolean",
+        "default": "true",
+        "description": "Shows a Skip · Esc button beside the caption and lets Escape end the guide."
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "default": "true",
+        "description": "Pause without losing the step, for example while the surface is still entering or a modal is open."
+      },
+      {
+        "name": "scrimOpacity",
+        "type": "number",
+        "default": "0.45",
+        "description": "Spotlight scrim strength. Use ~0.25 on light surfaces; dark ones need more for the hole to read."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Classes on the positioning root that wraps children."
+      },
+      {
+        "name": "step",
+        "type": "\"name\" | \"summary\" | \"record\" | \"done\"",
+        "description": "Stage only, not a MarkerGuide prop. Jumps the demo app and the guide to that step together; used by the Customize panel."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:1500",
+        "click:@meeting-name",
+        "type:Design crit",
+        "wait:1200",
+        "click:@summary-switch",
+        "wait:900",
+        "click:@record",
+        "wait:1000"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "step",
+        "label": "Step",
+        "kind": "action",
+        "options": [
+          {
+            "value": "name",
+            "label": "Name"
+          },
+          {
+            "value": "summary",
+            "label": "Summary"
+          },
+          {
+            "value": "record",
+            "label": "Record"
+          },
+          {
+            "value": "done",
+            "label": "Done"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "variant",
+        "label": "Variant",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "marker",
+            "label": "Marker"
+          },
+          {
+            "value": "spotlight",
+            "label": "Spotlight"
+          }
+        ],
+        "default": "marker",
+        "group": "Guide"
+      },
+      {
+        "prop": "accent",
+        "label": "Marker ink",
+        "kind": "color",
+        "default": "#f5d547",
+        "options": [
+          "#f5d547",
+          "#ededef",
+          "#5eb0ef",
+          "#3ecf8e"
+        ],
+        "group": "Guide"
+      },
+      {
+        "prop": "seed",
+        "label": "Hand",
+        "kind": "text",
+        "default": "tern",
+        "group": "Guide"
+      },
+      {
+        "prop": "skippable",
+        "label": "Skippable",
+        "kind": "toggle",
+        "default": true,
+        "group": "Guide"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
@@ -38962,6 +40878,200 @@
           "error"
         ],
         "group": "State"
+      }
+    ]
+  },
+  {
+    "slug": "primitives-animated-icons",
+    "name": "Animated Icons",
+    "tier": "pro",
+    "platform": "web",
+    "category": "primitives",
+    "description": "18 navigation glyphs on one 24 grid, each with a single one-shot motion on hover or selection, two weights and a filled active state in your accent.",
+    "tags": [
+      "icons",
+      "animated icons",
+      "svg",
+      "navigation",
+      "sidebar",
+      "nav rail",
+      "micro-interactions",
+      "icon set",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 880,
+    "usage": "import { BellIcon, AnimatedIcon, ICONS } from \"@/components/design-for-ai/primitives-animated-icons\";\n\n// Inside any button, link or tab: its hover and keyboard focus play the glyph once.\n<button aria-current={current ? \"page\" : undefined}>\n  <BellIcon size={18} active={current} accent=\"#ededef\" />\n  Inbox\n</button>\n\n// By name, with a controlled trigger.\n<AnimatedIcon name=\"download\" animateOn=\"none\" play={exportCount} title=\"Export ready\" />",
+    "props": [
+      {
+        "name": "name",
+        "type": "\"home\" | \"search\" | \"bell\" | \"chat\" | \"folder\" | \"download\" | \"mic\" | \"waveform\" | \"pen\" | \"notes\" | \"captions\" | \"translate\" | \"clock\" | \"history\" | \"check\" | \"trash\" | \"sliders\" | \"gear\"",
+        "description": "AnimatedIcon only. Each name also ships as a named component (HomeIcon … GearIcon) taking the same props."
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "default": "24",
+        "description": "Rendered size in px. Every glyph is drawn on the same 24-unit grid; 18 suits a rail, 20–24 a toolbar."
+      },
+      {
+        "name": "weight",
+        "type": "\"regular\" | \"bold\"",
+        "default": "\"regular\"",
+        "description": "Regular strokes at 1.75 grid units, bold at 2.25."
+      },
+      {
+        "name": "strokeWidth",
+        "type": "number",
+        "description": "An exact stroke in grid units; overrides weight. Knockouts and mask gaps follow it."
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "default": "false",
+        "description": "The selected state. Closed glyphs fill with their details knocked out; line glyphs thicken by 1.4×. Turning it on plays the glyph once."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Colour of the active state. Defaults to the inherited text colour."
+      },
+      {
+        "name": "animateOn",
+        "type": "\"hover\" | \"mount\" | \"none\"",
+        "default": "\"hover\"",
+        "description": "hover: the nearest button, link, tab or [data-icon-trigger] plays it on pointer hover and keyboard focus. mount: once when mounted. none: only play and selection drive it."
+      },
+      {
+        "name": "play",
+        "type": "number | boolean",
+        "description": "Controlled trigger. Increment a counter (or flip false → true) to play once, starting from the current pose if a play is in flight."
+      },
+      {
+        "name": "lift",
+        "type": "boolean",
+        "default": "true",
+        "description": "The shared rail motion: rise 1px and scale 1.08 on the parent's hover or focus, dip to 0.9 on press."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Accessible name. Without it the icon is aria-hidden, which is right inside a labelled control."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the svg."
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "description": "Inline styles on the svg."
+      },
+      {
+        "name": "run",
+        "type": "\"wave\" | \"together\"",
+        "description": "Stage only, not an icon prop. Plays every glyph on the specimen sheet, staggered 40 ms or at once."
+      }
+    ],
+    "added": "2026-11-03",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "hover:@tile-home",
+        "wait:500",
+        "hover:@tile-download",
+        "wait:600",
+        "click:@tile-gear",
+        "wait:600",
+        "click:@rail-notes",
+        "wait:700",
+        "click:@play-all",
+        "wait:1300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "run",
+        "label": "Play all",
+        "kind": "action",
+        "options": [
+          {
+            "value": "wave",
+            "label": "Wave"
+          },
+          {
+            "value": "together",
+            "label": "Together"
+          }
+        ],
+        "group": "Motion"
+      },
+      {
+        "prop": "animateOn",
+        "label": "Animate on",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "hover",
+            "label": "Hover"
+          },
+          {
+            "value": "mount",
+            "label": "Mount"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
+        ],
+        "default": "hover",
+        "group": "Motion"
+      },
+      {
+        "prop": "strokeWidth",
+        "label": "Stroke weight",
+        "kind": "slider",
+        "min": 1.25,
+        "max": 2.5,
+        "step": 0.05,
+        "default": 1.75,
+        "group": "Drawing"
+      },
+      {
+        "prop": "size",
+        "label": "Size",
+        "kind": "slider",
+        "min": 16,
+        "max": 40,
+        "step": 1,
+        "unit": "px",
+        "default": 24,
+        "group": "Drawing"
+      },
+      {
+        "prop": "accent",
+        "label": "Active colour",
+        "kind": "color",
+        "default": "#ededef",
+        "options": [
+          "#ededef",
+          "#3d8bff",
+          "#2fbf71",
+          "#f5d547"
+        ],
+        "group": "Drawing"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
@@ -40075,7 +42185,7 @@
     ],
     "theme": "dark",
     "previewHeight": 1000,
-    "usage": "import { SupportTriage } from \"@/components/design-for-ai/saas-support-triage\";\n\nexport default function Triage() {\n  return (\n    <SupportTriage\n      tickets={tickets}\n      agents={agents}\n      sla={{ urgent: 60, high: 240, normal: 480, low: 1440 }}\n      triageWithin={30}\n      now={new Date().toISOString()}\n      onTriage={({ ticketId, priority, assigneeId }) => api.tickets.route(ticketId, { priority, assigneeId })}\n      onUndo={(u) => api.tickets.unroute(u.ticketId)}\n    />\n  );\n}",
+    "usage": "import { SupportTriage } from \"@/components/design-for-ai/saas-support-triage\";\n\nexport default function Triage() {\n  return (\n    <SupportTriage\n      tickets={tickets}\n      agents={agents}\n      sla={{ urgent: 60, high: 240, normal: 480, low: 1440 }}\n      triageWithin={30}\n      now={new Date().toISOString()}\n      onTriage={({ ticketId, priority, assigneeId }) => api.tickets.route(ticketId, { priority, assigneeId })}\n      onUndo={(u) => api.tickets.undoRoute(u.ticketId)}\n    />\n  );\n}",
     "props": [
       {
         "name": "tickets",
@@ -40110,7 +42220,7 @@
       {
         "name": "onTriage",
         "type": "(update: SupportTriageUpdate) => void | Promise<void>",
-        "description": "Persist { ticketId, priority, assigneeId }. Reject to send the ticket back to the inbox with the failure shown."
+        "description": "Persist { ticketId, priority, assigneeId }. If rejected, show the failure and restore the previous route or inbox unless a newer host routing state takes precedence."
       },
       {
         "name": "onUndo",
