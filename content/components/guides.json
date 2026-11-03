@@ -5259,5 +5259,20 @@
       "button-hold-confirm"
     ],
     "updated": "2026-11-03"
+  },
+  "bg-ripple-splash": {
+    "useWhen": "A desktop or web app needs a launch or first-run splash that turns waiting into a moment: a brand mark that assembles from a single drop, then pulses a ripple through a halftone field while a model, workspace or sync loads, with honest determinate or indeterminate progress.",
+    "avoidWhen": "The wait is under a second, the screen must stay static for kiosk or print capture, or you need a reusable section background behind long content. Use a quieter background field instead.",
+    "integration": [
+      "Mount it fixed and full-screen, start in phase \"intro\", and switch to \"loading\" in onIntroEnd. Set \"ready\" when the app can take over, then cross-fade or unmount it.",
+      "Pass progress as 0–1 only when you can measure it, and leave it undefined for the sweep. Put byte counts or versions in detail, and set accent to your brand colour."
+    ],
+    "related": [
+      "bg-dither-flow",
+      "pixel-halftone-image",
+      "effect-gravity-grid",
+      "three-voice-orb"
+    ],
+    "updated": "2026-11-03"
   }
 }
