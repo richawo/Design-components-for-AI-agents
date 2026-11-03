@@ -5537,5 +5537,22 @@
       "text-number-odometer"
     ],
     "updated": "2026-11-03"
+  },
+  "cta-scribble-nudge": {
+    "useWhen": "A trial or upgrade decision where the price is the moment people hesitate: a card that states $0 due today and then lets a handwritten margin note and arrow repeat that reassurance right beside the button.",
+    "avoidWhen": "Comparing several plans side by side, checkout forms that collect payment, or any page where the note would be untrue (no trial, or a charge today). Pick a plain pricing table instead.",
+    "integration": [
+      "Only render the free-today note for accounts you know are eligible, and keep the 'Due today' line as the text statement it repeats.",
+      "Return a promise from onCta to keep the button in its loading state until checkout starts.",
+      "Change writeKey when the plan or billing period changes so the pen writes again and the button gets its sheen.",
+      "Margin placements need a 660px container; narrower columns automatically move the note above the button."
+    ],
+    "related": [
+      "pricing-plan-toggle",
+      "pricing-receipt",
+      "cta-horizon",
+      "pricing-three-tier"
+    ],
+    "updated": "2026-11-03"
   }
 }
