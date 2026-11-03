@@ -259,6 +259,20 @@ licence gate are unchanged. The packaged Worker passed the preview preference
 and gallery checks, served free source successfully and rejected an
 unauthenticated Pro download.
 
+The catalogue reached the limit again on 3 November 2026 (67,901,127 bytes with
+16 new components). Every live preview loader was a plain dynamic import, so
+the server build compiled each component into its own SSR chunk even though
+previews only ever load from browser effects. The generated loaders now guard
+each import with `typeof window`, a compile-time constant in Next, so the
+server build keeps every key but drops the chunks. The runtime fell to
+54,562,782 bytes; browser loading is unchanged. Against the prepared Worker,
+`tests/browser/component-navigation-performance.mjs` passed for web, 3D, native
+and two new components on first and warm visits (worst preview paint 1.67 s,
+worst second frame 49 ms), its blocking negative control failed as required,
+and `tests/browser/preview-recovery.mjs` passed. Anonymous Pro registry
+requests still return 401 without source. Keep new preview consumers inside
+effects; a server-side call would now reject.
+
 Live QA also reproduced a deployment crossing an open browser session: old
 hashed preview assets returned 404 after the next release. A small pre-framework
 handler now reloads on a missing same-origin Next chunk, once per failed asset
