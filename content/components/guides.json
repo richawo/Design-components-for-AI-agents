@@ -5520,5 +5520,22 @@
       "ai-voice-pill"
     ],
     "updated": "2026-11-03"
+  },
+  "text-glyph-fill": {
+    "useWhen": "A landing or launch page needs one statement line where a key word or figure carries live texture: a capability (\"Works offline.\"), a metric the liquid can show (\"86%\"), or a mood word, while the text stays real, selectable and translatable.",
+    "avoidWhen": "Body copy, long or frequently changing headings, pages with several animated headlines competing, or contexts where any ambient motion distracts (dashboards, forms); use plain display type or Outline Fill instead.",
+    "integration": [
+      "Mark effect words with *asterisks* in text, or wrap them in <GlyphFillWord> when passing children.",
+      "Drive the liquid from data: text={`Charged to *${pct}%*`} with level={pct / 100}.",
+      "Set one accent per brand; silver keeps the type monochrome.",
+      "Use one instance per view: each runs its own 30fps canvas, paused offscreen and under reduced motion."
+    ],
+    "related": [
+      "text-outline-fill",
+      "text-optical-weight",
+      "hero-kinetic-type",
+      "text-number-odometer"
+    ],
+    "updated": "2026-11-03"
   }
 }
