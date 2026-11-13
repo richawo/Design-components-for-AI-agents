@@ -1,41 +1,50 @@
-import { SiteLink as Link } from "@/components/site/site-link";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { notFound, permanentRedirect } from "next/navigation";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { JsonLd } from "@/components/site/json-ld";
 import { Toc } from "@/components/site/toc";
-import { allPosts, getPost, relatedPosts } from "@/lib/content";
+import { ProseContent } from "@/components/site/prose-content";
+import { getPost, rawPost, relatedPosts } from "@/lib/content";
 import { blogConfig, blogPath, blogText } from "@/lib/blog/runtime";
 import { articleJsonLd, hubPath } from "@/lib/blog/seo";
 import { localeByCode } from "@/lib/blog/locales.mjs";
+import { BlogCover } from "./blog-cover";
+import { blogExample } from "./blog-example";
 import { BlogLanguages } from "./blog-languages";
+import "./blog-editorial.css";
 
 export default async function BlogPost({ slug, locale = "en" }: { slug: string; locale?: string }) {
   const post = await getPost(slug, locale);
   if (!post) notFound();
-  const { meta, html, headings, faqs, howToSteps, markdown } = post;
+  const { meta, intro, body, headings, faqs, howToSteps, markdown } = post;
   if (slug !== meta.slug) permanentRedirect(blogPath(locale, meta.slug));
   const config = blogConfig(locale)!;
   const related = relatedPosts(meta.slug, 3, locale);
   const t = (text: string) => blogText(text, locale);
   const fmt = (date: string) => new Date(date).toLocaleDateString(localeByCode(locale)!.htmlLang, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-
+  const source = locale === "en" ? markdown : rawPost(meta.sourceSlug)?.content ?? "";
   const jsonLd = articleJsonLd(meta, locale, markdown.split(/\s+/).length, faqs, howToSteps);
+  const example = await blogExample(meta.sourceSlug, source, locale);
 
   return (
-    <article className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
+    <article className="blog-shell">
       <JsonLd data={jsonLd} />
-      <header className="mx-auto max-w-4xl pb-12 pt-12 lg:pt-20">
-        <div className="mb-6 flex items-center"><BlogLanguages locale={locale} sourceSlug={meta.sourceSlug} /></div>
-        <nav aria-label={t("Breadcrumb")} className="site-in font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">
-          <Link href={blogPath(locale)} className="rounded-sm transition-colors duration-150 hover:text-site-fg">
-            {t("Blog")}
-          </Link>{" "}
-          / <Link href={hubPath({ locale, category: meta.categoryKey })}>{meta.category}</Link>
-        </nav>
-        <h1 className="site-in mt-6 text-balance [overflow-wrap:anywhere] text-[clamp(2.4rem,1.4rem+4vw,5rem)] font-semibold leading-[0.95] tracking-[-0.05em] [--i:1]">
-          <span className="site-silver-text">{meta.title}</span>
-        </h1>
-        <p className="site-in mt-6 max-w-[60ch] text-[clamp(1.1rem,1rem+0.4vw,1.3rem)] leading-relaxed text-site-fg-2 [--i:2]">{meta.description}</p>
-        <div className="site-in mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.08] pt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3 [--i:3]">
+      <noscript><style>{".blog-js-controls{display:none!important}"}</style></noscript>
+      <BlogLanguages locale={locale} sourceSlug={meta.sourceSlug} />
+      <header className="blog-masthead">
+        <div className="blog-masthead-copy">
+          <nav aria-label={t("Breadcrumb")} className="blog-kicker blog-breadcrumb">
+            <Link href={blogPath(locale)}>{t("Blog")}</Link>
+            <span aria-hidden="true">/</span>
+            <Link href={hubPath({ locale, category: meta.categoryKey })}>{meta.category}</Link>
+          </nav>
+          <h1>{meta.title}</h1>
+          <p>{meta.description}</p>
+        </div>
+        {example?.masthead
+          ? <div className="blog-masthead-example">{example.element}</div>
+          : <div className="blog-masthead-art"><BlogCover post={meta} priority /></div>}
+        <div className="blog-byline blog-kicker">
           <span>{meta.author}</span>
           <time dateTime={meta.date}>{fmt(meta.date)}</time>
           {meta.dateModified !== meta.date && <span>{t("Updated")} {fmt(meta.dateModified)}</span>}
@@ -43,49 +52,58 @@ export default async function BlogPost({ slug, locale = "en" }: { slug: string; 
         </div>
       </header>
 
-      <img src={meta.displayImage} alt={meta.imageAlt} width={1200} height={630} loading="eager" fetchPriority="high" decoding="async" className="mx-auto mb-12 aspect-[1200/630] w-full max-w-4xl rounded-2xl border border-white/[0.08] object-cover" />
-
-      <div className="grid gap-12 lg:grid-cols-12">
-        <aside className="site-in hidden [--i:4] lg:col-span-3 lg:block">
-          <div className="sticky top-28">
-            <Toc headings={headings} label={t("In this piece")} />
-          </div>
-        </aside>
-        <div className="site-prose site-in min-w-0 [--i:4] lg:col-span-7" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="blog-reading">
+        {headings.length > 0 && (
+          <aside className="blog-reading-nav">
+            <div className="blog-toc-desktop"><Toc headings={headings} label={t("In this piece")} /></div>
+            <details className="blog-toc-mobile">
+              <summary>{t("In this piece")}<ChevronDown size={16} aria-hidden="true" /></summary>
+              <ol>
+                {headings.filter(({ level }) => level === 2).map(({ id, text }) => (
+                  <li key={id}><a href={`#${id}`}>{text}</a></li>
+                ))}
+              </ol>
+            </details>
+          </aside>
+        )}
+        <div className="blog-reading-body">
+          <ProseContent className="blog-prose blog-intro" html={intro} />
+          {example && !example.masthead && example.element}
+          {body && <ProseContent className="blog-prose" html={body} />}
+          <section className="blog-author">
+            <h2 className="blog-kicker">{t("Written by")}</h2>
+            <a href={config.author.url} rel="author">{config.author.name}</a>
+            <p>{config.author.bio}</p>
+          </section>
+        </div>
       </div>
 
-      <section className="mx-auto mt-16 max-w-4xl border-t border-white/10 pt-6"><h2 className="font-mono text-[11px] uppercase tracking-[0.12em] text-site-fg-3">{t("Written by")}</h2><a href={config.author.url} rel="author" className="mt-3 block text-lg font-medium">{config.author.name}</a><p className="mt-2 max-w-[65ch] text-[15px] leading-relaxed text-site-fg-2">{config.author.bio}</p></section>
-
-      <aside className="site-surface site-reveal relative mx-auto mt-20 max-w-4xl overflow-hidden rounded-[24px] p-8 sm:p-12">
-        <p className="text-balance text-3xl font-semibold leading-tight tracking-[-0.04em] sm:text-4xl">
-          {config.cta.heading}
-        </p>
-        <p className="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-site-fg-2">{config.cta.body}</p>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/components" className="site-btn site-btn-primary h-12 px-6 text-[15px]">
-            {t("Browse components")}
-          </Link>
-          <Link href="/docs/agents" className="site-btn site-btn-secondary h-12 px-6 text-[15px]">
-            {t("Connect your agent")}
-          </Link>
-        </div>
-      </aside>
-
       {related.length > 0 && (
-        <section className="mx-auto mt-20 max-w-4xl">
-          <h2 className="site-reveal font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3">{t("Keep reading")}</h2>
-          <ul className="mt-4 border-t border-white/[0.12]">
-            {related.map((r) => (
-              <li key={r.slug} className="site-reveal">
-                <Link href={blogPath(locale, r.slug)} className="group block border-b border-white/[0.08] py-6 [overflow-wrap:anywhere]">
-                  <span className="block text-balance text-2xl font-semibold tracking-[-0.035em] text-site-fg-2 transition-colors duration-150 group-hover:text-site-fg">{r.title}</span>
-                  <span className="mt-1 block text-[15px] text-site-fg-3">{r.excerpt}</span>
+        <section className="blog-related">
+          <h2>{t("Keep reading")}</h2>
+          <ul className="blog-card-grid">
+            {related.map((item) => (
+              <li key={item.slug}>
+                <Link href={blogPath(locale, item.slug)} className="blog-card" prefetch={false}>
+                  <div className="blog-card-art"><BlogCover post={item} decorative /></div>
+                  <h3>{item.title}<ArrowUpRight size={17} aria-hidden="true" /></h3>
                 </Link>
               </li>
             ))}
           </ul>
         </section>
       )}
+
+      <aside className="blog-next-step">
+        <div>
+          <p>{config.cta.heading}</p>
+          <span>{config.cta.body}</span>
+        </div>
+        <div>
+          <Link href="/components" className="site-btn site-btn-primary min-h-11 px-5 text-sm">{t("Browse components")}</Link>
+          <Link href="/docs/agents" className="site-btn site-btn-secondary min-h-11 px-5 text-sm">{t("Connect your agent")}</Link>
+        </div>
+      </aside>
       <BlogLanguages locale={locale} sourceSlug={meta.sourceSlug} footer />
     </article>
   );

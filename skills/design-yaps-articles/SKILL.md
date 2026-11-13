@@ -47,6 +47,8 @@ Use semantic Markdown tables and the existing BlogPosting, BreadcrumbList and FA
 
 Use existing brand-consistent cover generation or a topic-specific asset in the current visual system. Set `heroAsset`, `heroImage` and meaningful alt text when appropriate. Keep source assets private and generated `public/blog-images/` files ignored. Inspect the rendered cover and article.
 
+Choose an in-article visual that helps answer the guide's main question. Use a linked catalogue recording for a component workflow, a compact interactive example for timing or state, and a diagram, comparison table or runnable snippet for architecture and implementation. Follow the visual examples section of `docs/BLOG.md`. Check the example against the guide's data, verify keyboard and reduced-motion behaviour, and inspect its static state and rendered desktop, 375px phone and RTL layouts.
+
 ## Verify and publish
 
 Use Node 24, matching deployment. Run `npm run blog:translate` after public copy changes; inspect coverage and repair failed units before publishing. Protect names and code with existing tooling; add new product names to `scripts/lib/translation-glossary.mjs` before translation. Use `--workers 1 --interval-ms 1500` after throttling. If the provider remains unavailable, preserve checkpoints and use an authorized translation workflow that retains the same token and source-integrity checks. Keep stable localized slugs and required dictionaries with each article commit. Describe machine localization accurately; coverage is not professional linguistic review.

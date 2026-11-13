@@ -10,6 +10,9 @@ export function ProseContent({ html, className = "" }: { html: string; className
   const [tools, setTools] = useState<{ element: HTMLElement; text: string }[]>([]);
   useEffect(() => {
     const blocks = Array.from(root.current?.querySelectorAll("pre") ?? []).map((pre) => {
+      const text = pre.querySelector("code")?.textContent ?? pre.textContent ?? "";
+      const outlet = pre.previousElementSibling?.querySelector<HTMLElement>("[data-prose-tools]");
+      if (outlet) return { pre, element: outlet, text };
       const wrapper = document.createElement("div");
       wrapper.className = "my-6 overflow-hidden rounded-xl border border-white/10 bg-site-raised [&_pre]:!m-0 [&_pre]:!rounded-none [&_pre]:!border-0";
       wrapper.dir = "ltr";
@@ -17,10 +20,10 @@ export function ProseContent({ html, className = "" }: { html: string; className
       toolbar.className = "flex min-h-12 items-center justify-end border-b border-white/[0.07] px-3 py-1";
       pre.before(wrapper);
       wrapper.append(toolbar, pre);
-      return { pre, wrapper, element: toolbar, text: pre.querySelector("code")?.textContent ?? pre.textContent ?? "" };
+      return { pre, wrapper, element: toolbar, text };
     });
     setTools(blocks);
-    return () => { for (const { pre, wrapper } of blocks) if (wrapper.parentNode) wrapper.replaceWith(pre); };
+    return () => { for (const { pre, wrapper } of blocks) if (wrapper?.parentNode) wrapper.replaceWith(pre); };
   }, [html]);
   return <>
     <div ref={root} className={`site-prose ${className}`} dangerouslySetInnerHTML={{ __html: html }} />

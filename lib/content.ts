@@ -1,7 +1,7 @@
 import "server-only";
 import matter from "gray-matter";
-import { Marked, type Tokens } from "marked";
-import { highlight } from "./highlight";
+import { Marked, Renderer, type Tokens } from "marked";
+import { highlight, type HighlightLanguage } from "./highlight";
 // content/**/*.md, bundled by scripts/build-registry.mjs so request-time routes
 // (the Markdown twins) work on Cloudflare Workers, which have no filesystem.
 // Edited a post in dev? Re-run `npm run registry`.
@@ -61,7 +61,12 @@ const slugify = (s: string) =>
 const stripTags = (s: string) => s.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
 const localizedHtmlLinks = (html: string, locale: string) => locale === "en" ? html : html.replace(/(<a\b[^>]*\bhref=["'])([^"']+)(["'])/gi, (_, before, href, after) => before + localizedBlogLink(href, locale) + after);
 
-async function render(markdown: string, locale = "en", sourceHeadingIds?: string[]) {
+const codeLanguages: Partial<Record<string, HighlightLanguage>> = {
+  tsx: "tsx", ts: "ts", js: "js", json: "json", bash: "bash", markdown: "markdown", css: "css", html: "html",
+  sh: "bash", shell: "bash", jsx: "tsx", javascript: "js",
+};
+
+async function render(markdown: string, locale = "en", sourceHeadingIds?: string[], blog = false) {
   const headings: Heading[] = [];
   const used = new Map<string, number>();
   const codeBlocks: { lang: string; text: string }[] = [];
@@ -69,7 +74,8 @@ async function render(markdown: string, locale = "en", sourceHeadingIds?: string
   let headingIndex = 0;
   marked.use({
     renderer: {
-      heading(this: { parser: { parseInline: (t: Tokens.Generic[]) => string } }, { tokens, depth }: Tokens.Heading) {
+      heading(this: { parser: { parseInline: (t: Tokens.Generic[]) => string } }, token: Tokens.Heading) {
+        const { tokens, depth } = token;
         const html = this.parser.parseInline(tokens);
         const base = sourceHeadingIds?.[headingIndex++] || slugify(html) || "section";
         const n = (used.get(base) ?? 0) + 1;
@@ -77,6 +83,10 @@ async function render(markdown: string, locale = "en", sourceHeadingIds?: string
         const id = n === 1 ? base : `${base}-${n}`;
         if (depth === 2 || depth === 3) headings.push({ id, text: stripTags(html), level: depth });
         return `<h${depth} id="${id}"><a href="#${id}" class="no-underline">${html}</a></h${depth}>\n`;
+      },
+      table(this: Renderer, token: Tokens.Table) {
+        if (!blog) return false;
+        return `<div class="blog-table" tabindex="0">${Renderer.prototype.table.call(this, token)}</div>\n`;
       },
       code({ text, lang }: Tokens.Code) {
         codeBlocks.push({ lang: lang || "text", text });
@@ -90,22 +100,25 @@ async function render(markdown: string, locale = "en", sourceHeadingIds?: string
       },
     },
   });
-  let html = await marked.parse(markdown);
-  // Translated Markdown also contains preserved inline HTML links. Route
-  // those through the same locale handling as Markdown link tokens.
-  html = localizedHtmlLinks(html, locale);
-  html = imageDimensions(html, BLOG_DATA.blogImages);
-  const langs = new Set(["tsx", "ts", "json", "bash", "markdown", "css", "html"]);
-  for (let i = 0; i < codeBlocks.length; i++) {
-    const { lang, text } = codeBlocks[i];
+  const tokens = marked.lexer(markdown);
+  // Put the example between top-level blocks so lists and nested code keep
+  // their original structure. Link reference definitions are resolved by the lexer.
+  const paragraph = blog ? tokens.findIndex((token) => token.type === "paragraph") : -1;
+  const sections = paragraph < 0 ? [marked.parser(tokens)] : [marked.parser(tokens.slice(0, paragraph + 1)), marked.parser(tokens.slice(paragraph + 1))];
+  const blocks = await Promise.all(codeBlocks.map(async ({ lang, text }) => {
     const name = lang.split(/\s+/)[0];
-    const l = name === "sh" || name === "shell" ? "bash" : name === "jsx" ? "tsx" : name;
-    const block = langs.has(l)
-      ? await highlight(text, l as "tsx")
+    const language = Object.hasOwn(codeLanguages, name) ? codeLanguages[name] : undefined;
+    const block = language
+      ? await highlight(text, language)
       : `<pre><code>${text.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</code></pre>`;
-    html = html.replace(`<!--code:${i}-->`, block);
-  }
-  return { html, headings };
+    return blog
+      ? `<div class="blog-code" dir="ltr"><div class="blog-code-bar"><span>${/^[\w.+-]+$/.test(name) && name !== "text" ? name : ""}</span><span data-prose-tools></span></div>${block.replace("<pre", '<pre tabindex="0"')}</div>`
+      : block;
+  }));
+  // Translated Markdown also contains preserved inline HTML links.
+  const [intro, body = ""] = sections.map((section) => imageDimensions(localizedHtmlLinks(section, locale), BLOG_DATA.blogImages)
+    .replace(/<!--code:(\d+)-->/g, (marker, index) => blocks[Number(index)] ?? marker));
+  return { html: intro + body, intro, body, headings };
 }
 
 function extractFaqs(html: string, heading = "Frequently asked questions"): QA[] {
@@ -187,8 +200,8 @@ export async function getPost(slug: string, locale = "en") {
   const meta = allPosts(locale).find((p) => p.slug === slug || p.sourceSlug === slug);
   const raw = rawPost(slug, locale);
   if (!meta || !raw) return null;
-  const { html, headings } = await render(raw.content, locale);
-  return { meta, html, headings, faqs: extractFaqs(html, raw.data.faqHeading), howToSteps: visibleHowToSteps(html, raw.data.howToSteps), markdown: raw.content };
+  const { html, intro, body, headings } = await render(raw.content, locale, undefined, true);
+  return { meta, html, intro, body, headings, faqs: extractFaqs(html, raw.data.faqHeading), howToSteps: visibleHowToSteps(html, raw.data.howToSteps), markdown: raw.content };
 }
 
 export function relatedPosts(slug: string, n = 3, locale = "en") {

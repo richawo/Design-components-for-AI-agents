@@ -38,6 +38,7 @@ function getHighlighter() {
     langs: [
       import("shiki/langs/tsx.mjs"),
       import("shiki/langs/typescript.mjs"),
+      import("shiki/langs/javascript.mjs"),
       import("shiki/langs/json.mjs"),
       import("shiki/langs/bash.mjs"),
       import("shiki/langs/markdown.mjs"),
@@ -49,7 +50,9 @@ function getHighlighter() {
   return highlighter;
 }
 
-export async function highlight(code: string, lang: "tsx" | "json" | "bash" | "markdown" | "css" | "ts" | "html" = "tsx") {
+export type HighlightLanguage = "tsx" | "json" | "bash" | "markdown" | "css" | "ts" | "js" | "html";
+
+export async function highlight(code: string, lang: HighlightLanguage = "tsx") {
   const h = await getHighlighter();
-  return h.codeToHtml(code.trimEnd(), { lang: lang === "ts" ? "typescript" : lang, theme: THEME });
+  return h.codeToHtml(code.trimEnd(), { lang: lang === "ts" ? "typescript" : lang === "js" ? "javascript" : lang, theme: THEME });
 }

@@ -64,6 +64,27 @@ Agents can discover every language through `llms.txt` and `/sitemap.md`. The
 remote MCP `get_page` tool reads the same localized hubs and articles as their
 Markdown routes, including canonical provenance.
 
+## Visual examples
+
+Give each guide a visual that helps a reader make its main decision. Match
+the format to the question. Use a component recording for a workflow, an
+interactive example for state or timing, and a diagram, comparison table or
+runnable snippet for architecture and implementation. Place it near the
+passage it explains. A cover helps readers browse the archive and share the
+guide.
+
+A direct link to a relevant catalogue item can supply its public poster and
+recording. Keep the recording behind an explicit Play control. Article
+fixtures use small, self-contained examples and public component links.
+Keep their displayed results consistent with the guide's code, and keep
+standalone source, identifiers and sample literals intact.
+
+Review the finished guide at desktop and phone widths, including 375px and
+an RTL edition. Verify the visual, its meaningful text equivalent, keyboard
+controls, reduced-motion behaviour and a useful static state without
+JavaScript. Check that any code copies as shown and that the initial article
+loads without fetching a recording or mounting a live component preview.
+
 ## Source-bound editorial publication
 
 Normal daily publication, including weekends, uses the existing public-repository
