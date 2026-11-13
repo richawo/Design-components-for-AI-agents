@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-10-30-five-design-guides",
+  "requestId": "2026-11-13-ai-interface-guides",
   "mode": "daily",
-  "requestedAt": "2026-10-30T13:11:35.757Z",
-  "privateContentCommit": "d92ae0f225f4abcaa6221b54f692e39c1eadb5d6",
-  "sourceInputsSha256": "cf899a4633ad04cf1b7e1c1fe5fe15811bd1c5b48eef8406aba4943c0b08fd43",
-  "approvalSha256": "c33686538040ea70f7369be58be17b7c2f9eb361a346bc93f62ee356f54ccd34",
+  "requestedAt": "2026-11-13T01:05:56.227Z",
+  "privateContentCommit": "1e12952f806e2219d80530a4543fa35c0ab9eb85",
+  "sourceInputsSha256": "fca1335e5a4e693a470c371f7ce63630c29d75be97de46e53a2467e7dcc43c2a",
+  "approvalSha256": "6ec24867dd5dfe26424a86160639863215723a6c4f9e569b4250215665f6cb6d",
   "articleSlugs": [
-    "react-admin-data-table-components",
-    "react-rich-text-editor-ui-components",
-    "accessible-react-chart-components",
-    "react-onboarding-wizard-components",
-    "react-support-ticket-triage-ui"
+    "react-agent-run-trace-ui",
+    "react-ai-answer-citations",
+    "react-ai-model-selector",
+    "react-ai-prompt-input-attachments",
+    "react-ai-voice-interface"
   ]
 }
