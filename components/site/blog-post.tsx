@@ -29,7 +29,6 @@ export default async function BlogPost({ slug, locale = "en" }: { slug: string; 
   return (
     <article className="blog-shell">
       <JsonLd data={jsonLd} />
-      <noscript><style>{".blog-js-controls{display:none!important}"}</style></noscript>
       <BlogLanguages locale={locale} sourceSlug={meta.sourceSlug} />
       <header className="blog-masthead">
         <div className="blog-masthead-copy">

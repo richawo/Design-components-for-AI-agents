@@ -4,6 +4,7 @@ import { Pause, Play, RotateCcw } from "lucide-react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { milliseconds, traceSpans as spans } from "@/lib/blog/example-fixtures";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
+import { useBlogExampleControls } from "./blog-example-controls";
 
 const duration = spans[0].to;
 const total = spans.slice(1).reduce((sum, { from, to }) => sum + to - from, 0);
@@ -29,6 +30,7 @@ export function BlogTrace({ labels }: { labels: TraceLabels }) {
   const root = useRef<HTMLDivElement>(null);
   const current = useRef<number>(duration);
   const reduced = useReducedMotion();
+  const controls = useBlogExampleControls();
 
   useEffect(() => {
     const element = root.current;
@@ -93,7 +95,7 @@ export function BlogTrace({ labels }: { labels: TraceLabels }) {
           })}
         </ul>
       </div>
-      <div className="blog-trace-controls blog-js-controls">
+      <div className="blog-trace-controls" hidden={!controls}>
         <input
           type="range"
           dir="ltr"

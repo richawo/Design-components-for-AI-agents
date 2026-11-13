@@ -412,7 +412,8 @@
 }
 
 .blog-example-button svg { flex: none; }
-.blog-example-button[hidden] { display: none; }
+.blog-example :is(.blog-example-button, .blog-citation)[hidden] { display: none; }
+.blog-trace-controls[hidden] { visibility: hidden; }
 .blog-example-button:hover { background: #29272c; }
 
 .blog-example-grid,

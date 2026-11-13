@@ -4,6 +4,7 @@ import { Play, RotateCcw } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cardStyleMedia, type CardMediaSource, type CardStylePreviews } from "@/lib/card-style-media";
 import { useComponentStyle } from "./component-style";
+import { useBlogExampleControls } from "./blog-example-controls";
 
 type Props = {
   media: CardMediaSource;
@@ -19,7 +20,7 @@ export function BlogRecording({ media, styles, name, labels }: Props) {
 }
 
 function Recording({ media, name, labels }: Omit<Props, "styles">) {
-  const [ready, setReady] = useState(false);
+  const ready = useBlogExampleControls();
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
   const [useOriginal, setUseOriginal] = useState(false);
@@ -27,7 +28,6 @@ function Recording({ media, name, labels }: Omit<Props, "styles">) {
   const button = useRef<HTMLButtonElement>(null);
   const moveFocus = useRef(false);
 
-  useEffect(() => setReady(true), []);
   useEffect(() => {
     const video = player.current;
     if (!playing || !video) {

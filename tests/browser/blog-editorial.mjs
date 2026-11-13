@@ -45,6 +45,7 @@ try {
   const timeline = figure.getByRole("slider");
   const at = (ms) => figure.locator(`[data-time="${ms}"]`).waitFor();
   const phase = (id) => figure.locator(`[data-span="${id}"]`).getAttribute("data-phase");
+  await timeline.waitFor();
   await at(700);
   assert.match(await figure.innerText(), /850\s*ms/);
   await timeline.fill("275");
@@ -156,6 +157,7 @@ try {
   await visit(staticPage, trace);
   assert.match(await staticPage.locator('[data-blog-example="trace"]').innerText(), /850\s*ms/);
   assert.equal(await staticPage.getByRole("slider").count(), 0);
+  assert.equal(await staticPage.locator(".blog-trace-controls").getAttribute("hidden"), "");
   assert.equal(await staticPage.getByRole("link", { name: "Agent Run Trace", exact: true }).count(), 2);
   const markdown = await page.request.get(base + trace + ".md");
   assert.equal(markdown.status(), 200);
