@@ -1,16 +1,13 @@
 {
   "version": 2,
-  "requestId": "2026-11-13-ai-interface-guides",
-  "mode": "daily",
-  "requestedAt": "2026-11-13T01:05:56.227Z",
-  "privateContentCommit": "1e12952f806e2219d80530a4543fa35c0ab9eb85",
-  "sourceInputsSha256": "fca1335e5a4e693a470c371f7ce63630c29d75be97de46e53a2467e7dcc43c2a",
-  "approvalSha256": "6ec24867dd5dfe26424a86160639863215723a6c4f9e569b4250215665f6cb6d",
+  "requestId": "2026-11-13-interface-guide-corrections",
+  "mode": "manual",
+  "requestedAt": "2026-11-13T01:32:02.782Z",
+  "privateContentCommit": "188fc84255e1a7494344016aa8fdc0ebef733ffd",
+  "sourceInputsSha256": "d52e6b7dbde1ea37a4187e10efa5319a958988c2f150f06c96f25c9e159d5640",
+  "approvalSha256": "177a7bdcf40e74b6a0fb47fd8f6869d0f29452bade4a8ed5135471fdbf953a5c",
   "articleSlugs": [
     "react-agent-run-trace-ui",
-    "react-ai-answer-citations",
-    "react-ai-model-selector",
-    "react-ai-prompt-input-attachments",
     "react-ai-voice-interface"
   ]
 }
