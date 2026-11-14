@@ -1,13 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-13-interface-guide-corrections",
-  "mode": "manual",
-  "requestedAt": "2026-11-13T01:32:02.782Z",
-  "privateContentCommit": "188fc84255e1a7494344016aa8fdc0ebef733ffd",
-  "sourceInputsSha256": "d52e6b7dbde1ea37a4187e10efa5319a958988c2f150f06c96f25c9e159d5640",
-  "approvalSha256": "177a7bdcf40e74b6a0fb47fd8f6869d0f29452bade4a8ed5135471fdbf953a5c",
+  "requestId": "2026-11-14-interface-workflows",
+  "mode": "daily",
+  "requestedAt": "2026-11-14T08:21:40.053Z",
+  "privateContentCommit": "b16a4f97a1f782f5f5bd2d151e0be1c4d0cec4bf",
+  "sourceInputsSha256": "fcba886624e866277d3a2ed13c52c0ea4bec645d708557deceafd88b4b942b2b",
+  "approvalSha256": "4d949330e3c3a57ed62fc8b5f4c119e7f29fc703514da1bad11e2164454caef6",
   "articleSlugs": [
-    "react-agent-run-trace-ui",
-    "react-ai-voice-interface"
+    "agent-token-budget-ui",
+    "react-structured-output-json-ui",
+    "mcp-human-in-the-loop-forms",
+    "react-node-graph-editor-ui",
+    "react-design-token-editor-ui"
   ]
 }
