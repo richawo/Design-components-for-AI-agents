@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-15-workflow-controls",
+  "requestId": "2026-11-16-saas-commerce-workflows",
   "mode": "daily",
-  "requestedAt": "2026-11-15T07:51:32.012Z",
-  "privateContentCommit": "2403287d346baef7d3e20903379cb42e0da16643",
-  "sourceInputsSha256": "82126662d5a985ea45996ff4ef45404e5286b4dffb4a691d312a95be4c2508d2",
-  "approvalSha256": "fb14882c4268dd5adf9842b262b0cc5868f39e0b4484c49bcb4a6cae529b4bfb",
+  "requestedAt": "2026-11-16T08:00:53.621Z",
+  "privateContentCommit": "cb31adcb891f1ed044a08b7b111fd457e71599db",
+  "sourceInputsSha256": "e15f2aabae3321115cc7b88d0c1353df12b79483613a29b7f44a6c80cccb3195",
+  "approvalSha256": "d1b0123ed7cb4d54f80138793e144023e01c810e714115c442154fb8a6ed8c4f",
   "articleSlugs": [
-    "multi-agent-task-board-ui",
-    "react-integration-settings-ui",
-    "react-video-editor-timeline-ui",
-    "react-document-diff-review-ui",
-    "react-report-scheduler-ui"
+    "react-access-request-approval-ui",
+    "react-customer-health-dashboard",
+    "react-returns-management-ui",
+    "react-catalog-csv-import-ui",
+    "react-document-version-history"
   ]
 }
