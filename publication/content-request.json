@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-17-stock-and-reconciliation-workflows",
+  "requestId": "2026-11-18-commerce-rules-and-cash-flow",
   "mode": "daily",
-  "requestedAt": "2026-11-17T09:10:09.808Z",
-  "privateContentCommit": "e9ba77ca254210deedafca84b29bef0add589618",
-  "sourceInputsSha256": "6742638e0d2cdaa651afc9f96bf5c742780b014670c04a223d666c5626050e98",
-  "approvalSha256": "96bfbc5be0ca2e44b8ce70a016c16e7c882bc28820585f9921405c01784b798b",
+  "requestedAt": "2026-11-18T10:43:03.760Z",
+  "privateContentCommit": "b5e7a3c15dec3bfc4969ae6d220a518d8ac18d85",
+  "sourceInputsSha256": "0964148ff1457eb5375b9d2ad9499190cbc27990e3b15adb11533651163ae30e",
+  "approvalSha256": "18754b67eb7a15980492249d8e64cc2e81d8cf5b3c671ffe652b8a9715b59421",
   "articleSlugs": [
-    "react-inventory-variant-table",
-    "react-purchase-order-ui",
-    "react-backorder-allocation-ui",
-    "react-bank-reconciliation-ui",
-    "react-assortment-planning-ui"
+    "react-product-bundle-builder",
+    "react-discount-promotion-builder",
+    "react-shipping-estimator-ui",
+    "react-customer-order-timeline",
+    "react-cash-flow-dashboard"
   ]
 }
