@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-18-commerce-rules-and-cash-flow",
+  "requestId": "2026-11-19-finance-review-workflows",
   "mode": "daily",
-  "requestedAt": "2026-11-18T10:43:03.760Z",
-  "privateContentCommit": "b5e7a3c15dec3bfc4969ae6d220a518d8ac18d85",
-  "sourceInputsSha256": "0964148ff1457eb5375b9d2ad9499190cbc27990e3b15adb11533651163ae30e",
-  "approvalSha256": "18754b67eb7a15980492249d8e64cc2e81d8cf5b3c671ffe652b8a9715b59421",
+  "requestedAt": "2026-11-19T08:32:23.319Z",
+  "privateContentCommit": "88dc5238507969e72eca49d68d198feeb78eb0dc",
+  "sourceInputsSha256": "5c29df7d2d27f599c86dc137618c981192af8e6fa42675ef74775d4a833495c3",
+  "approvalSha256": "749530b8779b7b99cda46b249d88af97cec55fb4f2cddd28c96ce0d90575ee1a",
   "articleSlugs": [
-    "react-product-bundle-builder",
-    "react-discount-promotion-builder",
-    "react-shipping-estimator-ui",
-    "react-customer-order-timeline",
-    "react-cash-flow-dashboard"
+    "react-invoice-builder-ui",
+    "react-expense-approval-ui",
+    "react-receivables-aging-dashboard",
+    "react-month-end-close-checklist",
+    "react-budget-variance-dashboard"
   ]
 }
