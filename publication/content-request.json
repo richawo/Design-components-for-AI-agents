@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-19-finance-review-workflows",
+  "requestId": "2026-11-20-people-and-scenario-workflows",
   "mode": "daily",
-  "requestedAt": "2026-11-19T08:32:23.319Z",
-  "privateContentCommit": "88dc5238507969e72eca49d68d198feeb78eb0dc",
-  "sourceInputsSha256": "5c29df7d2d27f599c86dc137618c981192af8e6fa42675ef74775d4a833495c3",
-  "approvalSha256": "749530b8779b7b99cda46b249d88af97cec55fb4f2cddd28c96ce0d90575ee1a",
+  "requestedAt": "2026-11-20T06:55:40.153Z",
+  "privateContentCommit": "967e9ebc021d27c77f09f531f68617f806fc84b4",
+  "sourceInputsSha256": "32608c5dca6b792e481c697c0b50e2704e3698f7a731144d192019fbbd8ce502",
+  "approvalSha256": "cd970a7cfe99d3515bf9c22b7bc622072a0c0676f591a4ceddcd03687ae392ac",
   "articleSlugs": [
-    "react-invoice-builder-ui",
-    "react-expense-approval-ui",
-    "react-receivables-aging-dashboard",
-    "react-month-end-close-checklist",
-    "react-budget-variance-dashboard"
+    "react-financial-scenario-planner",
+    "react-employee-onboarding-checklist",
+    "react-leave-approval-calendar",
+    "react-org-chart-workflow",
+    "react-interview-scorecard-ui"
   ]
 }
