@@ -5,9 +5,9 @@ export interface ContentPackReceipt {
   codecIdentity:string;
   packedSha256:string;
 }
-export function packCachedContent(content:unknown,options?:{
+export function packCachedContent<T = PackedContent>(content:unknown,options?:{
   previous?:unknown;
   receipt?:Partial<ContentPackReceipt>|null;
   codecIdentity?:string;
-  encode?:(content:unknown)=>PackedContent;
-}):{packed:PackedContent;receipt:ContentPackReceipt;reused:boolean};
+  encode?:(content:unknown)=>T;
+}):{packed:T;receipt:ContentPackReceipt;reused:boolean};

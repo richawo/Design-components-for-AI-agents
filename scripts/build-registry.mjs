@@ -44,6 +44,7 @@ import { makeStyledSource } from "./lib/component-styles.mjs";
 import { packStyleSource, sharedStyleText } from "./lib/style-delta.mjs";
 import { loadStylePack, styleSourceIdentity, styleSourcePin } from "./lib/style-source.mjs";
 import { writePublicContentRuntime } from "./lib/public-content-runtime.mjs";
+import { packPublicContent } from "./lib/public-content-partitions.mjs";
 import { verifyPublicationRequest } from "./lib/publication-request.mjs";
 import { stylePreviewManifest } from "./lib/style-previews.mjs";
 
@@ -481,7 +482,9 @@ const publicPackPath=path.join(outDir,"content-packed.json"),publicPackReceiptPa
 const readPackCache=file=>{try{return JSON.parse(fs.readFileSync(file,"utf8"));}catch{return null;}};
 const publicPack=packCachedContent(siteContent,{
   previous:readPackCache(publicPackPath),receipt:readPackCache(publicPackReceiptPath),
-  codecIdentity:createHash("sha256").update(fs.readFileSync(path.join(root,"scripts/lib/content-pack.mjs"))).digest("hex"),
+  codecIdentity:createHash("sha256").update(fs.readFileSync(path.join(root,"scripts/lib/content-pack.mjs")))
+    .update(fs.readFileSync(path.join(root,"scripts/lib/public-content-partitions.mjs"))).digest("hex"),
+  encode:packPublicContent,
 });
 const packedPublicContent=publicPack.packed;
 writeJson(publicPackPath,packedPublicContent);

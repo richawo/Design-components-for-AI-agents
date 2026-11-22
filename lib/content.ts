@@ -153,11 +153,13 @@ export function allPosts(locale = "en"): PostMeta[] {
   if (cached) return cached;
   const files = blogFiles(locale);
   const posts = Object.keys(files)
-    .filter((file) => !matter(files[file]).data.draft)
+    .filter((file) => !matter(files[file], {}).data.draft)
     .map((f) => {
       const raw = files[f];
-      const { data, content } = matter(raw);
-      const source = locale === "en" ? content : matter(FILES.blog[f]).content;
+      // gray-matter's default process-wide cache retains the entire input and
+      // parsed body. Options disable that unbounded second copy of the corpus.
+      const { data, content } = matter(raw, {});
+      const source = locale === "en" ? content : matter(FILES.blog[f], {}).content;
       const words = source.split(/\s+/).filter(Boolean).length;
       return {
         slug: data.slug ?? f.replace(/\.md$/, ""),
@@ -193,7 +195,7 @@ export function rawPost(slug: string, locale = "en") {
   const meta = allPosts(locale).find((post) => post.slug === slug || post.sourceSlug === slug);
   if (!meta) return null;
   const raw = blogFiles(locale)[`${meta.sourceSlug}.md`];
-  return raw ? matter(raw) : null;
+  return raw ? matter(raw, {}) : null;
 }
 
 export async function getPost(slug: string, locale = "en") {
@@ -229,7 +231,7 @@ export function localizedBlogLink(href: string, locale = "en") {
 export function allDocs(): DocMeta[] {
   return readDir("docs")
     .map((f) => {
-      const { data } = matter(readFile("docs", f)!);
+      const { data } = matter(readFile("docs", f)!, {});
       return { slug: f.replace(/\.md$/, ""), title: data.title, description: data.description, order: data.order ?? 99, section: data.section ?? "Guides" };
     })
     .sort((a, b) => a.order - b.order);
@@ -243,7 +245,7 @@ export async function localizedDocs(locale = "en"): Promise<DocMeta[]> {
 export async function getDoc(slug: string, locale = "en") {
   const meta = (await localizedDocs(locale)).find((d) => d.slug === slug);
   if (!meta) return null;
-  const { content } = matter(readFile("docs", `${slug}.md`) ?? "");
+  const { content } = matter(readFile("docs", `${slug}.md`) ?? "", {});
   const translated = (await siteDoc(locale, slug)) ?? content;
   const markdown = locale === "en" ? translated : mapMarkdown(translated, (html: string) => localizedHtmlLinks(html, locale));
   // Keep deep links valid when switching languages, while translating the

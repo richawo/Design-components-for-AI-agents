@@ -1,7 +1,7 @@
 import "server-only";
 import packed from "@/registry/__generated__/content-packed.json";
 import productionPacked from "@design-yaps/public-content-runtime";
-import { unpackContent } from "../../scripts/lib/content-pack.mjs";
+import { createPublicContent, type PartitionedPublicContent } from "../../scripts/lib/public-content-partitions.mjs";
 import { LOCALES, localeByCode } from "./locales.mjs";
 
 export type BlogConfig = {
@@ -17,8 +17,9 @@ export type BlogBundle = {
   ui?: Record<string, Record<string, string>>;
   blogImages?: Record<string, { width: number; height: number }>;
 };
-// Decode once per isolate. Node zlib is supported by the Worker's compatibility date.
-export const BLOG_DATA = unpackContent(process.env.NODE_ENV === "production" ? productionPacked : packed) as BlogBundle;
+// Metadata enumeration does not inflate article bodies. Keep at most the
+// selected edition and its English source decoded inside a long-lived isolate.
+export const BLOG_DATA = createPublicContent((process.env.NODE_ENV === "production" ? productionPacked : packed) as PartitionedPublicContent) as BlogBundle;
 export const blogFiles = (locale = "en") => locale === "en" ? BLOG_DATA.blog : BLOG_DATA.localizedBlog?.[locale] ?? {};
 export const blogConfig = (locale = "en") => (locale === "en" ? BLOG_DATA.config : BLOG_DATA.localizedConfig?.[locale]) ?? BLOG_DATA.config;
 export const blogUI = (locale = "en") => BLOG_DATA.ui?.[locale] ?? {};

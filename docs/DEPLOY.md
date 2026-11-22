@@ -34,7 +34,12 @@ and gzipped source maps totalling 15 MB or more. Runtime accounting includes
 attached text, SQL and Wasm modules, including nested modules. The generated
 server-external public-content package keeps the complete blog/docs payload
 in one prepared module instead of duplicating it across Next route chunks.
-The final package guard requires exactly one intact copy. This changes neither
+The public pack partitions article bodies by language. Runtime filename and
+locale enumeration does not decompress them; a two-edition cache retains only
+the selected edition and its English source. Frontmatter parsing bypasses
+gray-matter's unbounded input cache. Full build/audit readers still reconstruct
+the exact original corpus, and the final package guard requires exactly one
+intact copy of every partition. This changes neither
 article contents nor the Pro source and authorization boundaries. The prepared server
 omits the router cache manifest only when the files are identical and the lazy
 server does not reference it. Referenced or different modules remain included.

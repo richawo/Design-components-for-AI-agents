@@ -30,11 +30,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ loca
     if (entry) cataloguePage = cataloguePath(entry);
   } else if (section === "docs") {
     const doc = await getDoc(slug ?? "introduction", locale);
-    if (doc) markdown = matter.stringify(`# ${doc.meta.title}\n\n${doc.markdown}`, { title: doc.meta.title, description: doc.meta.description });
+    if (doc) markdown = matter.stringify(`# ${doc.meta.title}\n\n${doc.markdown}`, { title: doc.meta.title, description: doc.meta.description }, {});
   } else markdown = await markdownForPage(path.join("/"));
   if (!markdown) return new Response("Not found", { status: 404 });
   const { t } = treeLocalizer(locale, { ...await siteDictionary(locale), ...selectedCopy });
-  const parsed = matter(markdown);
+  const parsed = matter(markdown, {});
   const page = cataloguePage ?? (path.join("/") === "index" ? "/" : "/" + path.join("/"));
   const inline = (key: string, sourceText?: string) => {
     const translated = t(key);
@@ -66,6 +66,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ loca
     }).join("");
   };
   const content = section === "docs" ? parsed.content : mapMarkdown(parsed.content, inline);
-  const result = matter.stringify(content, { ...parsed.data, title: parsed.data.title ? t(parsed.data.title) : t(section), ...(parsed.data.description ? { description: t(parsed.data.description) } : {}), canonical: absoluteUrl(localizePath(page, locale)), language: language.htmlLang });
+  const result = matter.stringify(content, { ...parsed.data, title: parsed.data.title ? t(parsed.data.title) : t(section), ...(parsed.data.description ? { description: t(parsed.data.description) } : {}), canonical: absoluteUrl(localizePath(page, locale)), language: language.htmlLang }, {});
   return new Response(result, { headers: { "Content-Type": "text/markdown; charset=utf-8", "Content-Language": language.htmlLang, "X-Robots-Tag": "noindex, follow", Link: `<${absoluteUrl(localizePath(page, locale))}>; rel="canonical"` } });
 }
