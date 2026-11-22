@@ -1,8 +1,29 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
+import { collect, type EdgeGeo } from "@/lib/analytics/collector";
+import { COLLECT_PATH } from "@/lib/analytics/events";
+import type { AnalyticsBindings } from "@/lib/analytics/sink";
 import { localeByCode } from "@/lib/blog/locales.mjs";
 import { SITE_ROUTES, preferredLocale, localizePath } from "@/lib/i18n/routing";
 
-export function proxy(request: NextRequest) {
+/** Funnel events are handled here, in the public router, so they never load the Next server. */
+async function collectEvents(request: NextRequest, event?: NextFetchEvent) {
+  let env: AnalyticsBindings = {};
+  let geo: EdgeGeo = {};
+  // OpenNext's router stores the request context under this symbol. Reading it
+  // directly keeps getCloudflareContext's helpers out of the size-guarded entry.
+  const context = (globalThis as Record<symbol, { env?: unknown; cf?: EdgeGeo } | undefined>)[Symbol.for("__cloudflare-context__")];
+  if (context?.env) env = context.env as AnalyticsBindings;
+  if (context?.cf) geo = { country: context.cf.country, region: context.cf.region, city: context.cf.city };
+  // `next dev` has no Cloudflare context; events are only logged there.
+  if (process.env.NODE_ENV !== "production" && !env.FUNNEL_EVENTS && !env.MIXPANEL_TOKEN) {
+    const raw = await request.clone().text();
+    console.info(`[analytics] ${raw.length} bytes`, raw.slice(0, 2000));
+  }
+  return collect(request, env, { geo, waitUntil: event ? (promise) => event.waitUntil(promise) : undefined });
+}
+
+export function proxy(request: NextRequest, event?: NextFetchEvent) {
+  if (request.nextUrl.pathname === COLLECT_PATH) return collectEvents(request, event);
   if (request.nextUrl.pathname === "/oauth/authorize") {
     // The approval page must never be framed or leak its query to other sites.
     const response = NextResponse.next();
@@ -46,4 +67,4 @@ export function proxy(request: NextRequest) {
   response.headers.set("Vary", "Accept");
   return response;
 }
-export const config = { matcher: ["/blog/:path*", "/:locale/blog/:path*", "/en/:path*", "/account", "/pricing", "/oauth/authorize"] };
+export const config = { matcher: ["/_dfa/e", "/blog/:path*", "/:locale/blog/:path*", "/en/:path*", "/account", "/pricing", "/oauth/authorize"] };

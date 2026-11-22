@@ -33,8 +33,14 @@
     "STRIPE_PRICE_TEAM_YEARLY": "price_1UOn9FGf6SO9vB2DshMCKSbG",
     "STRIPE_PRICE_TEAM_LIFETIME": "price_1UOn9GGf6SO9vB2DwKTCOarP",
     "STRIPE_PORTAL_CONFIGURATION": "bpc_1UOnNbGf6SO9vB2DP2VXN7io",
-    "STRIPE_AUTOMATIC_TAX": "false"
+    "STRIPE_AUTOMATIC_TAX": "false",
+    // Mixpanel's EU residency host, matching the other Yaps projects. Funnel
+    // events reach Mixpanel only once the MIXPANEL_TOKEN secret is set.
+    "MIXPANEL_API_HOST": "https://api-eu.mixpanel.com"
   },
+  // Every funnel event is also written here, so drop-off is queryable with
+  // Cloudflare's SQL API even without Mixpanel. See docs/ANALYTICS.md.
+  "analytics_engine_datasets": [{ "binding": "FUNNEL_EVENTS", "dataset": "design_yaps_funnel" }],
   "d1_databases": [{
     "binding": "COMMERCE_DB",
     "database_name": "design-yaps-commerce",
@@ -42,7 +48,8 @@
     "migrations_dir": "migrations"
   }],
   // Encrypted runtime secrets: LICENSE_SECRET, AUTH_SECRET, STRIPE_SECRET_KEY,
-  // STRIPE_WEBHOOK_SECRET, RESEND_API_KEY and, optionally, LICENSE_REVOKED.
+  // STRIPE_WEBHOOK_SECRET, RESEND_API_KEY and, optionally, LICENSE_REVOKED and
+  // MIXPANEL_TOKEN (funnel analytics).
   // PRO_REPO_SSH_KEY belongs to Workers Builds, not the runtime.
   "observability": {
     "enabled": true

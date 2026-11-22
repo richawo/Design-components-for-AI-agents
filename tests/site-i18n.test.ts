@@ -31,11 +31,11 @@ describe("whole-site language editions", () => {
     expect(preferredLocale("theme=dark; design-locale=fr")).toBe("fr");
     expect(preferredLocale("design-locale=https://example.com")).toBe("en");
     const request = new NextRequest("https://design.yaps.ai/account?welcome=1", { headers: { Cookie: "design-locale=fr" } });
-    const response = proxy(request);
+    const response = await proxy(request);
     expect(response.headers.get("location")).toBe("https://design.yaps.ai/fr/account?welcome=1");
     expect(response.headers.get("cache-control")).toBe("private, no-store");
     expect(response.headers.get("vary")).toBe("Cookie");
-    const cancelled = proxy(new NextRequest("https://design.yaps.ai/pricing?cancelled=1", { headers: { Cookie: "design-locale=de" } }));
+    const cancelled = await proxy(new NextRequest("https://design.yaps.ai/pricing?cancelled=1", { headers: { Cookie: "design-locale=de" } }));
     expect(cancelled.headers.get("location")).toBe("https://design.yaps.ai/de/pricing?cancelled=1");
     const claimed = await claim(new Request("https://design.yaps.ai/api/license/claim", { headers: { Cookie: "design-locale=fr" } }));
     expect(claimed.headers.get("location")).toBe("https://design.yaps.ai/fr/pricing");
