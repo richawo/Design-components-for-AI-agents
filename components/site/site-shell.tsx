@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { MarkdownAlternate } from "@/components/site/markdown-link";
 import { RevealObserver } from "@/components/site/reveal-observer";
+import { SiteAnalytics } from "@/components/site/site-analytics";
 
 export async function SiteShell({ children, locale = "en" }: { children: React.ReactNode; locale?: string }) {
   const copy = await siteCopy(locale);
@@ -22,6 +23,7 @@ export async function SiteShell({ children, locale = "en" }: { children: React.R
       </main>
       <SiteFooter locale={locale} copy={copy} />
       <RevealObserver />
+      <SiteAnalytics />
     </div></SiteStyleProvider></SiteMotion></SiteI18n>
   );
 }

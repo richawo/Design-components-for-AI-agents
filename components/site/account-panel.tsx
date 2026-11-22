@@ -8,19 +8,32 @@ import { MeasuredHeight } from "./measured-height";
 import { CopyButton } from "./copy-button";
 import { AgentConnect } from "./agent-connect";
 import { planById } from "@/lib/pricing";
+import { deviceHeaders, flush, identify, resetIdentity, track } from "@/lib/analytics/client";
 
 type Licence = { id: string; plan: string; seats: number; status: string; expiresAt: number | null; owner: boolean; active: boolean; token: string | null; members: { email: string; invitation_sent_at: number | null }[] };
 type Connection = { id: string; name: string; created_at: number; last_used_at: number };
-type Account = { user: { email: string }; hasBilling: boolean; pendingCheckout: boolean; licences: Licence[]; connections?: Connection[] };
+type Account = { user: { id?: string; email: string }; hasBilling: boolean; pendingCheckout: boolean; licences: Licence[]; connections?: Connection[] };
 type State = { status: "loading" | "signed-out" | "unavailable" } | { status: "signed-in"; account: Account } | { status: "key"; email: string; licence: Licence };
 const names: Record<string, string> = { "pro-yearly": "Pro yearly", "pro-lifetime": "Pro lifetime", "team-yearly": "Team yearly", "team-lifetime": "Team lifetime" };
 const field = "w-full rounded-xl border border-white/[0.12] bg-site-bg px-4 py-3 text-base text-site-fg outline-none transition-colors placeholder:text-site-fg-3 focus:border-site-accent";
 
 async function post(path: string, body: unknown = {}, method = "POST") {
-  const response = await fetch(path, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const response = await fetch(path, { method, headers: { "Content-Type": "application/json", ...deviceHeaders() }, body: JSON.stringify(body) });
   const data = await response.json();
   if (!response.ok) throw new Error(data.error || "Couldn't complete that request. Please try again.");
   return data;
+}
+
+/** One account snapshot per load, and one purchase confirmation when a paid licence first appears. */
+let lastAccountReport = "";
+function reportAccount(state: string, licences: { active: boolean; plan: string }[]) {
+  const active = licences.find((l) => l.active);
+  const search = new URLSearchParams(window.location.search);
+  const summary = `${state}:${active?.plan ?? ""}`;
+  if (summary === lastAccountReport) return;
+  lastAccountReport = summary;
+  track("account_loaded", { state, has_active_licence: Boolean(active), plan: active?.plan ?? search.get("plan"), welcome: search.has("welcome"), pending: search.has("pending") });
+  if (active && (search.has("welcome") || search.has("pending"))) track("purchase_confirmed", { plan: active.plan });
 }
 
 export function AccountLoading() {
@@ -67,7 +80,11 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
     const response = await fetch("/api/account", { cache: "no-store" });
     if (response.ok) {
       const account = await response.json();
-      if (account.user) { setState({ status: "signed-in", account }); return; }
+      if (account.user) {
+        identify(account.user.id);
+        reportAccount("signed-in", account.licences);
+        setState({ status: "signed-in", account }); return;
+      }
     } else if (response.status !== 401) {
       const data = await response.json();
       throw new Error(data.error || "Couldn't load your account. Please try again.");
@@ -76,9 +93,10 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
     if (!legacy.ok) throw new Error("Couldn't check your licence. Please try again.");
     const result = await legacy.json();
     if (result.active) {
+      reportAccount("key", [{ active: true, plan: result.license.plan }]);
       setState({ status: "key", email: result.license.email, licence: { id: result.license.id, plan: result.license.plan, seats: result.license.seats,
         status: "active", expiresAt: result.license.exp, owner: false, active: true, token: result.token, members: [] } });
-    } else setState({ status: "signed-out" });
+    } else { reportAccount("signed-out", []); setState({ status: "signed-out" }); }
   }, []);
 
   useEffect(() => { load().catch((e) => { setState({ status: "unavailable" }); setError(e.message); }); }, [load]);
@@ -104,12 +122,15 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
   }
   async function checkout() {
     if (!selected) return;
-    const data = await post("/api/checkout", { plan: selected.id });
-    if (data.url) window.location.assign(data.url);
+    track("checkout_clicked", { plan: selected.id, surface: "account", price: selected.price });
+    let data;
+    try { data = await post("/api/checkout", { plan: selected.id }); }
+    catch (e) { track("checkout_error", { plan: selected.id, surface: "account", error: e instanceof Error ? e.message.slice(0, 120) : "unavailable" }); throw e; }
+    if (data.url) { track("checkout_redirected", { plan: selected.id, destination: "stripe", surface: "account" }); flush(); window.location.assign(data.url); }
   }
   async function logout() {
     await action("logout", async () => {
-      await post("/api/auth/logout"); setState({ status: "signed-out" });
+      await post("/api/auth/logout"); track("signed_out"); flush(); resetIdentity(); setState({ status: "signed-out" });
     }, "identity");
   }
   async function activate(e: FormEvent) {
@@ -118,7 +139,7 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
       const response = await fetch("/api/license/activate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: key.trim() }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || (data.reason === "expired" ? "That key has expired. Sign in with your purchase email to check your licence." : "That key is invalid or no longer active. Check you copied the whole key."));
-      setKey(""); await load();
+      track("licence_key_activated", { plan: data.license?.plan ?? null }); setKey(""); await load();
     });
   }
 
@@ -160,7 +181,7 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
             </div>
           </div>}
 
-          {identified && <div><div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-5"><p className="break-all text-[15px] text-site-fg-2">{state.status === "signed-in" ? state.account.user.email : state.status === "key" ? state.email : ""}</p><div className="flex flex-wrap gap-3">{state.status === "signed-in" && state.account.hasBilling && <AccountActionButton busy={busy} actionId="portal" type="button" onClick={() => action("portal", async () => { const data = await post("/api/billing/portal"); window.location.assign(data.url); }, "identity")} className="site-btn site-btn-secondary h-11 px-4 text-sm"><AccountActionLabel idle="Manage billing" pending="Opening…" busy={busy === "portal"} /></AccountActionButton>}<AccountActionButton busy={busy} actionId="logout" type="button" onClick={logout} className="site-btn site-btn-secondary h-11 px-4 text-sm">Sign out</AccountActionButton></div></div>{feedback("identity")}</div>}
+          {identified && <div><div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-5"><p className="break-all text-[15px] text-site-fg-2">{state.status === "signed-in" ? state.account.user.email : state.status === "key" ? state.email : ""}</p><div className="flex flex-wrap gap-3">{state.status === "signed-in" && state.account.hasBilling && <AccountActionButton busy={busy} actionId="portal" type="button" onClick={() => action("portal", async () => { const data = await post("/api/billing/portal"); track("billing_portal_opened"); flush(); window.location.assign(data.url); }, "identity")} className="site-btn site-btn-secondary h-11 px-4 text-sm"><AccountActionLabel idle="Manage billing" pending="Opening…" busy={busy === "portal"} /></AccountActionButton>}<AccountActionButton busy={busy} actionId="logout" type="button" onClick={logout} className="site-btn site-btn-secondary h-11 px-4 text-sm">Sign out</AccountActionButton></div></div>{feedback("identity")}</div>}
 
           {awaiting && <div className="site-surface rounded-[24px] p-7"><h2 className="text-xl font-semibold">Your payment is being confirmed.</h2><p className="mt-2 text-sm leading-relaxed text-site-fg-2">Your licence will appear here after payment clears. You can also return from the email we send when it is ready.</p><AccountActionButton busy={busy} actionId="refresh" type="button" onClick={() => action("refresh", load)} className="site-btn site-btn-secondary mt-4 h-11 px-4 text-sm">Refresh account</AccountActionButton>{feedback("refresh")}</div>}
           {signedIn && !awaiting && !licences.some((l) => l.active) && <div className="site-surface rounded-[24px] p-7 sm:p-8"><h2 className="text-2xl font-semibold tracking-[-0.035em]">{selected ? `Continue with ${names[selected.id]}.` : "Your account is ready."}</h2><p className="mt-3 text-[15px] leading-relaxed text-site-fg-2">{selected ? `$${selected.price} USD ${selected.cadence === "year" ? "per year" : "once"}. Your licence will be linked to this email address.` : "Choose Pro to unlock the full library, prompts and private registry. Team invitations appear here when you sign in with the invited email."}</p>{selected ? <AccountActionButton busy={busy} actionId="checkout" onClick={() => action("checkout", checkout)} className="site-btn site-btn-accent mt-5 h-11 px-6 text-sm"><AccountActionLabel idle="Continue to checkout" pending="Opening checkout…" busy={busy === "checkout"} /></AccountActionButton> : <Link href="/pricing" className="site-btn site-btn-accent mt-5 h-11 px-6 text-sm">Choose a plan</Link>}{feedback("checkout")}</div>}

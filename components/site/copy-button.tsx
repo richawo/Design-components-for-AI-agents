@@ -3,6 +3,7 @@ import { useSiteI18n } from "@/components/site/site-i18n";
 
 import { useEffect, useRef, useState } from "react";
 import { copyText } from "@/lib/clipboard";
+import { track } from "@/lib/analytics/client";
 
 export function CopyButton({
   text,
@@ -49,6 +50,7 @@ export function CopyButton({
         pending.current = false;
         if (!mounted.current) return;
         setStatus(ok ? "copied" : "error");
+        if (ok) track("copied", { label, chars: text.length, command: /^(npx|npm|pnpm|bunx|yarn|claude|codex) /.test(text) });
         if (ok) timer.current = setTimeout(() => setStatus("idle"), 1600);
       }}
       disabled={status === "copying"}

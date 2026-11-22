@@ -9,6 +9,7 @@ import { useState, type CSSProperties } from "react";
 import { SegmentedControl } from "@/registry/free/segmented-control/segmented-control";
 import { CountUp } from "./count-up";
 import { planFeatures } from "@/lib/copy";
+import { deviceHeaders, flush, track } from "@/lib/analytics/client";
 
 type Counts = { free: number; pro: number; mobile: number; total: number };
 
@@ -29,13 +30,22 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
   async function checkout(plan: string) {
     setBusy(plan);
     setError(null);
+    track("checkout_clicked", { plan, cadence, surface: "pricing", price: prices[plan] ?? null });
     try {
-      const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan }) });
+      const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json", ...deviceHeaders() }, body: JSON.stringify({ plan }) });
       const json = (await res.json()) as { url?: string; signInUrl?: string; error?: string };
-      if (res.status === 401 && json.signInUrl) window.location.href = href(json.signInUrl);
-      else if (json.url) window.location.href = json.url;
-      else setError(json.error ?? "Checkout is unavailable right now.");
+      if (res.status === 401 && json.signInUrl) {
+        track("checkout_redirected", { plan, destination: "sign_in", surface: "pricing" }); flush();
+        window.location.href = href(json.signInUrl);
+      } else if (json.url) {
+        track("checkout_redirected", { plan, destination: "stripe", surface: "pricing" }); flush();
+        window.location.href = json.url;
+      } else {
+        track("checkout_error", { plan, status: res.status, error: (json.error ?? "unavailable").slice(0, 120), surface: "pricing" });
+        setError(json.error ?? "Checkout is unavailable right now.");
+      }
     } catch {
+      track("checkout_error", { plan, status: 0, error: "network", surface: "pricing" });
       setError("Checkout is unavailable right now.");
     } finally {
       setBusy(null);
@@ -53,7 +63,7 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
         <SegmentedControl
           label="Billing"
           value={cadence}
-          onValueChange={(value) => setCadence(value as "lifetime" | "yearly")}
+          onValueChange={(value) => { setCadence(value as "lifetime" | "yearly"); track("plan_cadence_changed", { cadence: value }); }}
           options={[{ value: "lifetime", label: "Pay once, keep forever" }, { value: "yearly", label: "Yearly" }]}
           icons={false}
           width="content"

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowRight, Check, Mail } from "lucide-react";
 import { accountPost, AccountRequestError, codeDigits, pasteCode } from "@/lib/account-client";
 import { MeasuredHeight } from "./measured-height";
+import { identify, track } from "@/lib/analytics/client";
 
 /**
  * Site adaptation of the auth-otp and auth-magic-link briefs retrieved through MCP.
@@ -75,7 +76,9 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
   async function send() {
     await run("send", async () => {
       const address = email.trim();
-      await accountPost("/api/auth/request", { email: address });
+      try { await accountPost("/api/auth/request", { email: address }); }
+      catch (reason) { track("sign_in_failed", { stage: "request", status: reason instanceof AccountRequestError ? reason.status : 0 }); throw reason; }
+      track("sign_in_code_requested", { resend: sent });
       setEmail(address); setSent(true); setCode(""); setActive(0);
       setSeconds(30); setResendAt(Date.now() + 30_000);
       setNotice("Code sent. Check your inbox and spam folder.");
@@ -87,7 +90,11 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
     if (!verified && value.length !== 6) return;
     await run("verify", async () => {
       if (!verified) {
-        await accountPost("/api/auth/verify", { email, code: value });
+        let result: unknown;
+        try { result = await accountPost("/api/auth/verify", { email, code: value }); }
+        catch (reason) { track("sign_in_failed", { stage: "verify", status: reason instanceof AccountRequestError ? reason.status : 0 }); throw reason; }
+        identify((result as { user?: { id?: string } } | undefined)?.user?.id);
+        track("signed_in", { method: "email_code" });
         // Account loading can be retried without consuming the same code twice.
         setVerified(true);
       }

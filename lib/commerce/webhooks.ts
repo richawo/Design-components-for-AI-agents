@@ -4,6 +4,7 @@ import type Stripe from "stripe";
 import { APP, objectId, periodEnd, planForPrice, stripeClient, type LicenceRow } from "./billing";
 import type { CommerceEnv } from "./env";
 import { sendMail } from "./mail";
+import { trackServer } from "@/lib/analytics/server";
 
 function invoiceSubscription(invoice: Stripe.Invoice) {
   return objectId(invoice.parent?.subscription_details?.subscription);
@@ -64,6 +65,13 @@ export async function fulfillPurchase(env: CommerceEnv, sessionId: string, strip
   if (!row) throw new Error("Licence storage failed");
   await env.COMMERCE_DB.prepare("DELETE FROM checkout_requests WHERE session_id=?").bind(session.id).run();
   if (invoice?.status === "paid") await recordInvoice(env, row.id, invoice);
+  // Only the request that created the licence records the conversion; Stripe retries stay silent.
+  if (row.id === licenceId && row.status === "active") {
+    await trackServer("purchase_completed", { userId: user.id, insertId: `purchase:${session.id}` }, {
+      plan: plan.id, mode: plan.mode, seats: plan.seats, revenue: (session.amount_total ?? 0) / 100,
+      currency: session.currency ?? "usd", discounted: (session.total_details?.amount_discount ?? 0) > 0,
+    });
+  }
   // A duplicate Checkout event never overwrites refunds, cancellations or later plan changes.
   if (row.status === "active" && !row.welcome_sent_at) {
     await sendMail(env, {
@@ -145,7 +153,13 @@ export async function processBillingEvent(env: CommerceEnv, event: Stripe.Event,
     if (["checkout.session.completed", "checkout.session.async_payment_succeeded"].includes(event.type)) {
       await fulfillPurchase(env, (event.data.object as Stripe.Checkout.Session).id, stripe);
     } else if (["checkout.session.async_payment_failed", "checkout.session.expired"].includes(event.type)) {
-      await env.COMMERCE_DB.prepare("DELETE FROM checkout_requests WHERE session_id=?").bind((event.data.object as Stripe.Checkout.Session).id).run();
+      const session = event.data.object as Stripe.Checkout.Session;
+      await env.COMMERCE_DB.prepare("DELETE FROM checkout_requests WHERE session_id=?").bind(session.id).run();
+      if (session.metadata?.app === APP) {
+        await trackServer("checkout_session_expired", { userId: session.client_reference_id, insertId: `expired:${session.id}` }, {
+          plan: session.metadata.plan ?? null, reason: event.type === "checkout.session.expired" ? "expired" : "payment_failed",
+        });
+      }
     } else if (event.type.startsWith("customer.subscription.")) {
       await reconcileSubscription(env, (event.data.object as Stripe.Subscription).id, stripe);
     } else if (["invoice.paid", "invoice.payment_failed"].includes(event.type)) {
