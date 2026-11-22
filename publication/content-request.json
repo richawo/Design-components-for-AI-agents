@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-20-people-and-scenario-workflows",
+  "requestId": "2026-11-22-people-workflow-decisions",
   "mode": "daily",
-  "requestedAt": "2026-11-20T06:55:40.153Z",
-  "privateContentCommit": "967e9ebc021d27c77f09f531f68617f806fc84b4",
-  "sourceInputsSha256": "32608c5dca6b792e481c697c0b50e2704e3698f7a731144d192019fbbd8ce502",
-  "approvalSha256": "cd970a7cfe99d3515bf9c22b7bc622072a0c0676f591a4ceddcd03687ae392ac",
+  "requestedAt": "2026-11-22T07:03:05.925Z",
+  "privateContentCommit": "a079c86d97a7265f9e5f89cfc12fa25e3e0ae0ad",
+  "sourceInputsSha256": "b27975dced508edce15e3b40a846ad0250fcce7da839cb932ea87bb0485aa52e",
+  "approvalSha256": "4e3ab7c8b1920ae59d600044f39566cd2c47cea40d011fdaf7701e840c9da3f1",
   "articleSlugs": [
-    "react-financial-scenario-planner",
-    "react-employee-onboarding-checklist",
-    "react-leave-approval-calendar",
-    "react-org-chart-workflow",
-    "react-interview-scorecard-ui"
+    "react-compensation-review-ui",
+    "react-shift-scheduling-ui",
+    "react-policy-acknowledgement-ui",
+    "react-team-capacity-planner",
+    "react-legal-matter-intake-form"
   ]
 }
