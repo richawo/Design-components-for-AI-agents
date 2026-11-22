@@ -39,6 +39,16 @@ article contents nor the Pro source and authorization boundaries. The prepared s
 omits the router cache manifest only when the files are identical and the lazy
 server does not reference it. Referenced or different modules remain included.
 
+Before packaging, the public middleware's prerender routing manifest is packed
+as lossless compressed JSON. Preparation parses the generated declaration without
+executing it, compares every field with `.next/prerender-manifest.json`, and
+verifies the complete compression round trip. The middleware decodes that data
+once when initialized. All routes, cache metadata, fallbacks and preview fields
+remain intact; component implementations and licensed source stay behind their
+existing lazy and authorization boundaries. An unexpected generated declaration
+or mismatched manifest stops preparation. The final package uses the same entry,
+total-runtime and source-map limits above.
+
 After `npm run deploy:dry-run`, exercise that exact package with
 `npx wrangler dev .open-next/deploy/worker.js --no-bundle --port 4189`.
 For a large prepared assets directory on macOS, start this local check with

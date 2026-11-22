@@ -17,4 +17,8 @@ describe("Cloudflare source-map budget", () => {
     const map = { sources: ["../server-functions/default/handler.mjs", "../middleware/handler.mjs", "../lib/middleware/handler.mjs"], sourcesContent: ["server", "middleware", "app code"], mappings: "AAAA" };
     expect(compactGeneratedSourceMap(map)).toEqual({ map: { ...map, sourcesContent: [null, null, "app code"] }, omitted: 2 });
   });
+  it("omits the generated compact middleware without dropping similarly named application code", () => {
+    const map = { sources: ["../.open-next/middleware/handler.compact.mjs", "../middleware/handler.compact.mjs", "../lib/middleware/handler.compact.mjs"], sourcesContent: ["generated", "generated", "application"], mappings: "AAAA" };
+    expect(compactGeneratedSourceMap(map)).toEqual({ map: { ...map, sourcesContent: [null, null, "application"] }, omitted: 2 });
+  });
 });

@@ -8,6 +8,7 @@ import { compactGeneratedSourceMap } from "./lib/source-map-budget.mjs";
 import { copyPreparedServerAssets } from "./lib/prepared-server-assets.mjs";
 import { assertPublicationBuildReceipt } from "./lib/publication-build.mjs";
 import { assertSinglePublicContentCopy } from "./lib/public-content-runtime.mjs";
+import { packRouterManifest } from "./lib/router-manifest-pack.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 assertPublicationBuildReceipt(root);
@@ -20,6 +21,16 @@ const filesIn = (dir, prefix = "") => fs.readdirSync(dir, { withFileTypes: true 
   const name = path.join(prefix, entry.name);
   return entry.isDirectory() ? filesIn(path.join(dir, entry.name), name) : [name];
 });
+
+// OpenNext embeds every prerendered route in the small public middleware.
+// Compress only that verified JSON data; keep all routes and cache/auth metadata.
+const middlewareDirectory = path.join(root, ".open-next", "middleware");
+const routerManifest = packRouterManifest(
+  fs.readFileSync(path.join(middlewareDirectory, "handler.mjs"), "utf8"),
+  JSON.parse(fs.readFileSync(path.join(root, ".next", "prerender-manifest.json"), "utf8")),
+);
+fs.writeFileSync(path.join(middlewareDirectory, "handler.compact.mjs"), routerManifest.code);
+console.log(`Router manifest: ${routerManifest.routes} routes, ${routerManifest.manifestBytes} data bytes, ${routerManifest.packedBytes ?? routerManifest.manifestBytes} encoded bytes`);
 
 // This deploy path invokes Wrangler directly, so it must do the cache
 // preparation normally performed by OpenNext's deploy command. The configured
@@ -61,7 +72,14 @@ const serverImport = 'import("./server-functions/default/handler.mjs")';
 if (!worker.includes(serverImport) && !worker.includes('import("./lazy-modules/lazy-server.mjs")')) {
   throw new Error("OpenNext's server import changed; refusing to lose the lazy boundary");
 }
-fs.writeFileSync(workerEntry, worker.replace(serverImport, 'import("./lazy-modules/lazy-server.mjs")'));
+const middlewareImport = '"./middleware/handler.mjs"';
+const compactMiddlewareImport = '"./middleware/handler.compact.mjs"';
+if (!worker.includes(middlewareImport) && !worker.includes(compactMiddlewareImport)) {
+  throw new Error("OpenNext's public middleware import changed; refusing to lose verified manifest packing");
+}
+fs.writeFileSync(workerEntry, worker
+  .replace(serverImport, 'import("./lazy-modules/lazy-server.mjs")')
+  .replace(middlewareImport, compactMiddlewareImport));
 
 // Let Wrangler resolve the entrypoint and WASM modules exactly as for deployment.
 run(["deploy", "--dry-run", "--minify", "--outdir", directory]);
