@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-23-legal-review-workflows",
+  "requestId": "2026-11-24-renewal-and-fashion-planning",
   "mode": "daily",
-  "requestedAt": "2026-11-23T19:48:20.695763+00:00",
-  "privateContentCommit": "fdc5963ef15a43ff757f553a44fd913988e453ef",
-  "sourceInputsSha256": "cd10867c7908d8acb8ab0335f72db44b7a6b23837715213c3e680e1fd45e4e02",
-  "approvalSha256": "c4062f4ca97945ca92ee47d27af92489d6cfb7b108b4dc49022cf96407ed5d69",
+  "requestedAt": "2026-11-24T07:16:13.316479+00:00",
+  "privateContentCommit": "0743bc305dd61f2a29ae3a287594e6511ca7e7f4",
+  "sourceInputsSha256": "1b2ff0c9ca782be9dc8f90f4a03e71097a4af79d962dfa42f5acfaf851de9a46",
+  "approvalSha256": "178e1569e76be84cd3445c1e0ba7cb3552b99b85e4bc90c07d91b55607313d28",
   "articleSlugs": [
-    "react-contract-clause-library-ui",
-    "react-legal-evidence-index-ui",
-    "react-document-request-tracker",
-    "react-signature-request-ui",
-    "react-contract-obligation-tracker"
+    "react-contract-renewal-calendar",
+    "react-collection-line-plan-ui",
+    "react-preorder-planning-ui",
+    "react-product-launch-calendar",
+    "react-wholesale-order-form"
   ]
 }
