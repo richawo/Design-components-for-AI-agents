@@ -16,7 +16,7 @@ export function writePublicContentRuntime(root, packed) {
   const files = {
     "package.json": JSON.stringify({ name: PUBLIC_CONTENT_PACKAGE, version: "0.0.0", private: true, main: "./index.cjs", types: "./index.d.ts" }) + "\n",
     "index.cjs": 'module.exports = require("./content-packed.json");\n',
-    "index.d.ts": 'type Payload = { encoding: "gzip-base64" | "brotli-base64"; data: string }; declare const packed: Payload | { encoding: "partitioned-public-v1"; fields: string[]; core: Payload; locales: Record<string, { files: string[]; packed: Payload }> }; export = packed;\n',
+    "index.d.ts": 'type Payload = { encoding: "gzip-base64" | "brotli-base64"; data: string }; type Partition = { files: string[]; packed: Payload }; declare const packed: Payload | ({ fields: string[]; core: Payload } & ({ encoding: "partitioned-public-v1"; locales: Record<string, Partition> } | { encoding: "partitioned-public-v2"; locales: Record<string, { files: string[]; partitions: Partition[] }> })); export = packed;\n',
     "content-packed.json": JSON.stringify(packed) + "\n",
   };
   for (const [name, contents] of Object.entries(files)) {

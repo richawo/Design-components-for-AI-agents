@@ -1,10 +1,13 @@
 import type { PackedContent } from "./content-pack.mjs";
-export type PartitionedPublicContent = {
-  encoding: "partitioned-public-v1";
+type LocalePartition = { files: string[]; packed: PackedContent };
+type PublicContentFields = {
   fields: string[];
   core: PackedContent;
-  locales: Record<string, { files: string[]; packed: PackedContent }>;
 };
-export function packPublicContent(content: Record<string, unknown>): PartitionedPublicContent;
+export type PartitionedPublicContent = PublicContentFields & (
+  { encoding: "partitioned-public-v1"; locales: Record<string, LocalePartition> }
+  | { encoding: "partitioned-public-v2"; locales: Record<string, { files: string[]; partitions: LocalePartition[] }> }
+);
+export function packPublicContent(content: Record<string, unknown>): PublicContentFields & { encoding: "partitioned-public-v2"; locales: Record<string, { files: string[]; partitions: LocalePartition[] }> };
 export function publicContentPayloads(packed: PackedContent | PartitionedPublicContent): PackedContent[];
 export function createPublicContent(packed: PackedContent | PartitionedPublicContent): unknown;

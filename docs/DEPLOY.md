@@ -34,9 +34,13 @@ and gzipped source maps totalling 15 MB or more. Runtime accounting includes
 attached text, SQL and Wasm modules, including nested modules. The generated
 server-external public-content package keeps the complete blog/docs payload
 in one prepared module instead of duplicating it across Next route chunks.
-The public pack partitions article bodies by language. Runtime filename and
-locale enumeration does not decompress them; a two-edition cache retains only
-the selected edition and its English source. Frontmatter parsing bypasses
+The public pack partitions article bodies by language, splitting growing
+languages into balanced groups below 2 MiB of decoded UTF-8 JSON. A filename
+index selects only its containing group. Runtime filename and locale
+enumeration does not decompress them; an LRU cache retains at most two groups,
+including when several articles from one language are requested. A single
+article reaching the same limit fails the build rather than raising the guard.
+Existing v1 packs remain readable. Frontmatter parsing bypasses
 gray-matter's unbounded input cache. Full build/audit readers still reconstruct
 the exact original corpus, and the final package guard requires exactly one
 intact copy of every partition. This changes neither

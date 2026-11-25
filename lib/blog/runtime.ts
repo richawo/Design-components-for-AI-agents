@@ -18,7 +18,7 @@ export type BlogBundle = {
   blogImages?: Record<string, { width: number; height: number }>;
 };
 // Metadata enumeration does not inflate article bodies. Keep at most the
-// selected edition and its English source decoded inside a long-lived isolate.
+// requested article partitions (each below 2 MiB) inside a long-lived isolate.
 export const BLOG_DATA = createPublicContent((process.env.NODE_ENV === "production" ? productionPacked : packed) as PartitionedPublicContent) as BlogBundle;
 export const blogFiles = (locale = "en") => locale === "en" ? BLOG_DATA.blog : BLOG_DATA.localizedBlog?.[locale] ?? {};
 export const blogConfig = (locale = "en") => (locale === "en" ? BLOG_DATA.config : BLOG_DATA.localizedConfig?.[locale]) ?? BLOG_DATA.config;

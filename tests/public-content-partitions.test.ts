@@ -20,7 +20,7 @@ describe("bounded public editorial partitions", () => {
   });
   it("enumerates locales and filenames without decoding bodies of any edition", () => {
     const packed = packPublicContent(fixture());
-    for (const entry of Object.values(packed.locales)) entry.packed.data = "damaged";
+    for (const entry of Object.values(packed.locales)) for (const part of entry.partitions) part.packed.data = "damaged";
     const content = createPublicContent(packed) as ReturnType<typeof fixture>;
     expect(Object.keys(content.localizedBlog)).toEqual(["ar", "ja"]);
     expect(Object.keys(content.blog)).toEqual(["guide.md"]);
@@ -33,11 +33,50 @@ describe("bounded public editorial partitions", () => {
     const content = createPublicContent(packed) as ReturnType<typeof fixture>;
     expect(content.blog["guide.md"]).toContain("# Hello");
     expect(content.localizedBlog.ar["guide.md"]).toBe("# مرحبا\n");
-    packed.locales.en.packed.data = "damaged";
+    packed.locales.en.partitions[0].packed.data = "damaged";
     expect(content.blog["guide.md"]).toContain("# Hello");
     expect(content.localizedBlog.ja["guide.md"]).toBe("# 日本語\n");
     expect(content.localizedBlog.ar["guide.md"]).toBe("# مرحبا\n");
     expect(() => content.blog["guide.md"]).toThrow();
+  });
+  it("reads existing v1 locale packs without changing their contents", () => {
+    const original = fixture();
+    const { blog, localizedBlog, ...core } = original;
+    const packed = {
+      encoding: "partitioned-public-v1" as const, fields: Object.keys(original), core: packContent(core),
+      locales: Object.fromEntries(Object.entries({ en: blog, ...localizedBlog }).map(([locale, files]) => [locale, {
+        files: Object.keys(files), packed: packContent(files),
+      }])),
+    };
+    expect(unpackContent(packed)).toEqual(original);
+    expect(JSON.stringify(createPublicContent(packed))).toBe(JSON.stringify(original));
+  });
+  it("splits large multilingual locales by UTF-8 bytes and decodes only the requested partition", () => {
+    const original = { blog: Object.fromEntries(Array.from({ length: 7 }, (_, index) => [
+      `${index}.md`, `${index}:` + "日本語😀".repeat(48000),
+    ])), localizedBlog: {} };
+    const packed = packPublicContent(original), parts = packed.locales.en.partitions;
+    expect(parts.length).toBeGreaterThan(2);
+    expect(parts.flatMap((part) => part.files)).toEqual(Object.keys(original.blog));
+    for (const part of parts) expect(Buffer.byteLength(JSON.stringify(unpackContent(part.packed)))).toBeLessThan(2 * 1024 * 1024);
+    expect(unpackContent(packed)).toEqual(original);
+    expect(JSON.stringify(createPublicContent(packed))).toBe(JSON.stringify(original));
+    const content = createPublicContent(packed) as typeof original;
+    // Unvisited siblings can be damaged without affecting the selected article.
+    const saved = parts[1].packed.data;
+    parts[1].packed.data = "damaged";
+    expect(content.blog[parts[0].files[0]]).toBe(original.blog[parts[0].files[0]]);
+    expect(() => content.blog[parts[1].files[0]]).toThrow();
+    parts[1].packed.data = saved;
+    expect(content.blog[parts[1].files[0]]).toBe(original.blog[parts[1].files[0]]);
+    parts[0].packed.data = "damaged";
+    expect(content.blog[parts[0].files[0]]).toBe(original.blog[parts[0].files[0]]);
+    expect(content.blog[parts[2].files[0]]).toBe(original.blog[parts[2].files[0]]);
+    expect(content.blog[parts[1].files[0]]).toBe(original.blog[parts[1].files[0]]);
+    expect(() => content.blog[parts[0].files[0]]).toThrow();
+  });
+  it("rejects an individual article that cannot fit without raising the partition budget", () => {
+    expect(() => packPublicContent({ blog: { "too-large.md": "x".repeat(2 * 1024 * 1024) } })).toThrow(/too-large.md/);
   });
   it("guards each partition against omission and a duplicated prepared corpus", () => {
     const packed = packPublicContent(fixture());
@@ -49,11 +88,11 @@ describe("bounded public editorial partitions", () => {
   it("round-trips the complete published multilingual source with bounded locale partitions", () => {
     const data = JSON.parse(fs.readFileSync(new URL("../registry/__generated__/content.json", import.meta.url), "utf8"));
     const packed = JSON.parse(fs.readFileSync(new URL("../registry/__generated__/content-packed.json", import.meta.url), "utf8"));
-    expect(packed.encoding).toBe("partitioned-public-v1");
+    expect(packed.encoding).toBe("partitioned-public-v2");
     expect(JSON.stringify(createPublicContent(packed))).toBe(JSON.stringify(data));
-    const maxDecodedLocale = Math.max(...Object.values(packed.locales).map((entry: any) => Buffer.byteLength(JSON.stringify(unpackContent(entry.packed)))));
-    expect(maxDecodedLocale).toBeLessThan(2 * 1024 * 1024);
-    expect(maxDecodedLocale).toBeLessThan(Buffer.byteLength(JSON.stringify(data)) / 10);
+    const maxDecodedPartition = Math.max(...Object.values(packed.locales).flatMap((entry: any) => entry.partitions.map((part: any) => Buffer.byteLength(JSON.stringify(unpackContent(part.packed))))));
+    expect(maxDecodedPartition).toBeLessThan(2 * 1024 * 1024);
+    expect(maxDecodedPartition).toBeLessThan(Buffer.byteLength(JSON.stringify(data)) / 10);
   });
   it("does not retain article inputs in gray-matter while serving every language", async () => {
     const { allPosts, rawPost } = await import("../lib/content");

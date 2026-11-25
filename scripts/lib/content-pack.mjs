@@ -13,12 +13,15 @@ export function packContent(content) {
 export function unpackContent(packed) {
   // Audit/build readers can still reconstruct the exact original bundle. The
   // request-time facade reads individual locale partitions instead.
-  if (packed.encoding === "partitioned-public-v1") {
+  if (packed.encoding === "partitioned-public-v1" || packed.encoding === "partitioned-public-v2") {
     const core = unpackContent(packed.core);
+    const readLocale = (entry) => entry.partitions
+      ? Object.assign({}, ...entry.partitions.map((part) => unpackContent(part.packed)))
+      : unpackContent(entry.packed);
     return Object.fromEntries(packed.fields.map((field) => [field,
-      field === "blog" ? unpackContent(packed.locales.en.packed)
+      field === "blog" ? readLocale(packed.locales.en)
         : field === "localizedBlog" ? Object.fromEntries(Object.entries(packed.locales)
-          .filter(([locale]) => locale !== "en").map(([locale, entry]) => [locale, unpackContent(entry.packed)]))
+          .filter(([locale]) => locale !== "en").map(([locale, entry]) => [locale, readLocale(entry)]))
           : core[field],
     ]));
   }
