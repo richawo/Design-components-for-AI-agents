@@ -429,7 +429,8 @@
     "Reply transcript": "Расшифровка ответа",
     "Interrupt reply": "Прервать ответ",
     "Reset example": "Сбросить пример",
-    "Playback stopped": "Воспроизведение остановлено"
+    "Playback stopped": "Воспроизведение остановлено",
+    "AWS": "AWS"
   },
   "nl": {
     "Interactive example": "Interactief voorbeeld",

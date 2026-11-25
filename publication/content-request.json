@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-24-renewal-and-fashion-planning",
+  "requestId": "2026-11-25-native-workflow-guides",
   "mode": "daily",
-  "requestedAt": "2026-11-24T07:16:13.316479+00:00",
-  "privateContentCommit": "0743bc305dd61f2a29ae3a287594e6511ca7e7f4",
-  "sourceInputsSha256": "1b2ff0c9ca782be9dc8f90f4a03e71097a4af79d962dfa42f5acfaf851de9a46",
-  "approvalSha256": "178e1569e76be84cd3445c1e0ba7cb3552b99b85e4bc90c07d91b55607313d28",
+  "requestedAt": "2026-11-25T07:30:12.490175+00:00",
+  "privateContentCommit": "64a7b54e7836a94e03674c2fefcea887ea3b0835",
+  "sourceInputsSha256": "a7a32432f62bc0c9253bc32f63a6ccd38695ebede5fd83cdfed8245fb4e0905c",
+  "approvalSha256": "1518f68a8fb4e28dd586649588a0852c070669661bc29ba2d46cdc00b582b5de",
   "articleSlugs": [
-    "react-contract-renewal-calendar",
-    "react-collection-line-plan-ui",
-    "react-preorder-planning-ui",
-    "react-product-launch-calendar",
-    "react-wholesale-order-form"
+    "react-native-offline-sync-conflict-ui",
+    "react-native-voice-memo-ui",
+    "react-native-wallet-card-ui",
+    "react-native-paywall-ui",
+    "react-native-travel-itinerary-ui"
   ]
 }
