@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-25-native-workflow-guides",
+  "requestId": "2026-11-26-native-and-dashboard-workflows",
   "mode": "daily",
-  "requestedAt": "2026-11-25T07:30:12.490175+00:00",
-  "privateContentCommit": "64a7b54e7836a94e03674c2fefcea887ea3b0835",
-  "sourceInputsSha256": "a7a32432f62bc0c9253bc32f63a6ccd38695ebede5fd83cdfed8245fb4e0905c",
-  "approvalSha256": "1518f68a8fb4e28dd586649588a0852c070669661bc29ba2d46cdc00b582b5de",
+  "requestedAt": "2026-11-26T07:17:01.812686+00:00",
+  "privateContentCommit": "cc7c45374bfcfb86febd4ce23105182f9a73a202",
+  "sourceInputsSha256": "960d58facb23009ad99556b25fa353527392446c796b80b32e7f5a52c512f841",
+  "approvalSha256": "e208a4871fb1922bd29e81363d4246e0a4a899fb2e3e783bbdffc07e3fb0bf4b",
   "articleSlugs": [
-    "react-native-offline-sync-conflict-ui",
-    "react-native-voice-memo-ui",
-    "react-native-wallet-card-ui",
-    "react-native-paywall-ui",
-    "react-native-travel-itinerary-ui"
+    "react-native-reading-progress-ui",
+    "react-native-task-move-ui",
+    "react-font-pairing-tool-ui",
+    "react-dashboard-loading-empty-error-states",
+    "responsive-react-dashboard-mobile-layout"
   ]
 }
