@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-26-native-and-dashboard-workflows",
+  "requestId": "2026-11-27-client-evaluation-and-billing",
   "mode": "daily",
-  "requestedAt": "2026-11-26T07:17:01.812686+00:00",
-  "privateContentCommit": "cc7c45374bfcfb86febd4ce23105182f9a73a202",
-  "sourceInputsSha256": "960d58facb23009ad99556b25fa353527392446c796b80b32e7f5a52c512f841",
-  "approvalSha256": "e208a4871fb1922bd29e81363d4246e0a4a899fb2e3e783bbdffc07e3fb0bf4b",
+  "requestedAt": "2026-11-27T07:23:57.522487+00:00",
+  "privateContentCommit": "089dc0f95c236eb34657e740e115f31ac8600a3d",
+  "sourceInputsSha256": "9d00f847753a8f34f6984082d2749a4f8bbfe78d00c3416d56ca18d4e2c2896f",
+  "approvalSha256": "393b6ee6cf4b3c5ac0ffc65547f866a9c8d2c01c721b10e0c43a0da0f54fda76",
   "articleSlugs": [
-    "react-native-reading-progress-ui",
-    "react-native-task-move-ui",
-    "react-font-pairing-tool-ui",
-    "react-dashboard-loading-empty-error-states",
-    "responsive-react-dashboard-mobile-layout"
+    "react-ui-kit-client-handoff-checklist",
+    "react-portfolio-components-students",
+    "react-billing-dashboard-ui",
+    "react-usage-pricing-calculator",
+    "react-data-table-bulk-action-review"
   ]
 }
