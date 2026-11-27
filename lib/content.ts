@@ -8,6 +8,7 @@ import { highlight, type HighlightLanguage } from "./highlight";
 import { BLOG_DATA, blogFiles, blogConfig, blogPath } from "./blog/runtime";
 import { imageDimensions } from "./blog/image-markup";
 import { visibleHowToSteps } from "./blog/how-to";
+import { sourceFaqHeading } from "./blog/faq-heading";
 import { serverI18n, siteDoc } from "./i18n/server";
 import { localizePath } from "./i18n/routing";
 import { mapMarkdown } from "./i18n/markdown.mjs";
@@ -203,7 +204,13 @@ export async function getPost(slug: string, locale = "en") {
   const raw = rawPost(slug, locale);
   if (!meta || !raw) return null;
   const { html, intro, body, headings } = await render(raw.content, locale, undefined, true);
-  return { meta, html, intro, body, headings, faqs: extractFaqs(html, raw.data.faqHeading), howToSteps: visibleHowToSteps(html, raw.data.howToSteps), markdown: raw.content };
+  let faqs = extractFaqs(html, raw.data.faqHeading);
+  if (!faqs.length) {
+    const source = locale === "en" ? raw : rawPost(meta.sourceSlug);
+    const heading = source && sourceFaqHeading(source.content, headings);
+    if (heading) faqs = extractFaqs(html, heading);
+  }
+  return { meta, html, intro, body, headings, faqs, howToSteps: visibleHowToSteps(html, raw.data.howToSteps), markdown: raw.content };
 }
 
 export function relatedPosts(slug: string, n = 3, locale = "en") {

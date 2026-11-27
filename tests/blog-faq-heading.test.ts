@@ -1,0 +1,25 @@
+import { describe, expect, it } from "vitest";
+import { sourceFaqHeading } from "../lib/blog/faq-heading";
+
+describe("source-aligned translated FAQ sections", () => {
+  it("resolves a translated short FAQ label without confusing ordinary H3s", () => {
+    const source = "## Delivery\n\n### A normal subsection\n\nText.\n\n## FAQs\n\n### Can I adapt this?\n\nYes.\n\n## Sources checked\n";
+    expect(sourceFaqHeading(source, [
+      { level: 2, text: "Livraison" }, { level: 3, text: "Sous-section" },
+      { level: 2, text: "FAQ" }, { level: 3, text: "Puis-je l’adapter ?" },
+      { level: 2, text: "Sources vérifiées" },
+    ])).toBe("FAQ");
+  });
+  it("supports the existing long heading and non-Latin translated labels", () => {
+    expect(sourceFaqHeading("## Frequently asked questions\n", [{ level: 2, text: "الأسئلة الشائعة" }])).toBe("الأسئلة الشائعة");
+  });
+  it("ignores FAQ headings inside executable examples", () => {
+    expect(sourceFaqHeading("```md\n## FAQs\n```\n\n## Guide\n", [{ level: 2, text: "Guide" }])).toBeUndefined();
+  });
+  it("does not turn arbitrary questions into an FAQ section", () => {
+    expect(sourceFaqHeading("## Guide\n\n### A question?\n\nAnswer.\n", [{ level: 2, text: "Guide" }])).toBeUndefined();
+  });
+  it("fails closed when source and translated section counts differ", () => {
+    expect(sourceFaqHeading("## Guide\n\n## FAQs\n", [{ level: 2, text: "FAQ" }])).toBeUndefined();
+  });
+});
