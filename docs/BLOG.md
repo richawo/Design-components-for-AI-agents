@@ -15,7 +15,7 @@ packed editorial payload. Development retains the directly watched JSON bundle.
 The final deployment rejects a missing or duplicated public pack. The content-pack test
 checks the complete generated payload against the readable source.
 
-Packs of at least 1 MiB use Brotli at build time; smaller packs retain gzip.
+Packs of at least 1 MiB use Brotli quality 11 at build time; smaller packs retain gzip.
 The runtime reads both formats, including older gzip artifacts. Full-content
 round-trip tests and the unchanged final module-size guard apply to both.
 

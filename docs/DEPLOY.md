@@ -23,6 +23,11 @@ The custom `scripts/deploy-worker.mjs` command runs OpenNext's cache preparation
 before Wrangler bundles or uploads, including during a dry run. Without that
 step the cache assets are absent and public requests fall back to rendering.
 
+Large content packs use Brotli quality 11 at build time. The encoder-source hash
+invalidates older build caches when this policy changes. Existing gzip and Brotli
+formats, exact decoded content, selected-language partitions and runtime limits
+remain unchanged; the extra compression work happens during generation.
+
 The deployment command also prepares the Node-compatible Next server as a
 separate module, then preserves its dynamic import from the small public router.
 Keep `find_additional_modules` and the explicit `lazy-modules` rules in
