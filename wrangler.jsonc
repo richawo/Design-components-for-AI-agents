@@ -13,7 +13,8 @@
   "rules": [
     { "type": "ESModule", "globs": ["**/lazy-modules/lazy-server.mjs"], "fallthrough": false },
     { "type": "Text", "globs": ["**/lazy-modules/**/*.txt", "**/lazy-modules/**/*.sql"], "fallthrough": true },
-    { "type": "CompiledWasm", "globs": ["**/lazy-modules/**/*.wasm"], "fallthrough": true }
+    { "type": "CompiledWasm", "globs": ["**/lazy-modules/**/*.wasm"], "fallthrough": true },
+    { "type": "Data", "globs": ["**/lazy-modules/public-content-payloads.bin"], "fallthrough": true }
   ],
   "routes": [
     {

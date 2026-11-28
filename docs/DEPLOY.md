@@ -28,6 +28,16 @@ invalidates older build caches when this policy changes. Existing gzip and Brotl
 formats, exact decoded content, selected-language partitions and runtime limits
 remain unchanged; the extra compression work happens during generation.
 
+Preparation stores the public pack's compressed bytes in one internal binary
+Data module rather than base64 JavaScript strings. The selected payload's getter
+recreates its existing base64 decoder input only when that payload is requested.
+The same two-partition LRU and sub-2 MiB decoded article limit apply. Preparation
+checks every original payload and its reference, verifies the complete binary
+bytes after Wrangler, and remaps source locations after shortening declarations.
+The binary is counted in the unchanged 64 MiB runtime guard; it is not a public
+asset endpoint. Licensed component source and the small public router remain
+behind their existing boundaries.
+
 The deployment command also prepares the Node-compatible Next server as a
 separate module, then preserves its dynamic import from the small public router.
 Keep `find_additional_modules` and the explicit `lazy-modules` rules in

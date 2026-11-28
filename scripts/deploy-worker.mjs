@@ -7,7 +7,7 @@ import { gzipSync } from "node:zlib";
 import { compactGeneratedSourceMap } from "./lib/source-map-budget.mjs";
 import { copyPreparedServerAssets } from "./lib/prepared-server-assets.mjs";
 import { assertPublicationBuildReceipt } from "./lib/publication-build.mjs";
-import { assertSinglePublicContentCopy } from "./lib/public-content-runtime.mjs";
+import { prepareBinaryPublicContent, assertBinaryPublicContentCopy, PUBLIC_CONTENT_BINARY } from "./lib/public-content-binary.mjs";
 import { packRouterManifest } from "./lib/router-manifest-pack.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -56,8 +56,14 @@ const serverEntry = ["server-entry.js", "server-entry.mjs"].find(name => fs.exis
 if (!serverEntry) throw new Error("Wrangler did not emit the prepared Next server");
 fs.mkdirSync(lazyDirectory, { recursive: true });
 const lazyServer = path.join(lazyDirectory, "lazy-server.mjs");
-fs.writeFileSync(lazyServer, fs.readFileSync(path.join(serverDirectory, serverEntry), "utf8")
-  .replace(/sourceMappingURL=[^\s]+/, "sourceMappingURL=lazy-server.mjs.map"));
+const publicPack = JSON.parse(fs.readFileSync(path.join(root, "registry/__generated__/content-packed.json"), "utf8"));
+const serverMap = path.join(serverDirectory, `${serverEntry}.map`);
+const binaryPublic = prepareBinaryPublicContent(
+  fs.readFileSync(path.join(serverDirectory, serverEntry), "utf8").replace(/sourceMappingURL=[^\s]+/, "sourceMappingURL=lazy-server.mjs.map"),
+  publicPack,
+  { sourceMap: fs.existsSync(serverMap) ? JSON.parse(fs.readFileSync(serverMap, "utf8")) : undefined },
+);
+fs.writeFileSync(lazyServer, binaryPublic.code);
 const copied = copyPreparedServerAssets({
   preparedDirectory: serverDirectory,
   destination: lazyDirectory,
@@ -66,6 +72,7 @@ const copied = copyPreparedServerAssets({
   sharedManifest: path.join(root, ".open-next", "cloudflare", "cache-assets-manifest.sql"),
 });
 if (copied.omittedManifest) console.log("Prepared server: omitted unused identical router cache manifest");
+fs.writeFileSync(path.join(lazyDirectory, PUBLIC_CONTENT_BINARY), binaryPublic.binary);
 const workerEntry = path.join(root, ".open-next", "worker.js");
 const worker = fs.readFileSync(workerEntry, "utf8");
 const serverImport = 'import("./server-functions/default/handler.mjs")';
@@ -83,15 +90,16 @@ fs.writeFileSync(workerEntry, worker
 
 // Let Wrangler resolve the entrypoint and WASM modules exactly as for deployment.
 run(["deploy", "--dry-run", "--minify", "--outdir", directory]);
-const serverMap = path.join(serverDirectory, `${serverEntry}.map`);
-if (fs.existsSync(serverMap)) fs.copyFileSync(serverMap, path.join(directory, "lazy-modules/lazy-server.mjs.map"));
+if (binaryPublic.map) fs.writeFileSync(path.join(directory, "lazy-modules/lazy-server.mjs.map"), JSON.stringify(binaryPublic.map));
 if (!fs.existsSync(path.join(directory, "lazy-modules/lazy-server.mjs")) ||
     fs.statSync(path.join(directory, "worker.js")).size >= 4 * 1024 * 1024) {
   throw new Error("The public Worker entrypoint lost its small lazy-server boundary");
 }
-const publicPack = JSON.parse(fs.readFileSync(path.join(root, "registry/__generated__/content-packed.json"), "utf8"));
-const packedBytes = assertSinglePublicContentCopy(fs.readFileSync(path.join(directory, "lazy-modules/lazy-server.mjs"), "utf8"), publicPack);
-console.log(`Public content: one shared ${packedBytes}-byte packed payload`);
+const packed = assertBinaryPublicContentCopy(
+  fs.readFileSync(path.join(directory, "lazy-modules/lazy-server.mjs"), "utf8"),
+  fs.readFileSync(path.join(directory, "lazy-modules", PUBLIC_CONTENT_BINARY)), publicPack,
+);
+console.log(`Public content: one shared ${packed.binaryBytes}-byte binary payload (${binaryPublic.encodedBytesBefore} base64 bytes before)`);
 fs.mkdirSync(archive, { recursive: true });
 let total = 0;
 for (const name of filesIn(directory).filter((file) => file.endsWith(".map"))) {
@@ -110,7 +118,7 @@ if (total >= 15_000_000) throw new Error(`Source maps exceed Cloudflare's 15 MB 
 // Check the same uncompressed modules Cloudflare counts before uploading any
 // assets. Source maps have their own budget above and are not runtime modules.
 const runtimeBytes = filesIn(directory)
-  .filter((name) => /\.(?:js|mjs|wasm|txt|sql)$/.test(name))
+  .filter((name) => /\.(?:js|mjs|wasm|txt|sql|bin)$/.test(name))
   .reduce((sum, name) => sum + fs.statSync(path.join(directory, name)).size, 0);
 console.log(`Worker runtime: ${runtimeBytes} bytes (64 MiB limit)`);
 if (runtimeBytes >= 64 * 1024 * 1024) throw new Error(`Worker exceeds Cloudflare's 64 MiB limit: ${runtimeBytes} bytes`);

@@ -15,6 +15,12 @@ packed editorial payload. Development retains the directly watched JSON bundle.
 The final deployment rejects a missing or duplicated public pack. The content-pack test
 checks the complete generated payload against the readable source.
 
+The prepared Worker keeps these compressed public bytes in one internal binary
+module. A selected payload recreates its unchanged base64 decoder input on
+demand, retaining the bounded article partitions and two-entry decoding cache.
+Build/audit JSON stays readable by the existing tooling. Full corpus round trips
+and the final runtime guard include the binary module.
+
 Packs of at least 1 MiB use Brotli quality 11 at build time; smaller packs retain gzip.
 The runtime reads both formats, including older gzip artifacts. Full-content
 round-trip tests and the unchanged final module-size guard apply to both.
