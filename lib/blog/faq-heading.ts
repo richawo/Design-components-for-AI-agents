@@ -6,6 +6,6 @@ export function sourceFaqHeading(sourceMarkdown: string, renderedHeadings: { lev
     .filter((token): token is Tokens.Heading => token.type === "heading" && token.depth === 2);
   const rendered = renderedHeadings.filter((heading) => heading.level === 2);
   if (source.length !== rendered.length) return undefined;
-  const index = source.findIndex((heading) => /^(?:FAQs|Frequently asked questions)$/i.test(heading.text.trim()));
+  const index = source.findIndex((heading) => /^(?:FAQs|Frequently asked questions|Questions about \S.*)$/i.test(heading.text.trim()));
   return index < 0 ? undefined : rendered[index]?.text;
 }

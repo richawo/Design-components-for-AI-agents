@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "requestId": "2026-11-27-client-evaluation-and-billing",
+  "requestId": "2026-11-28-permissions-and-review-workflows",
   "mode": "daily",
-  "requestedAt": "2026-11-27T07:23:57.522487+00:00",
-  "privateContentCommit": "089dc0f95c236eb34657e740e115f31ac8600a3d",
-  "sourceInputsSha256": "9d00f847753a8f34f6984082d2749a4f8bbfe78d00c3416d56ca18d4e2c2896f",
-  "approvalSha256": "393b6ee6cf4b3c5ac0ffc65547f866a9c8d2c01c721b10e0c43a0da0f54fda76",
+  "requestedAt": "2026-11-28T08:35:10.282964+00:00",
+  "privateContentCommit": "9bc95e94550bd99f1deb62ba23e703b3dc871107",
+  "sourceInputsSha256": "4df9b477425da193884b0974f3f6b321ff2d7ccff6e404e556e7233933adf668",
+  "approvalSha256": "1ec8476dac3875dadabadf8e8a6da67da8b3455906cf024d8c5a1c7fb83de130",
   "articleSlugs": [
-    "react-ui-kit-client-handoff-checklist",
-    "react-portfolio-components-students",
-    "react-billing-dashboard-ui",
-    "react-usage-pricing-calculator",
-    "react-data-table-bulk-action-review"
+    "react-permission-matrix-ui",
+    "react-image-contact-sheet",
+    "react-deployment-comparison-dashboard",
+    "react-comment-thread-ui",
+    "react-date-range-calendar"
   ]
 }
